@@ -1,6 +1,6 @@
 # BookFlow — MERN Booking App
 
-A full-stack booking manager built with the MERN stack and added to the `profile02` repository as a standalone portfolio project.
+A full-stack booking manager built with the MERN stack and added to the `booking-project` repository as a standalone portfolio project.
 
 ## Highlights
 
@@ -25,7 +25,7 @@ If this repository is already open in your GitHub Codespace, first make sure you
 
 ```bash
 git fetch
-git checkout feature/mern-booking-app
+git checkout main
 git pull
 ```
 
