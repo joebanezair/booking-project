@@ -19,7 +19,7 @@ function validateImage(value) {
 router.get("/", async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("name email bio headline location website profileImage createdAt updatedAt");
-    if (!user) return res.status(404).json({ message: "User not found." });
+    if (!user) return res.status(401).json({ message: "Your session no longer matches an account. Please sign in again." });
     res.json(user);
   } catch (error) {
     console.error(error);
@@ -56,7 +56,7 @@ router.put("/", async (req, res) => {
       runValidators: true
     }).select("name email bio headline location website profileImage createdAt updatedAt");
 
-    if (!user) return res.status(404).json({ message: "User not found." });
+    if (!user) return res.status(401).json({ message: "Your session no longer matches an account. Please sign in again." });
     res.json(user);
   } catch (error) {
     console.error(error);
