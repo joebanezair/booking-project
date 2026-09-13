@@ -4,7 +4,12 @@ const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 80 },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    passwordHash: { type: String, required: true }
+    passwordHash: { type: String, required: true },
+    bio: { type: String, trim: true, maxlength: 1000, default: "" },
+    headline: { type: String, trim: true, maxlength: 120, default: "" },
+    location: { type: String, trim: true, maxlength: 120, default: "" },
+    website: { type: String, trim: true, maxlength: 300, default: "" },
+    profileImage: { type: String, default: "" }
   },
   { timestamps: true }
 );
