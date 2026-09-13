@@ -138,7 +138,8 @@ function Dashboard({ user, onLogout }) {
 
   useEffect(()=>{ api.bookings.list().then(setBookings).catch(e=>setError(e.message)); },[]);
 
-  const publicUrl = `${window.location.origin}/book/${user.id}`;
+  const publicUrl = `${window.location.origin}/b/${user.id}`;
+  const publicDisplayUrl = `/b/${user.id}`;
   const stats = useMemo(()=>({
     total:bookings.length,
     pending:bookings.filter(b=>b.status==="pending").length,
@@ -182,7 +183,7 @@ function Dashboard({ user, onLogout }) {
       <header className="topbar"><div><p className="eyebrow">DASHBOARD</p><h1>Hi, {user.name.split(" ")[0]}.</h1><p className="muted">Manage bookings and conversations.</p></div></header>
 
       <section className="share-card">
-        <div><p className="eyebrow">YOUR PUBLIC BOOKING PAGE</p><h2>Let anyone book with you</h2><p className="muted">{publicUrl}</p></div>
+        <div><p className="eyebrow">YOUR PUBLIC BOOKING PAGE</p><h2>Let anyone book with you</h2><p className="muted">{publicDisplayUrl}</p></div>
         <div className="share-actions"><a className="secondary button-link" href={publicUrl} target="_blank">Open page</a><button className="primary-button" onClick={copyLink}>{copied?"Copied!":"Copy link"}</button></div>
       </section>
 
@@ -222,7 +223,7 @@ function Dashboard({ user, onLogout }) {
 }
 
 export default function App(){
-  const publicMatch=window.location.pathname.match(/^\/book\/([a-f\d]{24})\/?$/i);
+  const publicMatch=window.location.pathname.match(/^\/(?:book|b)\/([a-f\d]{24})\/?$/i);
   const [user,setUser]=useState(()=>{try{return JSON.parse(localStorage.getItem("booking_user"));}catch{return null;}});
   if(publicMatch) return <PublicBooking userId={publicMatch[1]}/>;
   function logout(){localStorage.removeItem("booking_token");localStorage.removeItem("booking_user");setUser(null);}
