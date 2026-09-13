@@ -4,6 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
 import bookingRoutes from "./routes/bookings.js";
+import messageRoutes from "./routes/messages.js";
+import publicRoutes from "./routes/public.js";
 
 dotenv.config();
 
@@ -21,6 +23,8 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/public", publicRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
