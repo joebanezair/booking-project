@@ -1,9 +1,79 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import Booking from "../models/Booking.js";
+import Content from "../models/Content.js";
 import User from "../models/User.js";
 
 const router = Router();
+
+router.get("/profile/:userId", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.userId)) {
+      return res.status(404).json({ message: "Profile not found." });
+    }
+    const user = await User.findById(req.params.userId)
+      .select("name bio headline location website profileImage createdAt");
+    if (!user) return res.status(404).json({ message: "Profile not found." });
+
+    const items = await Content.find({ user: user._id, published: true })
+      .select("title description price currency category coverImage images createdAt updatedAt")
+      .sort({ updatedAt: -1 });
+
+    res.json({
+      profile: {
+        id: user._id,
+        name: user.name,
+        bio: user.bio,
+        headline: user.headline,
+        location: user.location,
+        website: user.website,
+        profileImage: user.profileImage,
+        createdAt: user.createdAt
+      },
+      content: items
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to load public profile." });
+  }
+});
+
+router.get("/content/:contentId", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.contentId)) {
+      return res.status(404).json({ message: "Content not found." });
+    }
+
+    const item = await Content.findOne({ _id: req.params.contentId, published: true })
+      .populate("user", "name bio headline location website profileImage");
+    if (!item || !item.user) return res.status(404).json({ message: "Content not found." });
+
+    res.json({
+      _id: item._id,
+      title: item.title,
+      description: item.description,
+      price: item.price,
+      currency: item.currency,
+      category: item.category,
+      coverImage: item.coverImage,
+      images: item.images,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+      owner: {
+        id: item.user._id,
+        name: item.user.name,
+        bio: item.user.bio,
+        headline: item.user.headline,
+        location: item.user.location,
+        website: item.user.website,
+        profileImage: item.user.profileImage
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to load content." });
+  }
+});
 
 router.get("/book/:userId", async (req, res) => {
   try {
