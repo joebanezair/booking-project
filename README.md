@@ -1,46 +1,110 @@
-# BookFlow — MERN Booking App
+# BookFlow — MERN Booking & Messaging App
 
-A full-stack booking manager built with the MERN stack and added to the `booking-project` repository as a standalone portfolio project.
+BookFlow is a full-stack MERN scheduling application for managing appointments, accepting public booking requests, and communicating directly with other registered users.
 
-## Highlights
+## Features
 
-- React + Vite responsive dashboard
-- Node.js + Express REST API
-- MongoDB + Mongoose persistence
-- Email/password registration and login
-- bcrypt password hashing
-- JWT authentication
-- Protected per-user booking routes
-- Create, read, update and delete bookings
-- Search bookings by guest, service or notes
-- Filter bookings by status
-- Dashboard statistics for total, upcoming, confirmed and pending bookings
-- Quick status updates
-- Responsive desktop/mobile interface
-- Backend input validation and ObjectId checks
+### Booking management
+- Create, view, edit, and delete bookings
+- Pending, confirmed, and cancelled booking statuses
+- Dashboard statistics
+- MongoDB persistence
+- Per-user protected booking data
 
-## Quick Start in Your Existing Codespace
+### Public booking pages
+Every registered user automatically gets a shareable booking page:
 
-If this repository is already open in your GitHub Codespace, first make sure you are using the BookFlow feature branch and have the latest changes:
-
-```bash
-git fetch
-git checkout main
-git pull
+```
+/book/<user-id>
 ```
 
-### Backend terminal
+The dashboard includes **Open page** and **Copy link** actions.
 
-From the repository root:
+Visitors do not need a BookFlow account. They can submit:
+- Name
+- Email
+- Service
+- Requested date and time
+- Notes
+
+Public requests are created as **pending** bookings and automatically appear in the booking owner's dashboard with a **Public request** indicator.
+
+### User-to-user messaging
+Registered users can message other registered BookFlow users.
+
+The messaging interface includes:
+- Registered-user directory
+- One-to-one conversations
+- Stored conversation history
+- Message timestamps
+- Read tracking in the backend
+- MongoDB message persistence
+
+Messaging routes require JWT authentication.
+
+## Tech Stack
+
+**Frontend**
+- React 19
+- Vite
+- JavaScript
+- CSS
+
+**Backend**
+- Node.js
+- Express
+- MongoDB
+- Mongoose
+
+**Authentication**
+- JWT
+- bcrypt password hashing
+
+## Project Structure
+
+```
+booking-project/
+├── client/
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── api.js
+│   │   └── styles.css
+│   └── package.json
+├── server/
+│   ├── middleware/
+│   │   └── auth.js
+│   ├── models/
+│   │   ├── Booking.js
+│   │   ├── Message.js
+│   │   └── User.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   ├── bookings.js
+│   │   ├── messages.js
+│   │   └── public.js
+│   ├── server.js
+│   └── package.json
+└── README.md
+```
+
+## Run in GitHub Codespaces
+
+Get the latest version:
+
+```bash
+git checkout main
+git pull origin main
+```
+
+### 1. Configure the backend
 
 ```bash
 cd server
 cp .env.example .env
 npm install
-npm run dev
 ```
 
-Before starting the API successfully, edit `server/.env` and provide a working MongoDB connection string and a private JWT secret:
+Edit `server/.env`:
 
 ```env
 PORT=5000
@@ -49,11 +113,17 @@ JWT_SECRET=replace_this_with_a_long_random_secret
 CLIENT_URL=http://localhost:5173
 ```
 
-Do not commit your real `.env` file or JWT secret to GitHub.
+Never commit your real `.env`, MongoDB credentials, or JWT secret.
 
-### Frontend terminal
+Start the API:
 
-Open a second Codespaces terminal and run:
+```bash
+npm run dev
+```
+
+### 2. Start the frontend
+
+Open another terminal:
 
 ```bash
 cd client
@@ -61,80 +131,128 @@ npm install
 npm run dev
 ```
 
-Vite uses port `5173` and the Express API uses port `5000`. GitHub Codespaces should detect these ports and show them in the **Ports** tab. Open the forwarded URL for port `5173` to use BookFlow.
+Vite normally runs on port `5173` and the API on port `5000`.
 
-If the frontend opens but API requests are blocked by CORS, copy the forwarded URL for port `5173` from the Codespaces **Ports** tab and use that exact URL for `CLIENT_URL` in `server/.env`. Restart the backend after changing the environment file.
-
-### First test
-
-1. Open the forwarded frontend on port `5173`.
-2. Choose **Create an account**.
-3. Register with a test name, email and password of at least 8 characters.
-4. Create a booking.
-5. Confirm it appears in the dashboard.
-6. Test search, status changes, editing and deletion.
-
-### Common problems
-
-If `npm run dev` reports that `MONGO_URI` is missing, check that `server/.env` exists. If MongoDB refuses the connection, verify your MongoDB connection string and network/database permissions. If the frontend cannot reach the backend, make sure port `5000` is running and forwarded in Codespaces.
-
-## Run in GitHub Codespaces
-
-### 1. Configure the API
-
-Create `server/.env` from `server/.env.example`:
-
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=use_a_long_random_secret_here
-CLIENT_URL=http://localhost:5173
-```
-
-For GitHub Codespaces, after Vite forwards port 5173, set `CLIENT_URL` to the forwarded frontend URL if required by CORS.
-
-### 2. Start the API
-
-```bash
-cd server
-npm install
-npm run dev
-```
-
-### 3. Start the React frontend
-
-Open a second terminal:
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-Open the forwarded port for 5173.
+In GitHub Codespaces, use the forwarded frontend URL. If CORS blocks API requests, set `CLIENT_URL` in `server/.env` to the exact forwarded frontend URL and restart the backend.
 
 ## REST API
 
 ### Authentication
 
-- `POST /api/auth/register`
-- `POST /api/auth/login`
+```
+POST /api/auth/register
+POST /api/auth/login
+```
 
-### Bookings
+### Protected bookings
 
-All booking endpoints require:
+Requires:
 
 ```
 Authorization: Bearer <token>
 ```
 
-- `GET /api/bookings`
-- `GET /api/bookings?status=confirmed`
-- `GET /api/bookings?search=consultation`
-- `POST /api/bookings`
-- `PUT /api/bookings/:id`
-- `DELETE /api/bookings/:id`
+Endpoints:
 
-## Security note
+```
+GET    /api/bookings
+POST   /api/bookings
+PUT    /api/bookings/:id
+DELETE /api/bookings/:id
+```
 
-This portfolio project stores the JWT in `localStorage` to keep the learning architecture easy to understand. A production deployment should consider secure HttpOnly cookies, CSRF protection, request rate limiting, refresh/session rotation, schema validation, logging and automated tests.
+### Messaging
+
+All messaging endpoints require authentication.
+
+```
+GET  /api/messages/users
+GET  /api/messages/:userId
+POST /api/messages/:userId
+```
+
+`GET /api/messages/users` lists other registered users.
+
+`GET /api/messages/:userId` retrieves the conversation with another user and marks their unread messages as read.
+
+`POST /api/messages/:userId` sends a message to another registered user.
+
+Example request:
+
+```json
+{
+  "body": "Hi! I wanted to follow up about our booking."
+}
+```
+
+### Public booking API
+
+These endpoints intentionally do **not** require authentication:
+
+```
+GET  /api/public/book/:userId
+POST /api/public/book/:userId
+```
+
+The GET endpoint loads the booking owner's public profile information and available service choices.
+
+Example public booking request:
+
+```json
+{
+  "guestName": "Alex Johnson",
+  "guestEmail": "alex@example.com",
+  "service": "Consultation",
+  "bookingDate": "2026-09-20T14:00",
+  "notes": "I'd like to discuss a new project."
+}
+```
+
+New public bookings default to `pending`.
+
+## Testing the New Features
+
+### Public booking
+1. Register or sign in.
+2. Find **Your Public Booking Page** on the dashboard.
+3. Click **Open page** or **Copy link**.
+4. Open the link in another browser/incognito window.
+5. Submit a booking without signing in.
+6. Return to the owner's dashboard.
+7. Confirm the request appears as a pending **Public request**.
+
+### Messaging
+1. Create at least two BookFlow accounts.
+2. Sign in as the first user.
+3. Open **Messages**.
+4. Select the second registered user.
+5. Send a message.
+6. Sign in as the second user to view the conversation and reply.
+
+## Data Models
+
+### User
+Stores the user's name, email, and hashed password.
+
+### Booking
+Stores the booking owner, guest information, service, requested date/time, notes, status, and whether the booking came from the dashboard or public booking page.
+
+### Message
+Stores sender, recipient, message body, read timestamp, and creation/update timestamps.
+
+## Security Notes
+
+BookFlow hashes passwords with bcrypt and protects private API routes using JWT authentication.
+
+For simplicity, this portfolio version stores JWTs in `localStorage`. A production version should consider HttpOnly secure cookies, CSRF protection, rate limiting, stronger schema validation, spam protection for public booking endpoints, session/refresh-token rotation, logging, and automated tests.
+
+## Current Update
+
+The latest update adds:
+- Direct messaging between registered users
+- Public shareable booking pages
+- Guest email capture
+- Public booking source tracking
+- Dashboard sharing controls
+- New messaging and public-booking API routes
+- Responsive messaging and public booking interfaces
