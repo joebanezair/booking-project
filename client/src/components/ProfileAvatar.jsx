@@ -1,0 +1,1 @@
+export default function ProfileAvatar({profile,size="md"}){if(profile?.profileImage)return <img className={`profile-avatar ${size}`} src={profile.profileImage} alt={profile.name||"Profile"}/>;return <span className={`avatar profile-avatar ${size}`}>{(profile?.name||"?").charAt(0).toUpperCase()}</span>;}
