@@ -224,7 +224,8 @@ function ContentManager({ user }) {
       const payload={...form,price:Number(form.price||0)};
       const saved=editingId?await api.content.update(editingId,payload):await api.content.create(payload);
       setItems(current=>editingId?current.map(i=>i._id===editingId?saved:i):[saved,...current]);
-      setMessage(editingId?"Content updated.":"Content created.");reset();
+      setMessage(editingId?"Content updated.":"Content created.");
+      setEditingId(null);setForm(emptyContent);
     }catch(e){setError(e.message);}
   }
   async function toggle(item){
