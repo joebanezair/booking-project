@@ -14,9 +14,7 @@ async function request(path, options = {}) {
   if (response.status === 204) return null;
 
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(data.message || "Request failed.");
-  }
+  if (!response.ok) throw new Error(data.message || "Request failed.");
   return data;
 }
 
@@ -28,5 +26,20 @@ export const api = {
     create: (body) => request("/bookings", { method: "POST", body: JSON.stringify(body) }),
     update: (id, body) => request(`/bookings/${id}`, { method: "PUT", body: JSON.stringify(body) }),
     remove: (id) => request(`/bookings/${id}`, { method: "DELETE" })
+  },
+  messages: {
+    users: () => request("/messages/users"),
+    conversation: (userId) => request(`/messages/${userId}`),
+    send: (userId, body) => request(`/messages/${userId}`, {
+      method: "POST",
+      body: JSON.stringify({ body })
+    })
+  },
+  publicBooking: {
+    get: (userId) => request(`/public/book/${userId}`),
+    create: (userId, body) => request(`/public/book/${userId}`, {
+      method: "POST",
+      body: JSON.stringify(body)
+    })
   }
 };
