@@ -1,6 +1,8 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import Content from "../models/Content.js";
+import Rating from "../models/Rating.js";
+import Comment from "../models/Comment.js";
 import requireAuth from "../middleware/auth.js";
 
 const router = Router();
@@ -130,6 +132,10 @@ router.delete("/:id", async (req, res) => {
     }
     const item = await Content.findOneAndDelete({ _id: req.params.id, user: req.user.id });
     if (!item) return res.status(404).json({ message: "Content not found." });
+    await Promise.all([
+      Rating.deleteMany({ content: req.params.id }),
+      Comment.deleteMany({ content: req.params.id })
+    ]);
     res.status(204).end();
   } catch (error) {
     console.error(error);
