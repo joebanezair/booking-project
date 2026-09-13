@@ -57,6 +57,18 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid content ID." });
+    const item = await Content.findOne({ _id: req.params.id, user: req.user.id });
+    if (!item) return res.status(404).json({ message: "Content not found." });
+    res.json(item);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to load content." });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const input = normalize(req.body);
