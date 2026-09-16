@@ -99,8 +99,11 @@ button:disabled { opacity: .62; cursor: not-allowed; transform: none; }
 .sidebar-brand strong { display: block; font-size: 16px; }
 .sidebar-brand small { display: block; margin-top: 3px; color: #7f8ba4; font-size: 11px; }
 .sidebar-nav { display: grid; gap: 6px; }
-.sidebar-nav a { color: #9ba7bd; padding: 11px 12px; border-radius: 10px; font-size: 14px; font-weight: 700; }
+.sidebar-nav a { color: #9ba7bd; padding: 11px 12px; border-radius: 10px; font-size: 14px; font-weight: 700; display:flex; align-items:center; gap:10px; }
+.sidebar-nav a svg { width:18px; height:18px; flex:0 0 auto; }
 .sidebar-nav a:hover, .sidebar-nav a.active { background: #1d2941; color: #fff; }
+.signout-button, .icon-link { display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+.signout-button { width:100%; }
 
 .sidebar-user {
   padding: 12px;
@@ -176,6 +179,7 @@ button:disabled { opacity: .62; cursor: not-allowed; transform: none; }
   .sidebar-brand > div, .sidebar-user > div:not(.avatar), .sidebar-user .icon-button { display: none; }
   .sidebar-brand { justify-content: center; }
   .sidebar-nav a { font-size: 11px; text-align: center; padding: 10px 4px; }
+  .sidebar-nav a { flex-direction:column; gap:5px; }
   .sidebar-user { grid-template-columns: 1fr; place-items: center; background: transparent; }
   .workspace-grid { grid-template-columns: 320px minmax(0,1fr); }
 }
@@ -375,6 +379,7 @@ button:disabled { opacity: .62; cursor: not-allowed; transform: none; }
 .route-card { min-height:210px; display:flex; flex-direction:column; align-items:flex-start; justify-content:space-between; }
 .route-card h2 { margin-bottom:8px; }
 .route-card .muted { line-height:1.6; }
+.route-card-icon { width:44px; height:44px; margin-bottom:18px; display:grid; place-items:center; border-radius:12px; background:#eef1ff; color:#5267d7; font-size:21px; }
 .sidebar-email { display:block; color:#8f9bb0; font-size:10px; margin:0 0 8px 4px; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .content-card-link { display:block; }
 .browse-top { display:flex; align-items:center; justify-content:space-between; }
