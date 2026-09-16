@@ -14,6 +14,9 @@ import profileRoutes from "./routes/profile.js";
 import ratingRoutes from "./routes/ratings.js";
 import commentRoutes from "./routes/comments.js";
 import reactionRoutes from "./routes/reactions.js";
+import notificationRoutes from "./routes/notifications.js";
+import profileRatingRoutes from "./routes/profileRatings.js";
+import forumRoutes from "./routes/forum.js";
 
 dotenv.config();
 const app = express();
@@ -51,6 +54,9 @@ app.use("/api/profile",profileRoutes);
 app.use("/api/ratings",ratingRoutes);
 app.use("/api/comments",commentRoutes);
 app.use("/api/reactions",reactionRoutes);
+app.use("/api/notifications",notificationRoutes);
+app.use("/api/profile-ratings",profileRatingRoutes);
+app.use("/api/forum",forumRoutes);
 app.use("/api/public",publicRoutes);
 app.use((err,_req,res,_next)=>{console.error(err);if(err?.type==="entity.too.large") return res.status(413).json({message:"Uploaded images are too large."});res.status(500).json({message:"Something went wrong on the server."});});
 

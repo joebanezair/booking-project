@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 import requireAuth from "../middleware/auth.js";
+import { notify } from "../lib/notifications.js";
 
 const router = Router();
 router.use(requireAuth);
@@ -71,6 +72,7 @@ router.post("/:userId", async (req, res) => {
 
     const io = req.app.get("io");
     io.to(`user:${req.params.userId}`).emit("message:new", message);
+    await notify(req,req.params.userId,{type:"message",title:"New message",body:body.slice(0,120),link:"/dashboard/messages"});
 
     res.status(201).json(message);
   } catch (error) {

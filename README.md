@@ -26,6 +26,8 @@ Every major feature has its own route instead of being combined into one dashboa
 | Booking management | `/dashboard/bookings` |
 | Real-time messages | `/dashboard/messages` |
 | Profile management | `/dashboard/profile` |
+| Notification center | `/dashboard/notifications` |
+| Public forum | `/forum` |
 | User and service search | `/search` |
 | Public service details | `/services/:serviceId` |
 | Public user profile | `/profile/:username` |
@@ -90,6 +92,24 @@ The existing MongoDB `Content` collection and internal content API are intention
 - Service owners cannot rate their own services
 - Ratings require authentication
 - Providers can disable ratings for an individual service
+- Every public user profile also has its own independent 1–5-star rating summary
+- Signed-in users can add, update, or remove a profile rating, while self-rating is blocked
+
+### Notifications
+
+- Dedicated notification center with unread state and timestamps
+- Mark individual notifications or all notifications as read
+- Real-time notification delivery through authenticated WebSockets
+- Notifications for new messages, booking requests, service comments, and profile ratings
+- Notifications link directly to the relevant application page
+
+### Public forum
+
+- Publicly readable community forum at `/forum`
+- Authenticated users can publish categorized discussion posts
+- Authenticated users can reply to forum posts
+- Author identity, timestamps, categories, and threaded post replies
+- Real-time refresh events for new posts and replies
 
 ### Likes and dislikes
 

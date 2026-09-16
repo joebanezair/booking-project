@@ -51,6 +51,20 @@ export const api = {
   reactions: {
     toggle: (contentId,type) => request(`/reactions/${contentId}`, { method:"PUT", body:JSON.stringify({type}) })
   },
+  profileRatings: {
+    set: (userId,rating) => request(`/profile-ratings/${userId}`, { method:"PUT", body:JSON.stringify({rating}) }),
+    remove: userId => request(`/profile-ratings/${userId}`, { method:"DELETE" })
+  },
+  notifications: {
+    list: () => request("/notifications"),
+    read: id => request(`/notifications/${id}/read`, { method:"PATCH" }),
+    readAll: () => request("/notifications/read-all", { method:"PATCH" })
+  },
+  forum: {
+    list: (page=1) => request(`/forum?page=${page}`),
+    create: body => request("/forum", { method:"POST", body:JSON.stringify(body) }),
+    reply: (id,body) => request(`/forum/${id}/replies`, { method:"POST", body:JSON.stringify({body}) })
+  },
   bookings: {
     list: () => request("/bookings"),
     create: body => request("/bookings", { method:"POST", body:JSON.stringify(body) }),

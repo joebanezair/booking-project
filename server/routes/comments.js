@@ -4,6 +4,7 @@ import Comment from "../models/Comment.js";
 import Content from "../models/Content.js";
 import User from "../models/User.js";
 import requireAuth from "../middleware/auth.js";
+import { notify } from "../lib/notifications.js";
 
 const router = Router();
 router.use(requireAuth);
@@ -29,6 +30,7 @@ router.post("/:contentId", async (req, res) => {
     const comment = await Comment.create({ content: content._id, user: req.user.id, comment: text, parent: parent?._id || null, depth });
     await comment.populate("user", "name username profileImage");
     req.app.get("io").emit("comment:created", comment);
+    if(String(content.user)!==String(req.user.id)) await notify(req,content.user,{type:"comment",title:"New service comment",body:text.slice(0,120),link:`/services/${content._id}`});
     res.status(201).json(comment);
   } catch (error) {
     console.error(error);
