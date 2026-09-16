@@ -10,7 +10,10 @@ const userSchema = new mongoose.Schema(
     headline: { type: String, trim: true, maxlength: 120, default: "" },
     location: { type: String, trim: true, maxlength: 120, default: "" },
     website: { type: String, trim: true, maxlength: 300, default: "" },
-    profileImage: { type: String, default: "" }
+    profileImage: { type: String, default: "" },
+    profileImagePositionX: { type: Number, min: 0, max: 100, default: 50 },
+    profileImagePositionY: { type: Number, min: 0, max: 100, default: 50 },
+    coverImage: { type: String, default: "" }
   },
   { timestamps: true }
 );

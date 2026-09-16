@@ -42,6 +42,8 @@ The messaging interface includes:
 
 Messaging routes require JWT authentication.
 
+Messages and booking changes are delivered live over an authenticated WebSocket connection. The dashboard now uses separate pages for content, bookings, messages, and profile management.
+
 ## Tech Stack
 
 **Frontend**
@@ -49,12 +51,14 @@ Messaging routes require JWT authentication.
 - Vite
 - JavaScript
 - CSS
+- Socket.IO client
 
 **Backend**
 - Node.js
 - Express
 - MongoDB
 - Mongoose
+- Socket.IO WebSocket server
 
 **Authentication**
 - JWT

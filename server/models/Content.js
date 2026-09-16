@@ -10,6 +10,8 @@ const contentSchema = new mongoose.Schema(
     category: { type: String, trim: true, maxlength: 80, default: "General" },
     coverImage: { type: String, default: "" },
     images: { type: [String], default: [] },
+    allowRatings: { type: Boolean, default: true },
+    allowBookings: { type: Boolean, default: true },
     published: { type: Boolean, default: false, index: true }
   },
   { timestamps: true }

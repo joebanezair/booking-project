@@ -71,6 +71,7 @@ router.post("/", async (req, res) => {
     }
 
     const booking = await Booking.create({ user: req.user.id, ...input });
+    req.app.get("io").to(`user:${req.user.id}`).emit("booking:created", booking);
     res.status(201).json(booking);
   } catch (error) {
     console.error(error);
@@ -100,6 +101,7 @@ router.put("/:id", async (req, res) => {
       return res.status(404).json({ message: "Booking not found." });
     }
 
+    req.app.get("io").to(`user:${req.user.id}`).emit("booking:updated", booking);
     res.json(booking);
   } catch (error) {
     console.error(error);
@@ -122,6 +124,7 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ message: "Booking not found." });
     }
 
+    req.app.get("io").to(`user:${req.user.id}`).emit("booking:deleted", { id: String(booking._id) });
     res.status(204).end();
   } catch (error) {
     console.error(error);

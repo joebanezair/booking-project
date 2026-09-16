@@ -2,6 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import { createServer } from "node:http";
+import jwt from "jsonwebtoken";
+import { Server } from "socket.io";
 import authRoutes from "./routes/auth.js";
 import bookingRoutes from "./routes/bookings.js";
 import messageRoutes from "./routes/messages.js";
@@ -14,6 +17,27 @@ import commentRoutes from "./routes/comments.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: { origin: process.env.CLIENT_URL || "http://localhost:5173" }
+});
+
+io.use((socket, next) => {
+  try {
+    const token = socket.handshake.auth?.token;
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    socket.userId = String(payload.sub);
+    next();
+  } catch {
+    next(new Error("Authentication required."));
+  }
+});
+
+io.on("connection", socket => {
+  socket.join(`user:${socket.userId}`);
+});
+
+app.set("io", io);
 
 app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
 app.use(express.json({ limit: "20mb" }));
@@ -32,6 +56,6 @@ async function start(){
   if(!process.env.MONGO_URI) throw new Error("MONGO_URI is missing. Copy .env.example to .env and configure it.");
   if(!process.env.JWT_SECRET) throw new Error("JWT_SECRET is missing. Add it to server/.env.");
   await mongoose.connect(process.env.MONGO_URI);
-  app.listen(PORT,()=>console.log(`API listening on http://localhost:${PORT}`));
+  httpServer.listen(PORT,()=>console.log(`API and WebSocket server listening on http://localhost:${PORT}`));
 }
 start().catch(error=>{console.error(error);process.exit(1);});

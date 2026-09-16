@@ -9,7 +9,7 @@ router.use(requireAuth);
 
 async function getPublishedContent(id) {
   if (!mongoose.isValidObjectId(id)) return null;
-  return Content.findOne({ _id: id, published: true }).select("user");
+  return Content.findOne({ _id: id, published: true, allowRatings: true }).select("user");
 }
 
 router.put("/:contentId", async (req, res) => {
