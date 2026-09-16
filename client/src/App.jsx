@@ -15,6 +15,7 @@ import SearchPage from "./pages/SearchPage.jsx";
 import NotificationsPage from "./pages/NotificationsPage.jsx";
 import ForumPage from "./pages/ForumPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
+import BookingDetailPage from "./pages/BookingDetailPage.jsx";
 import { disconnectRealtime } from "./realtime.js";
 
 function readUser(){try{return JSON.parse(localStorage.getItem("booking_user"));}catch{return null;}}
@@ -36,6 +37,7 @@ export default function App(){
     <Route path="/dashboard/content" element={protectedPage(ContentManagementPage)}/>
     <Route path="/dashboard/services" element={protectedPage(ContentManagementPage)}/>
     <Route path="/dashboard/bookings" element={protectedPage(BookingsPage)}/>
+    <Route path="/dashboard/bookings/:bookingId" element={protectedPage(BookingDetailPage)}/>
     <Route path="/dashboard/messages" element={protectedPage(MessagesPage)}/>
     <Route path="/dashboard/content/new" element={protectedPage(CreateContentPage)}/>
     <Route path="/dashboard/services/new" element={protectedPage(CreateContentPage)}/>

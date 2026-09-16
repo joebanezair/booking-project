@@ -54,12 +54,21 @@ router.get("/", async (req, res) => {
       ];
     }
 
-    const bookings = await Booking.find(filter).sort({ bookingDate: 1 });
+    const bookings = await Booking.find(filter).populate("content","title visibility published").sort({ bookingDate: 1 });
     res.json(bookings);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to load bookings." });
   }
+});
+
+router.get("/:id", async (req,res) => {
+  try {
+    if(!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({message:"Invalid booking ID."});
+    const booking=await Booking.findOne({_id:req.params.id,user:req.user.id}).populate("content","title description category price currency coverImage visibility published");
+    if(!booking) return res.status(404).json({message:"Booking not found."});
+    res.json(booking);
+  } catch(error){console.error(error);res.status(500).json({message:"Unable to load booking."});}
 });
 
 router.post("/", async (req, res) => {
