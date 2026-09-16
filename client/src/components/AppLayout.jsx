@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { FiBell, FiBriefcase, FiCalendar, FiHome, FiLogOut, FiMessageCircle, FiMessageSquare, FiSearch, FiUser } from "react-icons/fi";
+import { FiBell, FiBriefcase, FiCalendar, FiHome, FiLogOut, FiMessageCircle, FiMessageSquare, FiSearch, FiSettings, FiUser } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
@@ -12,6 +12,7 @@ const navigation = [
   { to: "/dashboard/profile", label: "Profile", icon: FiUser },
   { to: "/dashboard/notifications", label: "Notifications", icon: FiBell },
   { to: "/forum", label: "Forum", icon: FiMessageCircle },
+  { to: "/dashboard/settings", label: "Settings", icon: FiSettings },
   { to: "/search", label: "Search", icon: FiSearch }
 ];
 

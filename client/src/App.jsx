@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AuthPage from "./pages/AuthPage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
@@ -14,14 +14,18 @@ import MessagesPage from "./pages/MessagesPage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
 import NotificationsPage from "./pages/NotificationsPage.jsx";
 import ForumPage from "./pages/ForumPage.jsx";
+import SettingsPage from "./pages/SettingsPage.jsx";
 import { disconnectRealtime } from "./realtime.js";
 
 function readUser(){try{return JSON.parse(localStorage.getItem("booking_user"));}catch{return null;}}
+function readTheme(){return localStorage.getItem("booking_theme")==="dark"?"dark":"light";}
 
 export default function App(){
   const [user,setUser]=useState(readUser);
+  const [theme,setTheme]=useState(readTheme);
+  useEffect(()=>{document.documentElement.dataset.theme=theme;localStorage.setItem("booking_theme",theme);},[theme]);
   function logout(){disconnectRealtime();localStorage.removeItem("booking_token");localStorage.removeItem("booking_user");setUser(null);}
-  const protectedPage = Component => user ? <Component user={user} onLogout={logout} onUserUpdate={setUser}/> : <Navigate to="/login" replace/>;
+  const protectedPage = Component => user ? <Component user={user} onLogout={logout} onUserUpdate={setUser} theme={theme} onThemeChange={setTheme}/> : <Navigate to="/login" replace/>;
 
   return <Routes>
     <Route path="/" element={<SearchPage user={user}/>}/>
@@ -39,6 +43,7 @@ export default function App(){
     <Route path="/dashboard/services/:contentId/edit" element={protectedPage(EditContentPage)}/>
     <Route path="/dashboard/profile" element={protectedPage(ProfileSettingsPage)}/>
     <Route path="/dashboard/notifications" element={protectedPage(NotificationsPage)}/>
+    <Route path="/dashboard/settings" element={protectedPage(SettingsPage)}/>
     <Route path="/profile/:username" element={<PublicProfilePage user={user}/>}/>
     <Route path="/content/:contentId" element={<PublicContentPage user={user}/>}/>
     <Route path="/services/:contentId" element={<PublicContentPage user={user}/>}/>

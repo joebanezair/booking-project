@@ -4,6 +4,7 @@
   background: #f5f7fb;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  --ui-radius: 5px;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -273,6 +274,72 @@ button:disabled { opacity: .62; cursor: not-allowed; transform: none; }
   .booking-card-right { align-items:flex-start; }
 }
 
+/* Unified shape system */
+button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, .auth-card,
+.public-card, .public-profile-hero, .public-content-card, .content-detail, .share-card,
+.upload-zone, .image-preview, .admin-content-cover, .content-booking-callout, .signin-callout,
+.comment-form, .booking-card, .messages-layout, .user-row, .message-bubble, .profile-editor-head,
+.profile-photo-editor, .cover-preview, .content-options, .notification-list, .notification-item,
+.forum-reply, .theme-option, .button-link, .upload-button, .selected-content {
+  border-radius: var(--ui-radius) !important;
+}
+
+/* Appearance settings */
+.settings-panel { max-width:820px; margin:0 auto; }
+.theme-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:20px; }
+.theme-option { min-height:130px; padding:20px; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:15px; text-align:left; border:2px solid #e4e8ef; background:#fff; color:#273247; }
+.theme-option>svg { width:28px; height:28px; }
+.theme-option span,.theme-option strong,.theme-option small { display:block; }
+.theme-option small { margin-top:5px; color:#758096; }
+.theme-option.active { border-color:#5267d7; background:#f3f5ff; }
+.theme-check { color:#5267d7; }
+
+[data-theme="dark"] { color-scheme:dark; }
+[data-theme="dark"] body,
+[data-theme="dark"] .public-page,
+[data-theme="dark"] .public-shell { background:#0d1422; color:#e8edf6; }
+[data-theme="dark"] .content-shell { background:#0d1422; }
+[data-theme="dark"] .panel,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .public-card,
+[data-theme="dark"] .public-profile-hero,
+[data-theme="dark"] .public-content-card,
+[data-theme="dark"] .content-detail,
+[data-theme="dark"] .conversation,
+[data-theme="dark"] .theme-option,
+[data-theme="dark"] .auth-card { background:#151f30; border-color:#2a374b; color:#e8edf6; }
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea { background:#0f1827; border-color:#344158; color:#eef2f8; }
+[data-theme="dark"] .secondary { background:#263349; color:#e5ebf5; }
+[data-theme="dark"] .muted,
+[data-theme="dark"] .public-bio,
+[data-theme="dark"] .content-description,
+[data-theme="dark"] .profile-headline,
+[data-theme="dark"] .notification-item p,
+[data-theme="dark"] .notification-item small,
+[data-theme="dark"] .theme-option small { color:#9eabc0; }
+[data-theme="dark"] .user-list,
+[data-theme="dark"] .comment-form,
+[data-theme="dark"] .forum-reply,
+[data-theme="dark"] .booking-notes,
+[data-theme="dark"] .signin-callout,
+[data-theme="dark"] .theme-option.active { background:#1d2941; }
+[data-theme="dark"] .notification-item,
+[data-theme="dark"] .comment-item,
+[data-theme="dark"] .owner-strip,
+[data-theme="dark"] .rating-section { border-color:#2a374b; }
+[data-theme="dark"] .notification-item.unread { background:#1c2942; }
+[data-theme="dark"] .message-bubble { background:#263349; color:#e8edf6; }
+[data-theme="dark"] .message-bubble.mine { background:#4f68dd; }
+[data-theme="dark"] .content-placeholder,
+[data-theme="dark"] .date-tile { background:#202d42; color:#aebcff; }
+[data-theme="dark"] .search-panel,
+[data-theme="dark"] .profile-photo-editor,
+[data-theme="dark"] .content-options { border-color:#2a374b; }
+
+@media (max-width:650px) { .theme-grid { grid-template-columns:1fr; } }
+
 
 /* CMS + profile system */
 .profile-panel, .cms-section { max-width: 1200px; margin: 0 auto 22px; }
@@ -485,3 +552,17 @@ button:disabled { opacity: .62; cursor: not-allowed; transform: none; }
   .search-panel,.user-results { grid-template-columns:1fr; }
   .comment-replies { margin-left:16px; }
 }
+
+/* Dark theme overrides stay last so they win the cascade. */
+[data-theme="dark"] body,[data-theme="dark"] .public-page,[data-theme="dark"] .public-shell,[data-theme="dark"] .content-shell { background:#0d1422; color:#e8edf6; }
+[data-theme="dark"] .panel,[data-theme="dark"] .stat-card,[data-theme="dark"] .public-card,[data-theme="dark"] .public-profile-hero,[data-theme="dark"] .public-content-card,[data-theme="dark"] .content-detail,[data-theme="dark"] .conversation,[data-theme="dark"] .auth-card,[data-theme="dark"] .theme-option { background:#151f30; border-color:#2a374b; color:#e8edf6; }
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea { background:#0f1827; border-color:#344158; color:#eef2f8; }
+[data-theme="dark"] .secondary { background:#263349; color:#e5ebf5; }
+[data-theme="dark"] .user-list,[data-theme="dark"] .comment-form,[data-theme="dark"] .forum-reply,[data-theme="dark"] .booking-notes,[data-theme="dark"] .signin-callout,[data-theme="dark"] .profile-editor-head,[data-theme="dark"] .upload-zone,[data-theme="dark"] .theme-option.active { background:#1d2941; }
+[data-theme="dark"] .muted,[data-theme="dark"] .public-bio,[data-theme="dark"] .content-description,[data-theme="dark"] .profile-headline,[data-theme="dark"] .public-content-card-body p,[data-theme="dark"] .admin-content-body p,[data-theme="dark"] .forum-post>p,[data-theme="dark"] .comment-body>p,[data-theme="dark"] .notification-item p,[data-theme="dark"] .notification-item small,[data-theme="dark"] .theme-option small { color:#9eabc0; }
+[data-theme="dark"] .rating-summary strong,[data-theme="dark"] .your-rating>span,[data-theme="dark"] label { color:#e8edf6; }
+[data-theme="dark"] .notification-item,[data-theme="dark"] .comment-item,[data-theme="dark"] .owner-strip,[data-theme="dark"] .rating-section,[data-theme="dark"] .profile-photo-editor,[data-theme="dark"] .content-options,[data-theme="dark"] .messages-layout,[data-theme="dark"] .conversation-header,[data-theme="dark"] .message-compose { border-color:#2a374b; }
+[data-theme="dark"] .notification-item.unread { background:#1c2942; }
+[data-theme="dark"] .message-bubble { background:#263349; color:#e8edf6; }
+[data-theme="dark"] .message-bubble.mine { background:#4f68dd; }
+[data-theme="dark"] .content-placeholder,[data-theme="dark"] .date-tile { background:#202d42; color:#aebcff; }

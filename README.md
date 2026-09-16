@@ -27,6 +27,7 @@ Every major feature has its own route instead of being combined into one dashboa
 | Real-time messages | `/dashboard/messages` |
 | Profile management | `/dashboard/profile` |
 | Notification center | `/dashboard/notifications` |
+| Appearance settings | `/dashboard/settings` |
 | Public forum | `/forum` |
 | User and service search | `/search` |
 | Public service details | `/services/:serviceId` |
@@ -47,6 +48,15 @@ Legacy `/dashboard/content`, `/dashboard/content/new`, `/dashboard/content/:id/e
 - Display all public services belonging to the provider
 - Share the public landing page with Open, Copy Link, and native Share actions
 - Use one public `/profile/:username` link for the provider profile, services, ratings, discussions, and booking entry points
+
+### Appearance and design settings
+
+- Dedicated Settings page for Light and Dark themes
+- Theme selection applies across dashboard and public pages
+- Theme preference persists in browser storage across sessions
+- Accessible Light and Dark theme selection cards with React Icons
+- Consistent 5px corner radius for cards, controls, forms, images, dialogs, and major containers
+- Circular avatars, status indicators, and badges remain circular for clarity
 
 ### Service management
 
@@ -407,6 +417,9 @@ POST /api/messages/:userId
 - **Rating:** unique user/service star rating
 - **Reaction:** unique user/service Like or Dislike
 - **Comment:** service, author, parent, nesting depth, edit state, and deletion placeholder state
+- **ProfileRating:** unique user-to-profile star rating
+- **Notification:** recipient, type, message, destination link, and read state
+- **ForumPost:** public discussion post with category and embedded replies
 
 ## Compatibility notes
 
