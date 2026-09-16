@@ -12,6 +12,8 @@ import PublicBookingPage from "./pages/PublicBookingPage.jsx";
 import BookingsPage from "./pages/BookingsPage.jsx";
 import MessagesPage from "./pages/MessagesPage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
+import NotificationsPage from "./pages/NotificationsPage.jsx";
+import ForumPage from "./pages/ForumPage.jsx";
 import { disconnectRealtime } from "./realtime.js";
 
 function readUser(){try{return JSON.parse(localStorage.getItem("booking_user"));}catch{return null;}}
@@ -24,6 +26,7 @@ export default function App(){
   return <Routes>
     <Route path="/" element={<SearchPage user={user}/>}/>
     <Route path="/search" element={<SearchPage user={user}/>}/>
+    <Route path="/forum" element={<ForumPage user={user}/>}/>
     <Route path="/login" element={user?<Navigate to="/dashboard" replace/>:<AuthPage onAuthenticated={setUser}/>}/>
     <Route path="/dashboard" element={protectedPage(DashboardPage)}/>
     <Route path="/dashboard/content" element={protectedPage(ContentManagementPage)}/>
@@ -35,7 +38,8 @@ export default function App(){
     <Route path="/dashboard/content/:contentId/edit" element={protectedPage(EditContentPage)}/>
     <Route path="/dashboard/services/:contentId/edit" element={protectedPage(EditContentPage)}/>
     <Route path="/dashboard/profile" element={protectedPage(ProfileSettingsPage)}/>
-    <Route path="/profile/:username" element={<PublicProfilePage/>}/>
+    <Route path="/dashboard/notifications" element={protectedPage(NotificationsPage)}/>
+    <Route path="/profile/:username" element={<PublicProfilePage user={user}/>}/>
     <Route path="/content/:contentId" element={<PublicContentPage user={user}/>}/>
     <Route path="/services/:contentId" element={<PublicContentPage user={user}/>}/>
     <Route path="/b/:userId" element={<PublicBookingPage/>}/>

@@ -6,6 +6,8 @@ import User from "../models/User.js";
 import Rating from "../models/Rating.js";
 import Comment from "../models/Comment.js";
 import Reaction from "../models/Reaction.js";
+import ProfileRating from "../models/ProfileRating.js";
+import { notify } from "../lib/notifications.js";
 import optionalAuth from "../middleware/optionalAuth.js";
 
 const router = Router();
@@ -19,16 +21,17 @@ async function ratingSummary(contentIds) {
   return new Map(rows.map(r => [String(r._id), { averageRating: Number(r.averageRating.toFixed(1)), ratingCount: r.ratingCount }]));
 }
 
-router.get("/profile/:username", async (req,res)=>{
+router.get("/profile/:username", optionalAuth, async (req,res)=>{
   try {
     const user=await User.findOne({username:String(req.params.username).toLowerCase()})
       .select("name username bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage createdAt");
     if(!user) return res.status(404).json({message:"Profile not found."});
     const items=await Content.find({user:user._id,published:true,visibility:{$ne:"private"}})
       .select("title description price currency category coverImage createdAt updatedAt").sort({updatedAt:-1});
-    const summary=await ratingSummary(items.map(i=>i._id));
+    const [summary,profileRows,currentProfileRating]=await Promise.all([ratingSummary(items.map(i=>i._id)),ProfileRating.aggregate([{$match:{profile:user._id}},{$group:{_id:"$profile",averageRating:{$avg:"$rating"},ratingCount:{$sum:1}}}]),req.user?ProfileRating.findOne({profile:user._id,user:req.user.id}).select("rating"):null]);
+    const profileRating=profileRows[0]||{};
     res.json({
-      profile:{id:user._id,name:user.name,username:user.username,bio:user.bio,headline:user.headline,location:user.location,website:user.website,profileImage:user.profileImage,profileImagePositionX:user.profileImagePositionX,profileImagePositionY:user.profileImagePositionY,coverImage:user.coverImage,createdAt:user.createdAt},
+      profile:{id:user._id,name:user.name,username:user.username,bio:user.bio,headline:user.headline,location:user.location,website:user.website,profileImage:user.profileImage,profileImagePositionX:user.profileImagePositionX,profileImagePositionY:user.profileImagePositionY,coverImage:user.coverImage,createdAt:user.createdAt,ratingSummary:{averageRating:profileRating.averageRating?Number(profileRating.averageRating.toFixed(1)):0,ratingCount:profileRating.ratingCount||0},currentUserRating:currentProfileRating?.rating||null},
       content:items.map(item=>({...item.toObject(),...(summary.get(String(item._id))||{averageRating:0,ratingCount:0})}))
     });
   } catch(error){console.error(error);res.status(500).json({message:"Unable to load public profile."});}
@@ -112,6 +115,7 @@ router.post("/book/:userId", async (req,res)=>{
     }
     const booking=await Booking.create({user:owner._id,content:content?._id||null,guestName,guestEmail,service:content?.title||service,bookingDate,notes,source:"public",status:"pending"});
     req.app.get("io").to(`user:${owner._id}`).emit("booking:created", booking);
+    await notify(req,owner._id,{type:"booking",title:"New booking request",body:`${guestName} requested ${content?.title||service}.`,link:"/dashboard/bookings"});
     res.status(201).json({id:booking._id,message:"Booking request sent successfully."});
   } catch(error){console.error(error);res.status(500).json({message:"Unable to create booking."});}
 });
