@@ -43,6 +43,8 @@ Legacy `/dashboard/content`, `/dashboard/content/new`, `/dashboard/content/:id/e
 - Display the cover photo and positioned avatar on the public profile
 - Preview the public profile from profile settings
 - Display all public services belonging to the provider
+- Share the public landing page with Open, Copy Link, and native Share actions
+- Use one public `/profile/:username` link for the provider profile, services, ratings, discussions, and booking entry points
 
 ### Service management
 

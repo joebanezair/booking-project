@@ -227,6 +227,7 @@ button:disabled { opacity: .62; cursor: not-allowed; transform: none; }
 .share-card h2 { margin-bottom:6px; }
 .share-card .muted { margin:0; color:#aab5ca; word-break:break-all; }
 .share-actions { display:flex; gap:10px; flex-shrink:0; }
+.landing-share-card { max-width:820px; margin-bottom:20px; }
 .button-link { display:inline-flex; align-items:center; justify-content:center; border-radius:11px; padding:11px 15px; font-weight:800; }
 .stats-grid { grid-template-columns:repeat(3,1fr); }
 
