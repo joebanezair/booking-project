@@ -69,6 +69,9 @@ router.post("/:userId", async (req, res) => {
       body
     });
 
+    const io = req.app.get("io");
+    io.to(`user:${req.params.userId}`).emit("message:new", message);
+
     res.status(201).json(message);
   } catch (error) {
     console.error(error);

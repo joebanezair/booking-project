@@ -5,7 +5,7 @@ import requireAuth from "../middleware/auth.js";
 const router = Router();
 router.use(requireAuth);
 const imagePattern = /^data:image\/(jpeg|png|webp|gif);base64,[a-z0-9+/=]+$/i;
-const fields = "name username email bio headline location website profileImage createdAt updatedAt";
+const fields = "name username email bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage createdAt updatedAt";
 function slug(value){return String(value||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,30)||"user";}
 async function ensureUsername(user){if(user.username)return user;const base=slug(user.name);let candidate=base,i=1;while(await User.exists({username:candidate,_id:{$ne:user._id}}))candidate=`${base}-${i++}`;user.username=candidate;await user.save();return user;}
 function imageError(value) {
@@ -30,7 +30,9 @@ router.put("/", async (req,res)=>{
       name:String(req.body.name||"").trim(), username,
       bio:String(req.body.bio||"").trim(), headline:String(req.body.headline||"").trim(),
       location:String(req.body.location||"").trim(), website:String(req.body.website||"").trim(),
-      profileImage:String(req.body.profileImage||"")
+      profileImage:String(req.body.profileImage||""), coverImage:String(req.body.coverImage||""),
+      profileImagePositionX:Number(req.body.profileImagePositionX??50),
+      profileImagePositionY:Number(req.body.profileImagePositionY??50)
     };
     if(!input.name) return res.status(400).json({message:"Name is required."});
     if(!/^[a-z0-9-]{3,40}$/.test(username)) return res.status(400).json({message:"Username must be 3–40 lowercase letters, numbers, or hyphens."});
@@ -38,6 +40,8 @@ router.put("/", async (req,res)=>{
     if(input.bio.length>1000||input.headline.length>120||input.location.length>120||input.website.length>300) return res.status(400).json({message:"One or more profile fields are too long."});
     if(input.website&&!/^https?:\/\//i.test(input.website)) return res.status(400).json({message:"Website must start with http:// or https://."});
     const imgErr=imageError(input.profileImage); if(imgErr) return res.status(400).json({message:imgErr});
+    const coverErr=imageError(input.coverImage); if(coverErr) return res.status(400).json({message:coverErr.replace("Profile image","Cover image")});
+    if(!Number.isFinite(input.profileImagePositionX)||!Number.isFinite(input.profileImagePositionY)||input.profileImagePositionX<0||input.profileImagePositionX>100||input.profileImagePositionY<0||input.profileImagePositionY>100) return res.status(400).json({message:"Photo position must be between 0 and 100."});
     const user=await User.findByIdAndUpdate(req.user.id,input,{new:true,runValidators:true}).select(fields);
     if(!user) return res.status(401).json({message:"Please sign in again."});
     res.json(user);

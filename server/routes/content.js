@@ -28,6 +28,8 @@ function normalize(body) {
     category: String(body.category || "General").trim(),
     coverImage: String(body.coverImage || ""),
     images: Array.isArray(body.images) ? body.images.map(String).filter(Boolean) : [],
+    allowRatings: body.allowRatings !== false,
+    allowBookings: body.allowBookings !== false,
     published: Boolean(body.published)
   };
 }
