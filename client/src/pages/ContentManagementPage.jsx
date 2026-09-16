@@ -21,9 +21,9 @@ export default function ContentManagementPage({ user, onLogout }) {
 
   const published = items.filter(item => item.published).length;
   return <AppLayout user={user} onLogout={onLogout}>
-    <header className="topbar"><div><p className="eyebrow">CONTENT</p><h1>Content management</h1><p className="muted">Create, publish, edit, and manage your content.</p></div><Link className="primary-button button-link" to="/dashboard/content/new">Create content</Link></header>
+    <header className="topbar"><div><p className="eyebrow">SERVICES</p><h1>Service management</h1><p className="muted">Create, publish, edit, and manage your services.</p></div><Link className="primary-button button-link" to="/dashboard/services/new">Post a service</Link></header>
     <section className="stats-grid"><article className="stat-card"><span>Total</span><strong>{items.length}</strong></article><article className="stat-card"><span>Published</span><strong>{published}</strong></article><article className="stat-card"><span>Drafts</span><strong>{items.length - published}</strong></article></section>
     {error && <p className="error dashboard-error">{error}</p>}
-    <section className="dashboard-section">{items.length === 0 ? <div className="panel empty-state"><p className="muted">No content yet. Create your first item.</p></div> : <div className="content-admin-list">{items.map(item => <ContentCard key={item._id} item={item} manage onDelete={remove} onToggle={toggle} />)}</div>}</section>
+    <section className="dashboard-section">{items.length === 0 ? <div className="panel empty-state"><p className="muted">No services yet. Post your first service.</p></div> : <div className="content-admin-list">{items.map(item => <ContentCard key={item._id} item={item} manage onDelete={remove} onToggle={toggle} />)}</div>}</section>
   </AppLayout>;
 }

@@ -13,6 +13,7 @@ import contentRoutes from "./routes/content.js";
 import profileRoutes from "./routes/profile.js";
 import ratingRoutes from "./routes/ratings.js";
 import commentRoutes from "./routes/comments.js";
+import reactionRoutes from "./routes/reactions.js";
 
 dotenv.config();
 const app = express();
@@ -49,6 +50,7 @@ app.use("/api/content",contentRoutes);
 app.use("/api/profile",profileRoutes);
 app.use("/api/ratings",ratingRoutes);
 app.use("/api/comments",commentRoutes);
+app.use("/api/reactions",reactionRoutes);
 app.use("/api/public",publicRoutes);
 app.use((err,_req,res,_next)=>{console.error(err);if(err?.type==="entity.too.large") return res.status(413).json({message:"Uploaded images are too large."});res.status(500).json({message:"Something went wrong on the server."});});
 

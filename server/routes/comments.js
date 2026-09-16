@@ -10,16 +10,25 @@ router.use(requireAuth);
 
 router.post("/:contentId", async (req, res) => {
   try {
-    if (!mongoose.isValidObjectId(req.params.contentId)) return res.status(400).json({ message: "Invalid content ID." });
-    const content = await Content.findOne({ _id: req.params.contentId, published: true });
-    if (!content) return res.status(404).json({ message: "Published content not found." });
+    if (!mongoose.isValidObjectId(req.params.contentId)) return res.status(400).json({ message: "Invalid service ID." });
+    const content = await Content.findOne({ _id: req.params.contentId, published: true, visibility: { $ne: "private" } });
+    if (!content) return res.status(404).json({ message: "Public service not found." });
 
     const text = String(req.body.comment || "").trim();
     if (!text) return res.status(400).json({ message: "Comment cannot be empty." });
     if (text.length > 2000) return res.status(400).json({ message: "Comment must be 2000 characters or fewer." });
 
-    const comment = await Comment.create({ content: content._id, user: req.user.id, comment: text });
+    let parent = null, depth = 0;
+    if (req.body.parentId) {
+      if (!mongoose.isValidObjectId(req.body.parentId)) return res.status(400).json({ message: "Invalid parent comment." });
+      parent = await Comment.findOne({ _id: req.body.parentId, content: content._id });
+      if (!parent) return res.status(404).json({ message: "Parent comment not found." });
+      depth = parent.depth + 1;
+      if (depth > 3) return res.status(400).json({ message: "Replies can be nested up to 3 levels." });
+    }
+    const comment = await Comment.create({ content: content._id, user: req.user.id, comment: text, parent: parent?._id || null, depth });
     await comment.populate("user", "name username profileImage");
+    req.app.get("io").emit("comment:created", comment);
     res.status(201).json(comment);
   } catch (error) {
     console.error(error);
@@ -41,6 +50,7 @@ router.put("/:commentId", async (req, res) => {
     ).populate("user", "name username profileImage");
 
     if (!comment) return res.status(404).json({ message: "Comment not found." });
+    req.app.get("io").emit("comment:updated", comment);
     res.json(comment);
   } catch (error) {
     console.error(error);
@@ -58,7 +68,10 @@ router.delete("/:commentId", async (req, res) => {
     const canDelete = String(comment.user) === String(req.user.id) || String(content?.user) === String(req.user.id);
     if (!canDelete) return res.status(403).json({ message: "You do not have permission to delete this comment." });
 
-    await comment.deleteOne();
+    const hasReplies = await Comment.exists({ parent: comment._id });
+    if (hasReplies) { comment.comment = "[Comment deleted]"; comment.deletedAt = new Date(); await comment.save(); }
+    else await comment.deleteOne();
+    req.app.get("io").emit("comment:deleted", { id: String(comment._id), serviceId: String(comment.content), preserved: Boolean(hasReplies) });
     res.status(204).end();
   } catch (error) {
     console.error(error);
