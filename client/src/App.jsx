@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import AuthPage from "./pages/AuthPage.jsx";
 import BrowsePage from "./pages/BrowsePage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
+import ContentManagementPage from "./pages/ContentManagementPage.jsx";
 import CreateContentPage from "./pages/CreateContentPage.jsx";
 import EditContentPage from "./pages/EditContentPage.jsx";
 import ProfileSettingsPage from "./pages/ProfileSettingsPage.jsx";
@@ -24,6 +25,7 @@ export default function App(){
     <Route path="/" element={<BrowsePage user={user}/>}/>
     <Route path="/login" element={user?<Navigate to="/dashboard" replace/>:<AuthPage onAuthenticated={setUser}/>}/>
     <Route path="/dashboard" element={protectedPage(DashboardPage)}/>
+    <Route path="/dashboard/content" element={protectedPage(ContentManagementPage)}/>
     <Route path="/dashboard/bookings" element={protectedPage(BookingsPage)}/>
     <Route path="/dashboard/messages" element={protectedPage(MessagesPage)}/>
     <Route path="/dashboard/content/new" element={protectedPage(CreateContentPage)}/>
