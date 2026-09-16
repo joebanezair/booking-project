@@ -1,6 +1,6 @@
-# BookFlow — Service Discovery, Booking, and Messaging Platform
+# BookFlow — Service Search, Booking, and Messaging Platform
 
-BookFlow is a full-stack MERN application where providers publish services, build public profiles, accept schedule requests, and communicate with other registered users. It includes public/private services, discovery, ratings, reactions, threaded discussions, and authenticated real-time updates.
+BookFlow is a full-stack MERN application where providers publish services, build public profiles, accept schedule requests, and communicate with other registered users. It includes public/private services, user and service search, ratings, reactions, threaded discussions, and authenticated real-time updates.
 
 ## Features
 
@@ -26,7 +26,7 @@ Every major feature has its own route instead of being combined into one dashboa
 | Booking management | `/dashboard/bookings` |
 | Real-time messages | `/dashboard/messages` |
 | Profile management | `/dashboard/profile` |
-| User and service discovery | `/discover` |
+| User and service search | `/search` |
 | Public service details | `/services/:serviceId` |
 | Public user profile | `/profile/:username` |
 | Public booking form | `/b/:userId` |
@@ -62,13 +62,13 @@ The existing MongoDB `Content` collection and internal content API are intention
 
 ### Public and private visibility
 
-- Public services can appear in discovery, public profiles, public service pages, ratings, reactions, comments, and service-specific booking
+- Public services can appear in search, public profiles, public service pages, ratings, reactions, comments, and service-specific booking
 - Private services are visible only to their owner through protected management routes
 - Private services are excluded by server-side queries from public search and profiles
 - Direct public requests for a private service return an error
 - Ratings, reactions, comments, and public bookings enforce visibility on the server
 
-### User and service discovery
+### User and service search
 
 - Search registered users and public services from one page
 - Separate Users and Services result tabs
@@ -79,7 +79,7 @@ The existing MongoDB `Content` collection and internal content API are intention
 - Incremental **Load more** pagination
 - Loading, empty, and error states
 - Direct links to public profiles and public service pages
-- Private services never appear in discovery results
+- Private services never appear in search results
 
 ### Ratings
 
@@ -308,7 +308,7 @@ PATCH  /api/content/:id/publish
 DELETE /api/content/:id
 ```
 
-### Discovery and public pages
+### Search and public pages
 
 ```text
 GET /api/public/search
@@ -400,11 +400,11 @@ POST /api/messages/:userId
 
 ### Services and privacy
 
-1. Post a public service and confirm it appears in discovery and on the public profile.
+1. Post a public service and confirm it appears in search and on the public profile.
 2. Post a private service and confirm it appears only in the owner's service manager.
 3. Open the private service URL while signed out and confirm access is denied.
 
-### Discovery
+### Search
 
 1. Search for a user by name, username, headline, and location.
 2. Search for a service by title, description, category, and provider.
