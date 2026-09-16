@@ -1,6 +1,16 @@
-import { useEffect,useState } from "react"; import { Link } from "react-router-dom"; import AppLayout from "../components/AppLayout.jsx"; import ContentCard from "../components/ContentCard.jsx"; import { api } from "../api.js";
-export default function DashboardPage({user,onLogout}){const [items,setItems]=useState([]);const [error,setError]=useState("");useEffect(()=>{api.content.list().then(setItems).catch(e=>setError(e.message));},[]);
-async function toggle(item){try{const u=await api.content.publish(item._id,!item.published);setItems(xs=>xs.map(x=>x._id===item._id?u:x));}catch(e){setError(e.message);}}
-async function remove(id){if(!confirm("Delete this content permanently?"))return;try{await api.content.remove(id);setItems(xs=>xs.filter(x=>x._id!==id));}catch(e){setError(e.message);}}
-const published=items.filter(x=>x.published).length,drafts=items.length-published;
-return <AppLayout user={user} onLogout={onLogout}><header className="topbar"><div><p className="eyebrow">DASHBOARD</p><h1>Welcome back, {user.name.split(" ")[0]}</h1><p className="muted">Manage content, profile, bookings and conversations.</p></div><Link className="primary-button button-link" to="/dashboard/content/new">Create content</Link></header><section className="stats-grid"><article className="stat-card"><span>Content</span><strong>{items.length}</strong></article><article className="stat-card"><span>Published</span><strong>{published}</strong></article><article className="stat-card"><span>Drafts</span><strong>{drafts}</strong></article></section>{error&&<p className="error">{error}</p>}<section className="dashboard-section"><div className="section-heading"><div><p className="eyebrow">CMS</p><h2>Your content</h2></div><Link className="secondary button-link" to="/dashboard/profile">Manage profile</Link></div>{items.length===0?<div className="panel empty-state"><p className="muted">No content yet. Create your first item.</p></div>:<div className="content-admin-list">{items.map(item=><ContentCard key={item._id} item={item} manage onDelete={remove} onToggle={toggle}/>)}</div>}</section></AppLayout>;}
+import { Link } from "react-router-dom";
+import AppLayout from "../components/AppLayout.jsx";
+
+const sections = [
+  { title: "Content", text: "Create and manage published content or drafts.", to: "/dashboard/content", action: "Manage content" },
+  { title: "Bookings", text: "Review appointments and incoming public requests.", to: "/dashboard/bookings", action: "Open bookings" },
+  { title: "Messages", text: "Continue your real-time conversations.", to: "/dashboard/messages", action: "Open messages" },
+  { title: "Profile", text: "Update your profile photo, cover photo, bio, and public details.", to: "/dashboard/profile", action: "Manage profile" }
+];
+
+export default function DashboardPage({ user, onLogout }) {
+  return <AppLayout user={user} onLogout={onLogout}>
+    <header className="topbar"><div><p className="eyebrow">DASHBOARD</p><h1>Welcome back, {user.name.split(" ")[0]}</h1><p className="muted">Choose an area to manage. Each feature has its own page.</p></div><Link className="primary-button button-link" to="/dashboard/content/new">Create content</Link></header>
+    <section className="dashboard-route-grid">{sections.map(section => <article className="panel route-card" key={section.to}><div><p className="eyebrow">{section.title.toUpperCase()}</p><h2>{section.title}</h2><p className="muted">{section.text}</p></div><Link className="secondary button-link" to={section.to}>{section.action}</Link></article>)}</section>
+  </AppLayout>;
+}
