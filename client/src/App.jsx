@@ -11,7 +11,7 @@ import PublicContentPage from "./pages/PublicContentPage.jsx";
 import PublicBookingPage from "./pages/PublicBookingPage.jsx";
 import BookingsPage from "./pages/BookingsPage.jsx";
 import MessagesPage from "./pages/MessagesPage.jsx";
-import ServiceDiscoveryPage from "./pages/ServiceDiscoveryPage.jsx";
+import SearchPage from "./pages/SearchPage.jsx";
 import { disconnectRealtime } from "./realtime.js";
 
 function readUser(){try{return JSON.parse(localStorage.getItem("booking_user"));}catch{return null;}}
@@ -22,8 +22,8 @@ export default function App(){
   const protectedPage = Component => user ? <Component user={user} onLogout={logout} onUserUpdate={setUser}/> : <Navigate to="/login" replace/>;
 
   return <Routes>
-    <Route path="/" element={<ServiceDiscoveryPage user={user}/>}/>
-    <Route path="/discover" element={<ServiceDiscoveryPage user={user}/>}/>
+    <Route path="/" element={<SearchPage user={user}/>}/>
+    <Route path="/search" element={<SearchPage user={user}/>}/>
     <Route path="/login" element={user?<Navigate to="/dashboard" replace/>:<AuthPage onAuthenticated={setUser}/>}/>
     <Route path="/dashboard" element={protectedPage(DashboardPage)}/>
     <Route path="/dashboard/content" element={protectedPage(ContentManagementPage)}/>
