@@ -1,106 +1,232 @@
-# BookFlow — MERN Booking & Messaging App
+# BookFlow — Service Discovery, Booking, and Messaging Platform
 
-BookFlow is a full-stack MERN scheduling application for managing appointments, accepting public booking requests, and communicating directly with other registered users.
+BookFlow is a full-stack MERN application where providers publish services, build public profiles, accept schedule requests, and communicate with other registered users. It includes public/private services, discovery, ratings, reactions, threaded discussions, and authenticated real-time updates.
 
 ## Features
 
+### Authentication and accounts
+
+- Account registration and login
+- Password hashing with bcrypt
+- JWT-protected private APIs
+- Persistent signed-in client sessions
+- Automatically generated unique usernames
+- Protected dashboard routes
+
+### Separate application pages
+
+Every major feature has its own route instead of being combined into one dashboard page:
+
+| Page | Route |
+| --- | --- |
+| Dashboard overview | `/dashboard` |
+| Service management | `/dashboard/services` |
+| Post a service | `/dashboard/services/new` |
+| Edit a service | `/dashboard/services/:serviceId/edit` |
+| Booking management | `/dashboard/bookings` |
+| Real-time messages | `/dashboard/messages` |
+| Profile management | `/dashboard/profile` |
+| User and service discovery | `/discover` |
+| Public service details | `/services/:serviceId` |
+| Public user profile | `/profile/:username` |
+| Public booking form | `/b/:userId` |
+
+Legacy `/dashboard/content`, `/dashboard/content/new`, `/dashboard/content/:id/edit`, and `/content/:id` URLs remain available for backward compatibility.
+
+### Profile management
+
+- Edit name, username, headline, biography, location, and website
+- Upload or remove a profile photo
+- Reposition the profile photo horizontally and vertically
+- Preview the selected profile-photo framing
+- Upload, preview, or remove a profile cover photo
+- Display the cover photo and positioned avatar on the public profile
+- Preview the public profile from profile settings
+- Display all public services belonging to the provider
+
+### Service management
+
+- Post, view, edit, publish, unpublish, and delete services
+- Save services as drafts
+- Add a title, description, price, currency, and category
+- Upload a featured image and up to eight additional images
+- Enable or disable ratings per service
+- Enable or disable schedule booking per service
+- Set visibility to public or private
+- View public/private and published/draft status in service management
+- MongoDB persistence and owner-only editing
+
+The existing MongoDB `Content` collection and internal content API are intentionally preserved so existing records continue working. The user-facing product calls these records **services**.
+
+### Public and private visibility
+
+- Public services can appear in discovery, public profiles, public service pages, ratings, reactions, comments, and service-specific booking
+- Private services are visible only to their owner through protected management routes
+- Private services are excluded by server-side queries from public search and profiles
+- Direct public requests for a private service return an error
+- Ratings, reactions, comments, and public bookings enforce visibility on the server
+
+### User and service discovery
+
+- Search registered users and public services from one page
+- Separate Users and Services result tabs
+- Search users by name, username, headline, and location
+- Search services by title, description, category, and provider
+- Filter services by category and minimum rating
+- Debounced search input
+- Incremental **Load more** pagination
+- Loading, empty, and error states
+- Direct links to public profiles and public service pages
+- Private services never appear in discovery results
+
+### Ratings
+
+- Rate eligible public services from one to five stars
+- Display average rating and total rating count
+- Update or remove an existing rating
+- One rating per user per service
+- Service owners cannot rate their own services
+- Ratings require authentication
+- Providers can disable ratings for an individual service
+
+### Likes and dislikes
+
+- Like or dislike an eligible public service
+- Display separate like and dislike totals
+- One reaction per user per service
+- Switch directly between Like and Dislike
+- Select the active reaction again to remove it
+- Immediate interface updates without refreshing the page
+- WebSocket reaction broadcasts
+- Service owners cannot react to their own services
+- Database uniqueness constraint prevents duplicate reactions
+
+### Threaded discussions
+
+- Comment on public services while signed in
+- Reply directly to existing comments
+- Nested replies up to three levels deep
+- Expand and collapse reply threads
+- Edit personal comments
+- Delete personal comments
+- Service owners can moderate comments on their services
+- Deleted parent comments are preserved as placeholders when replies exist
+- Author details, timestamps, and edited status
+- WebSocket events for new, edited, and deleted comments
+- Up to 200 comments loaded per service discussion
+
 ### Booking management
+
 - Create, view, edit, and delete bookings
-- Pending, confirmed, and cancelled booking statuses
-- Dashboard statistics
-- MongoDB persistence
+- Pending, confirmed, and cancelled statuses
+- Booking statistics
 - Per-user protected booking data
+- Public booking requests without requiring visitor registration
+- Guest name, email, requested date/time, service, and notes
+- Public requests default to `pending`
+- Service-specific booking buttons on eligible public service pages
+- Bookings retain a reference to the selected service
+- Private or booking-disabled services reject public booking attempts
+- Real-time booking creation, updates, and deletion
 
-### Public booking pages
-Every registered user automatically gets a shareable booking page:
+### Real-time messaging
 
-```
-/book/<user-id>
-```
-
-The dashboard includes **Open page** and **Copy link** actions.
-
-Visitors do not need a BookFlow account. They can submit:
-- Name
-- Email
-- Service
-- Requested date and time
-- Notes
-
-Public requests are created as **pending** bookings and automatically appear in the booking owner's dashboard with a **Public request** indicator.
-
-### User-to-user messaging
-Registered users can message other registered BookFlow users.
-
-The messaging interface includes:
 - Registered-user directory
 - One-to-one conversations
 - Stored conversation history
-- Message timestamps
-- Read tracking in the backend
+- Message timestamps and backend read tracking
+- Instant message delivery through authenticated WebSocket connections
 - MongoDB message persistence
+- Automatic WebSocket reconnection
 
-Messaging routes require JWT authentication.
+### Real-time architecture
 
-Messages and booking changes are delivered live over an authenticated WebSocket connection. The dashboard now uses separate pages for content, bookings, messages, and profile management.
+Socket.IO provides authenticated WebSocket communication. Each signed-in user joins a private room based on their verified JWT subject.
 
-## Tech Stack
+Real-time events include:
 
-**Frontend**
+- `message:new`
+- `booking:created`
+- `booking:updated`
+- `booking:deleted`
+- `service:reactions`
+- `comment:created`
+- `comment:updated`
+- `comment:deleted`
+
+## Technology stack
+
+### Frontend
+
 - React 19
+- React Router
 - Vite
 - JavaScript
 - CSS
 - Socket.IO client
 
-**Backend**
+### Backend
+
 - Node.js
 - Express
 - MongoDB
 - Mongoose
-- Socket.IO WebSocket server
+- Socket.IO
+- JSON Web Tokens
+- bcrypt
 
-**Authentication**
-- JWT
-- bcrypt password hashing
+## Project structure
 
-## Project Structure
-
-```
+```text
 booking-project/
 ├── client/
 │   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
 │   │   ├── App.jsx
 │   │   ├── api.js
+│   │   ├── realtime.js
 │   │   └── styles.css
+│   ├── .env.example
 │   └── package.json
 ├── server/
 │   ├── middleware/
-│   │   └── auth.js
 │   ├── models/
 │   │   ├── Booking.js
+│   │   ├── Comment.js
+│   │   ├── Content.js
 │   │   ├── Message.js
+│   │   ├── Rating.js
+│   │   ├── Reaction.js
 │   │   └── User.js
 │   ├── routes/
 │   │   ├── auth.js
 │   │   ├── bookings.js
+│   │   ├── comments.js
+│   │   ├── content.js
 │   │   ├── messages.js
-│   │   └── public.js
+│   │   ├── profile.js
+│   │   ├── public.js
+│   │   ├── ratings.js
+│   │   └── reactions.js
+│   ├── .env.example
 │   ├── server.js
 │   └── package.json
 └── README.md
 ```
 
-## Run in GitHub Codespaces
+## Local setup
 
-Get the latest version:
+### 1. Clone and update
 
 ```bash
+git clone https://github.com/joebanezair/booking-project.git
+cd booking-project
 git checkout main
 git pull origin main
 ```
 
-### 1. Configure the backend
+### 2. Configure and run the backend
 
 ```bash
 cd server
@@ -108,155 +234,211 @@ cp .env.example .env
 npm install
 ```
 
-Edit `server/.env`:
+Configure `server/.env`:
 
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=replace_this_with_a_long_random_secret
+MONGO_URI=mongodb://127.0.0.1:27017/booking_app
+JWT_SECRET=replace_with_a_long_random_secret
 CLIENT_URL=http://localhost:5173
 ```
 
-Never commit your real `.env`, MongoDB credentials, or JWT secret.
-
-Start the API:
+Start the API and WebSocket server:
 
 ```bash
 npm run dev
 ```
 
-### 2. Start the frontend
+### 3. Configure and run the frontend
 
-Open another terminal:
+In another terminal:
 
 ```bash
 cd client
+cp .env.example .env
 npm install
 npm run dev
 ```
 
-Vite normally runs on port `5173` and the API on port `5000`.
+Frontend environment variables:
 
-In GitHub Codespaces, use the forwarded frontend URL. If CORS blocks API requests, set `CLIENT_URL` in `server/.env` to the exact forwarded frontend URL and restart the backend.
+```env
+VITE_API_URL=/api
+VITE_SOCKET_URL=http://localhost:5000
+```
 
-## REST API
+The frontend normally runs on `http://localhost:5173`, while the API and WebSocket server run on `http://localhost:5000`.
+
+For GitHub Codespaces, set `CLIENT_URL` to the exact forwarded frontend URL. Set `VITE_SOCKET_URL` to the forwarded backend URL.
+
+## API overview
+
+Protected endpoints require:
+
+```http
+Authorization: Bearer <token>
+```
 
 ### Authentication
 
-```
+```text
 POST /api/auth/register
 POST /api/auth/login
 ```
 
-### Protected bookings
+### Profile
 
-Requires:
-
+```text
+GET /api/profile
+PUT /api/profile
 ```
-Authorization: Bearer <token>
+
+### Service management
+
+The internal path remains `/api/content` for data compatibility.
+
+```text
+GET    /api/content
+GET    /api/content/:id
+POST   /api/content
+PUT    /api/content/:id
+PATCH  /api/content/:id/publish
+DELETE /api/content/:id
 ```
 
-Endpoints:
+### Discovery and public pages
 
+```text
+GET /api/public/search
+GET /api/public/browse
+GET /api/public/profile/:username
+GET /api/public/content/:serviceId
 ```
+
+Search parameters:
+
+```text
+q=<search text>
+category=<category>
+minRating=<0-5>
+page=<page number>
+```
+
+### Ratings and reactions
+
+```text
+PUT    /api/ratings/:serviceId
+DELETE /api/ratings/:serviceId
+PUT    /api/reactions/:serviceId
+```
+
+Reaction request example:
+
+```json
+{
+  "type": "like"
+}
+```
+
+### Threaded comments
+
+```text
+POST   /api/comments/:serviceId
+PUT    /api/comments/:commentId
+DELETE /api/comments/:commentId
+```
+
+Reply request example:
+
+```json
+{
+  "comment": "This is a reply.",
+  "parentId": "parent-comment-id"
+}
+```
+
+### Bookings
+
+```text
 GET    /api/bookings
 POST   /api/bookings
 PUT    /api/bookings/:id
 DELETE /api/bookings/:id
+GET    /api/public/book/:userId
+POST   /api/public/book/:userId
 ```
 
 ### Messaging
 
-All messaging endpoints require authentication.
-
-```
+```text
 GET  /api/messages/users
 GET  /api/messages/:userId
 POST /api/messages/:userId
 ```
 
-`GET /api/messages/users` lists other registered users.
+## Data models
 
-`GET /api/messages/:userId` retrieves the conversation with another user and marks their unread messages as read.
+- **User:** authentication, public profile, profile-photo position, and cover photo
+- **Content/Service:** owner, details, price, images, visibility, publishing, rating option, and booking option
+- **Booking:** owner, optional linked service, guest details, date/time, source, and status
+- **Message:** sender, recipient, body, read timestamp, and timestamps
+- **Rating:** unique user/service star rating
+- **Reaction:** unique user/service Like or Dislike
+- **Comment:** service, author, parent, nesting depth, edit state, and deletion placeholder state
 
-`POST /api/messages/:userId` sends a message to another registered user.
+## Compatibility notes
 
-Example request:
+- Existing content records remain in the `Content` model and MongoDB collection
+- Existing records without a visibility value behave as public
+- Old content URLs continue to resolve
+- Existing ratings, comments, bookings, messages, and user accounts are preserved
+- New comment fields have safe defaults, so existing comments become top-level discussion entries
 
-```json
-{
-  "body": "Hi! I wanted to follow up about our booking."
-}
-```
+## Verification checklist
 
-### Public booking API
+### Services and privacy
 
-These endpoints intentionally do **not** require authentication:
+1. Post a public service and confirm it appears in discovery and on the public profile.
+2. Post a private service and confirm it appears only in the owner's service manager.
+3. Open the private service URL while signed out and confirm access is denied.
 
-```
-GET  /api/public/book/:userId
-POST /api/public/book/:userId
-```
+### Discovery
 
-The GET endpoint loads the booking owner's public profile information and available service choices.
+1. Search for a user by name, username, headline, and location.
+2. Search for a service by title, description, category, and provider.
+3. Test category and minimum-rating filters.
+4. Test incremental loading when more than 12 results exist.
 
-Example public booking request:
+### Ratings and reactions
 
-```json
-{
-  "guestName": "Alex Johnson",
-  "guestEmail": "alex@example.com",
-  "service": "Consultation",
-  "bookingDate": "2026-09-20T14:00",
-  "notes": "I'd like to discuss a new project."
-}
-```
+1. Rate another user's public service.
+2. Update and remove the rating.
+3. Like the service, switch to Dislike, and remove the reaction.
+4. Confirm service owners cannot rate or react to their own service.
 
-New public bookings default to `pending`.
+### Threaded discussions
 
-## Testing the New Features
+1. Post a top-level comment.
+2. Add nested replies.
+3. Edit a personal comment.
+4. Delete a parent with replies and confirm the placeholder remains.
+5. Confirm a service owner can moderate another user's comment.
 
-### Public booking
-1. Register or sign in.
-2. Find **Your Public Booking Page** on the dashboard.
-3. Click **Open page** or **Copy link**.
-4. Open the link in another browser/incognito window.
-5. Submit a booking without signing in.
-6. Return to the owner's dashboard.
-7. Confirm the request appears as a pending **Public request**.
+### Booking and messaging
 
-### Messaging
-1. Create at least two BookFlow accounts.
-2. Sign in as the first user.
-3. Open **Messages**.
-4. Select the second registered user.
-5. Send a message.
-6. Sign in as the second user to view the conversation and reply.
+1. Request a booking from a public service page.
+2. Confirm it appears on the owner's booking page in real time.
+3. Confirm a private or booking-disabled service rejects the request.
+4. Open two accounts in separate browsers and test real-time messaging.
 
-## Data Models
+## Security notes
 
-### User
-Stores the user's name, email, and hashed password.
+- Passwords are hashed with bcrypt
+- Protected HTTP routes verify JWTs
+- WebSocket connections verify JWTs before joining private user rooms
+- Owner checks protect profile, service, booking, and comment-management operations
+- Public queries exclude private services on the server
+- Unique database indexes prevent duplicate ratings and reactions
+- Input lengths, image formats, image sizes, identifiers, statuses, visibility, and reaction types are validated
 
-### Booking
-Stores the booking owner, guest information, service, requested date/time, notes, status, and whether the booking came from the dashboard or public booking page.
-
-### Message
-Stores sender, recipient, message body, read timestamp, and creation/update timestamps.
-
-## Security Notes
-
-BookFlow hashes passwords with bcrypt and protects private API routes using JWT authentication.
-
-For simplicity, this portfolio version stores JWTs in `localStorage`. A production version should consider HttpOnly secure cookies, CSRF protection, rate limiting, stronger schema validation, spam protection for public booking endpoints, session/refresh-token rotation, logging, and automated tests.
-
-## Current Update
-
-The latest update adds:
-- Direct messaging between registered users
-- Public shareable booking pages
-- Guest email capture
-- Public booking source tracking
-- Dashboard sharing controls
-- New messaging and public-booking API routes
-- Responsive messaging and public booking interfaces
+This portfolio project stores JWTs in `localStorage`. A production deployment should use secure HttpOnly cookies, CSRF protection, rate limiting, stricter upload storage, anti-spam controls, refresh-token rotation, audit logging, and automated integration tests.
