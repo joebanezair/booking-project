@@ -12,6 +12,7 @@ const contentSchema = new mongoose.Schema(
     images: { type: [String], default: [] },
     allowRatings: { type: Boolean, default: true },
     allowBookings: { type: Boolean, default: true },
+    visibility: { type: String, enum: ["public", "private"], default: "public", index: true },
     published: { type: Boolean, default: false, index: true }
   },
   { timestamps: true }
@@ -19,5 +20,7 @@ const contentSchema = new mongoose.Schema(
 
 contentSchema.index({ user: 1, createdAt: -1 });
 contentSchema.index({ user: 1, published: 1, updatedAt: -1 });
+contentSchema.index({ published: 1, visibility: 1, category: 1, updatedAt: -1 });
+contentSchema.index({ title: "text", description: "text", category: "text" });
 
 export default mongoose.model("Content", contentSchema);

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Content from "../models/Content.js";
 import Rating from "../models/Rating.js";
 import Comment from "../models/Comment.js";
+import Reaction from "../models/Reaction.js";
 import requireAuth from "../middleware/auth.js";
 
 const router = Router();
@@ -30,6 +31,7 @@ function normalize(body) {
     images: Array.isArray(body.images) ? body.images.map(String).filter(Boolean) : [],
     allowRatings: body.allowRatings !== false,
     allowBookings: body.allowBookings !== false,
+    visibility: body.visibility === "private" ? "private" : "public",
     published: Boolean(body.published)
   };
 }
@@ -137,6 +139,7 @@ router.delete("/:id", async (req, res) => {
     await Promise.all([
       Rating.deleteMany({ content: req.params.id }),
       Comment.deleteMany({ content: req.params.id })
+      ,Reaction.deleteMany({ content: req.params.id })
     ]);
     res.status(204).end();
   } catch (error) {

@@ -44,9 +44,12 @@ export const api = {
     remove: contentId => request(`/ratings/${contentId}`, { method:"DELETE" })
   },
   comments: {
-    add: (contentId,comment) => request(`/comments/${contentId}`, { method:"POST", body:JSON.stringify({comment}) }),
+    add: (contentId,comment,parentId=null) => request(`/comments/${contentId}`, { method:"POST", body:JSON.stringify({comment,parentId}) }),
     update: (commentId,comment) => request(`/comments/${commentId}`, { method:"PUT", body:JSON.stringify({comment}) }),
     remove: commentId => request(`/comments/${commentId}`, { method:"DELETE" })
+  },
+  reactions: {
+    toggle: (contentId,type) => request(`/reactions/${contentId}`, { method:"PUT", body:JSON.stringify({type}) })
   },
   bookings: {
     list: () => request("/bookings"),
@@ -66,4 +69,5 @@ export const api = {
   publicProfile: username => request(`/public/profile/${username}`),
   publicContent: id => request(`/public/content/${id}`),
   browse: () => request("/public/browse")
+  ,search: params => request(`/public/search?${new URLSearchParams(params)}`)
 };
