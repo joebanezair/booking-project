@@ -11,7 +11,7 @@ router.use(requireAuth);
 router.get("/users", async (req, res) => {
   try {
     const users = await User.find({ _id: { $ne: req.user.id } })
-      .select("name email")
+      .select("name email username profileImage")
       .sort({ name: 1 });
     res.json(users);
   } catch (error) {
@@ -26,7 +26,7 @@ router.get("/:userId", async (req, res) => {
       return res.status(400).json({ message: "Invalid user ID." });
     }
 
-    const otherUser = await User.findById(req.params.userId).select("name email");
+    const otherUser = await User.findById(req.params.userId).select("name email username profileImage");
     if (!otherUser) return res.status(404).json({ message: "User not found." });
 
     const messages = await Message.find({

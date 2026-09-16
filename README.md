@@ -24,6 +24,7 @@ Every major feature has its own route instead of being combined into one dashboa
 | Post a service | `/dashboard/services/new` |
 | Edit a service | `/dashboard/services/:serviceId/edit` |
 | Booking management | `/dashboard/bookings` |
+| Booking details | `/dashboard/bookings/:bookingId` |
 | Real-time messages | `/dashboard/messages` |
 | Profile management | `/dashboard/profile` |
 | Notification center | `/dashboard/notifications` |
@@ -160,6 +161,17 @@ The existing MongoDB `Content` collection and internal content API are intention
 - Bookings retain a reference to the selected service
 - Private or booking-disabled services reject public booking attempts
 - Real-time booking creation, updates, and deletion
+- Clickable booking cards with a dedicated detail page
+- Booking details link back to the associated public service when available
+
+### Connected navigation
+
+- User names and avatars in comments link to public profiles
+- Forum post and reply authors link to public profiles
+- Message conversation headers link to the participant's public profile
+- Booking cards link to complete booking details
+- Service-linked bookings link to the corresponding public service
+- Notifications link to the relevant message, booking, service, profile, or dashboard page
 
 ### Real-time messaging
 

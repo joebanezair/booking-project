@@ -67,6 +67,7 @@ export const api = {
   },
   bookings: {
     list: () => request("/bookings"),
+    get: id => request(`/bookings/${id}`),
     create: body => request("/bookings", { method:"POST", body:JSON.stringify(body) }),
     update: (id,body) => request(`/bookings/${id}`, { method:"PUT", body:JSON.stringify(body) }),
     remove: id => request(`/bookings/${id}`, { method:"DELETE" })
