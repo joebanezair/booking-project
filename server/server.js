@@ -20,6 +20,7 @@ import forumRoutes from "./routes/forum.js";
 import adminRoutes from "./routes/admin.js";
 import User from "./models/User.js";
 import emojiReactionRoutes from "./routes/emojiReactions.js";
+import businessRoutes from "./routes/businesses.js";
 
 dotenv.config();
 const app = express();
@@ -63,6 +64,7 @@ app.use("/api/notifications",notificationRoutes);
 app.use("/api/profile-ratings",profileRatingRoutes);
 app.use("/api/forum",forumRoutes);
 app.use("/api/admin",adminRoutes);
+app.use("/api/businesses",businessRoutes);
 app.use("/api/emoji-reactions",emojiReactionRoutes);
 app.use("/api/public",publicRoutes);
 app.use((err,_req,res,_next)=>{console.error(err);if(err?.type==="entity.too.large") return res.status(413).json({message:"Uploaded images are too large."});res.status(500).json({message:"Something went wrong on the server."});});

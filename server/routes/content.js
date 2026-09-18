@@ -83,7 +83,7 @@ router.post("/", async (req, res) => {
     const error = validate(input);
     if (error) return res.status(400).json({ message: error });
 
-    const item = await Content.create({ user: req.user.id, ...input });
+    const item = await Content.create({ user: req.user.id, business: req.business?._id || null, ...input });
     res.status(201).json(item);
   } catch (error) {
     console.error(error);

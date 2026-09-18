@@ -2,11 +2,13 @@ const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 async function request(path, options = {}) {
   const token = localStorage.getItem("booking_token");
+  const accountMode = localStorage.getItem("booking_account_mode") || "personal";
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      "X-Account-Mode": accountMode,
       ...(options.headers || {})
     }
   });
@@ -32,6 +34,11 @@ export const api = {
   profile: {
     get: () => request("/profile"),
     update: body => request("/profile", { method:"PUT", body:JSON.stringify(body) })
+  },
+  business: {
+    mine: () => request("/businesses/mine"),
+    create: body => request("/businesses/mine", { method:"POST", body:JSON.stringify(body) }),
+    update: body => request("/businesses/mine", { method:"PUT", body:JSON.stringify(body) })
   },
   content: {
     list: () => request("/content"),
@@ -79,7 +86,9 @@ export const api = {
     remove: id => request(`/bookings/${id}`, { method:"DELETE" })
   },
   admin: {
-    customers: () => request("/admin/customers")
+    customers: () => request("/admin/customers"),
+    businessRequests: () => request("/admin/business-requests"),
+    reviewBusiness: (id,body) => request(`/admin/business-requests/${id}`, { method:"PATCH", body:JSON.stringify(body) })
   },
   messages: {
     users: () => request("/messages/users"),

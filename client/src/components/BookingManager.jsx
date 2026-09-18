@@ -6,22 +6,23 @@ import { getRealtimeSocket } from "../realtime.js";
 const services = ["Consultation", "Technical Support", "Product Demo", "Project Meeting", "Discovery Call", "Other"];
 const empty = { guestName: "", service: "Consultation", bookingDate: "", notes: "", status: "pending" };
 
-export default function BookingManager({ user }) {
-  const isAdmin = ["admin", "business"].includes(user.role);
+export default function BookingManager({ user, accountMode }) {
+  const isAdmin = ["admin", "business"].includes(user.role)||(user.business?.status==="approved"&&accountMode==="business");
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    setItems([]);
     api.bookings.list().then(setItems).catch(e => setError(e.message));
     const socket = getRealtimeSocket();
     if (!socket) return;
-    const upsert = booking => setItems(current => current.some(item => item._id === booking._id) ? current.map(item => item._id === booking._id ? booking : item) : [...current, booking]);
+    const upsert = booking => { if(!isAdmin&&String(booking.customer)!==String(user.id))return; setItems(current => current.some(item => item._id === booking._id) ? current.map(item => item._id === booking._id ? booking : item) : [...current, booking]); };
     const remove = ({ id }) => setItems(current => current.filter(item => item._id !== id));
     socket.on("booking:created", upsert); socket.on("booking:updated", upsert); socket.on("booking:deleted", remove);
     return () => { socket.off("booking:created", upsert); socket.off("booking:updated", upsert); socket.off("booking:deleted", remove); };
-  }, []);
+  }, [accountMode,isAdmin,user.id]);
 
   const stats = useMemo(() => ({ total: items.length, pending: items.filter(item => item.status === "pending").length, confirmed: items.filter(item => item.status === "confirmed").length }), [items]);
   async function save(e) { e.preventDefault(); try { const updated = editing ? await api.bookings.update(editing, form) : await api.bookings.create(form); setItems(current => editing ? current.map(item => item._id === editing ? updated : item) : (current.some(item => item._id === updated._id) ? current : [...current, updated])); setForm(empty); setEditing(null); setError(""); } catch (e) { setError(e.message); } }

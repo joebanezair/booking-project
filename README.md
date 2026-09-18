@@ -14,14 +14,17 @@ BookFlow is a full-stack MERN application with separate **admin**, **business**,
 - Protected dashboard routes
 - Role-based authorization enforced by both the frontend and backend
 - Public registration always creates a `customer`; users cannot select a privileged role
-- Invite-only admin and business registration URLs validated by server-side environment keys
+- Invite-only administrator registration validated by a server-side environment key
+- One business application per customer, submitted from Profile and approved by an administrator
+- Personal/business mode switching after approval without creating another login
 - Optional admin promotion through the server-side `ADMIN_EMAILS` environment variable
 
 ### User roles and permissions
 
 | Capability | Admin | Business | Customer |
 | --- | --- | --- | --- |
-| Manage their own business services | Yes | Yes | No |
+| Apply for one linked business profile | No | Legacy | Yes |
+| Manage their own business services | Yes | Yes | After approval |
 | Publish, unpublish, edit, or delete their own services | Yes | Yes | No |
 | Manage incoming bookings for their account | Yes | Yes | No |
 | View the platform customer directory | Yes | No | No |
@@ -46,6 +49,7 @@ Every major feature has its own route instead of being combined into one dashboa
 | Booking management | `/dashboard/bookings` |
 | Booking details | `/dashboard/bookings/:bookingId` |
 | Customer management (admin only) | `/dashboard/customers` |
+| Business application review (admin only) | `/dashboard/business-requests` |
 | Real-time messages | `/dashboard/messages` |
 | Direct conversation | `/dashboard/messages/:userId` |
 | Profile management | `/dashboard/profile` |
@@ -72,6 +76,8 @@ Legacy `/dashboard/content`, `/dashboard/content/new`, `/dashboard/content/:id/e
 - Display all public services belonging to the provider
 - Share the public landing page with Open, Copy Link, and native Share actions
 - Use one public `/profile/:username` link for the provider profile, services, ratings, discussions, and booking entry points
+- Submit, update, and track one business application from the Profile tab
+- Switch between personal bookings and approved business-management tools with the same account
 
 ### Appearance and design settings
 
@@ -335,28 +341,25 @@ JWT_SECRET=replace_with_a_long_random_secret
 CLIENT_URL=http://localhost:5173
 ADMIN_EMAILS=owner@example.com
 ADMIN_REGISTRATION_KEY=replace_with_a_random_secret_at_least_32_characters
-BUSINESS_REGISTRATION_KEY=replace_with_a_different_random_secret_at_least_32_characters
 ```
 
-### Creating admin and business accounts securely
+### Creating the initial administrator securely
 
-Generate two different high-entropy keys. Hexadecimal keys avoid URL-encoding problems:
+Generate a high-entropy key. A hexadecimal key avoids URL-encoding problems:
 
 ```bash
 openssl rand -hex 32
-openssl rand -hex 32
 ```
 
-Place the first value in `ADMIN_REGISTRATION_KEY` and the second in `BUSINESS_REGISTRATION_KEY`, then restart the backend. The protected registration URLs are:
+Place it in `ADMIN_REGISTRATION_KEY`, restart the backend, and open:
 
 ```text
 http://localhost:5173/register/admin/<ADMIN_REGISTRATION_KEY>
-http://localhost:5173/register/business/<BUSINESS_REGISTRATION_KEY>
 ```
 
-For production, replace the origin with the deployed frontend URL. Anyone possessing one of these URLs can create that role, so treat the URL like a password: share it privately, never commit it, and rotate its environment key after use or suspected disclosure. Placeholder or shorter-than-32-character keys are rejected by the server.
+For production, replace the origin with the deployed frontend URL. Anyone possessing this URL can create an administrator, so treat it like a password, share it privately, and rotate the key after use. Placeholder or shorter-than-32-character keys are rejected.
 
-Normal `/login` registration remains customer-only. Role values sent in ordinary registration bodies are ignored.
+Normal registration remains customer-only. A customer creates one business application from **Dashboard → Profile**. Administrators review it at **Dashboard → Business requests**. Approval unlocks a Personal/Business mode selector; rejection includes feedback and permits resubmission. The former secret business-registration URL is no longer available.
 
 `ADMIN_EMAILS` remains available as an alternative way to promote a known account:
 
@@ -425,6 +428,19 @@ GET /api/profile
 PUT /api/profile
 ```
 
+### Business applications
+
+```text
+GET  /api/businesses/mine
+POST /api/businesses/mine
+PUT  /api/businesses/mine
+
+GET   /api/admin/business-requests
+PATCH /api/admin/business-requests/:id
+```
+
+Only administrators may review applications. Business-management requests from approved customer accounts must include `X-Account-Mode: business`; the frontend adds this header when Business mode is selected.
+
 ### Emoji reactions
 
 ```text
@@ -445,7 +461,7 @@ Calling the same endpoint with the same emoji toggles the current user's reactio
 ### Service management
 
 The internal path remains `/api/content` for data compatibility.
-Every endpoint in this section requires the `business` or `admin` role. Records remain scoped to the authenticated provider account.
+Every endpoint in this section requires an administrator, a legacy business account, or a customer with an approved business in Business mode. Records remain scoped to the authenticated owner and linked business.
 
 ```text
 GET    /api/content
@@ -544,6 +560,7 @@ Conversation responses include `emojiReactions` for each message. The backend re
 ## Data models
 
 - **User:** authentication, `admin`/`business`/`customer` role, public profile, profile-photo position, and cover photo
+- **Business:** one owner-linked application, public business details, approval status, reviewer, and review feedback
 - **Content/Service:** owner, details, price, images, visibility, publishing, rating option, and booking option
 - **Booking:** admin/business owner, optional authenticated customer, optional linked service, guest details, date/time, source, and status
 - **Message:** sender, recipient, body, read timestamp, and timestamps
@@ -619,13 +636,14 @@ Conversation responses include `emojiReactions` for each message. The backend re
 ### Roles and authorization
 
 1. Register normally and confirm the account is a `customer` even if a `role` field is submitted.
-2. Use the business invite URL and confirm it creates a `business` account with service and booking management but no customer-directory access.
-3. Use the admin invite URL and confirm it creates an `admin` account with provider tools and the customer directory.
-4. Try an incorrect, placeholder, and short invite key and confirm registration is rejected.
-5. As a customer, call `/api/content` or `/api/admin/customers` directly and confirm HTTP `403`.
-6. As a business account, call `/api/admin/customers` directly and confirm HTTP `403`.
-7. Create services under two providers and confirm each manages only its own records.
-8. Create bookings from two customers and confirm each customer sees only their own linked bookings.
+2. Submit a business application from Profile and confirm a second application is rejected.
+3. Confirm pending and rejected applications cannot access service-management APIs.
+4. Approve the application as an admin and confirm the owner receives a notification.
+5. Switch between Personal and Business modes and confirm bookings are separated correctly.
+6. Reject an application with feedback, update it, and confirm it can be resubmitted.
+7. Suspend an approved business and confirm provider APIs return HTTP `403`.
+8. Use the admin invite URL and confirm it creates an `admin` account with review and customer-directory access.
+9. Create services under two approved businesses and confirm each manages only its own records.
 
 ## Security notes
 
@@ -633,7 +651,8 @@ Conversation responses include `emojiReactions` for each message. The backend re
 - Protected HTTP routes verify JWTs
 - WebSocket connections verify JWTs before joining private user rooms
 - Owner checks protect profile, service, booking, and comment-management operations
-- Database-backed role checks protect privileged APIs even if a stored JWT predates a role change
+- Database-backed role and business-status checks protect privileged APIs even if browser state is stale
+- A unique owner index enforces one business application per user
 - Invite registration keys are verified server-side with constant-time comparison and are never accepted from ordinary registration
 - Public queries exclude private services on the server
 - Unique database indexes prevent duplicate ratings and reactions
