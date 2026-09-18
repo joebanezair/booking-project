@@ -82,8 +82,11 @@ router.post("/", async (req, res) => {
     const input = normalize(req.body);
     const error = validate(input);
     if (error) return res.status(400).json({ message: error });
+    if (input.published && req.user.accountStatus !== "active") {
+      return res.status(403).json({ message: "Paused businesses can save drafts but cannot publish services." });
+    }
 
-    const item = await Content.create({ user: req.user.id, business: req.business?._id || null, ...input });
+    const item = await Content.create({ user: req.user.id, business: req.user.businessId || null, ...input });
     res.status(201).json(item);
   } catch (error) {
     console.error(error);
@@ -99,6 +102,9 @@ router.put("/:id", async (req, res) => {
     const input = normalize(req.body);
     const error = validate(input);
     if (error) return res.status(400).json({ message: error });
+    if (input.published && req.user.accountStatus !== "active") {
+      return res.status(403).json({ message: "Paused businesses can edit drafts but cannot publish services." });
+    }
 
     const item = await Content.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id },
@@ -118,9 +124,13 @@ router.patch("/:id/publish", async (req, res) => {
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: "Invalid content ID." });
     }
+    const publishing = Boolean(req.body.published);
+    if (publishing && req.user.accountStatus !== "active") {
+      return res.status(403).json({ message: "Paused businesses cannot publish services." });
+    }
     const item = await Content.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id },
-      { published: Boolean(req.body.published) },
+      { published: publishing },
       { new: true, runValidators: true }
     );
     if (!item) return res.status(404).json({ message: "Content not found." });
