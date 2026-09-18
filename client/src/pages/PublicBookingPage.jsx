@@ -2,10 +2,18 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
 
+function money(value, currency = "PHP") {
+  try {
+    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 2 }).format(value || 0);
+  } catch {
+    return `${currency} ${Number(value || 0).toLocaleString()}`;
+  }
+}
+
 export default function PublicBookingPage({ user }) {
   const { userId } = useParams();
   const [params] = useSearchParams();
-  const contentId = params.get("content") || "";
+  const requestedContentId = params.get("content") || "";
   const requestedService = params.get("service") || "Consultation";
   const [page, setPage] = useState(null);
   const [form, setForm] = useState({
@@ -17,7 +25,7 @@ export default function PublicBookingPage({ user }) {
     locationLongitude: null,
     locationAccuracy: null,
     service: requestedService,
-    contentId,
+    contentId: requestedContentId,
     bookingDate: "",
     notes: ""
   });
@@ -27,8 +35,23 @@ export default function PublicBookingPage({ user }) {
   const [locating, setLocating] = useState(false);
 
   useEffect(() => {
-    api.publicBooking.get(userId).then(setPage).catch(e => setError(e.message));
-  }, [userId]);
+    api.publicBooking.get(userId).then(result => {
+      setPage(result);
+      setForm(current => {
+        if (requestedContentId) {
+          const selected = result.services.find(service => String(service.id) === String(requestedContentId));
+          return selected ? { ...current, service: selected.title, contentId: selected.id } : current;
+        }
+        const first = result.services[0];
+        return first ? { ...current, service: first.title, contentId: first.id || "" } : current;
+      });
+    }).catch(e => setError(e.message));
+  }, [userId, requestedContentId]);
+
+  const selectedService = page?.services?.find(service =>
+    (form.contentId && String(service.id) === String(form.contentId)) ||
+    (!form.contentId && service.title === form.service)
+  );
 
   function detectLocation() {
     setLocationStatus("");
@@ -62,6 +85,12 @@ export default function PublicBookingPage({ user }) {
     );
   }
 
+  function chooseService(index) {
+    const selected = page.services[Number(index)];
+    if (!selected) return;
+    setForm(current => ({ ...current, service: selected.title, contentId: selected.id || "" }));
+  }
+
   async function submit(e) {
     e.preventDefault();
     try {
@@ -74,12 +103,17 @@ export default function PublicBookingPage({ user }) {
     }
   }
 
+  const selectedIndex = page?.services?.findIndex(service =>
+    (form.contentId && String(service.id) === String(form.contentId)) ||
+    (!form.contentId && service.title === form.service)
+  );
+
   return <main className="public-shell"><section className="public-card">
     <Link className="brand-row" to="/"><span className="brand-mark">B</span><strong>BookFlow</strong></Link>
     {error && !page ? <p className="error">{error}</p> : !page ? <p>Loading...</p> : <>
       <p className="eyebrow">PUBLIC BOOKING</p>
       <h1>Book time with {page.owner.name}</h1>
-      {contentId && <p className="selected-content">Booking for <strong>{requestedService}</strong></p>}
+      {selectedService && <p className="selected-content">Booking for <strong>{selectedService.title}</strong> · {money(selectedService.price, selectedService.currency)}</p>}
 
       <form onSubmit={submit}>
         <div className="two-col">
@@ -124,9 +158,9 @@ export default function PublicBookingPage({ user }) {
         <p className="muted">Location sharing is optional and only happens after you press the button and approve your browser's permission request.</p>
         {locationStatus && <p className="muted">{locationStatus}</p>}
 
-        {!contentId && <label>Service
-          <select value={form.service} onChange={e => setForm({ ...form, service: e.target.value })}>
-            {page.services.map(service => <option key={service}>{service}</option>)}
+        {!requestedContentId && <label>Service
+          <select value={selectedIndex >= 0 ? String(selectedIndex) : "0"} onChange={e => chooseService(e.target.value)}>
+            {page.services.map((service, index) => <option value={index} key={service.id || `${service.title}-${index}`}>{service.title} — {money(service.price, service.currency)}</option>)}
           </select>
         </label>}
 
