@@ -27,6 +27,7 @@ async function request(path, options = {}) {
 export const api = {
   register: body => request("/auth/register", { method:"POST", body:JSON.stringify(body) }),
   login: body => request("/auth/login", { method:"POST", body:JSON.stringify(body) }),
+  me: () => request("/auth/me"),
   profile: {
     get: () => request("/profile"),
     update: body => request("/profile", { method:"PUT", body:JSON.stringify(body) })
@@ -70,7 +71,11 @@ export const api = {
     get: id => request(`/bookings/${id}`),
     create: body => request("/bookings", { method:"POST", body:JSON.stringify(body) }),
     update: (id,body) => request(`/bookings/${id}`, { method:"PUT", body:JSON.stringify(body) }),
+    cancel: id => request(`/bookings/${id}/cancel`, { method:"PATCH" }),
     remove: id => request(`/bookings/${id}`, { method:"DELETE" })
+  },
+  admin: {
+    customers: () => request("/admin/customers")
   },
   messages: {
     users: () => request("/messages/users"),

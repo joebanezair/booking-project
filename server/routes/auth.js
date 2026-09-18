@@ -2,11 +2,15 @@ import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import requireAuth from "../middleware/auth.js";
 
 const router = Router();
 
 function createToken(user) {
   return jwt.sign({ sub: user._id.toString(), email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" });
+}
+function publicUser(user) {
+  return { id: user._id, name: user.name, username: user.username, email: user.email, role: user.role || "customer" };
 }
 function slug(value) {
   return String(value || "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 30) || "user";
@@ -31,10 +35,11 @@ router.post("/register", async (req, res) => {
       name: name.trim(),
       username: await uniqueUsername(name),
       email: normalizedEmail,
-      passwordHash: await bcrypt.hash(password, 12)
+      passwordHash: await bcrypt.hash(password, 12),
+      role: "customer"
     });
 
-    res.status(201).json({ token: createToken(user), user: { id: user._id, name: user.name, username: user.username, email: user.email } });
+    res.status(201).json({ token: createToken(user), user: publicUser(user) });
   } catch (error) { console.error(error); res.status(500).json({ message: "Unable to create account." }); }
 });
 
@@ -47,8 +52,14 @@ router.post("/login", async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) return res.status(401).json({ message: "Invalid email or password." });
     if (!user.username) { user.username = await uniqueUsername(user.name); await user.save(); }
 
-    res.json({ token: createToken(user), user: { id: user._id, name: user.name, username: user.username, email: user.email } });
+    res.json({ token: createToken(user), user: publicUser(user) });
   } catch (error) { console.error(error); res.status(500).json({ message: "Unable to log in." }); }
+});
+
+router.get("/me", requireAuth, async (req, res) => {
+  const user = await User.findById(req.user.id);
+  if (!user) return res.status(401).json({ message: "Your account no longer exists." });
+  res.json(publicUser(user));
 });
 
 export default router;

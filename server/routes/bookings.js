@@ -39,7 +39,7 @@ function validateBooking(input) {
 
 router.get("/", async (req, res) => {
   try {
-    const filter = { user: req.user.id };
+    const filter = req.user.role === "admin" ? { user: req.user.id } : { customer: req.user.id };
 
     if (req.query.status && allowedStatuses.has(req.query.status)) {
       filter.status = req.query.status;
@@ -54,7 +54,10 @@ router.get("/", async (req, res) => {
       ];
     }
 
-    const bookings = await Booking.find(filter).populate("content","title visibility published").sort({ bookingDate: 1 });
+    const bookings = await Booking.find(filter)
+      .populate("content","title visibility published")
+      .populate("user", "name username")
+      .sort({ bookingDate: 1 });
     res.json(bookings);
   } catch (error) {
     console.error(error);
@@ -65,7 +68,10 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req,res) => {
   try {
     if(!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({message:"Invalid booking ID."});
-    const booking=await Booking.findOne({_id:req.params.id,user:req.user.id}).populate("content","title description category price currency coverImage visibility published");
+    const ownership = req.user.role === "admin" ? { user: req.user.id } : { customer: req.user.id };
+    const booking=await Booking.findOne({_id:req.params.id,...ownership})
+      .populate("content","title description category price currency coverImage visibility published")
+      .populate("user", "name username");
     if(!booking) return res.status(404).json({message:"Booking not found."});
     res.json(booking);
   } catch(error){console.error(error);res.status(500).json({message:"Unable to load booking."});}
@@ -73,6 +79,7 @@ router.get("/:id", async (req,res) => {
 
 router.post("/", async (req, res) => {
   try {
+    if (req.user.role !== "admin") return res.status(403).json({ message: "Only admins can create dashboard bookings." });
     const input = normalizeBooking(req.body);
     const validationError = validateBooking(input);
     if (validationError) {
@@ -90,6 +97,7 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
+    if (req.user.role !== "admin") return res.status(403).json({ message: "Only admins can update booking details and status." });
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: "Invalid booking ID." });
     }
@@ -118,8 +126,27 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.patch("/:id/cancel", async (req, res) => {
+  try {
+    if (req.user.role !== "customer") return res.status(403).json({ message: "This action is available to customers only." });
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid booking ID." });
+    const booking = await Booking.findOneAndUpdate(
+      { _id: req.params.id, customer: req.user.id, status: { $ne: "cancelled" } },
+      { status: "cancelled" },
+      { new: true, runValidators: true }
+    );
+    if (!booking) return res.status(404).json({ message: "Booking not found or already cancelled." });
+    req.app.get("io").to(`user:${booking.user}`).emit("booking:updated", booking);
+    res.json(booking);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to cancel booking." });
+  }
+});
+
 router.delete("/:id", async (req, res) => {
   try {
+    if (req.user.role !== "admin") return res.status(403).json({ message: "Only admins can delete bookings." });
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: "Invalid booking ID." });
     }

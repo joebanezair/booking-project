@@ -5,9 +5,10 @@ import Rating from "../models/Rating.js";
 import Comment from "../models/Comment.js";
 import Reaction from "../models/Reaction.js";
 import requireAuth from "../middleware/auth.js";
+import { requireAdmin } from "../middleware/requireRole.js";
 
 const router = Router();
-router.use(requireAuth);
+router.use(requireAuth, requireAdmin);
 
 const imagePattern = /^data:image\/(jpeg|png|webp|gif);base64,[a-z0-9+/=]+$/i;
 

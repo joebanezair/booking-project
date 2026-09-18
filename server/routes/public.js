@@ -23,7 +23,7 @@ async function ratingSummary(contentIds) {
 
 router.get("/profile/:username", optionalAuth, async (req,res)=>{
   try {
-    const user=await User.findOne({username:String(req.params.username).toLowerCase()})
+    const user=await User.findOne({username:String(req.params.username).toLowerCase(),role:"admin"})
       .select("name username bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage createdAt");
     if(!user) return res.status(404).json({message:"Profile not found."});
     const items=await Content.find({user:user._id,published:true,visibility:{$ne:"private"}})
@@ -41,8 +41,8 @@ router.get("/content/:contentId", optionalAuth, async (req,res)=>{
   try {
     if(!mongoose.isValidObjectId(req.params.contentId)) return res.status(404).json({message:"Content not found."});
     const item=await Content.findOne({_id:req.params.contentId,published:true,visibility:{$ne:"private"}})
-      .populate("user","name username bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage");
-    if(!item||!item.user) return res.status(404).json({message:"Content not found."});
+      .populate("user","name username role bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage");
+    if(!item||!item.user||item.user.role!=="admin") return res.status(404).json({message:"Content not found."});
 
     const [summaryRows,comments,current,reactionRows,currentReaction]=await Promise.all([
       Rating.aggregate([{ $match:{content:item._id}},{ $group:{_id:"$content",averageRating:{$avg:"$rating"},ratingCount:{$sum:1}}}]),
@@ -66,7 +66,8 @@ router.get("/content/:contentId", optionalAuth, async (req,res)=>{
 
 router.get("/browse", async (_req,res)=>{
   try {
-    const items=await Content.find({published:true,visibility:{$ne:"private"}}).populate("user","name username profileImage").sort({updatedAt:-1}).limit(60);
+    const adminIds=await User.find({role:"admin"}).distinct("_id");
+    const items=await Content.find({user:{$in:adminIds},published:true,visibility:{$ne:"private"}}).populate("user","name username profileImage").sort({updatedAt:-1}).limit(60);
     const summary=await ratingSummary(items.map(i=>i._id));
     res.json(items.map(item=>({...item.toObject(),owner:item.user,...(summary.get(String(item._id))||{averageRating:0,ratingCount:0})})));
   } catch(error){console.error(error);res.status(500).json({message:"Unable to browse content."});}
@@ -77,10 +78,11 @@ router.get("/search", async (req,res)=>{
     const q=String(req.query.q||"").trim().slice(0,100), category=String(req.query.category||"").trim();
     const minRating=Math.max(0,Math.min(5,Number(req.query.minRating||0))), page=Math.max(1,Number(req.query.page||1)), limit=12, skip=(page-1)*limit;
     const regex=q?new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"i"):null;
-    const userFilter=regex?{$or:[{name:regex},{username:regex},{headline:regex},{location:regex}]}:{};
+    const adminIds=await User.find({role:"admin"}).distinct("_id");
+    const userFilter={role:"admin",...(regex?{$or:[{name:regex},{username:regex},{headline:regex},{location:regex}]}:{})};
     const matchingUsers=await User.find(userFilter).select("name username headline location profileImage profileImagePositionX profileImagePositionY").sort({name:1}).limit(100);
     const users=matchingUsers.slice(skip,skip+limit);
-    const serviceFilter={published:true,visibility:{$ne:"private"},...(category?{category}:{}),...(regex?{$or:[{title:regex},{description:regex},{category:regex},{user:{$in:matchingUsers.map(user=>user._id)}}]}:{})};
+    const serviceFilter={user:{$in:adminIds},published:true,visibility:{$ne:"private"},...(category?{category}:{}),...(regex?{$or:[{title:regex},{description:regex},{category:regex},{user:{$in:matchingUsers.map(user=>user._id)}}]}:{})};
     const services=await Content.find(serviceFilter).populate("user","name username profileImage").sort({updatedAt:-1}).skip(skip).limit(limit);
     const ratings=await ratingSummary(services.map(service=>service._id));
     const mapped=services.map(service=>({...service.toObject(),owner:service.user,...(ratings.get(String(service._id))||{averageRating:0,ratingCount:0})})).filter(service=>service.averageRating>=minRating);
@@ -91,16 +93,16 @@ router.get("/search", async (req,res)=>{
 router.get("/book/:userId", async (req,res)=>{
   try {
     if(!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({message:"Booking page not found."});
-    const user=await User.findById(req.params.userId).select("name");
+    const user=await User.findOne({_id:req.params.userId,role:"admin"}).select("name");
     if(!user) return res.status(404).json({message:"Booking page not found."});
     res.json({owner:{id:user._id,name:user.name},services:["Consultation","Technical Support","Product Demo","Project Meeting","Discovery Call","Other"]});
   } catch(error){console.error(error);res.status(500).json({message:"Unable to load booking page."});}
 });
 
-router.post("/book/:userId", async (req,res)=>{
+router.post("/book/:userId", optionalAuth, async (req,res)=>{
   try {
     if(!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({message:"Booking page not found."});
-    const owner=await User.findById(req.params.userId);
+    const owner=await User.findOne({_id:req.params.userId,role:"admin"});
     if(!owner) return res.status(404).json({message:"Booking page not found."});
     const guestName=String(req.body.guestName||"").trim(),guestEmail=String(req.body.guestEmail||"").trim().toLowerCase();
     const service=String(req.body.service||"").trim(),bookingDate=req.body.bookingDate,notes=String(req.body.notes||"").trim();
@@ -113,7 +115,7 @@ router.post("/book/:userId", async (req,res)=>{
       content=await Content.findOne({_id:req.body.contentId,user:owner._id,published:true,visibility:{$ne:"private"},allowBookings:true}).select("title");
       if(!content) return res.status(404).json({message:"This content is not available for booking."});
     }
-    const booking=await Booking.create({user:owner._id,content:content?._id||null,guestName,guestEmail,service:content?.title||service,bookingDate,notes,source:"public",status:"pending"});
+    const booking=await Booking.create({user:owner._id,customer:req.user?.role==="customer"?req.user.id:null,content:content?._id||null,guestName,guestEmail,service:content?.title||service,bookingDate,notes,source:"public",status:"pending"});
     req.app.get("io").to(`user:${owner._id}`).emit("booking:created", booking);
     await notify(req,owner._id,{type:"booking",title:"New booking request",body:`${guestName} requested ${content?.title||service}.`,link:"/dashboard/bookings"});
     res.status(201).json({id:booking._id,message:"Booking request sent successfully."});
