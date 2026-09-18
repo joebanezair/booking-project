@@ -98,7 +98,7 @@ export function exportSalesSpreadsheet(data, rangeLabel = "Sales") {
   const safeLabel = String(rangeLabel || "Sales").replace(/[^a-z0-9]+/gi, "_").replace(/^_|_$/g, "");
   const link = document.createElement("a");
   link.href = url;
-  link.download = `BookFlow_Sales_${safeLabel || "Report"}.xml`;
+  link.download = `BookFlow_Sales_${safeLabel || "Report"}.xls`;
   document.body.appendChild(link);
   link.click();
   link.remove();
