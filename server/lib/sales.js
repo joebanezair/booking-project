@@ -11,7 +11,7 @@ export async function syncSaleForBooking(booking, reason = "") {
         $set: {
           businessOwner: booking.user,
           business: booking.business || null,
-          content: booking.content || null,
+          content: booking.content?._id || booking.content || null,
           serviceName: booking.service,
           saleAmount: Number(booking.servicePrice || 0),
           currency: String(booking.currency || "PHP").toUpperCase(),
