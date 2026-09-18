@@ -182,6 +182,16 @@ router.put("/:id", async (req, res) => {
     if (!booking) return res.status(404).json({ message: "Booking not found." });
 
     const previousStatus = booking.status;
+    if (previousStatus === "completed" && input.status === "completed") {
+      const financialFieldsChanged =
+        booking.service !== input.service ||
+        Number(booking.servicePrice || 0) !== Number(input.servicePrice || 0) ||
+        String(booking.currency || "PHP") !== String(input.currency || "PHP") ||
+        new Date(booking.bookingDate).getTime() !== new Date(input.bookingDate).getTime();
+      if (financialFieldsChanged) {
+        return res.status(409).json({ message: "Reopen the booking before changing its service, price, currency, or booking date. This preserves the recorded sales audit trail." });
+      }
+    }
     Object.assign(booking, input);
     if (input.status === "completed") booking.completedAt = booking.completedAt || new Date();
     else if (previousStatus === "completed") booking.completedAt = null;
@@ -224,13 +234,14 @@ router.patch("/:id/status", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid booking ID." });
-    const booking = await Booking.findOneAndDelete({ _id: req.params.id, user: req.user.id });
+    const booking = await Booking.findOne({ _id: req.params.id, user: req.user.id });
     if (!booking) return res.status(404).json({ message: "Booking not found." });
+    if (await Sale.exists({ booking: booking._id })) {
+      return res.status(409).json({ message: "This booking has a sales audit record and cannot be deleted. Reopen, cancel, or keep it for reporting history." });
+    }
 
-    await Promise.all([
-      Review.deleteOne({ booking: booking._id }),
-      Sale.deleteOne({ booking: booking._id })
-    ]);
+    await Booking.deleteOne({ _id: booking._id });
+    await Review.deleteOne({ booking: booking._id });
     req.app.get("io").to(`user:${req.user.id}`).emit("booking:deleted", { id: String(booking._id) });
     res.status(204).end();
   } catch (error) {
