@@ -11,8 +11,11 @@ router.use(requireAuth);
 
 router.get("/users", async (req, res) => {
   try {
-    const users = await User.find({ _id: { $ne: req.user.id } })
-      .select("name email username profileImage")
+    const users = await User.find({
+      _id: { $ne: req.user.id },
+      role: { $in: ["business", "admin"] },
+      accountStatus: { $ne: "disabled" }
+    }).select("name email username profileImage role accountStatus")
       .sort({ name: 1 });
     res.json(users);
   } catch (error) {
@@ -28,7 +31,11 @@ router.get("/:userId", async (req, res) => {
     }
     if (String(req.params.userId) === String(req.user.id)) return res.status(400).json({ message: "You cannot message yourself." });
 
-    const otherUser = await User.findById(req.params.userId).select("name email username profileImage");
+    const otherUser = await User.findOne({
+      _id: req.params.userId,
+      role: { $in: ["business", "admin"] },
+      accountStatus: { $ne: "disabled" }
+    }).select("name email username profileImage role accountStatus");
     if (!otherUser) return res.status(404).json({ message: "User not found." });
 
     const messages = await Message.find({
@@ -64,7 +71,11 @@ router.post("/:userId", async (req, res) => {
     if (!body) return res.status(400).json({ message: "Message cannot be empty." });
     if (body.length > 2000) return res.status(400).json({ message: "Message is too long." });
 
-    const recipient = await User.findById(req.params.userId);
+    const recipient = await User.findOne({
+      _id: req.params.userId,
+      role: { $in: ["business", "admin"] },
+      accountStatus: { $ne: "disabled" }
+    });
     if (!recipient) return res.status(404).json({ message: "User not found." });
 
     const message = await Message.create({
