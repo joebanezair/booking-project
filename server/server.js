@@ -17,6 +17,8 @@ import reactionRoutes from "./routes/reactions.js";
 import notificationRoutes from "./routes/notifications.js";
 import profileRatingRoutes from "./routes/profileRatings.js";
 import forumRoutes from "./routes/forum.js";
+import adminRoutes from "./routes/admin.js";
+import User from "./models/User.js";
 
 dotenv.config();
 const app = express();
@@ -57,6 +59,7 @@ app.use("/api/reactions",reactionRoutes);
 app.use("/api/notifications",notificationRoutes);
 app.use("/api/profile-ratings",profileRatingRoutes);
 app.use("/api/forum",forumRoutes);
+app.use("/api/admin",adminRoutes);
 app.use("/api/public",publicRoutes);
 app.use((err,_req,res,_next)=>{console.error(err);if(err?.type==="entity.too.large") return res.status(413).json({message:"Uploaded images are too large."});res.status(500).json({message:"Something went wrong on the server."});});
 
@@ -64,6 +67,8 @@ async function start(){
   if(!process.env.MONGO_URI) throw new Error("MONGO_URI is missing. Copy .env.example to .env and configure it.");
   if(!process.env.JWT_SECRET) throw new Error("JWT_SECRET is missing. Add it to server/.env.");
   await mongoose.connect(process.env.MONGO_URI);
+  const adminEmails = String(process.env.ADMIN_EMAILS || "").split(",").map(email => email.trim().toLowerCase()).filter(Boolean);
+  if (adminEmails.length) await User.updateMany({ email: { $in: adminEmails } }, { $set: { role: "admin" } });
   httpServer.listen(PORT,()=>console.log(`API and WebSocket server listening on http://localhost:${PORT}`));
 }
 start().catch(error=>{console.error(error);process.exit(1);});

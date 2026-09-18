@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const bookingSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    customer: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null, index: true },
     content: { type: mongoose.Schema.Types.ObjectId, ref: "Content", default: null, index: true },
     guestName: { type: String, required: true, trim: true, maxlength: 100 },
     guestEmail: { type: String, trim: true, lowercase: true, maxlength: 150, default: "" },

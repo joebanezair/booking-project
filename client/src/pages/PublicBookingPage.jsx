@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { api } from "../api.js";
 
-export default function PublicBookingPage() {
+export default function PublicBookingPage({ user }) {
   const { userId } = useParams();
   const [params] = useSearchParams();
   const contentId = params.get("content") || "";
   const requestedService = params.get("service") || "Consultation";
   const [page, setPage] = useState(null);
-  const [form, setForm] = useState({ guestName: "", guestEmail: "", service: requestedService, contentId, bookingDate: "", notes: "" });
+  const [form, setForm] = useState({ guestName: user?.name || "", guestEmail: user?.email || "", service: requestedService, contentId, bookingDate: "", notes: "" });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 

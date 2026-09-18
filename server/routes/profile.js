@@ -5,7 +5,7 @@ import requireAuth from "../middleware/auth.js";
 const router = Router();
 router.use(requireAuth);
 const imagePattern = /^data:image\/(jpeg|png|webp|gif);base64,[a-z0-9+/=]+$/i;
-const fields = "name username email bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage createdAt updatedAt";
+const fields = "name username email role bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage createdAt updatedAt";
 function slug(value){return String(value||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,30)||"user";}
 async function ensureUsername(user){if(user.username)return user;const base=slug(user.name);let candidate=base,i=1;while(await User.exists({username:candidate,_id:{$ne:user._id}}))candidate=`${base}-${i++}`;user.username=candidate;await user.save();return user;}
 function imageError(value) {

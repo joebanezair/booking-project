@@ -1,6 +1,6 @@
 # BookFlow — Service Search, Booking, and Messaging Platform
 
-BookFlow is a full-stack MERN application where providers publish services, build public profiles, accept schedule requests, and communicate with other registered users. It includes public/private services, user and service search, ratings, reactions, threaded discussions, and authenticated real-time updates.
+BookFlow is a full-stack MERN application with separate **admin** and **customer** experiences. Admins manage the business, publish services, accept schedule requests, and review customers. Customers browse services, request bookings, and manage only their own appointments. It also includes public/private services, search, ratings, reactions, threaded discussions, messaging, and authenticated real-time updates.
 
 ## Features
 
@@ -12,6 +12,26 @@ BookFlow is a full-stack MERN application where providers publish services, buil
 - Persistent signed-in client sessions
 - Automatically generated unique usernames
 - Protected dashboard routes
+- Role-based authorization enforced by both the frontend and backend
+- Public registration always creates a `customer`; users cannot self-register as admins
+- Secure admin assignment through the server-side `ADMIN_EMAILS` environment variable
+
+### User roles and permissions
+
+| Capability | Admin | Customer |
+| --- | --- | --- |
+| Manage business services | Yes | No |
+| Publish, unpublish, edit, or delete services | Yes | No |
+| View incoming business bookings | Yes | No |
+| Update booking status or delete bookings | Yes | No |
+| View the registered-customer directory | Yes | No |
+| Browse public services | Yes | Yes |
+| Request a service booking | Yes | Yes |
+| View bookings associated with their customer account | No | Yes |
+| Cancel their own booking requests | No | Yes |
+| Use messages, notifications, forum, profile, and theme settings | Yes | Yes |
+
+Admin restrictions are enforced by API middleware. Hiding navigation links is only a convenience; direct requests from a customer to admin endpoints return HTTP `403`.
 
 ### Separate application pages
 
@@ -25,6 +45,7 @@ Every major feature has its own route instead of being combined into one dashboa
 | Edit a service | `/dashboard/services/:serviceId/edit` |
 | Booking management | `/dashboard/bookings` |
 | Booking details | `/dashboard/bookings/:bookingId` |
+| Customer management (admin only) | `/dashboard/customers` |
 | Real-time messages | `/dashboard/messages` |
 | Profile management | `/dashboard/profile` |
 | Notification center | `/dashboard/notifications` |
@@ -41,8 +62,8 @@ Legacy `/dashboard/content`, `/dashboard/content/new`, `/dashboard/content/:id/e
 
 - Edit name, username, headline, biography, location, and website
 - Upload or remove a profile photo
-- Reposition the profile photo horizontally and vertically
-- Preview the selected profile-photo framing
+- Drag the profile photo directly inside its circular frame using mouse or touch
+- Fine-tune profile-photo positioning with the keyboard arrow keys
 - Upload, preview, or remove a profile cover photo
 - Display the cover photo and positioned avatar on the public profile
 - Preview the public profile from profile settings
@@ -153,7 +174,9 @@ The existing MongoDB `Content` collection and internal content API are intention
 - Create, view, edit, and delete bookings
 - Pending, confirmed, and cancelled statuses
 - Booking statistics
-- Per-user protected booking data
+- Admin booking records are scoped to the signed-in business administrator
+- Authenticated customer requests are linked to the customer account
+- Customers can view and cancel only their own linked booking requests
 - Public booking requests without requiring visitor registration
 - Guest name, email, requested date/time, service, and notes
 - Public requests default to `pending`
@@ -285,7 +308,25 @@ PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/booking_app
 JWT_SECRET=replace_with_a_long_random_secret
 CLIENT_URL=http://localhost:5173
+ADMIN_EMAILS=owner@example.com
 ```
+
+### Creating the initial admin securely
+
+Admin role selection is not exposed in registration requests or the browser UI.
+
+1. Register the intended owner account normally, or use an existing account.
+2. Add its normalized email address to `ADMIN_EMAILS` in `server/.env`.
+3. Restart the backend. On startup, matching accounts are promoted to `admin`.
+4. Sign in again. The `/api/auth/me` session refresh also updates an already stored browser session with the current role.
+
+Multiple admin emails may be supplied as a comma-separated list:
+
+```env
+ADMIN_EMAILS=owner@example.com,manager@example.com
+```
+
+Removing an address from the environment variable does not automatically demote the account. Change its `role` to `customer` in the database if access must be revoked.
 
 Start the API and WebSocket server:
 
@@ -328,6 +369,7 @@ Authorization: Bearer <token>
 ```text
 POST /api/auth/register
 POST /api/auth/login
+GET  /api/auth/me
 ```
 
 ### Profile
@@ -340,6 +382,7 @@ PUT /api/profile
 ### Service management
 
 The internal path remains `/api/content` for data compatibility.
+Every endpoint in this section requires the `admin` role.
 
 ```text
 GET    /api/content
@@ -408,9 +451,22 @@ GET    /api/bookings
 POST   /api/bookings
 PUT    /api/bookings/:id
 DELETE /api/bookings/:id
+PATCH  /api/bookings/:id/cancel
 GET    /api/public/book/:userId
 POST   /api/public/book/:userId
 ```
+
+- Admins receive bookings owned by their business account and may create, update, or delete them.
+- Customers receive only bookings whose `customer` field matches their authenticated account and may cancel those bookings.
+- Public/guest booking remains available for backward compatibility. A signed-in customer booking is automatically linked to that customer.
+
+### Admin
+
+```text
+GET /api/admin/customers
+```
+
+Returns registered customer accounts and booking counts. Requires the `admin` role.
 
 ### Messaging
 
@@ -422,9 +478,9 @@ POST /api/messages/:userId
 
 ## Data models
 
-- **User:** authentication, public profile, profile-photo position, and cover photo
+- **User:** authentication, `admin`/`customer` role, public profile, profile-photo position, and cover photo
 - **Content/Service:** owner, details, price, images, visibility, publishing, rating option, and booking option
-- **Booking:** owner, optional linked service, guest details, date/time, source, and status
+- **Booking:** admin/business owner, optional authenticated customer, optional linked service, guest details, date/time, source, and status
 - **Message:** sender, recipient, body, read timestamp, and timestamps
 - **Rating:** unique user/service star rating
 - **Reaction:** unique user/service Like or Dislike
@@ -437,6 +493,8 @@ POST /api/messages/:userId
 
 - Existing content records remain in the `Content` model and MongoDB collection
 - Existing records without a visibility value behave as public
+- Existing user records without a role behave as `customer` through the schema and authorization fallbacks
+- Existing bookings without a customer reference remain available to their admin owner but are not exposed to customer accounts
 - Old content URLs continue to resolve
 - Existing ratings, comments, bookings, messages, and user accounts are preserved
 - New comment fields have safe defaults, so existing comments become top-level discussion entries
@@ -478,12 +536,21 @@ POST /api/messages/:userId
 3. Confirm a private or booking-disabled service rejects the request.
 4. Open two accounts in separate browsers and test real-time messaging.
 
+### Roles and authorization
+
+1. Register a new account and confirm its role is `customer`.
+2. As a customer, confirm service-management and customer-directory routes redirect to the dashboard.
+3. As a customer, call `/api/content` or `/api/admin/customers` directly and confirm HTTP `403`.
+4. Create bookings from two customer accounts and confirm each customer sees only their own bookings.
+5. Configure one account in `ADMIN_EMAILS`, restart the server, sign in, and confirm the admin dashboard exposes services, bookings, and customers.
+
 ## Security notes
 
 - Passwords are hashed with bcrypt
 - Protected HTTP routes verify JWTs
 - WebSocket connections verify JWTs before joining private user rooms
 - Owner checks protect profile, service, booking, and comment-management operations
+- Database-backed role checks protect admin APIs even if a stored JWT predates a role change
 - Public queries exclude private services on the server
 - Unique database indexes prevent duplicate ratings and reactions
 - Input lengths, image formats, image sizes, identifiers, statuses, visibility, and reaction types are validated
