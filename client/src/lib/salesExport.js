@@ -57,6 +57,18 @@ export function exportSalesSpreadsheet(data, rangeLabel = "Sales") {
     ]));
   }
 
+  const trendRows = [
+    row([cell("Period"), cell("Completed Sales"), cell("Revenue"), cell("Currency")])
+  ];
+  for (const point of data.trend || []) {
+    trendRows.push(row([
+      cell(point.label),
+      cell(point.sales || 0, "Number"),
+      cell(point.revenue || 0, "Number"),
+      cell(data.primaryCurrency || "PHP")
+    ]));
+  }
+
   const serviceRows = [
     row([cell("Service"), cell("Completed Sales"), cell("Revenue"), cell("Currency")])
   ];
@@ -77,6 +89,7 @@ export function exportSalesSpreadsheet(data, rangeLabel = "Sales") {
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
  ${worksheet("Summary", summaryRows)}
  ${worksheet("Sales Records", recordRows)}
+ ${worksheet("Sales Trend", trendRows)}
  ${worksheet("Service Performance", serviceRows)}
 </Workbook>`;
 
