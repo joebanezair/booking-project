@@ -306,6 +306,7 @@ PUT /api/public/reviews/:token
 ### Admin business management
 
 ~~~text
+GET   /api/admin/overview
 GET   /api/admin/businesses
 GET   /api/admin/businesses/:id
 PATCH /api/admin/businesses/:id/status
@@ -371,6 +372,10 @@ VITE_API_URL=http://localhost:5000/api
 ~~~
 
 When VITE_API_URL is omitted, the client uses /api.
+
+## Automated verification
+
+GitHub Actions runs a client production build and backend JavaScript syntax checks on pull requests and pushes to main/feature branches.
 
 ## Security notes
 
