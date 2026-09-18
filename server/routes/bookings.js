@@ -4,23 +4,28 @@ import mongoose from "mongoose";
 import Booking from "../models/Booking.js";
 import Business from "../models/Business.js";
 import Review from "../models/Review.js";
+import Sale from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireActiveBusiness, requireBusiness } from "../middleware/requireRole.js";
+import { syncSaleForBooking } from "../lib/sales.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
 
-const allowedStatuses = new Set(["pending", "confirmed", "completed", "cancelled"]);
+const allowedStatuses = new Set(["pending", "confirmed", "in_progress", "completed", "cancelled", "no_show"]);
 
 function normalizeBooking(body) {
   return {
     guestName: String(body.guestName || "").trim(),
+    guestEmail: String(body.guestEmail || "").trim().toLowerCase(),
     guestPhone: String(body.guestPhone || "").trim(),
     locationLabel: String(body.locationLabel || "").trim(),
     locationLatitude: body.locationLatitude === "" || body.locationLatitude == null ? null : Number(body.locationLatitude),
     locationLongitude: body.locationLongitude === "" || body.locationLongitude == null ? null : Number(body.locationLongitude),
     locationAccuracy: body.locationAccuracy === "" || body.locationAccuracy == null ? null : Number(body.locationAccuracy),
     service: String(body.service || "").trim(),
+    servicePrice: body.servicePrice === "" || body.servicePrice == null ? 0 : Number(body.servicePrice),
+    currency: String(body.currency || "PHP").trim().toUpperCase(),
     bookingDate: body.bookingDate,
     notes: String(body.notes || "").trim(),
     status: body.status || "pending"
@@ -30,8 +35,11 @@ function normalizeBooking(body) {
 function validateBooking(input) {
   if (!input.guestName || !input.service || !input.bookingDate) return "Guest name, service and booking date are required.";
   if (input.guestName.length > 100 || input.service.length > 100) return "Guest name and service must be 100 characters or fewer.";
+  if (input.guestEmail && !/^\S+@\S+\.\S+$/.test(input.guestEmail)) return "Enter a valid guest email address.";
   if (input.guestPhone.length > 30) return "Phone number must be 30 characters or fewer.";
   if (input.locationLabel.length > 200) return "Location must be 200 characters or fewer.";
+  if (!Number.isFinite(input.servicePrice) || input.servicePrice < 0) return "Service price must be a valid non-negative amount.";
+  if (!/^[A-Z]{3}$/.test(input.currency)) return "Currency must be a three-letter code.";
   const hasLatitude = input.locationLatitude !== null;
   const hasLongitude = input.locationLongitude !== null;
   if (hasLatitude !== hasLongitude) return "Location coordinates must include both latitude and longitude.";
@@ -67,6 +75,38 @@ async function ensureReviewInvite(booking) {
   );
 }
 
+async function responsePayload(booking) {
+  const [review, sale] = await Promise.all([
+    Review.findOne({ booking: booking._id }).select("reviewToken verified submittedAt").lean(),
+    Sale.findOne({ booking: booking._id }).select("saleAmount currency status completedAt voidedAt voidReason").lean()
+  ]);
+  return {
+    ...booking.toObject(),
+    reviewInvite: review ? { token: review.reviewToken, verified: review.verified, submittedAt: review.submittedAt } : null,
+    saleRecord: sale || null
+  };
+}
+
+async function applyStatus(booking, nextStatus) {
+  const previousStatus = booking.status;
+  booking.status = nextStatus;
+  if (nextStatus === "completed") {
+    booking.completedAt = booking.completedAt || new Date();
+  } else if (previousStatus === "completed") {
+    booking.completedAt = null;
+  }
+  await booking.save();
+
+  const sale = await syncSaleForBooking(
+    booking,
+    previousStatus === "completed" && nextStatus !== "completed"
+      ? `Booking reopened from completed to ${nextStatus}.`
+      : ""
+  );
+  const review = await ensureReviewInvite(booking);
+  return { booking, sale, review };
+}
+
 router.get("/", async (req, res) => {
   try {
     const filter = { user: req.user.id };
@@ -84,7 +124,7 @@ router.get("/", async (req, res) => {
     }
 
     const bookings = await Booking.find(filter)
-      .populate("content", "title visibility published")
+      .populate("content", "title visibility published price currency")
       .sort({ bookingDate: 1 });
     res.json(bookings);
   } catch (error) {
@@ -99,12 +139,7 @@ router.get("/:id", async (req, res) => {
     const booking = await Booking.findOne({ _id: req.params.id, user: req.user.id })
       .populate("content", "title description category price currency coverImage visibility published");
     if (!booking) return res.status(404).json({ message: "Booking not found." });
-
-    const review = await Review.findOne({ booking: booking._id }).select("reviewToken verified submittedAt").lean();
-    res.json({
-      ...booking.toObject(),
-      reviewInvite: review ? { token: review.reviewToken, verified: review.verified, submittedAt: review.submittedAt } : null
-    });
+    res.json(await responsePayload(booking));
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to load booking." });
@@ -118,10 +153,17 @@ router.post("/", requireActiveBusiness, async (req, res) => {
     if (validationError) return res.status(400).json({ message: validationError });
 
     const business = req.user.businessId || (await Business.findOne({ owner: req.user.id }).select("_id").lean())?._id || null;
-    const booking = await Booking.create({ user: req.user.id, business, ...input });
-    const review = await ensureReviewInvite(booking);
+    const booking = await Booking.create({
+      user: req.user.id,
+      business,
+      ...input,
+      completedAt: input.status === "completed" ? new Date() : null
+    });
+
+    await syncSaleForBooking(booking);
+    await ensureReviewInvite(booking);
     req.app.get("io").to(`user:${req.user.id}`).emit("booking:created", booking);
-    res.status(201).json({ ...booking.toObject(), reviewInvite: review ? { token: review.reviewToken, verified: review.verified } : null });
+    res.status(201).json(await responsePayload(booking));
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to create booking." });
@@ -136,19 +178,46 @@ router.put("/:id", async (req, res) => {
     const validationError = validateBooking(input);
     if (validationError) return res.status(400).json({ message: validationError });
 
-    const booking = await Booking.findOneAndUpdate(
-      { _id: req.params.id, user: req.user.id },
-      input,
-      { new: true, runValidators: true }
-    );
+    const booking = await Booking.findOne({ _id: req.params.id, user: req.user.id });
     if (!booking) return res.status(404).json({ message: "Booking not found." });
 
-    const review = await ensureReviewInvite(booking);
+    const previousStatus = booking.status;
+    Object.assign(booking, input);
+    if (input.status === "completed") booking.completedAt = booking.completedAt || new Date();
+    else if (previousStatus === "completed") booking.completedAt = null;
+    await booking.save();
+
+    await syncSaleForBooking(
+      booking,
+      previousStatus === "completed" && input.status !== "completed"
+        ? `Booking reopened from completed to ${input.status}.`
+        : ""
+    );
+    await ensureReviewInvite(booking);
+
     req.app.get("io").to(`user:${req.user.id}`).emit("booking:updated", booking);
-    res.json({ ...booking.toObject(), reviewInvite: review ? { token: review.reviewToken, verified: review.verified, submittedAt: review.submittedAt } : null });
+    res.json(await responsePayload(booking));
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to update booking." });
+  }
+});
+
+router.patch("/:id/status", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid booking ID." });
+    const status = String(req.body.status || "");
+    if (!allowedStatuses.has(status)) return res.status(400).json({ message: "Invalid booking status." });
+
+    const booking = await Booking.findOne({ _id: req.params.id, user: req.user.id });
+    if (!booking) return res.status(404).json({ message: "Booking not found." });
+
+    await applyStatus(booking, status);
+    req.app.get("io").to(`user:${req.user.id}`).emit("booking:updated", booking);
+    res.json(await responsePayload(booking));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to update booking status." });
   }
 });
 
@@ -158,7 +227,10 @@ router.delete("/:id", async (req, res) => {
     const booking = await Booking.findOneAndDelete({ _id: req.params.id, user: req.user.id });
     if (!booking) return res.status(404).json({ message: "Booking not found." });
 
-    await Review.deleteOne({ booking: booking._id });
+    await Promise.all([
+      Review.deleteOne({ booking: booking._id }),
+      Sale.deleteOne({ booking: booking._id })
+    ]);
     req.app.get("io").to(`user:${req.user.id}`).emit("booking:deleted", { id: String(booking._id) });
     res.status(204).end();
   } catch (error) {
