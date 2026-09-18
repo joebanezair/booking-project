@@ -21,7 +21,7 @@ router.put("/:userId", async (req, res) => {
   try {
     if (req.user.role !== "customer") return res.status(403).json({ message: "Only customers can rate businesses." });
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(400).json({ message: "Invalid business profile ID." });
-    const business = await User.findOne({ _id: req.params.userId, role: "admin" }).select("_id username");
+    const business = await User.findOne({ _id: req.params.userId, role: { $in: ["admin", "business"] } }).select("_id username");
     if (!business) return res.status(404).json({ message: "Business profile not found." });
     const rating = Number(req.body.rating);
     if (!Number.isInteger(rating) || rating < 1 || rating > 5) return res.status(400).json({ message: "Rating must be from 1 to 5." });
@@ -35,7 +35,7 @@ router.delete("/:userId", async (req, res) => {
   try {
     if (req.user.role !== "customer") return res.status(403).json({ message: "Only customers can manage business ratings." });
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(400).json({ message: "Invalid business profile ID." });
-    const business = await User.findOne({ _id: req.params.userId, role: "admin" }).select("_id");
+    const business = await User.findOne({ _id: req.params.userId, role: { $in: ["admin", "business"] } }).select("_id");
     if (!business) return res.status(404).json({ message: "Business profile not found." });
     await ProfileRating.findOneAndDelete({ profile: business._id, user: req.user.id });
     res.json(await summary(business._id, req.user.id));

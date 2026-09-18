@@ -28,7 +28,7 @@ router.put("/:targetType/:targetId", async (req, res) => {
       const comment = await Comment.findById(targetId);
       if (!comment) return res.status(404).json({ message: "Comment not found." });
       const content = await Content.findOne({ _id: comment.content, published: true, visibility: { $ne: "private" } }).select("user");
-      const business = content ? await User.exists({ _id: content.user, role: "admin" }) : null;
+      const business = content ? await User.exists({ _id: content.user, role: { $in: ["admin", "business"] } }) : null;
       if (!content || !business) return res.status(404).json({ message: "Public service not found." });
       event = { rooms: [`service:${content._id}`], name: "comment:reaction", serviceId: String(content._id) };
     }

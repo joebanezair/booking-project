@@ -1,6 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { timingSafeEqual } from "node:crypto";
 import User from "../models/User.js";
 import requireAuth from "../middleware/auth.js";
 
@@ -22,25 +23,37 @@ async function uniqueUsername(name) {
   return candidate;
 }
 
+function validInviteKey(actual, expected) {
+  if (!expected || expected.length < 32 || expected.startsWith("replace_with_")) return false;
+  const actualBuffer = Buffer.from(String(actual || ""));
+  const expectedBuffer = Buffer.from(expected);
+  return actualBuffer.length === expectedBuffer.length && timingSafeEqual(actualBuffer, expectedBuffer);
+}
+
+async function createAccount(req, res, role) {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) return res.status(400).json({ message: "Name, email and password are required." });
+  if (password.length < 8) return res.status(400).json({ message: "Password must be at least 8 characters." });
+  const normalizedEmail = email.trim().toLowerCase();
+  if (await User.findOne({ email: normalizedEmail })) return res.status(409).json({ message: "An account with that email already exists." });
+  const user = await User.create({ name: name.trim(), username: await uniqueUsername(name), email: normalizedEmail, passwordHash: await bcrypt.hash(password, 12), role });
+  return res.status(201).json({ token: createToken(user), user: publicUser(user) });
+}
+
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) return res.status(400).json({ message: "Name, email and password are required." });
-    if (password.length < 8) return res.status(400).json({ message: "Password must be at least 8 characters." });
-
-    const normalizedEmail = email.trim().toLowerCase();
-    if (await User.findOne({ email: normalizedEmail })) return res.status(409).json({ message: "An account with that email already exists." });
-
-    const user = await User.create({
-      name: name.trim(),
-      username: await uniqueUsername(name),
-      email: normalizedEmail,
-      passwordHash: await bcrypt.hash(password, 12),
-      role: "customer"
-    });
-
-    res.status(201).json({ token: createToken(user), user: publicUser(user) });
+    await createAccount(req, res, "customer");
   } catch (error) { console.error(error); res.status(500).json({ message: "Unable to create account." }); }
+});
+
+router.post("/register/:role/:inviteKey", async (req, res) => {
+  try {
+    const role = req.params.role;
+    if (!['admin', 'business'].includes(role)) return res.status(404).json({ message: "Registration page not found." });
+    const expected = role === "admin" ? process.env.ADMIN_REGISTRATION_KEY : process.env.BUSINESS_REGISTRATION_KEY;
+    if (!validInviteKey(req.params.inviteKey, expected)) return res.status(403).json({ message: "This registration invitation is invalid or unavailable." });
+    await createAccount(req, res, role);
+  } catch (error) { console.error(error); res.status(500).json({ message: "Unable to create invited account." }); }
 });
 
 router.post("/login", async (req, res) => {

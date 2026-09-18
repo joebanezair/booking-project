@@ -7,7 +7,7 @@ const services = ["Consultation", "Technical Support", "Product Demo", "Project 
 const empty = { guestName: "", service: "Consultation", bookingDate: "", notes: "", status: "pending" };
 
 export default function BookingManager({ user }) {
-  const isAdmin = user.role === "admin";
+  const isAdmin = ["admin", "business"].includes(user.role);
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);

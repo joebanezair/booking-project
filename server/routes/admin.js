@@ -9,7 +9,7 @@ router.use(requireAuth, requireAdmin);
 
 router.get("/customers", async (_req, res) => {
   try {
-    const customers = await User.find({ role: { $ne: "admin" } })
+    const customers = await User.find({ role: "customer" })
       .select("name username email profileImage createdAt")
       .sort({ createdAt: -1 })
       .lean();

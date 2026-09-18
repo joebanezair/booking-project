@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
     username: { type: String, unique: true, sparse: true, lowercase: true, trim: true, minlength: 3, maxlength: 40, match: /^[a-z0-9-]+$/ },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
-    role: { type: String, enum: ["admin", "customer"], default: "customer", index: true },
+    role: { type: String, enum: ["admin", "business", "customer"], default: "customer", index: true },
     bio: { type: String, trim: true, maxlength: 1000, default: "" },
     headline: { type: String, trim: true, maxlength: 120, default: "" },
     location: { type: String, trim: true, maxlength: 120, default: "" },
