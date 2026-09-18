@@ -66,7 +66,7 @@ export default function DashboardPage({ user, onLogout }) {
       <article className="stat-card"><span>Businesses</span><strong>{overview?.businesses.total ?? "—"}</strong><small>{overview ? `${overview.businesses.active} active · ${overview.businesses.paused} paused · ${overview.businesses.disabled} disabled` : "Loading activity…"}</small></article>
       <article className="stat-card"><span>Services</span><strong>{overview?.services.total ?? "—"}</strong><small>{overview ? `${overview.services.published} published` : "Loading activity…"}</small></article>
       <article className="stat-card"><span>Bookings</span><strong>{overview?.bookings.total ?? "—"}</strong><small>{overview ? `${overview.bookings.pending} pending · ${overview.bookings.completed} completed` : "Loading activity…"}</small></article>
-      <article className="stat-card"><span>Recorded sales</span><strong>{overview?.sales.recorded ?? "—"}</strong><small>{overview?.sales?.totalsByCurrency?.length ? overview.sales.totalsByCurrency.map(item => `${item.currency} ${Number(item.total || 0).toLocaleString()}`).join(" · ") : "Completed booking value"}</small></article>
+      <article className="stat-card"><span>Recorded sales</span><strong>{overview?.sales?.recorded ?? "—"}</strong><small>{overview?.sales?.totalsByCurrency?.length ? overview.sales.totalsByCurrency.map(item => `${item.currency} ${Number(item.total || 0).toLocaleString()}`).join(" · ") : "Completed booking value"}</small></article>
       <article className="stat-card"><span>Verified reviews</span><strong>{overview?.reviews.verified ?? "—"}</strong><small>Completed-booking reviews</small></article>
     </section>}
 
