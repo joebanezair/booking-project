@@ -47,6 +47,7 @@ Every major feature has its own route instead of being combined into one dashboa
 | Booking details | `/dashboard/bookings/:bookingId` |
 | Customer management (admin only) | `/dashboard/customers` |
 | Real-time messages | `/dashboard/messages` |
+| Direct conversation | `/dashboard/messages/:userId` |
 | Profile management | `/dashboard/profile` |
 | Notification center | `/dashboard/notifications` |
 | Appearance settings | `/dashboard/settings` |
@@ -124,8 +125,10 @@ The existing MongoDB `Content` collection and internal content API are intention
 - Service owners cannot rate their own services
 - Ratings require authentication
 - Providers can disable ratings for an individual service
-- Every public user profile also has its own independent 1–5-star rating summary
-- Signed-in users can add, update, or remove a profile rating, while self-rating is blocked
+- Every public admin profile has an independent 1–5-star business rating summary
+- Authenticated customers can add, update, or remove one rating per business
+- Admins can view business ratings but cannot submit profile ratings
+- Rating averages and totals update immediately without a full page reload
 
 ### Notifications
 
@@ -169,6 +172,18 @@ The existing MongoDB `Content` collection and internal content API are intention
 - WebSocket events for new, edited, and deleted comments
 - Up to 200 comments loaded per service discussion
 
+### Emoji reactions
+
+- React to direct messages, top-level comments, and replies with 👍 ❤️ 😂 😮 😢 or 🙏
+- Toggle each emoji independently, with one reaction of each type per user and target
+- Display reaction totals and highlight the signed-in user's selections
+- Accessible emoji picker with keyboard focus, Escape dismissal, outside-click dismissal, and touch-friendly controls
+- Message reactions are authorized against conversation membership
+- Comment reactions are authorized against accessible public services
+- Real-time message-reaction updates are limited to the two conversation participants
+- Real-time comment-reaction updates use service-specific Socket.IO rooms
+- Existing service Like/Dislike reactions remain separate and unchanged
+
 ### Booking management
 
 - Create, view, edit, and delete bookings
@@ -205,6 +220,10 @@ The existing MongoDB `Content` collection and internal content API are intention
 - Instant message delivery through authenticated WebSocket connections
 - MongoDB message persistence
 - Automatic WebSocket reconnection
+- Start a direct conversation from a business profile without searching the Messages directory
+- Reuse existing message history when a conversation already exists
+- Preserve the selected conversation in `/dashboard/messages/:userId` across refreshes
+- Redirect signed-out profile visitors through login and back to the intended conversation
 
 ### Real-time architecture
 
@@ -220,6 +239,10 @@ Real-time events include:
 - `comment:created`
 - `comment:updated`
 - `comment:deleted`
+- `message:reaction`
+- `comment:reaction`
+
+Authenticated clients viewing a service join `service:<serviceId>` while that service page is open and leave the room during cleanup.
 
 ## Technology stack
 
@@ -262,6 +285,7 @@ booking-project/
 │   │   ├── Booking.js
 │   │   ├── Comment.js
 │   │   ├── Content.js
+│   │   ├── EmojiReaction.js
 │   │   ├── Message.js
 │   │   ├── Rating.js
 │   │   ├── Reaction.js
@@ -379,6 +403,23 @@ GET /api/profile
 PUT /api/profile
 ```
 
+### Emoji reactions
+
+```text
+PUT /api/emoji-reactions/message/:messageId
+PUT /api/emoji-reactions/comment/:commentId
+```
+
+Request body:
+
+```json
+{
+  "emoji": "❤️"
+}
+```
+
+Calling the same endpoint with the same emoji toggles the current user's reaction. Supported values are `👍`, `❤️`, `😂`, `😮`, `😢`, and `🙏`.
+
 ### Service management
 
 The internal path remains `/api/content` for data compatibility.
@@ -476,6 +517,8 @@ GET  /api/messages/:userId
 POST /api/messages/:userId
 ```
 
+Conversation responses include `emojiReactions` for each message. The backend rejects self-messaging and any reaction to a message outside the authenticated user's conversations.
+
 ## Data models
 
 - **User:** authentication, `admin`/`customer` role, public profile, profile-photo position, and cover photo
@@ -487,6 +530,7 @@ POST /api/messages/:userId
 - **Comment:** service, author, parent, nesting depth, edit state, and deletion placeholder state
 - **ProfileRating:** unique user-to-profile star rating
 - **Notification:** recipient, type, message, destination link, and read state
+- **EmojiReaction:** target type, target ID, reacting user, emoji, and timestamps, protected by a unique compound index
 - **ForumPost:** public discussion post with category and embedded replies
 
 ## Compatibility notes
@@ -520,6 +564,17 @@ POST /api/messages/:userId
 2. Update and remove the rating.
 3. Like the service, switch to Dislike, and remove the reaction.
 4. Confirm service owners cannot rate or react to their own service.
+5. As a customer, rate a public business profile, update the rating, and remove it.
+6. Confirm admins cannot submit business-profile ratings.
+
+### Emoji reactions
+
+1. Add and remove each supported emoji on a direct message.
+2. Confirm both participants receive the updated message totals in real time.
+3. React to a top-level service comment and a nested reply from two accounts.
+4. Confirm totals do not duplicate when realtime events and API responses arrive together.
+5. Attempt to react to an unrelated message or inaccessible comment and confirm access is denied.
+6. Confirm service Like/Dislike counts remain independent.
 
 ### Threaded discussions
 
@@ -535,6 +590,9 @@ POST /api/messages/:userId
 2. Confirm it appears on the owner's booking page in real time.
 3. Confirm a private or booking-disabled service rejects the request.
 4. Open two accounts in separate browsers and test real-time messaging.
+5. Click **Message** on a business profile and confirm the correct conversation opens directly.
+6. Refresh the direct-conversation URL and confirm the same recipient remains selected.
+7. Start signed out, click **Sign in to message**, authenticate, and confirm the intended conversation opens.
 
 ### Roles and authorization
 
@@ -553,6 +611,7 @@ POST /api/messages/:userId
 - Database-backed role checks protect admin APIs even if a stored JWT predates a role change
 - Public queries exclude private services on the server
 - Unique database indexes prevent duplicate ratings and reactions
+- Message and comment emoji targets are authorized server-side before toggling reactions
 - Input lengths, image formats, image sizes, identifiers, statuses, visibility, and reaction types are validated
 
 This portfolio project stores JWTs in `localStorage`. A production deployment should use secure HttpOnly cookies, CSRF protection, rate limiting, stricter upload storage, anti-spam controls, refresh-token rotation, audit logging, and automated integration tests.

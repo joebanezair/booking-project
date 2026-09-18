@@ -6,6 +6,7 @@ import Comment from "../models/Comment.js";
 import Reaction from "../models/Reaction.js";
 import requireAuth from "../middleware/auth.js";
 import { requireAdmin } from "../middleware/requireRole.js";
+import EmojiReaction from "../models/EmojiReaction.js";
 
 const router = Router();
 router.use(requireAuth, requireAdmin);
@@ -137,9 +138,11 @@ router.delete("/:id", async (req, res) => {
     }
     const item = await Content.findOneAndDelete({ _id: req.params.id, user: req.user.id });
     if (!item) return res.status(404).json({ message: "Content not found." });
+    const commentIds = await Comment.find({ content: req.params.id }).distinct("_id");
     await Promise.all([
       Rating.deleteMany({ content: req.params.id }),
-      Comment.deleteMany({ content: req.params.id })
+      Comment.deleteMany({ content: req.params.id }),
+      EmojiReaction.deleteMany({ targetType: "comment", target: { $in: commentIds } })
       ,Reaction.deleteMany({ content: req.params.id })
     ]);
     res.status(204).end();

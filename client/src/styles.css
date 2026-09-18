@@ -258,11 +258,27 @@ button:disabled { opacity: .62; cursor: not-allowed; transform: none; }
 .conversation-header { padding:16px 18px; border-bottom:1px solid #e3e8f0; }
 .conversation-header strong,.conversation-header small { display:block; }
 .conversation-header small { margin-top:3px; color:#8a94a7; }
-.message-list { flex:1; min-height:300px; max-height:480px; overflow:auto; padding:18px; display:flex; flex-direction:column; gap:10px; }
-.message-bubble { max-width:75%; padding:10px 12px; border-radius:14px; line-height:1.45; background:#eef2f8; align-self:flex-start; }
-.message-bubble.mine { background:#4f68dd; color:#fff; align-self:flex-end; }
+.message-list { flex:1; min-height:300px; max-height:480px; overflow:auto; padding:18px; display:flex; flex-direction:column; gap:14px; }
+.message-entry { max-width:75%; align-self:flex-start; display:grid; justify-items:start; gap:5px; }
+.message-entry.mine { align-self:flex-end; justify-items:end; }
+.message-bubble { padding:10px 12px; border-radius:14px; line-height:1.45; background:#eef2f8; }
+.message-entry.mine .message-bubble { background:#4f68dd; color:#fff; }
 .message-bubble small { display:block; margin-top:5px; opacity:.72; font-size:9px; }
 .message-compose { display:grid; grid-template-columns:1fr auto; gap:9px; padding:14px; border-top:1px solid #e3e8f0; }
+.emoji-reactions { position:relative; width:max-content; max-width:100%; }
+.emoji-reaction-summary { display:flex; align-items:center; flex-wrap:wrap; gap:4px; }
+.emoji-reaction,.emoji-picker-trigger { min-width:30px; min-height:28px; padding:4px 7px; display:inline-flex; align-items:center; justify-content:center; gap:4px; border:1px solid #dce2ec; background:#fff; color:#3c4658; font-size:13px; box-shadow:none; }
+.emoji-reaction strong { font-size:10px; }
+.emoji-reaction.active { border-color:#5267d7; background:#eef1ff; color:#3457dc; }
+.emoji-picker-trigger span { font-size:9px; font-weight:900; }
+.emoji-picker { position:absolute; z-index:20; left:0; bottom:calc(100% + 7px); display:flex; gap:3px; padding:6px; border:1px solid #dce2ec; border-radius:5px; background:#fff; box-shadow:0 12px 30px rgba(31,45,73,.16); }
+.message-entry.mine .emoji-picker { left:auto; right:0; }
+.emoji-picker button { width:36px; height:36px; padding:0; background:transparent; font-size:19px; box-shadow:none; }
+.emoji-picker button:focus-visible,.emoji-picker-trigger:focus-visible,.emoji-reaction:focus-visible { outline:2px solid #5267d7; outline-offset:2px; }
+.profile-title-row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; }
+.profile-title-row h1 { margin-bottom:0; }
+.public-profile-copy { min-width:0; flex:1; }
+.rating-feedback { margin:10px 0 0; color:#5267d7; font-size:12px; font-weight:700; }
 
 @media (max-width: 760px) {
   .two-col,.messages-layout { grid-template-columns:1fr; }
@@ -590,6 +606,7 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 .comment-head strong, .comment-head small { display:block; }
 .comment-head small { color:#929caf; margin-top:3px; font-size:10px; }
 .comment-body > p { margin:10px 0 0; color:#586478; line-height:1.65; white-space:pre-wrap; }
+.comment-body > .emoji-reactions { margin-top:8px; }
 .comment-edit { margin-top:10px; display:grid; gap:8px; }
 .signin-callout { padding:14px 16px; background:#f8f9fc; border:1px solid #e4e8ef; border-radius:12px; margin-bottom:18px; color:#667085; }
 .content-price { display:block; font-size:26px; color:#3457dc; margin:10px 0 20px; }
@@ -622,6 +639,8 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 [data-theme="dark"] .booking-detail-grid>div,[data-theme="dark"] .booking-detail-grid>a,[data-theme="dark"] .booking-detail-service,[data-theme="dark"] .booking-detail-notes { border-color:#2a374b; }
 [data-theme="dark"] .notification-item.unread { background:#1c2942; }
 [data-theme="dark"] .message-bubble { background:#263349; color:#e8edf6; }
-[data-theme="dark"] .message-bubble.mine { background:#4f68dd; }
+[data-theme="dark"] .message-entry.mine .message-bubble { background:#4f68dd; }
+[data-theme="dark"] .emoji-reaction,[data-theme="dark"] .emoji-picker-trigger,[data-theme="dark"] .emoji-picker { background:#1d2941; border-color:#344158; color:#e8edf6; }
+[data-theme="dark"] .emoji-reaction.active { background:#26376a; border-color:#7085ef; }
 [data-theme="dark"] .content-placeholder,[data-theme="dark"] .date-tile { background:#202d42; color:#aebcff; }
 @media (max-width:650px) { .booking-detail-grid { grid-template-columns:1fr; } }

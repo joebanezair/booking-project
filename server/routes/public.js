@@ -9,6 +9,7 @@ import Reaction from "../models/Reaction.js";
 import ProfileRating from "../models/ProfileRating.js";
 import { notify } from "../lib/notifications.js";
 import optionalAuth from "../middleware/optionalAuth.js";
+import { reactionMap } from "../lib/emojiReactions.js";
 
 const router = Router();
 
@@ -51,6 +52,7 @@ router.get("/content/:contentId", optionalAuth, async (req,res)=>{
       Reaction.aggregate([{ $match:{content:item._id}},{ $group:{_id:"$type",count:{$sum:1}}}]),
       req.user ? Reaction.findOne({content:item._id,user:req.user.id}).select("type") : null
     ]);
+    const commentReactions=await reactionMap("comment",comments.map(comment=>comment._id),req.user?.id);
     const summary=summaryRows[0]||{}; const reactions=Object.fromEntries(reactionRows.map(row=>[row._id,row.count]));
     res.json({
       _id:item._id,title:item.title,description:item.description,price:item.price,currency:item.currency,
@@ -59,7 +61,7 @@ router.get("/content/:contentId", optionalAuth, async (req,res)=>{
       ratingSummary:{averageRating:summary.averageRating?Number(summary.averageRating.toFixed(1)):0,ratingCount:summary.ratingCount||0},
       currentUserRating:current?.rating||null,
       reactionSummary:{likes:reactions.like||0,dislikes:reactions.dislike||0,currentReaction:currentReaction?.type||null},
-      comments
+      comments:comments.map(comment=>({...comment.toObject(),emojiReactions:commentReactions.get(String(comment._id))||[]}))
     });
   } catch(error){console.error(error);res.status(500).json({message:"Unable to load content."});}
 });
