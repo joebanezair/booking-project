@@ -13,7 +13,7 @@ async function request(path, options = {}) {
 
   if (response.status === 204) return null;
   const data = await response.json().catch(() => ({}));
-  if (response.status === 401) {
+  if (response.status === 401 || (response.status === 403 && /disabled/i.test(data.message || ""))) {
     localStorage.removeItem("booking_token");
     localStorage.removeItem("booking_user");
   }
