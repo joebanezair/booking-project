@@ -115,13 +115,24 @@ A guest booking stores the business/service relationship and guest contact detai
   locationLongitude,
   locationAccuracy,
   service,
+  servicePrice,
+  currency,
   bookingDate,
+  completedAt,
   notes,
   status
 }
 ~~~
 
-Booking statuses are pending, confirmed, completed, and cancelled.
+Booking statuses are pending, confirmed, in_progress, completed, cancelled, and no_show.
+
+The recommended service lifecycle is:
+
+~~~text
+Pending → Confirmed → In Progress → Completed → Sale recorded
+~~~
+
+Cancelled and No Show never count as sales. When a completed booking is reopened, its linked sale is voided rather than deleted so the audit history is preserved.
 
 ### Phone number
 
@@ -172,7 +183,7 @@ The current implementation generates and exposes the review link to the business
 
 ## Business dashboard
 
-Business accounts have access to Dashboard, Services, Bookings, Messages, Profile, Notifications, Forum, Settings, and Search.
+Business accounts have access to Dashboard, Services, Bookings, Sales & Analytics, Messages, Profile, Notifications, Forum, Settings, and Search. The authenticated dashboard is responsive, with an off-canvas menu and fixed bottom navigation on phones.
 
 ### Services
 
@@ -182,7 +193,36 @@ Paused businesses may keep editing existing services and create drafts, but cann
 
 ### Bookings
 
-Businesses can view guest bookings, open booking details, see guest name/email/phone/location/service/schedule/notes/status, create internal booking records while active, change booking status, mark a booking completed, copy the generated verified-review link, and delete booking records.
+Businesses can view guest bookings, open booking details, see guest name/email/phone/location/service/price/schedule/notes/status, create internal booking records while active, and move bookings through Pending, Confirmed, In Progress, Completed, Cancelled, or No Show.
+
+Marking a booking **Completed** automatically creates one linked sale using the service price and currency snapshotted on the booking. Reopening a completed booking voids that sale while keeping the audit record. A completed booking with a sales audit record cannot be deleted, and its price/service/date cannot be silently rewritten while still completed.
+
+Completing a booking also creates the verified-review invitation.
+
+### Sales & Analytics
+
+Businesses have a dedicated page:
+
+~~~text
+/dashboard/sales
+~~~
+
+The page provides:
+
+- recorded completed-service sales;
+- completed service count;
+- average sale value;
+- distinct services sold;
+- Daily / Weekly / Monthly / Annual trend grouping;
+- Today / 7 Days / This Month / This Year / All Time / Custom date filters;
+- sales-by-service performance bars;
+- detailed completed-sale records;
+- multi-currency summaries when applicable;
+- Excel-compatible spreadsheet export.
+
+The export contains Summary, Sales Records, Sales Trend, and Service Performance worksheets.
+
+**Recorded Sale = Completed Booking Value.** This is not the same as confirmed payment until a payment provider is integrated.
 
 ### Business profile
 
@@ -206,7 +246,7 @@ Admins can open:
 /dashboard/businesses/:businessId
 ~~~
 
-to inspect the business profile, recent services, recent bookings, review summary, and account state.
+to inspect the business profile, recent services, recent bookings, recorded sales summary, review summary, and account state.
 
 Admin actions are:
 
@@ -282,8 +322,17 @@ GET    /api/bookings
 GET    /api/bookings/:id
 POST   /api/bookings
 PUT    /api/bookings/:id
+PATCH  /api/bookings/:id/status
 DELETE /api/bookings/:id
 ~~~
+
+### Sales analytics
+
+~~~text
+GET /api/sales/analytics?range=month&group=daily
+~~~
+
+Supported ranges are today, 7d, month, year, all, and custom. Supported chart grouping is daily, weekly, monthly, and annual.
 
 ### Public discovery and booking
 
@@ -328,6 +377,8 @@ The migration:
 6. removes obsolete Business approval fields such as status, rejectionReason, reviewedBy, and reviewedAt.
 
 This preserves existing business, booking, message, and historical database references while moving all future account logic to Business/Admin only.
+
+Server startup also backfills existing completed bookings into the sales ledger. If an older completed booking did not store a price snapshot, BookFlow uses the currently linked service price/currency as the best available historical fallback.
 
 ## Technology stack
 
@@ -406,6 +457,7 @@ BUSINESS ACCOUNT
  ├── Business profile
  ├── Services
  ├── Bookings
+ ├── Sales & Analytics
  ├── Messages
  ├── Notifications
  ├── Verified reviews
