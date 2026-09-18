@@ -56,7 +56,6 @@ export default function App() {
     disconnectRealtime();
     localStorage.removeItem("booking_token");
     localStorage.removeItem("booking_user");
-    localStorage.removeItem("booking_account_mode");
     setUser(null);
   }
 
