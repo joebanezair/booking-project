@@ -817,7 +817,6 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 }
 
 @media (max-width:800px) {
-  body { padding-bottom:72px; }
   .page-shell { display:block; }
   .mobile-app-header {
     position:sticky;
@@ -837,6 +836,9 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
   .sidebar {
     position:fixed !important;
     z-index:60;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    justify-content:space-between !important;
     top:0;
     left:0;
     width:min(320px,86vw) !important;
@@ -862,7 +864,7 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
   .sidebar-nav { display:grid !important; }
   .sidebar-nav a { flex-direction:row !important; justify-content:flex-start; padding:11px 12px !important; font-size:14px !important; text-align:left !important; }
   .sidebar-email { max-width:100%; }
-  .content-shell { padding:20px 14px 28px !important; }
+  .content-shell { padding:20px 14px 92px !important; }
   .mobile-bottom-nav {
     position:fixed;
     z-index:48;
