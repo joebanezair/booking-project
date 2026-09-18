@@ -133,7 +133,7 @@ export default function BookingManager({ user }) {
   }
 
   async function remove(id) {
-    if (!confirm("Delete this booking and its linked review/sales record permanently?")) return;
+    if (!confirm("Delete this booking? Bookings that already have a sales audit record cannot be deleted.")) return;
     try {
       await api.bookings.remove(id);
       setItems(current => current.filter(item => item._id !== id));
