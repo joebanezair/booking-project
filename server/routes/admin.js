@@ -14,6 +14,45 @@ router.use(requireAuth, requireAdmin);
 
 const accountStatuses = new Set(["active", "paused", "disabled"]);
 
+
+router.get("/overview", async (_req, res) => {
+  try {
+    const [
+      totalBusinesses,
+      activeBusinesses,
+      pausedBusinesses,
+      disabledBusinesses,
+      totalServices,
+      publishedServices,
+      totalBookings,
+      pendingBookings,
+      completedBookings,
+      verifiedReviews
+    ] = await Promise.all([
+      User.countDocuments({ role: "business" }),
+      User.countDocuments({ role: "business", accountStatus: "active" }),
+      User.countDocuments({ role: "business", accountStatus: "paused" }),
+      User.countDocuments({ role: "business", accountStatus: "disabled" }),
+      Content.countDocuments(),
+      Content.countDocuments({ published: true }),
+      Booking.countDocuments(),
+      Booking.countDocuments({ status: "pending" }),
+      Booking.countDocuments({ status: "completed" }),
+      Review.countDocuments({ verified: true })
+    ]);
+
+    res.json({
+      businesses: { total: totalBusinesses, active: activeBusinesses, paused: pausedBusinesses, disabled: disabledBusinesses },
+      services: { total: totalServices, published: publishedServices },
+      bookings: { total: totalBookings, pending: pendingBookings, completed: completedBookings },
+      reviews: { verified: verifiedReviews }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to load platform activity." });
+  }
+});
+
 router.get("/businesses", async (_req, res) => {
   try {
     const users = await User.find({ role: "business" })
