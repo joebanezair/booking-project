@@ -11,6 +11,11 @@ const allowedStatuses = new Set(["pending", "confirmed", "cancelled"]);
 function normalizeBooking(body) {
   return {
     guestName: String(body.guestName || "").trim(),
+    guestPhone: String(body.guestPhone || "").trim(),
+    locationLabel: String(body.locationLabel || "").trim(),
+    locationLatitude: body.locationLatitude === "" || body.locationLatitude == null ? null : Number(body.locationLatitude),
+    locationLongitude: body.locationLongitude === "" || body.locationLongitude == null ? null : Number(body.locationLongitude),
+    locationAccuracy: body.locationAccuracy === "" || body.locationAccuracy == null ? null : Number(body.locationAccuracy),
     service: String(body.service || "").trim(),
     bookingDate: body.bookingDate,
     notes: String(body.notes || "").trim(),
@@ -25,6 +30,14 @@ function validateBooking(input) {
   if (input.guestName.length > 100 || input.service.length > 100) {
     return "Guest name and service must be 100 characters or fewer.";
   }
+  if (input.guestPhone.length > 30) return "Phone number must be 30 characters or fewer.";
+  if (input.locationLabel.length > 200) return "Location must be 200 characters or fewer.";
+  const hasLatitude = input.locationLatitude !== null;
+  const hasLongitude = input.locationLongitude !== null;
+  if (hasLatitude !== hasLongitude) return "Location coordinates must include both latitude and longitude.";
+  if (hasLatitude && (!Number.isFinite(input.locationLatitude) || input.locationLatitude < -90 || input.locationLatitude > 90)) return "Location latitude is invalid.";
+  if (hasLongitude && (!Number.isFinite(input.locationLongitude) || input.locationLongitude < -180 || input.locationLongitude > 180)) return "Location longitude is invalid.";
+  if (input.locationAccuracy !== null && (!Number.isFinite(input.locationAccuracy) || input.locationAccuracy < 0)) return "Location accuracy is invalid.";
   if (input.notes.length > 500) {
     return "Notes must be 500 characters or fewer.";
   }
@@ -49,6 +62,8 @@ router.get("/", async (req, res) => {
       const search = String(req.query.search).trim();
       filter.$or = [
         { guestName: { $regex: search, $options: "i" } },
+        { guestPhone: { $regex: search, $options: "i" } },
+        { locationLabel: { $regex: search, $options: "i" } },
         { service: { $regex: search, $options: "i" } },
         { notes: { $regex: search, $options: "i" } }
       ];

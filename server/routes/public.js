@@ -110,10 +110,20 @@ router.post("/book/:userId", optionalAuth, async (req,res)=>{
     const owner=await User.findById(req.params.userId);
     if(!owner || !await isProviderOwner(owner._id)) return res.status(404).json({message:"Booking page not found."});
     const business=await Business.findOne({owner:owner._id,status:"approved"}).select("_id").lean();
-    const guestName=String(req.body.guestName||"").trim(),guestEmail=String(req.body.guestEmail||"").trim().toLowerCase();
-    const service=String(req.body.service||"").trim(),bookingDate=req.body.bookingDate,notes=String(req.body.notes||"").trim();
-    if(!guestName||!guestEmail||!service||!bookingDate) return res.status(400).json({message:"Name, email, service and booking date are required."});
+    const guestName=String(req.body.guestName||"").trim(),guestEmail=String(req.body.guestEmail||"").trim().toLowerCase(),guestPhone=String(req.body.guestPhone||"").trim();
+    const service=String(req.body.service||"").trim(),bookingDate=req.body.bookingDate,notes=String(req.body.notes||"").trim(),locationLabel=String(req.body.locationLabel||"").trim();
+    const locationLatitude=req.body.locationLatitude===""||req.body.locationLatitude==null?null:Number(req.body.locationLatitude);
+    const locationLongitude=req.body.locationLongitude===""||req.body.locationLongitude==null?null:Number(req.body.locationLongitude);
+    const locationAccuracy=req.body.locationAccuracy===""||req.body.locationAccuracy==null?null:Number(req.body.locationAccuracy);
+    if(!guestName||!guestEmail||!guestPhone||!service||!bookingDate) return res.status(400).json({message:"Name, email, phone number, service and booking date are required."});
     if(!/^\S+@\S+\.\S+$/.test(guestEmail)) return res.status(400).json({message:"Enter a valid email address."});
+    if(!/^[0-9+().\-\s]{7,30}$/.test(guestPhone)) return res.status(400).json({message:"Enter a valid phone number."});
+    if(locationLabel.length>200) return res.status(400).json({message:"Location must be 200 characters or fewer."});
+    const hasLatitude=locationLatitude!==null,hasLongitude=locationLongitude!==null;
+    if(hasLatitude!==hasLongitude) return res.status(400).json({message:"Location coordinates must include both latitude and longitude."});
+    if(hasLatitude&&(!Number.isFinite(locationLatitude)||locationLatitude<-90||locationLatitude>90)) return res.status(400).json({message:"Location latitude is invalid."});
+    if(hasLongitude&&(!Number.isFinite(locationLongitude)||locationLongitude<-180||locationLongitude>180)) return res.status(400).json({message:"Location longitude is invalid."});
+    if(locationAccuracy!==null&&(!Number.isFinite(locationAccuracy)||locationAccuracy<0)) return res.status(400).json({message:"Location accuracy is invalid."});
     if(Number.isNaN(new Date(bookingDate).getTime())||new Date(bookingDate)<new Date()) return res.status(400).json({message:"Please choose a valid future date and time."});
     let content=null;
     if(req.body.contentId){
@@ -121,7 +131,7 @@ router.post("/book/:userId", optionalAuth, async (req,res)=>{
       content=await Content.findOne({_id:req.body.contentId,user:owner._id,published:true,visibility:{$ne:"private"},allowBookings:true}).select("title");
       if(!content) return res.status(404).json({message:"This content is not available for booking."});
     }
-    const booking=await Booking.create({user:owner._id,business:business?._id||null,customer:req.user?.role==="customer"?req.user.id:null,content:content?._id||null,guestName,guestEmail,service:content?.title||service,bookingDate,notes,source:"public",status:"pending"});
+    const booking=await Booking.create({user:owner._id,business:business?._id||null,customer:req.user?.role==="customer"?req.user.id:null,content:content?._id||null,guestName,guestEmail,guestPhone,locationLabel,locationLatitude,locationLongitude,locationAccuracy,service:content?.title||service,bookingDate,notes,source:"public",status:"pending"});
     req.app.get("io").to(`user:${owner._id}`).emit("booking:created", booking);
     await notify(req,owner._id,{type:"booking",title:"New booking request",body:`${guestName} requested ${content?.title||service}.`,link:"/dashboard/bookings"});
     res.status(201).json({id:booking._id,message:"Booking request sent successfully."});
