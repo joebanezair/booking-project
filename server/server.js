@@ -161,9 +161,9 @@ async function backfillCompletedSales() {
     if (booking.content) {
       if (booking.servicePrice == null || booking.servicePrice === 0) {
         booking.servicePrice = Number(booking.content.price || 0);
+        booking.currency = booking.content.currency || booking.currency || "PHP";
         changed = true;
-      }
-      if (!booking.currency) {
+      } else if (!booking.currency) {
         booking.currency = booking.content.currency || "PHP";
         changed = true;
       }
