@@ -80,6 +80,7 @@ export const api = {
     remove: id => request(`/bookings/${id}`, { method: "DELETE" })
   },
   admin: {
+    overview: () => request("/admin/overview"),
     businesses: () => request("/admin/businesses"),
     business: id => request(`/admin/businesses/${id}`),
     setBusinessStatus: (id, accountStatus) => request(`/admin/businesses/${id}/status`, { method: "PATCH", body: JSON.stringify({ accountStatus }) })
