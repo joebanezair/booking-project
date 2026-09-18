@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { FiMessageSquare } from "react-icons/fi";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
@@ -7,8 +7,8 @@ import ContentCard from "../components/ContentCard.jsx";
 import { RatingSummary } from "../components/StarRating.jsx";
 
 export default function PublicProfilePage({ user }) {
-  const { username } = window.location.pathname.match(/^\/profile\/([^/]+)/)?.groups || {};
-  const resolvedUsername = username || decodeURIComponent(window.location.pathname.split("/").pop() || "");
+  const { username } = useParams();
+  const resolvedUsername = username || "";
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
 
