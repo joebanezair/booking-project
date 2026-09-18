@@ -52,6 +52,9 @@ export const api = {
   reactions: {
     toggle: (contentId,type) => request(`/reactions/${contentId}`, { method:"PUT", body:JSON.stringify({type}) })
   },
+  emojiReactions: {
+    toggle: (targetType,targetId,emoji) => request(`/emoji-reactions/${targetType}/${targetId}`, { method:"PUT", body:JSON.stringify({emoji}) })
+  },
   profileRatings: {
     set: (userId,rating) => request(`/profile-ratings/${userId}`, { method:"PUT", body:JSON.stringify({rating}) }),
     remove: userId => request(`/profile-ratings/${userId}`, { method:"DELETE" })

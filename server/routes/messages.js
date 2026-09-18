@@ -4,6 +4,7 @@ import Message from "../models/Message.js";
 import User from "../models/User.js";
 import requireAuth from "../middleware/auth.js";
 import { notify } from "../lib/notifications.js";
+import { reactionMap } from "../lib/emojiReactions.js";
 
 const router = Router();
 router.use(requireAuth);
@@ -25,6 +26,7 @@ router.get("/:userId", async (req, res) => {
     if (!mongoose.isValidObjectId(req.params.userId)) {
       return res.status(400).json({ message: "Invalid user ID." });
     }
+    if (String(req.params.userId) === String(req.user.id)) return res.status(400).json({ message: "You cannot message yourself." });
 
     const otherUser = await User.findById(req.params.userId).select("name email username profileImage");
     if (!otherUser) return res.status(404).json({ message: "User not found." });
@@ -41,7 +43,8 @@ router.get("/:userId", async (req, res) => {
       { $set: { readAt: new Date() } }
     );
 
-    res.json({ user: otherUser, messages });
+    const reactions = await reactionMap("message", messages.map(message => message._id), req.user.id);
+    res.json({ user: otherUser, messages: messages.map(message => ({ ...message.toObject(), emojiReactions: reactions.get(String(message._id)) || [] })) });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to load conversation." });
@@ -72,9 +75,9 @@ router.post("/:userId", async (req, res) => {
 
     const io = req.app.get("io");
     io.to(`user:${req.params.userId}`).emit("message:new", message);
-    await notify(req,req.params.userId,{type:"message",title:"New message",body:body.slice(0,120),link:"/dashboard/messages"});
+    await notify(req,req.params.userId,{type:"message",title:"New message",body:body.slice(0,120),link:`/dashboard/messages/${req.user.id}`});
 
-    res.status(201).json(message);
+    res.status(201).json({ ...message.toObject(), emojiReactions: [] });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to send message." });

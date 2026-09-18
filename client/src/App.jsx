@@ -43,6 +43,7 @@ export default function App(){
     <Route path="/dashboard/bookings" element={protectedPage(BookingsPage)}/>
     <Route path="/dashboard/bookings/:bookingId" element={protectedPage(BookingDetailPage)}/>
     <Route path="/dashboard/messages" element={protectedPage(MessagesPage)}/>
+    <Route path="/dashboard/messages/:userId" element={protectedPage(MessagesPage)}/>
     <Route path="/dashboard/content/new" element={adminPage(CreateContentPage)}/>
     <Route path="/dashboard/services/new" element={adminPage(CreateContentPage)}/>
     <Route path="/dashboard/content/:contentId/edit" element={adminPage(EditContentPage)}/>
