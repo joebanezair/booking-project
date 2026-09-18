@@ -39,7 +39,7 @@ function validateBooking(input) {
 
 router.get("/", async (req, res) => {
   try {
-    const filter = ["admin", "business"].includes(req.user.role) ? { user: req.user.id } : { customer: req.user.id };
+    const filter = req.user.isProviderMode ? { user: req.user.id } : { customer: req.user.id };
 
     if (req.query.status && allowedStatuses.has(req.query.status)) {
       filter.status = req.query.status;
@@ -68,7 +68,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req,res) => {
   try {
     if(!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({message:"Invalid booking ID."});
-    const ownership = ["admin", "business"].includes(req.user.role) ? { user: req.user.id } : { customer: req.user.id };
+    const ownership = req.user.isProviderMode ? { user: req.user.id } : { customer: req.user.id };
     const booking=await Booking.findOne({_id:req.params.id,...ownership})
       .populate("content","title description category price currency coverImage visibility published")
       .populate("user", "name username");
@@ -79,14 +79,14 @@ router.get("/:id", async (req,res) => {
 
 router.post("/", async (req, res) => {
   try {
-    if (!["admin", "business"].includes(req.user.role)) return res.status(403).json({ message: "Only business accounts can create dashboard bookings." });
+    if (!req.user.isProviderMode) return res.status(403).json({ message: "Switch to business mode to create dashboard bookings." });
     const input = normalizeBooking(req.body);
     const validationError = validateBooking(input);
     if (validationError) {
       return res.status(400).json({ message: validationError });
     }
 
-    const booking = await Booking.create({ user: req.user.id, ...input });
+    const booking = await Booking.create({ user: req.user.id, business: req.user.businessId || null, ...input });
     req.app.get("io").to(`user:${req.user.id}`).emit("booking:created", booking);
     res.status(201).json(booking);
   } catch (error) {
@@ -97,7 +97,7 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    if (!["admin", "business"].includes(req.user.role)) return res.status(403).json({ message: "Only business accounts can update booking details and status." });
+    if (!req.user.isProviderMode) return res.status(403).json({ message: "Switch to business mode to update booking details and status." });
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: "Invalid booking ID." });
     }
@@ -146,7 +146,7 @@ router.patch("/:id/cancel", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    if (!["admin", "business"].includes(req.user.role)) return res.status(403).json({ message: "Only business accounts can delete bookings." });
+    if (!req.user.isProviderMode) return res.status(403).json({ message: "Switch to business mode to delete bookings." });
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: "Invalid booking ID." });
     }

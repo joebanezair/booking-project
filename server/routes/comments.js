@@ -2,10 +2,10 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import Comment from "../models/Comment.js";
 import Content from "../models/Content.js";
-import User from "../models/User.js";
 import requireAuth from "../middleware/auth.js";
 import { notify } from "../lib/notifications.js";
 import EmojiReaction from "../models/EmojiReaction.js";
+import { isProviderOwner } from "../lib/providers.js";
 
 const router = Router();
 router.use(requireAuth);
@@ -14,7 +14,7 @@ router.post("/:contentId", async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.contentId)) return res.status(400).json({ message: "Invalid service ID." });
     const content = await Content.findOne({ _id: req.params.contentId, published: true, visibility: { $ne: "private" } });
-    if (!content || !await User.exists({ _id: content.user, role: { $in: ["admin", "business"] } })) return res.status(404).json({ message: "Public service not found." });
+    if (!content || !await isProviderOwner(content.user)) return res.status(404).json({ message: "Public service not found." });
 
     const text = String(req.body.comment || "").trim();
     if (!text) return res.status(400).json({ message: "Comment cannot be empty." });

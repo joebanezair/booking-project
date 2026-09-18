@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const contentSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    business: { type: mongoose.Schema.Types.ObjectId, ref: "Business", default: null, index: true },
     title: { type: String, required: true, trim: true, maxlength: 120 },
     description: { type: String, required: true, trim: true, maxlength: 5000 },
     price: { type: Number, min: 0, default: 0 },

@@ -20,19 +20,24 @@ import CustomersPage from "./pages/CustomersPage.jsx";
 import { disconnectRealtime } from "./realtime.js";
 import { api } from "./api.js";
 import InviteRegisterPage from "./pages/InviteRegisterPage.jsx";
+import BusinessRequestsPage from "./pages/BusinessRequestsPage.jsx";
 
 function readUser(){try{return JSON.parse(localStorage.getItem("booking_user"));}catch{return null;}}
 function readTheme(){return localStorage.getItem("booking_theme")==="dark"?"dark":"light";}
+function readAccountMode(){return localStorage.getItem("booking_account_mode")==="business"?"business":"personal";}
 
 export default function App(){
   const [user,setUser]=useState(readUser);
   const [theme,setTheme]=useState(readTheme);
+  const [accountMode,setAccountMode]=useState(readAccountMode);
   useEffect(()=>{document.documentElement.dataset.theme=theme;localStorage.setItem("booking_theme",theme);},[theme]);
   useEffect(()=>{if(!localStorage.getItem("booking_token"))return;api.me().then(current=>{localStorage.setItem("booking_user",JSON.stringify(current));setUser(current);}).catch(()=>setUser(null));},[]);
-  function logout(){disconnectRealtime();localStorage.removeItem("booking_token");localStorage.removeItem("booking_user");setUser(null);}
-  const protectedPage = Component => user ? <Component user={user} onLogout={logout} onUserUpdate={setUser} theme={theme} onThemeChange={setTheme}/> : <Navigate to="/login" replace/>;
-  const adminPage = Component => user ? (user.role === "admin" ? <Component user={user} onLogout={logout} onUserUpdate={setUser} theme={theme} onThemeChange={setTheme}/> : <Navigate to="/dashboard" replace/>) : <Navigate to="/login" replace/>;
-  const providerPage = Component => user ? (["admin", "business"].includes(user.role) ? <Component user={user} onLogout={logout} onUserUpdate={setUser} theme={theme} onThemeChange={setTheme}/> : <Navigate to="/dashboard" replace/>) : <Navigate to="/login" replace/>;
+  function logout(){disconnectRealtime();localStorage.removeItem("booking_token");localStorage.removeItem("booking_user");localStorage.removeItem("booking_account_mode");setUser(null);}
+  function changeAccountMode(mode){localStorage.setItem("booking_account_mode",mode);setAccountMode(mode);}
+  const pageProps={user,onLogout:logout,onUserUpdate:setUser,theme,onThemeChange:setTheme,accountMode,onAccountModeChange:changeAccountMode};
+  const protectedPage = Component => user ? <Component {...pageProps}/> : <Navigate to="/login" replace/>;
+  const adminPage = Component => user ? (user.role === "admin" ? <Component {...pageProps}/> : <Navigate to="/dashboard" replace/>) : <Navigate to="/login" replace/>;
+  const providerPage = Component => user ? ((["admin", "business"].includes(user.role)||(user.business?.status==="approved"&&accountMode==="business")) ? <Component {...pageProps}/> : <Navigate to="/dashboard" replace/>) : <Navigate to="/login" replace/>;
 
   return <Routes>
     <Route path="/" element={<SearchPage user={user}/>}/>
@@ -52,6 +57,7 @@ export default function App(){
     <Route path="/dashboard/content/:contentId/edit" element={providerPage(EditContentPage)}/>
     <Route path="/dashboard/services/:contentId/edit" element={providerPage(EditContentPage)}/>
     <Route path="/dashboard/customers" element={adminPage(CustomersPage)}/>
+    <Route path="/dashboard/business-requests" element={adminPage(BusinessRequestsPage)}/>
     <Route path="/dashboard/profile" element={protectedPage(ProfileSettingsPage)}/>
     <Route path="/dashboard/notifications" element={protectedPage(NotificationsPage)}/>
     <Route path="/dashboard/settings" element={protectedPage(SettingsPage)}/>
