@@ -1,5 +1,3 @@
-import Business from "../models/Business.js";
-
 export function requireRole(...roles) {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
@@ -10,14 +8,18 @@ export function requireRole(...roles) {
 }
 
 export const requireAdmin = requireRole("admin");
-export async function requireBusiness(req, res, next) {
-  if (["admin", "business"].includes(req.user?.role)) return next();
-  if (!req.user) return res.status(403).json({ message: "You do not have permission to access this resource." });
-  if (req.user.businessId && req.user.isProviderMode) { req.business = { _id: req.user.businessId }; return next(); }
-  try {
-    const business = await Business.findOne({ owner: req.user.id, status: "approved" }).select("_id").lean();
-    if (!business || req.user.mode !== "business") return res.status(403).json({ message: "Switch to business mode after your business is approved." });
-    req.business = business;
-    next();
-  } catch (error) { next(error); }
+export const requireBusiness = requireRole("business");
+
+export function requireActiveBusiness(req, res, next) {
+  if (!req.user || req.user.role !== "business") {
+    return res.status(403).json({ message: "A business account is required." });
+  }
+  if (req.user.accountStatus !== "active") {
+    return res.status(403).json({
+      message: req.user.accountStatus === "paused"
+        ? "This business account is paused. Reactivate it before publishing services or accepting new bookings."
+        : "This business account is disabled."
+    });
+  }
+  next();
 }
