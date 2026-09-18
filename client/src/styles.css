@@ -942,3 +942,370 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 [data-theme="dark"] .mobile-bottom-nav a { color:#91a0b7; }
 [data-theme="dark"] .mobile-bottom-nav a.active { color:#8da0ff; }
 [data-theme="dark"] .sales-table tr { border-color:#2a374b; }
+
+
+/* Responsive dashboard: same layout, top navigation on small screens */
+@media (max-width:800px) {
+  .page-shell {
+    display:block !important;
+    min-height:100vh;
+  }
+
+  .sidebar {
+    position:sticky !important;
+    top:0;
+    z-index:50;
+    width:100% !important;
+    height:auto !important;
+    padding:10px 12px !important;
+    display:block !important;
+    background:#111a2d;
+    box-shadow:0 5px 18px rgba(17,26,45,.14);
+  }
+
+  .sidebar-main {
+    display:grid;
+    gap:9px;
+  }
+
+  .sidebar-brand {
+    display:flex !important;
+    align-items:center;
+    justify-content:flex-start !important;
+    gap:10px;
+    padding:0 4px 4px !important;
+  }
+
+  .sidebar-brand strong {
+    display:block !important;
+    color:#fff;
+    font-size:15px;
+  }
+
+  .sidebar-nav {
+    display:flex !important;
+    gap:6px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:0 0 4px;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .sidebar-nav::-webkit-scrollbar {
+    display:none;
+  }
+
+  .sidebar-nav a {
+    flex:0 0 auto !important;
+    min-width:max-content;
+    display:inline-flex !important;
+    flex-direction:row !important;
+    align-items:center;
+    justify-content:center;
+    gap:6px !important;
+    padding:9px 11px !important;
+    border-radius:8px;
+    font-size:11px !important;
+    text-align:left !important;
+    white-space:nowrap;
+  }
+
+  .sidebar-nav a svg {
+    width:16px;
+    height:16px;
+  }
+
+  .nav-badge {
+    margin-left:2px;
+  }
+
+  .sidebar-footer {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px solid rgba(255,255,255,.08);
+  }
+
+  .sidebar-email {
+    min-width:0;
+    max-width:65%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .sidebar-status-note {
+    display:none;
+  }
+
+  .signout-button {
+    width:auto !important;
+    flex:0 0 auto;
+    padding:8px 10px;
+  }
+
+  .content-shell {
+    padding:20px 14px 28px !important;
+  }
+
+  .topbar {
+    flex-direction:column;
+    align-items:stretch;
+    gap:14px;
+    margin-bottom:20px;
+  }
+
+  .topbar>.primary-button,
+  .topbar>.secondary {
+    width:100%;
+  }
+
+  .stats-grid,
+  .booking-stats-grid,
+  .sales-stats-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .booking-workspace-grid,
+  .analytics-grid,
+  .workspace-grid {
+    grid-template-columns:1fr !important;
+  }
+
+  .booking-form {
+    position:static !important;
+  }
+
+  .booking-lifecycle-card {
+    grid-template-columns:1fr !important;
+  }
+
+  .booking-card-right {
+    align-items:stretch;
+  }
+
+  .booking-card-right>.status {
+    align-self:flex-start;
+  }
+
+  .booking-status-actions,
+  .booking-secondary-actions {
+    justify-content:flex-start;
+  }
+
+  .booking-status-actions>*,
+  .booking-secondary-actions>* {
+    flex:1 1 120px;
+  }
+
+  .sale-record-summary {
+    grid-template-columns:1fr;
+  }
+
+  .analytics-controls {
+    padding:16px;
+  }
+
+  .analytics-grouping {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .custom-date-range {
+    grid-template-columns:1fr 1fr;
+  }
+
+  .custom-date-range button {
+    grid-column:1/-1;
+  }
+
+  .analytics-chart-panel {
+    padding:16px;
+  }
+
+  .business-table-head {
+    display:none;
+  }
+
+  .business-table-row {
+    min-width:0 !important;
+    grid-template-columns:1fr !important;
+    gap:10px;
+    padding:16px 0;
+  }
+
+  .business-table-row>.row-actions {
+    flex-wrap:wrap;
+  }
+
+  .business-table-row>.row-actions>* {
+    flex:1 1 120px;
+  }
+
+  .messages-layout {
+    grid-template-columns:1fr;
+  }
+
+  .user-list {
+    border-right:0;
+    border-bottom:1px solid #e3e8f0;
+    max-height:220px;
+    overflow:auto;
+  }
+
+  .sales-table-wrap {
+    overflow:visible;
+  }
+
+  .sales-table {
+    min-width:0;
+  }
+
+  .sales-table thead {
+    display:none;
+  }
+
+  .sales-table,
+  .sales-table tbody,
+  .sales-table tr,
+  .sales-table td {
+    display:block;
+    width:100%;
+  }
+
+  .sales-table tr {
+    margin:0 0 12px;
+    padding:14px;
+    border:1px solid #e4e8ef;
+    border-radius:10px;
+  }
+
+  .sales-table td {
+    position:relative;
+    padding:7px 0 7px 44%;
+    border:0;
+    min-height:30px;
+  }
+
+  .sales-table td::before {
+    content:attr(data-label);
+    position:absolute;
+    left:0;
+    top:7px;
+    width:40%;
+    color:#8a94a7;
+    font-size:10px;
+    font-weight:900;
+    text-transform:uppercase;
+  }
+}
+
+@media (max-width:520px) {
+  .sidebar {
+    padding:9px 10px !important;
+  }
+
+  .sidebar-nav a {
+    padding:8px 10px !important;
+    font-size:10px !important;
+  }
+
+  .sidebar-footer {
+    margin-top:6px;
+    padding-top:6px;
+  }
+
+  .sidebar-email {
+    max-width:58%;
+    font-size:9px;
+  }
+
+  .signout-button span {
+    display:none;
+  }
+
+  .stats-grid,
+  .booking-stats-grid,
+  .sales-stats-grid {
+    grid-template-columns:1fr 1fr !important;
+  }
+
+  .stat-card {
+    min-width:0;
+    padding:14px;
+  }
+
+  .stat-card strong {
+    font-size:21px;
+    overflow-wrap:anywhere;
+  }
+
+  .stat-card small {
+    font-size:10px;
+  }
+
+  .dashboard-route-grid {
+    grid-template-columns:1fr !important;
+    gap:12px;
+  }
+
+  .route-card {
+    min-height:0;
+  }
+
+  .two-col {
+    grid-template-columns:1fr;
+  }
+
+  .filter-button-group {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    width:100%;
+  }
+
+  .filter-chip {
+    padding:9px 6px;
+  }
+
+  .custom-date-range {
+    grid-template-columns:1fr;
+  }
+
+  .custom-date-range button {
+    grid-column:auto;
+  }
+
+  .sales-line-chart {
+    min-width:500px;
+  }
+
+  .service-bar-meta {
+    align-items:flex-start;
+    flex-direction:column;
+    gap:4px;
+  }
+
+  .service-bar-meta span {
+    text-align:left;
+  }
+
+  .booking-detail {
+    padding:16px;
+  }
+
+  .booking-detail-grid {
+    grid-template-columns:1fr;
+  }
+
+  .review-link-row {
+    grid-template-columns:1fr;
+  }
+}
+
+[data-theme="dark"] .sidebar-footer {
+  border-color:rgba(255,255,255,.08);
+}
