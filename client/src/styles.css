@@ -427,7 +427,7 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
   .content-grid { grid-template-columns:repeat(2,1fr); }
 }
 @media (max-width: 700px) {
-  .profile-editor-head, .public-profile-hero { flex-direction:column; }
+  .profile-editor-head, .public-profile-hero { flex-direction:column; align-items:flex-start; }
   .three-col, .two-col { grid-template-columns:1fr; }
   .admin-content-card { grid-template-columns:1fr; }
   .admin-content-cover { height:210px; }
@@ -459,6 +459,45 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 .profile-avatar.xl { width:118px; height:118px; font-size:38px; border:4px solid #fff; box-shadow:0 8px 24px rgba(17,26,45,.18); }
 .profile-cover-editor, .profile-photo-editor { display:grid; gap:14px; }
 .profile-photo-editor { padding:16px; border:1px solid #e4e8ef; border-radius:14px; }
+.profile-photo-drag-wrap { display:grid; gap:10px; }
+.profile-photo-drag-wrap > .muted { max-width:280px; margin:0; font-size:12px; line-height:1.5; }
+.profile-photo-drag-frame {
+  position:relative;
+  width:180px;
+  height:180px;
+  flex:0 0 auto;
+  overflow:hidden;
+  border:4px solid #fff;
+  border-radius:50%;
+  background:#e9edfb;
+  box-shadow:0 8px 24px rgba(17,26,45,.18);
+  cursor:grab;
+  touch-action:none;
+  user-select:none;
+  outline:none;
+}
+.profile-photo-drag-frame:active { cursor:grabbing; }
+.profile-photo-drag-frame:focus-visible { box-shadow:0 0 0 4px rgba(93,124,255,.22),0 8px 24px rgba(17,26,45,.18); }
+.profile-photo-drag-image { width:100%; height:100%; display:block; object-fit:cover; pointer-events:none; }
+.profile-photo-drag-hint {
+  position:absolute;
+  left:50%;
+  bottom:15px;
+  transform:translateX(-50%);
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(17,26,45,.72);
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+  white-space:nowrap;
+  opacity:0;
+  transition:opacity .15s ease;
+  pointer-events:none;
+}
+.profile-photo-drag-frame:hover .profile-photo-drag-hint,
+.profile-photo-drag-frame:focus-visible .profile-photo-drag-hint,
+.profile-photo-drag-frame:active .profile-photo-drag-hint { opacity:1; }
 .cover-preview { height:230px; position:relative; display:grid; place-items:center; border-radius:16px; background:#e9edfb center/cover no-repeat; color:#758096; overflow:visible; }
 .avatar-preview { position:absolute; left:24px; bottom:-44px; }
 .profile-cover-editor > .image-actions { margin-top:42px; }
@@ -570,7 +609,7 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 [data-theme="dark"] .user-list,[data-theme="dark"] .comment-form,[data-theme="dark"] .forum-reply,[data-theme="dark"] .booking-notes,[data-theme="dark"] .signin-callout,[data-theme="dark"] .profile-editor-head,[data-theme="dark"] .upload-zone,[data-theme="dark"] .theme-option.active { background:#1d2941; }
 [data-theme="dark"] .muted,[data-theme="dark"] .public-bio,[data-theme="dark"] .content-description,[data-theme="dark"] .profile-headline,[data-theme="dark"] .public-content-card-body p,[data-theme="dark"] .admin-content-body p,[data-theme="dark"] .forum-post>p,[data-theme="dark"] .comment-body>p,[data-theme="dark"] .notification-item p,[data-theme="dark"] .notification-item small,[data-theme="dark"] .theme-option small { color:#9eabc0; }
 [data-theme="dark"] .rating-summary strong,[data-theme="dark"] .your-rating>span,[data-theme="dark"] label { color:#e8edf6; }
-[data-theme="dark"] .notification-item,[data-theme="dark"] .comment-item,[data-theme="dark"] .owner-strip,[data-theme="dark"] .rating-section,[data-theme="dark"] .profile-photo-editor,[data-theme="dark"] .content-options,[data-theme="dark"] .messages-layout,[data-theme="dark"] .conversation-header,[data-theme="dark"] .message-compose { border-color:#2a374b; }
+[data-theme="dark"] .notification-item,[data-theme="dark"] .comment-item,[data-theme="dark"] .owner-strip,[data-theme="dark"] .rating-section,[data-theme="dark"] .profile-photo-editor,[data-theme="dark"] .profile-photo-drag-frame,[data-theme="dark"] .content-options,[data-theme="dark"] .messages-layout,[data-theme="dark"] .conversation-header,[data-theme="dark"] .message-compose { border-color:#2a374b; }
 [data-theme="dark"] .booking-detail-grid>div,[data-theme="dark"] .booking-detail-grid>a,[data-theme="dark"] .booking-detail-service,[data-theme="dark"] .booking-detail-notes { border-color:#2a374b; }
 [data-theme="dark"] .notification-item.unread { background:#1c2942; }
 [data-theme="dark"] .message-bubble { background:#263349; color:#e8edf6; }
