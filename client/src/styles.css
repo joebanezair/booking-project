@@ -644,5 +644,86 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 [data-theme="dark"] .emoji-reaction.active { background:#26376a; border-color:#7085ef; }
 [data-theme="dark"] .content-placeholder,[data-theme="dark"] .date-tile { background:#202d42; color:#aebcff; }
 @media (max-width:650px) { .booking-detail-grid { grid-template-columns:1fr; } }
-.business-account-panel{margin-top:1rem}.business-account-panel form{margin-top:1rem}.agreement-row{display:flex;align-items:center;gap:.65rem}.agreement-row input{width:auto}.request-list{display:grid;gap:1rem}.mode-switch{display:grid;gap:.35rem;margin-bottom:1rem;color:var(--muted)}.mode-switch select{min-width:100%}.status.rejected,.status.suspended{background:#fee2e2;color:#991b1b}.status.approved{background:#dcfce7;color:#166534}
-[data-theme="dark"] .status.rejected,[data-theme="dark"] .status.suspended{background:#4a2027;color:#fecaca}[data-theme="dark"] .status.approved{background:#153c2c;color:#bbf7d0}
+
+
+/* Business / admin / guest architecture */
+.status.active { background:#dcfce7; color:#166534; }
+.status.paused { background:#fef3c7; color:#92400e; }
+.status.disabled { background:#fee2e2; color:#991b1b; }
+.status.completed { background:#e0e7ff; color:#3730a3; }
+
+.account-status-banner,.paused-public-banner,.warning-note {
+  padding:12px 14px;
+  border:1px solid #f0d58a;
+  border-radius:5px;
+  background:#fff8df;
+  color:#7a5411;
+  line-height:1.55;
+}
+.account-status-banner { margin:0 0 18px; }
+.sidebar-status-note { margin:0 0 8px 4px; color:#f3c969; font-size:11px; font-weight:800; }
+.paused-public-banner { margin:10px 0 14px; }
+.paused-booking-callout { border-color:#f0d58a; background:#fff8df; }
+
+.business-directory { overflow-x:auto; }
+.business-table-head,.business-table-row {
+  display:grid;
+  grid-template-columns:minmax(240px,2fr) 100px 90px 90px 130px minmax(260px,1.5fr);
+  gap:14px;
+  align-items:center;
+  min-width:980px;
+}
+.business-table-head {
+  padding:0 0 12px;
+  color:#7a8497;
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+.business-table-row { padding:15px 0; border-top:1px solid #edf0f4; }
+.business-cell-main { display:flex; align-items:center; gap:12px; min-width:0; }
+.business-cell-main strong,.business-cell-main small { display:block; }
+.business-cell-main small { color:#7a8497; margin-top:2px; overflow:hidden; text-overflow:ellipsis; }
+.metric-cell { display:flex; align-items:center; gap:6px; color:#536078; font-size:12px; font-weight:800; }
+.admin-business-hero { display:grid; grid-template-columns:auto 1fr auto; gap:18px; align-items:center; }
+.admin-business-hero h2 { margin:0 0 6px; }
+.admin-status-actions { grid-column:1/-1; }
+.admin-business-detail-grid { margin-top:18px; }
+.simple-admin-list { display:grid; }
+.simple-admin-list>div { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:12px 0; border-bottom:1px solid #edf0f4; }
+.simple-admin-list>div:last-child { border-bottom:0; }
+.simple-admin-list strong,.simple-admin-list small { display:block; }
+.simple-admin-list small { color:#7a8497; margin-top:4px; }
+
+.verified-rating-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.verified-badge { display:inline-flex; padding:5px 8px; border-radius:5px; background:#eef1ff; color:#5267d7; font-size:10px; font-weight:900; text-transform:uppercase; }
+.verified-reviews-section { margin-top:34px; }
+.verified-review-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.verified-review-card p { margin:12px 0; line-height:1.65; color:#596579; }
+.verified-review-card small { color:#7d8798; }
+.review-card { max-width:680px; }
+.verified-review-confirmation { display:grid; gap:12px; }
+.booking-review-invite { margin-top:22px; padding-top:20px; border-top:1px solid #e4e8ef; }
+.review-link-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; }
+.review-link-row input { min-width:0; }
+
+[data-theme="dark"] .account-status-banner,
+[data-theme="dark"] .paused-public-banner,
+[data-theme="dark"] .warning-note,
+[data-theme="dark"] .paused-booking-callout { background:#3b3117; border-color:#6d5826; color:#f7df9a; }
+[data-theme="dark"] .business-table-row,
+[data-theme="dark"] .simple-admin-list>div,
+[data-theme="dark"] .booking-review-invite { border-color:#2a374b; }
+[data-theme="dark"] .verified-review-card p { color:#9eabc0; }
+[data-theme="dark"] .status.active { background:#153c2c; color:#bbf7d0; }
+[data-theme="dark"] .status.paused { background:#4a3915; color:#fde68a; }
+[data-theme="dark"] .status.disabled { background:#4a2027; color:#fecaca; }
+[data-theme="dark"] .status.completed { background:#262d5a; color:#c7d2fe; }
+
+@media (max-width:760px) {
+  .admin-business-hero { grid-template-columns:auto 1fr; }
+  .admin-business-hero>.status { grid-column:2; width:max-content; }
+  .verified-review-list { grid-template-columns:1fr; }
+  .review-link-row { grid-template-columns:1fr; }
+}

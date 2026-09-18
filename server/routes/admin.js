@@ -1,52 +1,153 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 import User from "../models/User.js";
+import Business from "../models/Business.js";
 import Booking from "../models/Booking.js";
+import Content from "../models/Content.js";
+import Review from "../models/Review.js";
 import requireAuth from "../middleware/auth.js";
 import { requireAdmin } from "../middleware/requireRole.js";
-import Business from "../models/Business.js";
 import { notify } from "../lib/notifications.js";
 
 const router = Router();
 router.use(requireAuth, requireAdmin);
 
-router.get("/customers", async (_req, res) => {
+const accountStatuses = new Set(["active", "paused", "disabled"]);
+
+
+router.get("/overview", async (_req, res) => {
   try {
-    const customers = await User.find({ role: "customer" })
-      .select("name username email profileImage createdAt")
-      .sort({ createdAt: -1 })
-      .lean();
-    const counts = await Booking.aggregate([
-      { $match: { customer: { $ne: null } } },
-      { $group: { _id: "$customer", bookings: { $sum: 1 } } }
+    const [
+      totalBusinesses,
+      activeBusinesses,
+      pausedBusinesses,
+      disabledBusinesses,
+      totalServices,
+      publishedServices,
+      totalBookings,
+      pendingBookings,
+      completedBookings,
+      verifiedReviews
+    ] = await Promise.all([
+      User.countDocuments({ role: "business" }),
+      User.countDocuments({ role: "business", accountStatus: "active" }),
+      User.countDocuments({ role: "business", accountStatus: "paused" }),
+      User.countDocuments({ role: "business", accountStatus: "disabled" }),
+      Content.countDocuments(),
+      Content.countDocuments({ published: true }),
+      Booking.countDocuments(),
+      Booking.countDocuments({ status: "pending" }),
+      Booking.countDocuments({ status: "completed" }),
+      Review.countDocuments({ verified: true })
     ]);
-    const bookingCounts = new Map(counts.map(item => [String(item._id), item.bookings]));
-    res.json(customers.map(customer => ({ ...customer, bookingCount: bookingCounts.get(String(customer._id)) || 0 })));
+
+    res.json({
+      businesses: { total: totalBusinesses, active: activeBusinesses, paused: pausedBusinesses, disabled: disabledBusinesses },
+      services: { total: totalServices, published: publishedServices },
+      bookings: { total: totalBookings, pending: pendingBookings, completed: completedBookings },
+      reviews: { verified: verifiedReviews }
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Unable to load customers." });
+    res.status(500).json({ message: "Unable to load platform activity." });
   }
 });
 
-router.get("/business-requests", async (_req, res) => {
+router.get("/businesses", async (_req, res) => {
   try {
-    const businesses = await Business.find().populate("owner", "name username email profileImage").populate("reviewedBy", "name").sort({ createdAt: -1 });
-    res.json(businesses);
-  } catch (error) { console.error(error); res.status(500).json({ message: "Unable to load business applications." }); }
+    const users = await User.find({ role: "business" })
+      .select("name username email accountStatus profileImage createdAt")
+      .sort({ createdAt: -1 })
+      .lean();
+    const ids = users.map(user => user._id);
+    const [profiles, serviceCounts, bookingCounts, reviewRows] = await Promise.all([
+      Business.find({ owner: { $in: ids } }).select("owner name category location phone website logo").lean(),
+      Content.aggregate([{ $match: { user: { $in: ids } } }, { $group: { _id: "$user", count: { $sum: 1 } } }]),
+      Booking.aggregate([{ $match: { user: { $in: ids } } }, { $group: { _id: "$user", count: { $sum: 1 } } }]),
+      Review.aggregate([{ $match: { businessOwner: { $in: ids }, verified: true } }, { $group: { _id: "$businessOwner", count: { $sum: 1 }, averageRating: { $avg: "$rating" } } }])
+    ]);
+    const byOwner = new Map(profiles.map(item => [String(item.owner), item]));
+    const services = new Map(serviceCounts.map(item => [String(item._id), item.count]));
+    const bookings = new Map(bookingCounts.map(item => [String(item._id), item.count]));
+    const reviews = new Map(reviewRows.map(item => [String(item._id), { count: item.count, averageRating: Number(item.averageRating.toFixed(1)) }]));
+
+    res.json(users.filter(user => byOwner.has(String(user._id))).map(user => ({
+      ...user,
+      accountStatus: user.accountStatus || "active",
+      business: byOwner.get(String(user._id)),
+      serviceCount: services.get(String(user._id)) || 0,
+      bookingCount: bookings.get(String(user._id)) || 0,
+      reviewSummary: reviews.get(String(user._id)) || { count: 0, averageRating: 0 }
+    })));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to load businesses." });
+  }
 });
 
-router.patch("/business-requests/:id", async (req, res) => {
+router.get("/businesses/:id", async (req, res) => {
   try {
-    const status = String(req.body.status || "");
-    if (!["approved", "rejected", "suspended"].includes(status)) return res.status(400).json({ message: "Choose approved, rejected, or suspended." });
-    const rejectionReason = String(req.body.rejectionReason || "").trim();
-    if (status === "rejected" && !rejectionReason) return res.status(400).json({ message: "Provide a reason for rejection." });
-    const business = await Business.findByIdAndUpdate(req.params.id, { status, rejectionReason: status === "rejected" ? rejectionReason : "", reviewedBy: req.user.id, reviewedAt: new Date() }, { new: true, runValidators: true }).populate("owner", "name username email profileImage");
-    if (!business) return res.status(404).json({ message: "Business application not found." });
-    const title = status === "approved" ? "Business approved" : status === "rejected" ? "Business application needs changes" : "Business suspended";
-    const body = status === "approved" ? `${business.name} can now publish services and manage bookings.` : status === "rejected" ? rejectionReason : `${business.name} can no longer use provider tools.`;
-    await notify(req, business.owner._id, { type: "business-status", title, body, link: "/dashboard/profile" });
-    res.json(business);
-  } catch (error) { console.error(error); res.status(500).json({ message: "Unable to review this business." }); }
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid business ID." });
+    const user = await User.findOne({ _id: req.params.id, role: "business" })
+      .select("name username email accountStatus profileImage createdAt updatedAt")
+      .lean();
+    if (!user) return res.status(404).json({ message: "Business account not found." });
+
+    const [business, services, recentBookings, reviewRows] = await Promise.all([
+      Business.findOne({ owner: user._id }).lean(),
+      Content.find({ user: user._id }).select("title published visibility category price currency updatedAt").sort({ updatedAt: -1 }).limit(50).lean(),
+      Booking.find({ user: user._id }).select("guestName guestEmail guestPhone service bookingDate status source").sort({ createdAt: -1 }).limit(20).lean(),
+      Review.aggregate([{ $match: { businessOwner: user._id, verified: true } }, { $group: { _id: "$businessOwner", count: { $sum: 1 }, averageRating: { $avg: "$rating" } } }])
+    ]);
+    if (!business) return res.status(404).json({ message: "Business profile not found." });
+    const review = reviewRows[0] || {};
+
+    res.json({
+      user: { ...user, accountStatus: user.accountStatus || "active" },
+      business,
+      services,
+      recentBookings,
+      reviewSummary: {
+        count: review.count || 0,
+        averageRating: review.averageRating ? Number(review.averageRating.toFixed(1)) : 0
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to load business details." });
+  }
+});
+
+router.patch("/businesses/:id/status", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid business ID." });
+    const accountStatus = String(req.body.accountStatus || "");
+    if (!accountStatuses.has(accountStatus)) return res.status(400).json({ message: "Choose active, paused, or disabled." });
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.params.id, role: "business" },
+      { accountStatus },
+      { new: true, runValidators: true }
+    ).select("name username email accountStatus");
+    if (!user) return res.status(404).json({ message: "Business account not found." });
+
+    const title = accountStatus === "active" ? "Business account reactivated" : accountStatus === "paused" ? "Business account paused" : "Business account disabled";
+    const body = accountStatus === "active"
+      ? "Your business can publish services and receive new bookings again."
+      : accountStatus === "paused"
+        ? "Your business is temporarily unavailable for new bookings and service publishing."
+        : "Your business account has been disabled by an administrator.";
+
+    if (accountStatus !== "disabled") {
+      await notify(req, user._id, { type: "business-status", title, body, link: "/dashboard" });
+    } else {
+      req.app.get("io").in(`user:${user._id}`).disconnectSockets(true);
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to update business status." });
+  }
 });
 
 export default router;

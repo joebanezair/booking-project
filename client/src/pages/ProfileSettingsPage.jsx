@@ -4,7 +4,7 @@ import AppLayout from "../components/AppLayout.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { fileToDataUrl } from "../lib.js";
 import { api } from "../api.js";
-import BusinessAccountSection from "../components/BusinessAccountSection.jsx";
+import BusinessProfileSection from "../components/BusinessProfileSection.jsx";
 
 export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
   const [form, setForm] = useState(null);
@@ -98,6 +98,6 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
       <div className="two-col"><label>Name<input value={form.name || ""} onChange={e => setForm({ ...form, name: e.target.value })} required /></label><label>Username<input value={form.username || ""} onChange={e => setForm({ ...form, username: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })} required /></label></div>
       <label>Bio<textarea rows="5" maxLength="1000" value={form.bio || ""} onChange={e => setForm({ ...form, bio: e.target.value })} /></label><div className="two-col"><label>Headline<input value={form.headline || ""} onChange={e => setForm({ ...form, headline: e.target.value })} /></label><label>Location<input value={form.location || ""} onChange={e => setForm({ ...form, location: e.target.value })} /></label></div><label>Website<input type="url" placeholder="https://..." value={form.website || ""} onChange={e => setForm({ ...form, website: e.target.value })} /></label>
       {error && <p className="error">{error}</p>}{message && <p className="success">{message}</p>}<button className="primary-button">Save profile</button>
-    </form>{user.role==="customer"&&<BusinessAccountSection user={user} onUserUpdate={onUserUpdate}/>}</>}
+    </form>{user.role==="business"&&<BusinessProfileSection user={user} onUserUpdate={onUserUpdate}/>}</>}
   </AppLayout>;
 }
