@@ -4,7 +4,6 @@ const bookingSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
     business: { type: mongoose.Schema.Types.ObjectId, ref: "Business", default: null, index: true },
-    customer: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null, index: true },
     content: { type: mongoose.Schema.Types.ObjectId, ref: "Content", default: null, index: true },
     guestName: { type: String, required: true, trim: true, maxlength: 100 },
     guestEmail: { type: String, trim: true, lowercase: true, maxlength: 150, default: "" },
@@ -19,11 +18,14 @@ const bookingSchema = new mongoose.Schema(
     source: { type: String, enum: ["dashboard", "public"], default: "dashboard" },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled"],
-      default: "pending"
+      enum: ["pending", "confirmed", "completed", "cancelled"],
+      default: "pending",
+      index: true
     }
   },
   { timestamps: true }
 );
+
+bookingSchema.index({ user: 1, bookingDate: 1 });
 
 export default mongoose.model("Booking", bookingSchema);
