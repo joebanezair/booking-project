@@ -200,7 +200,11 @@ The existing MongoDB `Content` collection and internal content API are intention
 - Authenticated customer requests are linked to the customer account
 - Customers can view and cancel only their own linked booking requests
 - Public booking requests without requiring visitor registration
-- Guest name, email, requested date/time, service, and notes
+- Guest name, email, phone number, requested date/time, service, and notes
+- Optional service address/location label for in-person work
+- Consent-based browser geolocation with latitude, longitude, and accuracy stored only after the visitor explicitly chooses **Use my current location** and approves the browser permission prompt
+- Manual location entry remains available when geolocation is unavailable or permission is denied
+- Booking details expose clickable phone links and an OpenStreetMap link when coordinates were shared
 - Public requests default to `pending`
 - Service-specific booking buttons on eligible public service pages
 - Bookings retain a reference to the selected service
