@@ -644,8 +644,6 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 [data-theme="dark"] .emoji-reaction.active { background:#26376a; border-color:#7085ef; }
 [data-theme="dark"] .content-placeholder,[data-theme="dark"] .date-tile { background:#202d42; color:#aebcff; }
 @media (max-width:650px) { .booking-detail-grid { grid-template-columns:1fr; } }
-.business-account-panel{margin-top:1rem}.business-account-panel form{margin-top:1rem}.agreement-row{display:flex;align-items:center;gap:.65rem}.agreement-row input{width:auto}.request-list{display:grid;gap:1rem}.mode-switch{display:grid;gap:.35rem;margin-bottom:1rem;color:var(--muted)}.mode-switch select{min-width:100%}.status.rejected,.status.suspended{background:#fee2e2;color:#991b1b}.status.approved{background:#dcfce7;color:#166534}
-[data-theme="dark"] .status.rejected,[data-theme="dark"] .status.suspended{background:#4a2027;color:#fecaca}[data-theme="dark"] .status.approved{background:#153c2c;color:#bbf7d0}
 
 
 /* Business / admin / guest architecture */
