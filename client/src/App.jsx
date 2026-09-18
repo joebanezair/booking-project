@@ -85,7 +85,7 @@ export default function App() {
     <Route path="/dashboard/bookings/:bookingId" element={businessPage(BookingDetailPage)} />
     <Route path="/dashboard/messages" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/messages/:userId" element={protectedPage(MessagesPage)} />
-    <Route path="/dashboard/profile" element={protectedPage(ProfileSettingsPage)} />
+    <Route path="/dashboard/profile" element={businessPage(ProfileSettingsPage)} />
     <Route path="/dashboard/notifications" element={protectedPage(NotificationsPage)} />
     <Route path="/dashboard/settings" element={protectedPage(SettingsPage)} />
 
