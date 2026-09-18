@@ -330,7 +330,7 @@ router.post("/book/:userId", async (req, res) => {
         published: true,
         visibility: { $ne: "private" },
         allowBookings: true
-      }).select("title");
+      }).select("title price currency");
       if (!selectedContent) return res.status(404).json({ message: "This service is not available for booking." });
     }
 
@@ -346,6 +346,8 @@ router.post("/book/:userId", async (req, res) => {
       locationLongitude,
       locationAccuracy,
       service: selectedContent?.title || service,
+      servicePrice: Number(selectedContent?.price || 0),
+      currency: selectedContent?.currency || "PHP",
       bookingDate,
       notes,
       source: "public",
