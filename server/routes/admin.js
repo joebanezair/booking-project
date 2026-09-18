@@ -101,6 +101,8 @@ router.patch("/businesses/:id/status", async (req, res) => {
 
     if (accountStatus !== "disabled") {
       await notify(req, user._id, { type: "business-status", title, body, link: "/dashboard" });
+    } else {
+      req.app.get("io").in(`user:${user._id}`).disconnectSockets(true);
     }
     res.json(user);
   } catch (error) {
