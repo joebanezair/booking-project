@@ -13,12 +13,15 @@ const bookingSchema = new mongoose.Schema(
     locationLongitude: { type: Number, min: -180, max: 180, default: null },
     locationAccuracy: { type: Number, min: 0, default: null },
     service: { type: String, required: true, trim: true, maxlength: 100 },
+    servicePrice: { type: Number, min: 0, default: 0 },
+    currency: { type: String, trim: true, uppercase: true, maxlength: 3, default: "PHP" },
     bookingDate: { type: Date, required: true },
+    completedAt: { type: Date, default: null, index: true },
     notes: { type: String, trim: true, maxlength: 500, default: "" },
     source: { type: String, enum: ["dashboard", "public"], default: "dashboard" },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "completed", "cancelled"],
+      enum: ["pending", "confirmed", "in_progress", "completed", "cancelled", "no_show"],
       default: "pending",
       index: true
     }
@@ -27,5 +30,6 @@ const bookingSchema = new mongoose.Schema(
 );
 
 bookingSchema.index({ user: 1, bookingDate: 1 });
+bookingSchema.index({ user: 1, status: 1, completedAt: -1 });
 
 export default mongoose.model("Booking", bookingSchema);
