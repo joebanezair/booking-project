@@ -727,3 +727,218 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
   .verified-review-list { grid-template-columns:1fr; }
   .review-link-row { grid-template-columns:1fr; }
 }
+
+
+/* Mobile dashboard, booking lifecycle, and sales analytics */
+.mobile-app-header,.mobile-bottom-nav,.sidebar-backdrop { display:none; }
+.compact-button { display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:8px 11px; font-size:11px; }
+.status.in_progress { background:#e8efff; color:#3154c6; }
+.status.no_show { background:#f1f3f6; color:#5f6878; }
+.booking-stats-grid { grid-template-columns:repeat(5,minmax(0,1fr)); }
+.booking-workspace-grid { grid-template-columns:minmax(320px,390px) minmax(0,1fr); }
+.booking-editor-panel form { gap:13px; }
+.booking-lifecycle-card { gap:16px; }
+.booking-main small { display:block; margin-top:4px; }
+.sale-recorded-note { color:#176b38 !important; font-weight:800; }
+.booking-status-actions,.booking-secondary-actions { justify-content:flex-end; flex-wrap:wrap; }
+.booking-detail-actions { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid #e4e8ef; }
+.booking-sale-record { margin-top:22px; padding:20px; border:1px solid #cdebd8; border-radius:12px; background:#f2fbf5; }
+.booking-sale-record.voided { border-color:#f1d5d1; background:#fff6f5; }
+.sale-record-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:14px 0; }
+.sale-record-summary>div { padding:12px; border-radius:9px; background:rgba(255,255,255,.72); }
+.sale-record-summary span,.sale-record-summary strong { display:block; }
+.sale-record-summary span { color:#758096; font-size:11px; margin-bottom:5px; }
+
+.business-dashboard-analytics { max-width:1200px; margin:0 auto 24px; }
+.dashboard-sales-chart { margin-bottom:24px; }
+.analytics-topbar { align-items:flex-start; }
+.analytics-controls { max-width:1200px; margin:0 auto 18px; display:grid; gap:14px; }
+.filter-button-group { display:flex; flex-wrap:wrap; gap:7px; }
+.filter-chip { padding:8px 12px; background:#eef2f8; color:#536078; font-size:12px; }
+.filter-chip.active { background:#3457dc; color:#fff; }
+.custom-date-range { display:grid; grid-template-columns:repeat(2,minmax(0,220px)) auto; gap:10px; align-items:end; }
+.analytics-grouping { display:flex; align-items:center; justify-content:space-between; gap:12px; border-top:1px solid #edf0f4; padding-top:14px; }
+.analytics-grouping>span { color:#758096; font-size:12px; font-weight:800; }
+.sales-stats-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.analytics-stat span { display:flex; align-items:center; gap:7px; }
+.analytics-stat span svg { color:#5267d7; }
+.analytics-grid { max-width:1200px; margin:0 auto 18px; display:grid; grid-template-columns:minmax(0,1.4fr) minmax(320px,.8fr); gap:18px; }
+.analytics-chart-panel { min-width:0; }
+.chart-shell { width:100%; overflow-x:auto; overflow-y:hidden; }
+.sales-line-chart { width:100%; min-width:560px; height:auto; display:block; }
+.chart-grid-line { stroke:#e8ecf2; stroke-width:1; }
+.chart-line { stroke:#5267d7; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
+.chart-point { fill:#5267d7; stroke:#fff; stroke-width:2; }
+.chart-axis-label,.chart-x-label { fill:#8a94a7; font-size:10px; font-family:inherit; }
+.service-chart { display:grid; gap:16px; }
+.service-bar-row { display:grid; gap:7px; }
+.service-bar-meta { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+.service-bar-meta strong { font-size:13px; }
+.service-bar-meta span { color:#7b869b; font-size:11px; text-align:right; }
+.service-bar-track { height:10px; overflow:hidden; border-radius:999px; background:#eef1f6; }
+.service-bar-track span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#5674f4,#3457dc); }
+.analytics-empty { min-height:210px; display:grid; place-items:center; color:#8a94a7; text-align:center; }
+.currency-summary { max-width:1200px; margin:0 auto 18px; }
+.currency-total-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; }
+.currency-total-list>div { padding:14px; border:1px solid #e8ecf2; border-radius:10px; }
+.currency-total-list strong,.currency-total-list span,.currency-total-list small { display:block; }
+.currency-total-list span { margin:7px 0 3px; font-weight:900; }
+.currency-total-list small { color:#8a94a7; }
+.sales-records-panel { max-width:1200px; margin:0 auto; }
+.sales-table-wrap { width:100%; overflow-x:auto; }
+.sales-table { width:100%; border-collapse:collapse; min-width:880px; }
+.sales-table th,.sales-table td { padding:12px 10px; border-bottom:1px solid #edf0f4; text-align:left; vertical-align:top; }
+.sales-table th { color:#788397; font-size:10px; text-transform:uppercase; letter-spacing:.06em; }
+.sales-table td { font-size:12px; color:#465269; }
+.sales-table td strong,.sales-table td small { display:block; }
+.sales-table td small { margin-top:3px; color:#8a94a7; }
+
+[data-theme="dark"] .booking-detail-actions,
+[data-theme="dark"] .analytics-grouping,
+[data-theme="dark"] .sales-table th,
+[data-theme="dark"] .sales-table td { border-color:#2a374b; }
+[data-theme="dark"] .booking-sale-record { background:#173126; border-color:#28533e; }
+[data-theme="dark"] .booking-sale-record.voided { background:#352023; border-color:#623239; }
+[data-theme="dark"] .sale-record-summary>div,
+[data-theme="dark"] .currency-total-list>div { background:#1d2941; border-color:#344158; }
+[data-theme="dark"] .filter-chip { background:#263349; color:#dbe4f3; }
+[data-theme="dark"] .filter-chip.active { background:#5267d7; color:#fff; }
+[data-theme="dark"] .chart-grid-line { stroke:#2a374b; }
+[data-theme="dark"] .chart-axis-label,
+[data-theme="dark"] .chart-x-label { fill:#9eabc0; }
+[data-theme="dark"] .chart-point { stroke:#151f30; }
+[data-theme="dark"] .service-bar-track { background:#263349; }
+[data-theme="dark"] .sales-table td { color:#d5deeb; }
+
+@media (max-width:1050px) {
+  .booking-stats-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .analytics-grid { grid-template-columns:1fr; }
+  .sales-stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+@media (max-width:800px) {
+  .page-shell { display:block; }
+  .mobile-app-header {
+    position:sticky;
+    top:0;
+    z-index:45;
+    height:62px;
+    padding:10px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#111a2d;
+    color:#fff;
+    box-shadow:0 4px 18px rgba(17,26,45,.16);
+  }
+  .mobile-app-header .sidebar-brand { padding:0; }
+  .mobile-menu-button { width:42px; height:42px; display:grid; place-items:center; padding:0; background:#1d2941; color:#fff; font-size:22px; }
+  .sidebar {
+    position:fixed !important;
+    z-index:60;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    justify-content:space-between !important;
+    top:0;
+    left:0;
+    width:min(320px,86vw) !important;
+    height:100dvh !important;
+    padding:20px 16px !important;
+    transform:translateX(-105%);
+    transition:transform .2s ease;
+    box-shadow:20px 0 45px rgba(0,0,0,.28);
+  }
+  .sidebar.mobile-open { transform:translateX(0); }
+  .sidebar-backdrop {
+    position:fixed;
+    inset:0;
+    z-index:55;
+    display:block;
+    width:100%;
+    height:100%;
+    padding:0;
+    border-radius:0;
+    background:rgba(7,12,23,.48);
+  }
+  .desktop-sidebar-brand { display:flex !important; justify-content:flex-start !important; padding:4px 8px 20px !important; }
+  .sidebar-nav { display:grid !important; }
+  .sidebar-nav a { flex-direction:row !important; justify-content:flex-start; padding:11px 12px !important; font-size:14px !important; text-align:left !important; }
+  .sidebar-email { max-width:100%; }
+  .content-shell { padding:20px 14px 92px !important; }
+  .mobile-bottom-nav {
+    position:fixed;
+    z-index:48;
+    left:0;
+    right:0;
+    bottom:0;
+    min-height:64px;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    padding:6px max(6px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));
+    border-top:1px solid #e0e5ee;
+    background:rgba(255,255,255,.96);
+    backdrop-filter:blur(14px);
+    box-shadow:0 -8px 28px rgba(20,31,51,.08);
+  }
+  .mobile-bottom-nav a { position:relative; min-width:0; padding:5px 2px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; color:#7c879a; font-size:9px; font-weight:800; }
+  .mobile-bottom-nav a svg { width:20px; height:20px; }
+  .mobile-bottom-nav a.active { color:#3457dc; }
+  .mobile-nav-badge { position:absolute; top:1px; right:calc(50% - 20px); min-width:16px; height:16px; padding:0 4px; display:grid; place-items:center; border-radius:999px; background:#ef4444; color:#fff; font-size:8px; }
+  .topbar { flex-direction:column; align-items:stretch; gap:14px; margin-bottom:20px; }
+  .topbar>.primary-button,.topbar>.secondary { width:100%; }
+  .stats-grid,.booking-stats-grid,.sales-stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  .stat-card strong { font-size:24px; }
+  .booking-workspace-grid { grid-template-columns:1fr; }
+  .booking-lifecycle-card { grid-template-columns:1fr; }
+  .booking-card-right { align-items:stretch; }
+  .booking-card-right>.status { align-self:flex-start; }
+  .booking-status-actions,.booking-secondary-actions { justify-content:flex-start; }
+  .booking-status-actions>*,
+  .booking-secondary-actions>* { flex:1 1 120px; }
+  .sale-record-summary { grid-template-columns:1fr; }
+  .analytics-controls { padding:16px; }
+  .analytics-grouping { align-items:flex-start; flex-direction:column; }
+  .custom-date-range { grid-template-columns:1fr 1fr; }
+  .custom-date-range button { grid-column:1/-1; }
+  .analytics-grid { grid-template-columns:1fr; }
+  .analytics-chart-panel { padding:16px; }
+  .sales-table-wrap { overflow:visible; }
+  .sales-table { min-width:0; }
+  .sales-table thead { display:none; }
+  .sales-table,.sales-table tbody,.sales-table tr,.sales-table td { display:block; width:100%; }
+  .sales-table tr { margin:0 0 12px; padding:14px; border:1px solid #e4e8ef; border-radius:10px; }
+  .sales-table td { position:relative; padding:7px 0 7px 44%; border:0; min-height:30px; }
+  .sales-table td::before { content:attr(data-label); position:absolute; left:0; top:7px; width:40%; color:#8a94a7; font-size:10px; font-weight:900; text-transform:uppercase; }
+  .business-table-head { display:none; }
+  .business-table-row { min-width:0 !important; grid-template-columns:1fr !important; gap:10px; padding:16px 0; }
+  .business-table-row>.row-actions { flex-wrap:wrap; }
+  .business-table-row>.row-actions>* { flex:1 1 120px; }
+  .messages-layout { grid-template-columns:1fr; }
+  .user-list { border-right:0; border-bottom:1px solid #e3e8f0; max-height:220px; overflow:auto; }
+}
+
+@media (max-width:520px) {
+  .stats-grid,.booking-stats-grid,.sales-stats-grid { grid-template-columns:1fr 1fr !important; }
+  .stat-card { min-width:0; padding:14px; }
+  .stat-card strong { font-size:21px; overflow-wrap:anywhere; }
+  .stat-card small { font-size:10px; }
+  .dashboard-route-grid { grid-template-columns:1fr !important; gap:12px; }
+  .route-card { min-height:0; }
+  .two-col { grid-template-columns:1fr; }
+  .filter-button-group { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); width:100%; }
+  .filter-chip { padding:9px 6px; }
+  .custom-date-range { grid-template-columns:1fr; }
+  .custom-date-range button { grid-column:auto; }
+  .sales-line-chart { min-width:500px; }
+  .service-bar-meta { align-items:flex-start; flex-direction:column; gap:4px; }
+  .service-bar-meta span { text-align:left; }
+  .booking-detail { padding:16px; }
+  .booking-detail-grid { grid-template-columns:1fr; }
+  .review-link-row { grid-template-columns:1fr; }
+}
+
+[data-theme="dark"] .mobile-app-header { background:#0c1423; }
+[data-theme="dark"] .mobile-bottom-nav { background:rgba(21,31,48,.97); border-color:#2a374b; }
+[data-theme="dark"] .mobile-bottom-nav a { color:#91a0b7; }
+[data-theme="dark"] .mobile-bottom-nav a.active { color:#8da0ff; }
+[data-theme="dark"] .sales-table tr { border-color:#2a374b; }

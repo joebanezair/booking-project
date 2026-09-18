@@ -272,10 +272,20 @@ router.get("/book/:userId", async (req, res) => {
     if (!user || user.accountStatus === "disabled") return res.status(404).json({ message: "Booking page not found." });
     if (user.accountStatus === "paused") return res.status(409).json({ message: "This business is temporarily unavailable for new bookings." });
 
-    const business = await Business.findOne({ owner: user._id }).select("name").lean();
+    const [business, bookableServices] = await Promise.all([
+      Business.findOne({ owner: user._id }).select("name").lean(),
+      Content.find({
+        user: user._id,
+        published: true,
+        visibility: { $ne: "private" },
+        allowBookings: true
+      }).select("title price currency").sort({ updatedAt: -1 }).lean()
+    ]);
     res.json({
       owner: { id: user._id, name: business?.name || user.name },
-      services: ["Consultation", "Technical Support", "Product Demo", "Project Meeting", "Discovery Call", "Other"]
+      services: bookableServices.length
+        ? bookableServices.map(service => ({ id: service._id, title: service.title, price: service.price, currency: service.currency }))
+        : [{ id: "", title: "Consultation", price: 0, currency: "PHP" }, { id: "", title: "Other", price: 0, currency: "PHP" }]
     });
   } catch (error) {
     console.error(error);
@@ -330,7 +340,7 @@ router.post("/book/:userId", async (req, res) => {
         published: true,
         visibility: { $ne: "private" },
         allowBookings: true
-      }).select("title");
+      }).select("title price currency");
       if (!selectedContent) return res.status(404).json({ message: "This service is not available for booking." });
     }
 
@@ -346,6 +356,8 @@ router.post("/book/:userId", async (req, res) => {
       locationLongitude,
       locationAccuracy,
       service: selectedContent?.title || service,
+      servicePrice: Number(selectedContent?.price || 0),
+      currency: selectedContent?.currency || "PHP",
       bookingDate,
       notes,
       source: "public",

@@ -5,6 +5,7 @@ import Business from "../models/Business.js";
 import Booking from "../models/Booking.js";
 import Content from "../models/Content.js";
 import Review from "../models/Review.js";
+import Sale from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireAdmin } from "../middleware/requireRole.js";
 import { notify } from "../lib/notifications.js";
@@ -27,7 +28,9 @@ router.get("/overview", async (_req, res) => {
       totalBookings,
       pendingBookings,
       completedBookings,
-      verifiedReviews
+      verifiedReviews,
+      recordedSales,
+      salesTotals
     ] = await Promise.all([
       User.countDocuments({ role: "business" }),
       User.countDocuments({ role: "business", accountStatus: "active" }),
@@ -38,13 +41,23 @@ router.get("/overview", async (_req, res) => {
       Booking.countDocuments(),
       Booking.countDocuments({ status: "pending" }),
       Booking.countDocuments({ status: "completed" }),
-      Review.countDocuments({ verified: true })
+      Review.countDocuments({ verified: true }),
+      Sale.countDocuments({ status: "recorded" }),
+      Sale.aggregate([
+        { $match: { status: "recorded" } },
+        { $group: { _id: "$currency", total: { $sum: "$saleAmount" }, count: { $sum: 1 } } },
+        { $sort: { count: -1, total: -1 } }
+      ])
     ]);
 
     res.json({
       businesses: { total: totalBusinesses, active: activeBusinesses, paused: pausedBusinesses, disabled: disabledBusinesses },
       services: { total: totalServices, published: publishedServices },
       bookings: { total: totalBookings, pending: pendingBookings, completed: completedBookings },
+      sales: {
+        recorded: recordedSales,
+        totalsByCurrency: salesTotals.map(row => ({ currency: row._id || "PHP", total: row.total, count: row.count }))
+      },
       reviews: { verified: verifiedReviews }
     });
   } catch (error) {
@@ -93,11 +106,16 @@ router.get("/businesses/:id", async (req, res) => {
       .lean();
     if (!user) return res.status(404).json({ message: "Business account not found." });
 
-    const [business, services, recentBookings, reviewRows] = await Promise.all([
+    const [business, services, recentBookings, reviewRows, saleRows] = await Promise.all([
       Business.findOne({ owner: user._id }).lean(),
       Content.find({ user: user._id }).select("title published visibility category price currency updatedAt").sort({ updatedAt: -1 }).limit(50).lean(),
-      Booking.find({ user: user._id }).select("guestName guestEmail guestPhone service bookingDate status source").sort({ createdAt: -1 }).limit(20).lean(),
-      Review.aggregate([{ $match: { businessOwner: user._id, verified: true } }, { $group: { _id: "$businessOwner", count: { $sum: 1 }, averageRating: { $avg: "$rating" } } }])
+      Booking.find({ user: user._id }).select("guestName guestEmail guestPhone service servicePrice currency bookingDate completedAt status source").sort({ createdAt: -1 }).limit(20).lean(),
+      Review.aggregate([{ $match: { businessOwner: user._id, verified: true } }, { $group: { _id: "$businessOwner", count: { $sum: 1 }, averageRating: { $avg: "$rating" } } }]),
+      Sale.aggregate([
+        { $match: { businessOwner: user._id, status: "recorded" } },
+        { $group: { _id: "$currency", total: { $sum: "$saleAmount" }, count: { $sum: 1 } } },
+        { $sort: { count: -1, total: -1 } }
+      ])
     ]);
     if (!business) return res.status(404).json({ message: "Business profile not found." });
     const review = reviewRows[0] || {};
@@ -107,6 +125,10 @@ router.get("/businesses/:id", async (req, res) => {
       business,
       services,
       recentBookings,
+      salesSummary: {
+        recorded: saleRows.reduce((sum, row) => sum + row.count, 0),
+        totalsByCurrency: saleRows.map(row => ({ currency: row._id || "PHP", total: row.total, count: row.count }))
+      },
       reviewSummary: {
         count: review.count || 0,
         averageRating: review.averageRating ? Number(review.averageRating.toFixed(1)) : 0

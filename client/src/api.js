@@ -77,7 +77,11 @@ export const api = {
     get: id => request(`/bookings/${id}`),
     create: body => request("/bookings", { method: "POST", body: JSON.stringify(body) }),
     update: (id, body) => request(`/bookings/${id}`, { method: "PUT", body: JSON.stringify(body) }),
+    setStatus: (id, status) => request(`/bookings/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }),
     remove: id => request(`/bookings/${id}`, { method: "DELETE" })
+  },
+  sales: {
+    analytics: params => request(`/sales/analytics?${new URLSearchParams(params)}`)
   },
   admin: {
     overview: () => request("/admin/overview"),

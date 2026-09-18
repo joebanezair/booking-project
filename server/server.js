@@ -20,8 +20,11 @@ import forumRoutes from "./routes/forum.js";
 import adminRoutes from "./routes/admin.js";
 import emojiReactionRoutes from "./routes/emojiReactions.js";
 import businessRoutes from "./routes/businesses.js";
+import salesRoutes from "./routes/sales.js";
 import User from "./models/User.js";
 import Business from "./models/Business.js";
+import Booking from "./models/Booking.js";
+import { syncSaleForBooking } from "./lib/sales.js";
 
 dotenv.config();
 const app = express();
@@ -73,6 +76,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/forum", forumRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/businesses", businessRoutes);
+app.use("/api/sales", salesRoutes);
 app.use("/api/emoji-reactions", emojiReactionRoutes);
 app.use("/api/public/reviews", reviewRoutes);
 app.use("/api/public", publicRoutes);
@@ -143,6 +147,36 @@ async function migrateLegacyAccounts() {
   );
 }
 
+async function backfillCompletedSales() {
+  const completed = await Booking.find({ status: "completed" })
+    .populate("content", "title price currency")
+    .sort({ updatedAt: 1 });
+
+  for (const booking of completed) {
+    let changed = false;
+    if (!booking.completedAt) {
+      booking.completedAt = booking.updatedAt || booking.bookingDate || new Date();
+      changed = true;
+    }
+    if (booking.content) {
+      if (booking.servicePrice == null || booking.servicePrice === 0) {
+        booking.servicePrice = Number(booking.content.price || 0);
+        booking.currency = booking.content.currency || booking.currency || "PHP";
+        changed = true;
+      } else if (!booking.currency) {
+        booking.currency = booking.content.currency || "PHP";
+        changed = true;
+      }
+      if (!booking.service && booking.content.title) {
+        booking.service = booking.content.title;
+        changed = true;
+      }
+    }
+    if (changed) await booking.save();
+    await syncSaleForBooking(booking);
+  }
+}
+
 async function start() {
   if (!process.env.MONGO_URI) throw new Error("MONGO_URI is missing. Copy .env.example to .env and configure it.");
   if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET is missing. Add it to server/.env.");
@@ -161,6 +195,7 @@ async function start() {
   }
 
   await migrateLegacyAccounts();
+  await backfillCompletedSales();
 
   httpServer.listen(PORT, () => console.log(`API and WebSocket server listening on http://localhost:${PORT}`));
 }

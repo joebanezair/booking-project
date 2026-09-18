@@ -1,0 +1,160 @@
+import { Router } from "express";
+import Sale from "../models/Sale.js";
+import requireAuth from "../middleware/auth.js";
+import { requireBusiness } from "../middleware/requireRole.js";
+
+const router = Router();
+router.use(requireAuth, requireBusiness);
+
+function offsetMinutes(req) {
+  const value = Number(req.query.offset || 0);
+  return Number.isFinite(value) && Math.abs(value) <= 840 ? value : 0;
+}
+
+function localDate(date, offset) {
+  return new Date(new Date(date).getTime() - offset * 60_000);
+}
+
+function fromLocalParts(year, month, day, offset) {
+  return new Date(Date.UTC(year, month, day) + offset * 60_000);
+}
+
+function rangeBounds(range, start, end, offset) {
+  const nowLocal = localDate(new Date(), offset);
+  const y = nowLocal.getUTCFullYear();
+  const m = nowLocal.getUTCMonth();
+  const d = nowLocal.getUTCDate();
+
+  if (range === "today") {
+    return { start: fromLocalParts(y, m, d, offset), end: fromLocalParts(y, m, d + 1, offset) };
+  }
+  if (range === "7d") {
+    return { start: fromLocalParts(y, m, d - 6, offset), end: fromLocalParts(y, m, d + 1, offset) };
+  }
+  if (range === "month") {
+    return { start: fromLocalParts(y, m, 1, offset), end: fromLocalParts(y, m + 1, 1, offset) };
+  }
+  if (range === "year") {
+    return { start: fromLocalParts(y, 0, 1, offset), end: fromLocalParts(y + 1, 0, 1, offset) };
+  }
+  if (range === "custom" && /^\d{4}-\d{2}-\d{2}$/.test(start || "") && /^\d{4}-\d{2}-\d{2}$/.test(end || "")) {
+    const [sy, sm, sd] = start.split("-").map(Number);
+    const [ey, em, ed] = end.split("-").map(Number);
+    return {
+      start: fromLocalParts(sy, sm - 1, sd, offset),
+      end: fromLocalParts(ey, em - 1, ed + 1, offset)
+    };
+  }
+  return { start: null, end: null };
+}
+
+function groupMeta(date, group, offset) {
+  const local = localDate(date, offset);
+  const y = local.getUTCFullYear();
+  const m = local.getUTCMonth();
+  const d = local.getUTCDate();
+  const monthName = local.toLocaleString("en", { month: "short", timeZone: "UTC" });
+
+  if (group === "annual") return { key: String(y), label: String(y) };
+  if (group === "monthly") return { key: `${y}-${String(m + 1).padStart(2, "0")}`, label: `${monthName} ${y}` };
+  if (group === "weekly") {
+    const day = local.getUTCDay();
+    const mondayDelta = day === 0 ? -6 : 1 - day;
+    const monday = new Date(Date.UTC(y, m, d + mondayDelta));
+    const my = monday.getUTCFullYear();
+    const mm = monday.getUTCMonth();
+    const md = monday.getUTCDate();
+    const label = `Week of ${monday.toLocaleString("en", { month: "short", day: "numeric", timeZone: "UTC" })}`;
+    return { key: `${my}-${String(mm + 1).padStart(2, "0")}-${String(md).padStart(2, "0")}`, label };
+  }
+  return {
+    key: `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`,
+    label: local.toLocaleString("en", { month: "short", day: "numeric", timeZone: "UTC" })
+  };
+}
+
+router.get("/analytics", async (req, res) => {
+  try {
+    const range = ["today", "7d", "month", "year", "custom", "all"].includes(req.query.range) ? req.query.range : "month";
+    const group = ["daily", "weekly", "monthly", "annual"].includes(req.query.group) ? req.query.group : "daily";
+    const offset = offsetMinutes(req);
+    const bounds = rangeBounds(range, req.query.start, req.query.end, offset);
+
+    const filter = { businessOwner: req.user.id, status: "recorded" };
+    if (bounds.start || bounds.end) {
+      filter.completedAt = {};
+      if (bounds.start) filter.completedAt.$gte = bounds.start;
+      if (bounds.end) filter.completedAt.$lt = bounds.end;
+    }
+
+    const sales = await Sale.find(filter).sort({ completedAt: -1 }).lean();
+
+    const currencyMap = new Map();
+    for (const sale of sales) {
+      const currency = sale.currency || "PHP";
+      const current = currencyMap.get(currency) || { currency, totalSales: 0, saleCount: 0 };
+      current.totalSales += Number(sale.saleAmount || 0);
+      current.saleCount += 1;
+      currencyMap.set(currency, current);
+    }
+
+    const totalsByCurrency = [...currencyMap.values()]
+      .map(item => ({ ...item, averageSale: item.saleCount ? item.totalSales / item.saleCount : 0 }))
+      .sort((a, b) => b.saleCount - a.saleCount || b.totalSales - a.totalSales);
+    const primaryCurrency = totalsByCurrency[0]?.currency || "PHP";
+    const primary = totalsByCurrency.find(item => item.currency === primaryCurrency) || { totalSales: 0, saleCount: 0, averageSale: 0 };
+
+    const trendMap = new Map();
+    const serviceMap = new Map();
+    for (const sale of sales.filter(item => (item.currency || "PHP") === primaryCurrency)) {
+      const meta = groupMeta(sale.completedAt, group, offset);
+      const trend = trendMap.get(meta.key) || { key: meta.key, label: meta.label, revenue: 0, sales: 0 };
+      trend.revenue += Number(sale.saleAmount || 0);
+      trend.sales += 1;
+      trendMap.set(meta.key, trend);
+
+      const serviceKey = sale.serviceName || "Service";
+      const service = serviceMap.get(serviceKey) || { service: serviceKey, revenue: 0, sales: 0 };
+      service.revenue += Number(sale.saleAmount || 0);
+      service.sales += 1;
+      serviceMap.set(serviceKey, service);
+    }
+
+    const trend = [...trendMap.values()].sort((a, b) => a.key.localeCompare(b.key));
+    const byService = [...serviceMap.values()].sort((a, b) => b.revenue - a.revenue || b.sales - a.sales);
+
+    res.json({
+      range,
+      group,
+      primaryCurrency,
+      summary: {
+        totalSales: primary.totalSales,
+        completedServices: sales.length,
+        averageSale: primary.averageSale,
+        servicesSold: new Set(sales.map(item => item.serviceName)).size
+      },
+      totalsByCurrency,
+      trend,
+      byService,
+      records: sales.map(sale => ({
+        id: sale._id,
+        bookingId: sale.booking,
+        completedAt: sale.completedAt,
+        bookingDate: sale.bookingDate,
+        guestName: sale.guestName,
+        guestEmail: sale.guestEmail,
+        guestPhone: sale.guestPhone,
+        serviceName: sale.serviceName,
+        saleAmount: sale.saleAmount,
+        currency: sale.currency,
+        locationLabel: sale.locationLabel,
+        status: sale.status
+      }))
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to load sales analytics." });
+  }
+});
+
+export default router;

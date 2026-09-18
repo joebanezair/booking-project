@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { FiArrowLeft, FiCalendar, FiPause, FiPlay, FiSlash, FiStar } from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiDollarSign, FiPause, FiPlay, FiSlash, FiStar } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { api } from "../api.js";
+
+function money(value, currency = "PHP") {
+  try {
+    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(value || 0);
+  } catch {
+    return `${currency} ${Number(value || 0).toLocaleString()}`;
+  }
+}
 
 export default function BusinessDetailPage({ user, onLogout }) {
   const { businessId } = useParams();
@@ -32,6 +40,8 @@ export default function BusinessDetailPage({ user, onLogout }) {
     }
   }
 
+  const primarySales = data?.salesSummary?.totalsByCurrency?.[0];
+
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar"><div><p className="eyebrow">BUSINESS DETAILS</p><h1>{data?.business?.name || "Business"}</h1></div><Link className="secondary button-link icon-link" to="/dashboard/businesses"><FiArrowLeft />Back to businesses</Link></header>
     {error ? <p className="error">{error}</p> : !data ? <p>Loading...</p> : <>
@@ -49,8 +59,14 @@ export default function BusinessDetailPage({ user, onLogout }) {
       <section className="stats-grid">
         <article className="stat-card"><span>Services</span><strong>{data.services.length}</strong></article>
         <article className="stat-card"><span>Recent bookings shown</span><strong>{data.recentBookings.length}</strong></article>
+        <article className="stat-card"><span>Recorded sales</span><strong>{data.salesSummary?.recorded || 0}</strong><small>{primarySales ? money(primarySales.total, primarySales.currency) : "No completed sales"}</small></article>
         <article className="stat-card"><span>Verified review rating</span><strong>{data.reviewSummary.averageRating || 0} <FiStar /></strong></article>
       </section>
+
+      {data.salesSummary?.totalsByCurrency?.length > 1 && <section className="panel admin-business-sales-summary">
+        <div className="panel-title"><h2>Recorded sales by currency</h2></div>
+        <div className="currency-total-list">{data.salesSummary.totalsByCurrency.map(item => <div key={item.currency}><strong>{item.currency}</strong><span><FiDollarSign />{money(item.total, item.currency)}</span><small>{item.count} recorded sale{item.count === 1 ? "" : "s"}</small></div>)}</div>
+      </section>}
 
       <div className="workspace-grid admin-business-detail-grid">
         <section className="panel">
@@ -59,7 +75,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
         </section>
         <section className="panel">
           <div className="panel-title"><h2>Recent bookings</h2></div>
-          {data.recentBookings.length === 0 ? <p className="muted">No bookings yet.</p> : <div className="simple-admin-list">{data.recentBookings.map(booking => <div key={booking._id}><div><strong>{booking.guestName}</strong><small>{booking.service} · {new Date(booking.bookingDate).toLocaleString()}</small></div><span className={`status ${booking.status}`}><FiCalendar />{booking.status}</span></div>)}</div>}
+          {data.recentBookings.length === 0 ? <p className="muted">No bookings yet.</p> : <div className="simple-admin-list">{data.recentBookings.map(booking => <div key={booking._id}><div><strong>{booking.guestName}</strong><small>{booking.service} · {money(booking.servicePrice, booking.currency)} · {new Date(booking.bookingDate).toLocaleString()}</small></div><span className={`status ${booking.status}`}><FiCalendar />{booking.status}</span></div>)}</div>}
         </section>
       </div>
     </>}
