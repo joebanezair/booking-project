@@ -5,11 +5,11 @@ import Rating from "../models/Rating.js";
 import Comment from "../models/Comment.js";
 import Reaction from "../models/Reaction.js";
 import requireAuth from "../middleware/auth.js";
-import { requireAdmin } from "../middleware/requireRole.js";
+import { requireBusiness } from "../middleware/requireRole.js";
 import EmojiReaction from "../models/EmojiReaction.js";
 
 const router = Router();
-router.use(requireAuth, requireAdmin);
+router.use(requireAuth, requireBusiness);
 
 const imagePattern = /^data:image\/(jpeg|png|webp|gif);base64,[a-z0-9+/=]+$/i;
 

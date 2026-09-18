@@ -19,9 +19,10 @@ const customerSections = [
 
 export default function DashboardPage({ user, onLogout }) {
   const isAdmin = user.role === "admin";
-  const sections = isAdmin ? adminSections : customerSections;
+  const isProvider = ["admin", "business"].includes(user.role);
+  const sections = isProvider ? (isAdmin ? adminSections : adminSections.filter(section => section.to !== "/dashboard/customers")) : customerSections;
   return <AppLayout user={user} onLogout={onLogout}>
-    <header className="topbar"><div><p className="eyebrow">{isAdmin ? "ADMIN DASHBOARD" : "CUSTOMER DASHBOARD"}</p><h1>Welcome back, {user.name.split(" ")[0]}</h1><p className="muted">{isAdmin ? "Manage your business, services, customers, and bookings." : "Find services and keep track of your bookings."}</p></div>{isAdmin && <Link className="primary-button button-link icon-link" to="/dashboard/services/new"><FiPlus aria-hidden="true" />Post a service</Link>}</header>
+    <header className="topbar"><div><p className="eyebrow">{isAdmin ? "ADMIN DASHBOARD" : isProvider ? "BUSINESS DASHBOARD" : "CUSTOMER DASHBOARD"}</p><h1>Welcome back, {user.name.split(" ")[0]}</h1><p className="muted">{isAdmin ? "Manage the platform, your services, customers, and bookings." : isProvider ? "Manage your business services and bookings." : "Find services and keep track of your bookings."}</p></div>{isProvider && <Link className="primary-button button-link icon-link" to="/dashboard/services/new"><FiPlus aria-hidden="true" />Post a service</Link>}</header>
     <section className="dashboard-route-grid">{sections.map(({ icon: Icon, ...section }) => <article className="panel route-card" key={section.to}><div><span className="route-card-icon"><Icon aria-hidden="true" /></span><p className="eyebrow">{section.title.toUpperCase()}</p><h2>{section.title}</h2><p className="muted">{section.text}</p></div><Link className="secondary button-link icon-link" to={section.to}>{section.action}<FiArrowRight aria-hidden="true" /></Link></article>)}</section>
   </AppLayout>;
 }

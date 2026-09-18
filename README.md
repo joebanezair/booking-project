@@ -1,6 +1,6 @@
 # BookFlow — Service Search, Booking, and Messaging Platform
 
-BookFlow is a full-stack MERN application with separate **admin** and **customer** experiences. Admins manage the business, publish services, accept schedule requests, and review customers. Customers browse services, request bookings, and manage only their own appointments. It also includes public/private services, search, ratings, reactions, threaded discussions, messaging, and authenticated real-time updates.
+BookFlow is a full-stack MERN application with separate **admin**, **business**, and **customer** experiences. Business accounts publish services and manage their own bookings. Admins have those provider capabilities plus platform customer-directory access. Customers browse services, request bookings, and manage only their own appointments.
 
 ## Features
 
@@ -13,25 +13,25 @@ BookFlow is a full-stack MERN application with separate **admin** and **customer
 - Automatically generated unique usernames
 - Protected dashboard routes
 - Role-based authorization enforced by both the frontend and backend
-- Public registration always creates a `customer`; users cannot self-register as admins
-- Secure admin assignment through the server-side `ADMIN_EMAILS` environment variable
+- Public registration always creates a `customer`; users cannot select a privileged role
+- Invite-only admin and business registration URLs validated by server-side environment keys
+- Optional admin promotion through the server-side `ADMIN_EMAILS` environment variable
 
 ### User roles and permissions
 
-| Capability | Admin | Customer |
-| --- | --- | --- |
-| Manage business services | Yes | No |
-| Publish, unpublish, edit, or delete services | Yes | No |
-| View incoming business bookings | Yes | No |
-| Update booking status or delete bookings | Yes | No |
-| View the registered-customer directory | Yes | No |
-| Browse public services | Yes | Yes |
-| Request a service booking | Yes | Yes |
-| View bookings associated with their customer account | No | Yes |
-| Cancel their own booking requests | No | Yes |
-| Use messages, notifications, forum, profile, and theme settings | Yes | Yes |
+| Capability | Admin | Business | Customer |
+| --- | --- | --- | --- |
+| Manage their own business services | Yes | Yes | No |
+| Publish, unpublish, edit, or delete their own services | Yes | Yes | No |
+| Manage incoming bookings for their account | Yes | Yes | No |
+| View the platform customer directory | Yes | No | No |
+| Browse public services | Yes | Yes | Yes |
+| Request a service booking | Yes | Yes | Yes |
+| View bookings linked to their customer account | No | No | Yes |
+| Cancel their own customer booking requests | No | No | Yes |
+| Use messages, notifications, forum, profile, and themes | Yes | Yes | Yes |
 
-Admin restrictions are enforced by API middleware. Hiding navigation links is only a convenience; direct requests from a customer to admin endpoints return HTTP `403`.
+Role restrictions are enforced by API middleware. Hiding navigation links is only a convenience; unauthorized direct requests return HTTP `403`.
 
 ### Separate application pages
 
@@ -51,6 +51,7 @@ Every major feature has its own route instead of being combined into one dashboa
 | Profile management | `/dashboard/profile` |
 | Notification center | `/dashboard/notifications` |
 | Appearance settings | `/dashboard/settings` |
+| Invite-only registration | `/register/:role/:inviteKey` |
 | Public forum | `/forum` |
 | User and service search | `/search` |
 | Public service details | `/services/:serviceId` |
@@ -333,11 +334,31 @@ MONGO_URI=mongodb://127.0.0.1:27017/booking_app
 JWT_SECRET=replace_with_a_long_random_secret
 CLIENT_URL=http://localhost:5173
 ADMIN_EMAILS=owner@example.com
+ADMIN_REGISTRATION_KEY=replace_with_a_random_secret_at_least_32_characters
+BUSINESS_REGISTRATION_KEY=replace_with_a_different_random_secret_at_least_32_characters
 ```
 
-### Creating the initial admin securely
+### Creating admin and business accounts securely
 
-Admin role selection is not exposed in registration requests or the browser UI.
+Generate two different high-entropy keys. Hexadecimal keys avoid URL-encoding problems:
+
+```bash
+openssl rand -hex 32
+openssl rand -hex 32
+```
+
+Place the first value in `ADMIN_REGISTRATION_KEY` and the second in `BUSINESS_REGISTRATION_KEY`, then restart the backend. The protected registration URLs are:
+
+```text
+http://localhost:5173/register/admin/<ADMIN_REGISTRATION_KEY>
+http://localhost:5173/register/business/<BUSINESS_REGISTRATION_KEY>
+```
+
+For production, replace the origin with the deployed frontend URL. Anyone possessing one of these URLs can create that role, so treat the URL like a password: share it privately, never commit it, and rotate its environment key after use or suspected disclosure. Placeholder or shorter-than-32-character keys are rejected by the server.
+
+Normal `/login` registration remains customer-only. Role values sent in ordinary registration bodies are ignored.
+
+`ADMIN_EMAILS` remains available as an alternative way to promote a known account:
 
 1. Register the intended owner account normally, or use an existing account.
 2. Add its normalized email address to `ADMIN_EMAILS` in `server/.env`.
@@ -392,6 +413,7 @@ Authorization: Bearer <token>
 
 ```text
 POST /api/auth/register
+POST /api/auth/register/:role/:inviteKey
 POST /api/auth/login
 GET  /api/auth/me
 ```
@@ -423,7 +445,7 @@ Calling the same endpoint with the same emoji toggles the current user's reactio
 ### Service management
 
 The internal path remains `/api/content` for data compatibility.
-Every endpoint in this section requires the `admin` role.
+Every endpoint in this section requires the `business` or `admin` role. Records remain scoped to the authenticated provider account.
 
 ```text
 GET    /api/content
@@ -507,7 +529,7 @@ POST   /api/public/book/:userId
 GET /api/admin/customers
 ```
 
-Returns registered customer accounts and booking counts. Requires the `admin` role.
+Returns registered customer accounts and booking counts. Requires the `admin` role; business accounts receive HTTP `403`.
 
 ### Messaging
 
@@ -521,7 +543,7 @@ Conversation responses include `emojiReactions` for each message. The backend re
 
 ## Data models
 
-- **User:** authentication, `admin`/`customer` role, public profile, profile-photo position, and cover photo
+- **User:** authentication, `admin`/`business`/`customer` role, public profile, profile-photo position, and cover photo
 - **Content/Service:** owner, details, price, images, visibility, publishing, rating option, and booking option
 - **Booking:** admin/business owner, optional authenticated customer, optional linked service, guest details, date/time, source, and status
 - **Message:** sender, recipient, body, read timestamp, and timestamps
@@ -596,11 +618,14 @@ Conversation responses include `emojiReactions` for each message. The backend re
 
 ### Roles and authorization
 
-1. Register a new account and confirm its role is `customer`.
-2. As a customer, confirm service-management and customer-directory routes redirect to the dashboard.
-3. As a customer, call `/api/content` or `/api/admin/customers` directly and confirm HTTP `403`.
-4. Create bookings from two customer accounts and confirm each customer sees only their own bookings.
-5. Configure one account in `ADMIN_EMAILS`, restart the server, sign in, and confirm the admin dashboard exposes services, bookings, and customers.
+1. Register normally and confirm the account is a `customer` even if a `role` field is submitted.
+2. Use the business invite URL and confirm it creates a `business` account with service and booking management but no customer-directory access.
+3. Use the admin invite URL and confirm it creates an `admin` account with provider tools and the customer directory.
+4. Try an incorrect, placeholder, and short invite key and confirm registration is rejected.
+5. As a customer, call `/api/content` or `/api/admin/customers` directly and confirm HTTP `403`.
+6. As a business account, call `/api/admin/customers` directly and confirm HTTP `403`.
+7. Create services under two providers and confirm each manages only its own records.
+8. Create bookings from two customers and confirm each customer sees only their own linked bookings.
 
 ## Security notes
 
@@ -608,7 +633,8 @@ Conversation responses include `emojiReactions` for each message. The backend re
 - Protected HTTP routes verify JWTs
 - WebSocket connections verify JWTs before joining private user rooms
 - Owner checks protect profile, service, booking, and comment-management operations
-- Database-backed role checks protect admin APIs even if a stored JWT predates a role change
+- Database-backed role checks protect privileged APIs even if a stored JWT predates a role change
+- Invite registration keys are verified server-side with constant-time comparison and are never accepted from ordinary registration
 - Public queries exclude private services on the server
 - Unique database indexes prevent duplicate ratings and reactions
 - Message and comment emoji targets are authorized server-side before toggling reactions

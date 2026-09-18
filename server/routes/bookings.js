@@ -39,7 +39,7 @@ function validateBooking(input) {
 
 router.get("/", async (req, res) => {
   try {
-    const filter = req.user.role === "admin" ? { user: req.user.id } : { customer: req.user.id };
+    const filter = ["admin", "business"].includes(req.user.role) ? { user: req.user.id } : { customer: req.user.id };
 
     if (req.query.status && allowedStatuses.has(req.query.status)) {
       filter.status = req.query.status;
@@ -68,7 +68,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req,res) => {
   try {
     if(!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({message:"Invalid booking ID."});
-    const ownership = req.user.role === "admin" ? { user: req.user.id } : { customer: req.user.id };
+    const ownership = ["admin", "business"].includes(req.user.role) ? { user: req.user.id } : { customer: req.user.id };
     const booking=await Booking.findOne({_id:req.params.id,...ownership})
       .populate("content","title description category price currency coverImage visibility published")
       .populate("user", "name username");
@@ -79,7 +79,7 @@ router.get("/:id", async (req,res) => {
 
 router.post("/", async (req, res) => {
   try {
-    if (req.user.role !== "admin") return res.status(403).json({ message: "Only admins can create dashboard bookings." });
+    if (!["admin", "business"].includes(req.user.role)) return res.status(403).json({ message: "Only business accounts can create dashboard bookings." });
     const input = normalizeBooking(req.body);
     const validationError = validateBooking(input);
     if (validationError) {
@@ -97,7 +97,7 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    if (req.user.role !== "admin") return res.status(403).json({ message: "Only admins can update booking details and status." });
+    if (!["admin", "business"].includes(req.user.role)) return res.status(403).json({ message: "Only business accounts can update booking details and status." });
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: "Invalid booking ID." });
     }
@@ -146,7 +146,7 @@ router.patch("/:id/cancel", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    if (req.user.role !== "admin") return res.status(403).json({ message: "Only admins can delete bookings." });
+    if (!["admin", "business"].includes(req.user.role)) return res.status(403).json({ message: "Only business accounts can delete bookings." });
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: "Invalid booking ID." });
     }

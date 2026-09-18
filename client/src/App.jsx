@@ -19,6 +19,7 @@ import BookingDetailPage from "./pages/BookingDetailPage.jsx";
 import CustomersPage from "./pages/CustomersPage.jsx";
 import { disconnectRealtime } from "./realtime.js";
 import { api } from "./api.js";
+import InviteRegisterPage from "./pages/InviteRegisterPage.jsx";
 
 function readUser(){try{return JSON.parse(localStorage.getItem("booking_user"));}catch{return null;}}
 function readTheme(){return localStorage.getItem("booking_theme")==="dark"?"dark":"light";}
@@ -31,23 +32,25 @@ export default function App(){
   function logout(){disconnectRealtime();localStorage.removeItem("booking_token");localStorage.removeItem("booking_user");setUser(null);}
   const protectedPage = Component => user ? <Component user={user} onLogout={logout} onUserUpdate={setUser} theme={theme} onThemeChange={setTheme}/> : <Navigate to="/login" replace/>;
   const adminPage = Component => user ? (user.role === "admin" ? <Component user={user} onLogout={logout} onUserUpdate={setUser} theme={theme} onThemeChange={setTheme}/> : <Navigate to="/dashboard" replace/>) : <Navigate to="/login" replace/>;
+  const providerPage = Component => user ? (["admin", "business"].includes(user.role) ? <Component user={user} onLogout={logout} onUserUpdate={setUser} theme={theme} onThemeChange={setTheme}/> : <Navigate to="/dashboard" replace/>) : <Navigate to="/login" replace/>;
 
   return <Routes>
     <Route path="/" element={<SearchPage user={user}/>}/>
     <Route path="/search" element={<SearchPage user={user}/>}/>
     <Route path="/forum" element={<ForumPage user={user}/>}/>
     <Route path="/login" element={user?<Navigate to="/dashboard" replace/>:<AuthPage onAuthenticated={setUser}/>}/>
+    <Route path="/register/:role/:inviteKey" element={<InviteRegisterPage user={user} onAuthenticated={setUser}/>}/>
     <Route path="/dashboard" element={protectedPage(DashboardPage)}/>
-    <Route path="/dashboard/content" element={adminPage(ContentManagementPage)}/>
-    <Route path="/dashboard/services" element={adminPage(ContentManagementPage)}/>
+    <Route path="/dashboard/content" element={providerPage(ContentManagementPage)}/>
+    <Route path="/dashboard/services" element={providerPage(ContentManagementPage)}/>
     <Route path="/dashboard/bookings" element={protectedPage(BookingsPage)}/>
     <Route path="/dashboard/bookings/:bookingId" element={protectedPage(BookingDetailPage)}/>
     <Route path="/dashboard/messages" element={protectedPage(MessagesPage)}/>
     <Route path="/dashboard/messages/:userId" element={protectedPage(MessagesPage)}/>
-    <Route path="/dashboard/content/new" element={adminPage(CreateContentPage)}/>
-    <Route path="/dashboard/services/new" element={adminPage(CreateContentPage)}/>
-    <Route path="/dashboard/content/:contentId/edit" element={adminPage(EditContentPage)}/>
-    <Route path="/dashboard/services/:contentId/edit" element={adminPage(EditContentPage)}/>
+    <Route path="/dashboard/content/new" element={providerPage(CreateContentPage)}/>
+    <Route path="/dashboard/services/new" element={providerPage(CreateContentPage)}/>
+    <Route path="/dashboard/content/:contentId/edit" element={providerPage(EditContentPage)}/>
+    <Route path="/dashboard/services/:contentId/edit" element={providerPage(EditContentPage)}/>
     <Route path="/dashboard/customers" element={adminPage(CustomersPage)}/>
     <Route path="/dashboard/profile" element={protectedPage(ProfileSettingsPage)}/>
     <Route path="/dashboard/notifications" element={protectedPage(NotificationsPage)}/>
