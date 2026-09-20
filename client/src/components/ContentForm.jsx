@@ -8,7 +8,7 @@ export default function ContentForm({initial,onSubmit,submitLabel}){
   const [form,setForm]=useState({durationMinutes:60,bufferMinutes:0,capacity:1,bookingQuestions:[],...initial,images:initial.images||[],bookingQuestions:initial.bookingQuestions||[]});
   const [error,setError]=useState("");
 
-  async function cover(file){try{setForm(v=>({...v,coverImage:await fileToDataUrl(file)}));setError("");}catch(e){setError(e.message);}}
+  async function cover(file){try{const coverImage=await fileToDataUrl(file);setForm(v=>({...v,coverImage}));setError("");}catch(e){setError(e.message);}}
   async function more(files){try{const selected=Array.from(files||[]);if(form.images.length+selected.length>8)throw new Error("You can upload up to 8 additional images.");const converted=await Promise.all(selected.map(fileToDataUrl));setForm(v=>({...v,images:[...v.images,...converted]}));setError("");}catch(e){setError(e.message);}}
   function patchQuestion(index,patch){setForm(v=>({...v,bookingQuestions:v.bookingQuestions.map((q,i)=>i===index?{...q,...patch}:q)}));}
   function addQuestion(){if(form.bookingQuestions.length>=12)return setError("You can add up to 12 booking questions.");setForm(v=>({...v,bookingQuestions:[...v.bookingQuestions,newQuestion()]}));}
