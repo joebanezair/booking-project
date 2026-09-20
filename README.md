@@ -183,7 +183,7 @@ The current implementation generates and exposes the review link to the business
 
 ## Business dashboard
 
-Business accounts have access to Dashboard, Services, Bookings, Sales & Analytics, Messages, Profile, Notifications, Forum, Settings, and Search. The authenticated dashboard uses one responsive layout across desktop, tablet, and phone sizes. On smaller screens the same navigation moves to a sticky horizontal bar at the top; there is no separate mobile dashboard or bottom navigation.
+Business accounts have access to Dashboard, Services, Bookings, Sales & Analytics, Messages, Profile, Notifications, Forum, Settings, and Search. The authenticated dashboard uses one responsive layout across desktop, tablet, and phone sizes. On desktop, the left navigation is a compact icon rail by default and expands on hover or keyboard focus to reveal labels and account details. On smaller screens the same navigation moves to a sticky horizontal bar at the top; there is no separate mobile dashboard or bottom navigation.
 
 ### Services
 
