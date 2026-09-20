@@ -5,7 +5,9 @@ import DashboardPage from "./pages/DashboardPage.jsx";
 import ContentManagementPage from "./pages/ContentManagementPage.jsx";
 import CreateContentPage from "./pages/CreateContentPage.jsx";
 import EditContentPage from "./pages/EditContentPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 import ProfileSettingsPage from "./pages/ProfileSettingsPage.jsx";
+import BusinessPage from "./pages/BusinessPage.jsx";
 import PublicProfilePage from "./pages/PublicProfilePage.jsx";
 import PublicContentPage from "./pages/PublicContentPage.jsx";
 import PublicBookingPage from "./pages/PublicBookingPage.jsx";
@@ -86,7 +88,9 @@ export default function App() {
     <Route path="/dashboard/sales" element={businessPage(SalesPage)} />
     <Route path="/dashboard/messages" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/messages/:userId" element={protectedPage(MessagesPage)} />
-    <Route path="/dashboard/profile" element={businessPage(ProfileSettingsPage)} />
+    <Route path="/dashboard/profile" element={businessPage(ProfilePage)} />
+    <Route path="/dashboard/profile/edit" element={businessPage(ProfileSettingsPage)} />
+    <Route path="/dashboard/profile/business" element={businessPage(BusinessPage)} />
     <Route path="/dashboard/notifications" element={protectedPage(NotificationsPage)} />
     <Route path="/dashboard/settings" element={protectedPage(SettingsPage)} />
 

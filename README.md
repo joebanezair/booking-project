@@ -224,9 +224,23 @@ The export contains Summary, Sales Records, Sales Trend, and Service Performance
 
 **Recorded Sale = Completed Booking Value.** This is not the same as confirmed payment until a payment provider is integrated.
 
-### Business profile
+### Profile and Business Page
 
-Businesses can edit business name, category, description, location, email, phone, website, logo, username, biography/headline, cover photo, and draggable profile-photo crop.
+The authenticated profile area is split into three distinct routes:
+
+~~~text
+/dashboard/profile
+/dashboard/profile/edit
+/dashboard/profile/business
+~~~
+
+**Profile** is the account profile hub. It shows the connected cover/profile-photo header, profile summary, public-profile link, and entry points to Edit Profile and Business Page.
+
+**Edit Profile** manages account-facing fields such as name, username, biography, headline, location, website, cover photo, profile photo, and profile-photo positioning.
+
+**Business Page** manages business-specific fields such as business name, category, description, business location, email, phone, website, and logo. It is intentionally not a main sidebar navigation item; it is reached from the Profile page.
+
+The cover photo and profile photo use one LinkedIn-style connected header. The profile photo overlaps the cover. Clicking or tapping the cover opens change/remove actions. Clicking or tapping the profile photo opens view/change/reposition/delete actions. Destructive removal actions require confirmation, and the controls work for pointer and touch interaction.
 
 No approval or resubmission state exists.
 
