@@ -1508,3 +1508,531 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
     opacity:1;
   }
 }
+
+
+/* Profile hub, separate business page, and LinkedIn-style media header */
+.visually-hidden {
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+}
+
+.profile-overview-card,
+.profile-edit-form {
+  max-width:1200px;
+  margin:0 auto 20px;
+  overflow:visible;
+}
+
+.linkedin-profile-media {
+  position:relative;
+  margin:-22px -22px 0;
+  padding-bottom:76px;
+}
+
+.linkedin-cover {
+  position:relative;
+  height:300px;
+  border-radius:18px 18px 0 0;
+  background:
+    linear-gradient(135deg, rgba(52,87,220,.92), rgba(93,124,255,.62)),
+    linear-gradient(45deg,#18233a,#354d81);
+  background-size:cover;
+  background-position:center;
+  overflow:visible;
+}
+
+.linkedin-cover-placeholder {
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:rgba(255,255,255,.82);
+  font-weight:800;
+  letter-spacing:.02em;
+  pointer-events:none;
+}
+
+.media-hit-area {
+  position:absolute;
+  inset:0;
+  z-index:1;
+  width:100%;
+  height:100%;
+  padding:0;
+  border-radius:inherit;
+  background:transparent;
+  box-shadow:none;
+}
+
+.media-hit-area:hover {
+  transform:none;
+  background:rgba(0,0,0,.04);
+}
+
+.media-edit-button {
+  position:absolute;
+  z-index:5;
+  width:42px;
+  height:42px;
+  padding:0;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(255,255,255,.94);
+  color:#273247;
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+}
+
+.cover-edit-button {
+  top:18px;
+  right:18px;
+}
+
+.linkedin-avatar-wrap {
+  position:absolute;
+  z-index:8;
+  left:34px;
+  bottom:-72px;
+}
+
+.linkedin-avatar-button {
+  position:relative;
+  width:152px;
+  height:152px;
+  padding:0;
+  border:5px solid #fff;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 8px 26px rgba(25,36,58,.18);
+  overflow:visible;
+}
+
+.linkedin-avatar-button:hover {
+  transform:none;
+}
+
+.linkedin-avatar-button .profile-avatar {
+  width:100% !important;
+  height:100% !important;
+  min-width:100%;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.avatar-camera-badge {
+  position:absolute;
+  right:4px;
+  bottom:8px;
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border:3px solid #fff;
+  border-radius:50%;
+  background:#eef2f8;
+  color:#344158;
+  font-size:15px;
+}
+
+.profile-media-menu {
+  position:absolute;
+  z-index:25;
+  width:220px;
+  padding:7px;
+  display:grid;
+  gap:3px;
+  border:1px solid #dce2ec;
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 16px 42px rgba(22,34,56,.2);
+}
+
+.cover-media-menu {
+  top:66px;
+  right:18px;
+}
+
+.profile-photo-menu {
+  left:116px;
+  bottom:-4px;
+}
+
+.profile-media-menu button {
+  width:100%;
+  padding:10px 11px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:9px;
+  border-radius:7px;
+  background:transparent;
+  color:#344158;
+  font-size:12px;
+  text-align:left;
+}
+
+.profile-media-menu button:hover {
+  transform:none;
+  background:#f2f5f9;
+}
+
+.profile-media-menu .menu-danger {
+  color:#b42318;
+}
+
+.photo-preview-modal {
+  position:fixed;
+  inset:0;
+  z-index:120;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:rgba(8,13,23,.78);
+}
+
+.photo-preview-dialog {
+  position:relative;
+  width:min(520px,92vw);
+}
+
+.photo-preview-dialog img {
+  display:block;
+  width:100%;
+  aspect-ratio:1;
+  border-radius:50%;
+  object-fit:cover;
+  background:#111827;
+  box-shadow:0 22px 70px rgba(0,0,0,.35);
+}
+
+.photo-preview-close {
+  position:absolute;
+  z-index:2;
+  top:4px;
+  right:4px;
+  width:40px;
+  height:40px;
+  padding:0;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#fff;
+  color:#1f2937;
+  box-shadow:0 6px 20px rgba(0,0,0,.2);
+}
+
+.profile-overview-body {
+  padding:10px 10px 2px 186px;
+}
+
+.profile-overview-heading {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.profile-overview-heading h2 {
+  margin:0 0 7px;
+  font-size:30px;
+}
+
+.profile-overview-meta {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  color:#7c879a;
+  font-size:12px;
+}
+
+.profile-overview-meta span {
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+}
+
+.profile-overview-bio {
+  max-width:760px;
+  margin:18px 0 8px;
+  color:#596579;
+  line-height:1.7;
+}
+
+.profile-website-link {
+  color:#3457dc;
+  font-size:13px;
+  font-weight:800;
+  overflow-wrap:anywhere;
+}
+
+.profile-hub-grid {
+  max-width:1200px;
+  margin:0 auto 20px;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+
+.profile-hub-card {
+  min-height:132px;
+  display:grid;
+  grid-template-columns:44px 1fr;
+  gap:15px;
+  align-items:start;
+  transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+
+.profile-hub-card:hover {
+  transform:translateY(-2px);
+  border-color:#cad4e5;
+  box-shadow:0 10px 28px rgba(31,45,73,.08);
+}
+
+.profile-hub-card>svg {
+  width:28px;
+  height:28px;
+  color:#5267d7;
+}
+
+.profile-hub-card h3 {
+  margin:0 0 7px;
+}
+
+.profile-hub-card p {
+  margin:0;
+  color:#758096;
+  line-height:1.55;
+  font-size:13px;
+}
+
+.profile-feedback {
+  max-width:1200px;
+  margin:0 auto 14px;
+}
+
+.business-page-shell {
+  max-width:1200px;
+  margin:0 auto;
+}
+
+.business-page-shell .business-account-panel {
+  margin:0;
+}
+
+.profile-edit-form {
+  gap:20px;
+}
+
+.profile-edit-form .linkedin-profile-media {
+  margin-bottom:2px;
+}
+
+.linked-media-reposition {
+  margin-top:4px;
+  padding:18px;
+  border:1px solid #e4e8ef;
+  border-radius:12px;
+  background:#f8f9fc;
+  scroll-margin-top:100px;
+}
+
+.linked-media-reposition .profile-editor-head {
+  margin:0;
+  background:transparent;
+  padding:0;
+}
+
+.linked-media-reposition .profile-photo-drag-wrap {
+  width:min(420px,100%);
+}
+
+.linked-media-reposition .profile-photo-drag-frame {
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  margin-top:10px;
+}
+
+[data-theme="dark"] .linkedin-avatar-button {
+  border-color:#151f30;
+  background:#151f30;
+}
+
+[data-theme="dark"] .avatar-camera-badge {
+  border-color:#151f30;
+  background:#263349;
+  color:#e8edf6;
+}
+
+[data-theme="dark"] .profile-media-menu,
+[data-theme="dark"] .photo-preview-close {
+  background:#151f30;
+  border-color:#344158;
+  color:#e8edf6;
+}
+
+[data-theme="dark"] .profile-media-menu button {
+  color:#dbe4f3;
+}
+
+[data-theme="dark"] .profile-media-menu button:hover {
+  background:#263349;
+}
+
+[data-theme="dark"] .profile-media-menu .menu-danger {
+  color:#fca5a5;
+}
+
+[data-theme="dark"] .profile-overview-bio,
+[data-theme="dark"] .profile-hub-card p {
+  color:#9eabc0;
+}
+
+[data-theme="dark"] .linked-media-reposition {
+  background:#1d2941;
+  border-color:#344158;
+}
+
+/* Keep the public business profile visually consistent with the connected cover/avatar header. */
+.public-profile-hero.has-cover .public-profile-info {
+  position:relative;
+  margin-top:-62px;
+  padding-top:0;
+  align-items:flex-end;
+}
+
+.public-profile-hero.has-cover .public-profile-info>.profile-avatar {
+  flex:0 0 auto;
+  width:132px;
+  height:132px;
+  border:5px solid #fff;
+  box-shadow:0 8px 24px rgba(25,36,58,.16);
+}
+
+[data-theme="dark"] .public-profile-hero.has-cover .public-profile-info>.profile-avatar {
+  border-color:#151f30;
+}
+
+@media (max-width:800px) {
+  .linkedin-profile-media {
+    margin:-22px -22px 0;
+    padding-bottom:62px;
+  }
+
+  .linkedin-cover {
+    height:220px;
+  }
+
+  .linkedin-avatar-wrap {
+    left:22px;
+    bottom:-58px;
+  }
+
+  .linkedin-avatar-button {
+    width:124px;
+    height:124px;
+    border-width:4px;
+  }
+
+  .profile-photo-menu {
+    left:88px;
+    bottom:-12px;
+  }
+
+  .profile-overview-body {
+    padding:8px 4px 2px;
+  }
+
+  .profile-overview-heading {
+    margin-top:6px;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .profile-overview-heading h2 {
+    font-size:25px;
+  }
+
+  .profile-overview-heading .button-link {
+    width:100%;
+  }
+
+  .profile-hub-grid {
+    grid-template-columns:1fr;
+  }
+
+  .public-profile-hero.has-cover .public-profile-info {
+    margin-top:-52px;
+    align-items:flex-start;
+  }
+
+  .public-profile-hero.has-cover .public-profile-info>.profile-avatar {
+    width:112px;
+    height:112px;
+  }
+}
+
+@media (max-width:520px) {
+  .linkedin-cover {
+    height:180px;
+  }
+
+  .cover-edit-button {
+    top:12px;
+    right:12px;
+  }
+
+  .cover-media-menu {
+    top:60px;
+    right:12px;
+    width:min(220px,calc(100vw - 52px));
+  }
+
+  .linkedin-avatar-wrap {
+    left:16px;
+    bottom:-50px;
+  }
+
+  .linkedin-avatar-button {
+    width:108px;
+    height:108px;
+  }
+
+  .avatar-camera-badge {
+    width:30px;
+    height:30px;
+    right:1px;
+    bottom:5px;
+  }
+
+  .profile-photo-menu {
+    left:36px;
+    bottom:-116px;
+    width:min(220px,calc(100vw - 52px));
+  }
+
+  .linkedin-profile-media {
+    padding-bottom:56px;
+  }
+
+  .profile-overview-body {
+    padding-top:2px;
+  }
+
+  .profile-hub-card {
+    min-height:0;
+  }
+
+  .linked-media-reposition .profile-photo-drag-frame {
+    width:150px;
+    height:150px;
+  }
+}
