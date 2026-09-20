@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+const bookingQuestionSchema = new mongoose.Schema(
+  {
+    id: { type: String, required: true, trim: true, maxlength: 60 },
+    label: { type: String, required: true, trim: true, maxlength: 160 },
+    type: { type: String, enum: ["text", "textarea", "select", "checkbox"], default: "text" },
+    required: { type: Boolean, default: false },
+    options: { type: [String], default: [] }
+  },
+  { _id: false }
+);
+
 const contentSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
@@ -13,6 +24,10 @@ const contentSchema = new mongoose.Schema(
     images: { type: [String], default: [] },
     allowRatings: { type: Boolean, default: true },
     allowBookings: { type: Boolean, default: true },
+    durationMinutes: { type: Number, min: 5, max: 1440, default: 60 },
+    bufferMinutes: { type: Number, min: 0, max: 240, default: 0 },
+    capacity: { type: Number, min: 1, max: 100, default: 1 },
+    bookingQuestions: { type: [bookingQuestionSchema], default: [] },
     visibility: { type: String, enum: ["public", "private"], default: "public", index: true },
     published: { type: Boolean, default: false, index: true }
   },

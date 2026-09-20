@@ -97,10 +97,10 @@ export default function BookingDetailPage({ user, onLogout }) {
         <div className="booking-detail-actions">{actionButtons()}</div>
 
         <div className="booking-detail-grid">
-          <div><FiUser /><span>Guest</span><strong>{booking.guestName}</strong></div>
+          <div><FiUser /><span>Guest</span><strong>{booking.guestName}</strong>{booking.bookingReference && <small>{booking.bookingReference}</small>}</div>
           {booking.guestEmail && <a href={`mailto:${booking.guestEmail}`}><FiMail /><span>Email</span><strong>{booking.guestEmail}</strong></a>}
           {booking.guestPhone && <a href={`tel:${booking.guestPhone}`}><FiPhone /><span>Phone</span><strong>{booking.guestPhone}</strong></a>}
-          <div><FiCalendar /><span>Date and time</span><strong>{new Date(booking.bookingDate).toLocaleString()}</strong></div>
+          <div><FiCalendar /><span>Date and time</span><strong>{new Date(booking.bookingDate).toLocaleString()}</strong><small>{booking.serviceDurationMinutes || 60} min service{booking.bufferMinutes ? ` · ${booking.bufferMinutes} min buffer` : ""}</small></div>
           <div><FiTag /><span>Status</span><strong className={`status ${booking.status}`}>{statusLabels[booking.status] || booking.status}</strong></div>
           <div><FiDollarSign /><span>Booked price</span><strong>{money(booking.servicePrice, booking.currency)}</strong></div>
           {(booking.locationLabel || hasCoordinates) && (hasCoordinates
@@ -134,7 +134,10 @@ export default function BookingDetailPage({ user, onLogout }) {
             <p className="muted">The review link is being prepared.</p>}
         </div>}
 
-        {booking.notes && <div className="booking-detail-notes"><p className="eyebrow">NOTES</p><p>{booking.notes}</p></div>}
+        {booking.customAnswers?.length > 0 && <div className="booking-detail-notes"><p className="eyebrow">BOOKING ANSWERS</p>{booking.customAnswers.map(answer => <p key={answer.questionId}><strong>{answer.label}:</strong> {answer.value}</p>)}</div>}
+        {booking.notes && <div className="booking-detail-notes"><p className="eyebrow">GUEST NOTES</p><p>{booking.notes}</p></div>}
+        {booking.internalNotes && <div className="booking-detail-notes"><p className="eyebrow">INTERNAL BUSINESS NOTES</p><p>{booking.internalNotes}</p></div>}
+        {booking.history?.length > 0 && <div className="booking-detail-notes booking-history"><p className="eyebrow">BOOKING HISTORY</p><div className="booking-history-list">{[...booking.history].reverse().map((entry,index)=><div className="booking-history-entry" key={index}><strong>{String(entry.action||"updated").replaceAll("_"," ")}</strong><span>{new Date(entry.at).toLocaleString()}</span>{entry.note&&<p>{entry.note}</p>}{entry.fromDate&&entry.toDate&&<small>{new Date(entry.fromDate).toLocaleString()} → {new Date(entry.toDate).toLocaleString()}</small>}</div>)}</div></div>}
       </section>}
   </AppLayout>;
 }

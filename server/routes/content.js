@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { Router } from "express";
 import mongoose from "mongoose";
 import Content from "../models/Content.js";
@@ -12,6 +13,7 @@ const router = Router();
 router.use(requireAuth, requireBusiness);
 
 const imagePattern = /^data:image\/(jpeg|png|webp|gif);base64,[a-z0-9+/=]+$/i;
+const questionTypes = new Set(["text", "textarea", "select", "checkbox"]);
 
 function validateImage(value, label) {
   if (!value) return null;
@@ -20,6 +22,19 @@ function validateImage(value, label) {
   const bytes = Math.ceil(base64.length * 3 / 4);
   if (bytes > 2 * 1024 * 1024) return `${label} must be 2 MB or smaller.`;
   return null;
+}
+
+function normalizeQuestions(value) {
+  if (!Array.isArray(value)) return [];
+  return value.slice(0, 12).map(question => ({
+    id: String(question?.id || randomUUID()).replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 60) || randomUUID(),
+    label: String(question?.label || "").trim(),
+    type: questionTypes.has(question?.type) ? question.type : "text",
+    required: Boolean(question?.required),
+    options: Array.isArray(question?.options)
+      ? question.options.map(option => String(option || "").trim()).filter(Boolean).slice(0, 20)
+      : []
+  }));
 }
 
 function normalize(body) {
@@ -33,6 +48,10 @@ function normalize(body) {
     images: Array.isArray(body.images) ? body.images.map(String).filter(Boolean) : [],
     allowRatings: body.allowRatings !== false,
     allowBookings: body.allowBookings !== false,
+    durationMinutes: Number(body.durationMinutes ?? 60),
+    bufferMinutes: Number(body.bufferMinutes ?? 0),
+    capacity: Number(body.capacity ?? 1),
+    bookingQuestions: normalizeQuestions(body.bookingQuestions),
     visibility: body.visibility === "private" ? "private" : "public",
     published: Boolean(body.published)
   };
@@ -45,6 +64,15 @@ function validate(input) {
   if (!Number.isFinite(input.price) || input.price < 0) return "Price must be a valid non-negative number.";
   if (!/^[A-Z]{3}$/.test(input.currency)) return "Currency must be a 3-letter code.";
   if (!input.category || input.category.length > 80) return "Category must be 80 characters or fewer.";
+  if (!Number.isInteger(input.durationMinutes) || input.durationMinutes < 5 || input.durationMinutes > 1440) return "Service duration must be between 5 and 1,440 minutes.";
+  if (!Number.isInteger(input.bufferMinutes) || input.bufferMinutes < 0 || input.bufferMinutes > 240) return "Buffer time must be between 0 and 240 minutes.";
+  if (!Number.isInteger(input.capacity) || input.capacity < 1 || input.capacity > 100) return "Service capacity must be between 1 and 100.";
+  if (input.bookingQuestions.length > 12) return "You can add up to 12 booking questions.";
+  for (const question of input.bookingQuestions) {
+    if (!question.label || question.label.length > 160) return "Each booking question needs a label of 160 characters or fewer.";
+    if (question.type === "select" && question.options.length < 2) return "Select questions need at least two options.";
+    if (question.options.some(option => option.length > 120)) return "Booking question options must be 120 characters or fewer.";
+  }
   if (input.images.length > 8) return "You can upload up to 8 additional images.";
   const coverError = validateImage(input.coverImage, "Cover image");
   if (coverError) return coverError;
@@ -96,9 +124,7 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).json({ message: "Invalid content ID." });
-    }
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid content ID." });
     const input = normalize(req.body);
     const error = validate(input);
     if (error) return res.status(400).json({ message: error });
@@ -113,7 +139,6 @@ router.put("/:id", async (req, res) => {
       input,
       { new: true, runValidators: true }
     );
-    if (!item) return res.status(404).json({ message: "Content not found." });
     res.json(item);
   } catch (error) {
     console.error(error);
@@ -123,9 +148,7 @@ router.put("/:id", async (req, res) => {
 
 router.patch("/:id/publish", async (req, res) => {
   try {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).json({ message: "Invalid content ID." });
-    }
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid content ID." });
     const publishing = Boolean(req.body.published);
     const existing = await Content.findOne({ _id: req.params.id, user: req.user.id }).select("published");
     if (!existing) return res.status(404).json({ message: "Content not found." });
@@ -137,7 +160,6 @@ router.patch("/:id/publish", async (req, res) => {
       { published: publishing },
       { new: true, runValidators: true }
     );
-    if (!item) return res.status(404).json({ message: "Content not found." });
     res.json(item);
   } catch (error) {
     console.error(error);
@@ -147,17 +169,15 @@ router.patch("/:id/publish", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).json({ message: "Invalid content ID." });
-    }
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid content ID." });
     const item = await Content.findOneAndDelete({ _id: req.params.id, user: req.user.id });
     if (!item) return res.status(404).json({ message: "Content not found." });
     const commentIds = await Comment.find({ content: req.params.id }).distinct("_id");
     await Promise.all([
       Rating.deleteMany({ content: req.params.id }),
       Comment.deleteMany({ content: req.params.id }),
-      EmojiReaction.deleteMany({ targetType: "comment", target: { $in: commentIds } })
-      ,Reaction.deleteMany({ content: req.params.id })
+      EmojiReaction.deleteMany({ targetType: "comment", target: { $in: commentIds } }),
+      Reaction.deleteMany({ content: req.params.id })
     ]);
     res.status(204).end();
   } catch (error) {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiDollarSign, FiMessageSquare, FiPlus, FiSearch, FiSettings, FiTrendingUp, FiUser, FiUsers } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckCircle, FiCircle, FiDollarSign, FiMessageSquare, FiPlus, FiSearch, FiSettings, FiTrendingUp, FiUser, FiUsers } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart } from "../components/SalesCharts.jsx";
 import { api } from "../api.js";
@@ -34,6 +34,7 @@ export default function DashboardPage({ user, onLogout }) {
   const sections = isAdmin ? adminSections : businessSections;
   const [overview, setOverview] = useState(null);
   const [businessSales, setBusinessSales] = useState(null);
+  const [setup, setSetup] = useState({ profile: null, business: null, services: null });
   const [overviewError, setOverviewError] = useState("");
 
   useEffect(() => {
@@ -46,9 +47,22 @@ export default function DashboardPage({ user, onLogout }) {
       group: "weekly",
       offset: new Date().getTimezoneOffset()
     }).then(setBusinessSales).catch(error => setOverviewError(error.message));
+    Promise.all([api.profile.get(), api.business.mine(), api.content.list()])
+      .then(([profile, business, services]) => setSetup({ profile, business, services }))
+      .catch(() => {});
   }, [isAdmin]);
 
   const salesCurrency = businessSales?.primaryCurrency || "PHP";
+  const onboarding = !isAdmin ? [
+    { label: "Business account created", done: true, to: "/dashboard/profile" },
+    { label: "Complete your Business Page", done: Boolean(setup.business?.description && setup.business?.location && setup.business?.phone), to: "/dashboard/profile/business" },
+    { label: "Add profile and cover photos", done: Boolean(setup.profile?.profileImage && setup.profile?.coverImage), to: "/dashboard/profile/edit" },
+    { label: "Create your first service", done: Boolean(setup.services?.length), to: "/dashboard/services/new" },
+    { label: "Set your working availability", done: Boolean(setup.business?.workingHours?.some(row => row.enabled)), to: "/dashboard/profile/business" },
+    { label: "Publish a bookable service", done: Boolean(setup.services?.some(service => service.published && service.allowBookings !== false)), to: "/dashboard/services" },
+    { label: "Share your booking link or QR", done: Boolean(localStorage.getItem("bookflow_booking_shared")), to: "/dashboard/profile" }
+  ] : [];
+  const onboardingDone = onboarding.filter(item => item.done).length;
 
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
@@ -68,6 +82,15 @@ export default function DashboardPage({ user, onLogout }) {
       <article className="stat-card"><span>Bookings</span><strong>{overview?.bookings.total ?? "—"}</strong><small>{overview ? `${overview.bookings.pending} pending · ${overview.bookings.completed} completed` : "Loading activity…"}</small></article>
       <article className="stat-card"><span>Recorded sales</span><strong>{overview?.sales?.recorded ?? "—"}</strong><small>{overview?.sales?.totalsByCurrency?.length ? overview.sales.totalsByCurrency.map(item => `${item.currency} ${Number(item.total || 0).toLocaleString()}`).join(" · ") : "Completed booking value"}</small></article>
       <article className="stat-card"><span>Verified reviews</span><strong>{overview?.reviews.verified ?? "—"}</strong><small>Completed-booking reviews</small></article>
+    </section>}
+
+    {!isAdmin && <section className="panel onboarding-panel">
+      <div className="panel-title">
+        <div><p className="eyebrow">GET READY TO LAUNCH</p><h2>Business setup checklist</h2><p className="muted">{onboardingDone} of {onboarding.length} completed</p></div>
+        <strong className="onboarding-progress-label">{Math.round((onboardingDone / Math.max(onboarding.length, 1)) * 100)}%</strong>
+      </div>
+      <div className="onboarding-progress"><span style={{ width: ((onboardingDone / Math.max(onboarding.length, 1)) * 100) + "%" }} /></div>
+      <div className="onboarding-list">{onboarding.map(item => <Link className={item.done ? "onboarding-item done" : "onboarding-item"} to={item.to} key={item.label}>{item.done ? <FiCheckCircle /> : <FiCircle />}<span>{item.label}</span><FiArrowRight /></Link>)}</div>
     </section>}
 
     {!isAdmin && <section className="business-dashboard-analytics">

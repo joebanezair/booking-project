@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiBriefcase, FiEdit3, FiExternalLink, FiMapPin } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileMediaHeader from "../components/ProfileMediaHeader.jsx";
+import BookingQrCard from "../components/BookingQrCard.jsx";
 import { fileToDataUrl } from "../lib.js";
 import { api } from "../api.js";
 
@@ -101,6 +102,8 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
           <div><h3>Business Page</h3><p>Manage your business name, category, description, contact information, website, and logo.</p></div>
         </Link>
       </section>
+
+      <BookingQrCard bookingUrl={window.location.origin + "/b/" + (user.id || user._id)} businessName={profile.name} />
 
       {error && <p className="error profile-feedback">{error}</p>}
       {message && <p className="success profile-feedback">{message}</p>}

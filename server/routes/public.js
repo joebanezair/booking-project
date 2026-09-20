@@ -12,6 +12,7 @@ import { notify } from "../lib/notifications.js";
 import optionalAuth from "../middleware/optionalAuth.js";
 import { reactionMap } from "../lib/emojiReactions.js";
 import { isActiveProvider, isProviderOwner, providerOwnerIds } from "../lib/providers.js";
+import { calculateBookingEndsAt, getAvailableSlots, makeBookingReference, validateBookingWindow } from "../lib/scheduling.js";
 
 const router = Router();
 
@@ -137,6 +138,10 @@ router.get("/content/:contentId", optionalAuth, async (req, res) => {
       images: item.images,
       allowRatings: item.allowRatings,
       allowBookings: item.allowBookings,
+      durationMinutes: item.durationMinutes || 60,
+      bufferMinutes: item.bufferMinutes || 0,
+      capacity: item.capacity || 1,
+      bookingQuestions: item.bookingQuestions || [],
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
       owner: {
@@ -273,23 +278,86 @@ router.get("/book/:userId", async (req, res) => {
     if (user.accountStatus === "paused") return res.status(409).json({ message: "This business is temporarily unavailable for new bookings." });
 
     const [business, bookableServices] = await Promise.all([
-      Business.findOne({ owner: user._id }).select("name").lean(),
+      Business.findOne({ owner: user._id }).select("name timezone workingHours blackoutDates leadTimeMinutes maxAdvanceDays slotIntervalMinutes").lean(),
       Content.find({
         user: user._id,
         published: true,
         visibility: { $ne: "private" },
         allowBookings: true
-      }).select("title price currency").sort({ updatedAt: -1 }).lean()
+      }).select("title price currency durationMinutes bufferMinutes capacity bookingQuestions").sort({ updatedAt: -1 }).lean()
     ]);
+    if (!business) return res.status(404).json({ message: "Business profile not found." });
+
     res.json({
-      owner: { id: user._id, name: business?.name || user.name },
+      owner: { id: user._id, name: business.name || user.name },
+      scheduling: {
+        timezone: business.timezone || "Asia/Manila",
+        workingHours: business.workingHours || [],
+        blackoutDates: business.blackoutDates || [],
+        leadTimeMinutes: business.leadTimeMinutes ?? 60,
+        maxAdvanceDays: business.maxAdvanceDays ?? 60,
+        slotIntervalMinutes: business.slotIntervalMinutes ?? 30
+      },
       services: bookableServices.length
-        ? bookableServices.map(service => ({ id: service._id, title: service.title, price: service.price, currency: service.currency }))
-        : [{ id: "", title: "Consultation", price: 0, currency: "PHP" }, { id: "", title: "Other", price: 0, currency: "PHP" }]
+        ? bookableServices.map(service => ({
+            id: service._id,
+            title: service.title,
+            price: service.price,
+            currency: service.currency,
+            durationMinutes: service.durationMinutes || 60,
+            bufferMinutes: service.bufferMinutes || 0,
+            capacity: service.capacity || 1,
+            bookingQuestions: service.bookingQuestions || []
+          }))
+        : [{
+            id: "",
+            title: "Consultation",
+            price: 0,
+            currency: "PHP",
+            durationMinutes: 60,
+            bufferMinutes: 0,
+            capacity: 1,
+            bookingQuestions: []
+          }]
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to load booking page." });
+  }
+});
+
+router.get("/book/:userId/slots", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Booking page not found." });
+    const owner = await User.findOne({ _id: req.params.userId, role: "business", accountStatus: "active" }).select("_id");
+    if (!owner || !await isActiveProvider(owner._id)) return res.status(409).json({ message: "This business is unavailable for new bookings." });
+
+    const business = await Business.findOne({ owner: owner._id });
+    if (!business) return res.status(404).json({ message: "Business profile not found." });
+
+    let service = { durationMinutes: 60, bufferMinutes: 0, capacity: 1 };
+    if (req.query.contentId) {
+      if (!mongoose.isValidObjectId(req.query.contentId)) return res.status(400).json({ message: "Invalid service selection." });
+      service = await Content.findOne({
+        _id: req.query.contentId,
+        user: owner._id,
+        published: true,
+        visibility: { $ne: "private" },
+        allowBookings: true
+      }).select("durationMinutes bufferMinutes capacity");
+      if (!service) return res.status(404).json({ message: "This service is not available for booking." });
+    }
+
+    const slots = await getAvailableSlots({
+      business,
+      service,
+      ownerId: owner._id,
+      dateKey: String(req.query.date || "")
+    });
+    res.json({ date: String(req.query.date || ""), timezone: business.timezone || "Asia/Manila", slots });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to load available times." });
   }
 });
 
@@ -301,7 +369,7 @@ router.post("/book/:userId", async (req, res) => {
     if (!owner || owner.accountStatus === "disabled") return res.status(404).json({ message: "Booking page not found." });
     if (!await isActiveProvider(owner._id)) return res.status(409).json({ message: "This business is temporarily unavailable for new bookings." });
 
-    const business = await Business.findOne({ owner: owner._id }).select("_id name").lean();
+    const business = await Business.findOne({ owner: owner._id });
     if (!business) return res.status(404).json({ message: "Business profile not found." });
 
     const guestName = String(req.body.guestName || "").trim();
@@ -316,7 +384,7 @@ router.post("/book/:userId", async (req, res) => {
     const locationAccuracy = req.body.locationAccuracy === "" || req.body.locationAccuracy == null ? null : Number(req.body.locationAccuracy);
 
     if (!guestName || !guestEmail || !guestPhone || !service || !bookingDate) {
-      return res.status(400).json({ message: "Name, email, phone number, service and booking date are required." });
+      return res.status(400).json({ message: "Name, email, phone number, service and booking time are required." });
     }
     if (!/^\S+@\S+\.\S+$/.test(guestEmail)) return res.status(400).json({ message: "Enter a valid email address." });
     if (!/^[0-9+().\-\s]{7,30}$/.test(guestPhone)) return res.status(400).json({ message: "Enter a valid phone number." });
@@ -328,7 +396,6 @@ router.post("/book/:userId", async (req, res) => {
     if (hasLatitude && (!Number.isFinite(locationLatitude) || locationLatitude < -90 || locationLatitude > 90)) return res.status(400).json({ message: "Location latitude is invalid." });
     if (hasLongitude && (!Number.isFinite(locationLongitude) || locationLongitude < -180 || locationLongitude > 180)) return res.status(400).json({ message: "Location longitude is invalid." });
     if (locationAccuracy !== null && (!Number.isFinite(locationAccuracy) || locationAccuracy < 0)) return res.status(400).json({ message: "Location accuracy is invalid." });
-    if (Number.isNaN(new Date(bookingDate).getTime()) || new Date(bookingDate) < new Date()) return res.status(400).json({ message: "Please choose a valid future date and time." });
     if (notes.length > 500) return res.status(400).json({ message: "Notes must be 500 characters or fewer." });
 
     let selectedContent = null;
@@ -340,14 +407,39 @@ router.post("/book/:userId", async (req, res) => {
         published: true,
         visibility: { $ne: "private" },
         allowBookings: true
-      }).select("title price currency");
+      }).select("title price currency durationMinutes bufferMinutes capacity bookingQuestions");
       if (!selectedContent) return res.status(404).json({ message: "This service is not available for booking." });
     }
 
+    const scheduleService = selectedContent || { durationMinutes: 60, bufferMinutes: 0, capacity: 1 };
+    const scheduleError = await validateBookingWindow({
+      business,
+      service: scheduleService,
+      ownerId: owner._id,
+      start: bookingDate
+    });
+    if (scheduleError) return res.status(409).json({ message: scheduleError });
+
+    const submittedAnswers = req.body.customAnswers && typeof req.body.customAnswers === "object" ? req.body.customAnswers : {};
+    const customAnswers = [];
+    for (const question of selectedContent?.bookingQuestions || []) {
+      const raw = submittedAnswers[question.id];
+      const value = question.type === "checkbox" ? (raw ? "Yes" : "") : String(raw ?? "").trim();
+      if (question.required && !value) return res.status(400).json({ message: "Please answer: " + question.label });
+      if (question.type === "select" && value && !question.options.includes(value)) return res.status(400).json({ message: "Choose a valid option for: " + question.label });
+      if (value.length > 1000) return res.status(400).json({ message: "A booking answer is too long." });
+      if (value) customAnswers.push({ questionId: question.id, label: question.label, value });
+    }
+
+    let bookingReference = makeBookingReference();
+    while (await Booking.exists({ bookingReference })) bookingReference = makeBookingReference();
+
+    const bookingStart = new Date(bookingDate);
     const booking = await Booking.create({
       user: owner._id,
       business: business._id,
       content: selectedContent?._id || null,
+      bookingReference,
       guestName,
       guestEmail,
       guestPhone,
@@ -358,8 +450,13 @@ router.post("/book/:userId", async (req, res) => {
       service: selectedContent?.title || service,
       servicePrice: Number(selectedContent?.price || 0),
       currency: selectedContent?.currency || "PHP",
-      bookingDate,
+      serviceDurationMinutes: Number(selectedContent?.durationMinutes || 60),
+      bufferMinutes: Number(selectedContent?.bufferMinutes || 0),
+      bookingDate: bookingStart,
+      bookingEndsAt: calculateBookingEndsAt(bookingStart, scheduleService),
       notes,
+      customAnswers,
+      history: [{ action: "created", status: "pending", note: "Guest requested this booking." }],
       source: "public",
       status: "pending"
     });
@@ -368,11 +465,15 @@ router.post("/book/:userId", async (req, res) => {
     await notify(req, owner._id, {
       type: "booking",
       title: "New booking request",
-      body: `${guestName} requested ${selectedContent?.title || service}.`,
+      body: `${guestName} requested ${selectedContent?.title || service} (${bookingReference}).`,
       link: "/dashboard/bookings"
     });
 
-    res.status(201).json({ id: booking._id, message: "Booking request sent successfully." });
+    res.status(201).json({
+      id: booking._id,
+      bookingReference,
+      message: "Booking request sent successfully."
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to create booking." });
