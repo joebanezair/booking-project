@@ -73,10 +73,15 @@ export const api = {
     reply: (id, body) => request(`/forum/${id}/replies`, { method: "POST", body: JSON.stringify({ body }) })
   },
   bookings: {
-    list: () => request("/bookings"),
+    list: (params = {}) => {
+      const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== "" && value != null));
+      return request(`/bookings${query.toString() ? "?" + query : ""}`);
+    },
+    customers: () => request("/bookings/customers/summary"),
     get: id => request(`/bookings/${id}`),
     create: body => request("/bookings", { method: "POST", body: JSON.stringify(body) }),
     update: (id, body) => request(`/bookings/${id}`, { method: "PUT", body: JSON.stringify(body) }),
+    reschedule: (id, bookingDate, reason = "") => request(`/bookings/${id}/reschedule`, { method: "PATCH", body: JSON.stringify({ bookingDate, reason }) }),
     setStatus: (id, status) => request(`/bookings/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }),
     remove: id => request(`/bookings/${id}`, { method: "DELETE" })
   },
@@ -96,6 +101,7 @@ export const api = {
   },
   publicBooking: {
     get: userId => request(`/public/book/${userId}`),
+    slots: (userId, date, contentId = "") => request(`/public/book/${userId}/slots?${new URLSearchParams({ date, ...(contentId ? { contentId } : {}) })}`),
     create: (userId, body) => request(`/public/book/${userId}`, { method: "POST", body: JSON.stringify(body) })
   },
   reviews: {
