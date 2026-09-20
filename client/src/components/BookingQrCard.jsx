@@ -59,12 +59,12 @@ export default function BookingQrCard({bookingUrl,businessName="Business"}){
   const [copied,setCopied]=useState(false);
   const result=useMemo(()=>{try{return {matrix:makeMatrix(bookingUrl),error:""};}catch(e){return {matrix:null,error:e.message};}},[bookingUrl]);
   const quiet=4,total=SIZE+quiet*2;
-  async function copy(){await navigator.clipboard.writeText(bookingUrl);setCopied(true);setTimeout(()=>setCopied(false),1600);}
+  async function copy(){await navigator.clipboard.writeText(bookingUrl);localStorage.setItem("bookflow_booking_shared","1");setCopied(true);setTimeout(()=>setCopied(false),1600);}
   function download(){
     if(!result.matrix)return;
     const cells=[];result.matrix.forEach((row,y)=>row.forEach((dark,x)=>{if(dark)cells.push(`<rect x="${x+quiet}" y="${y+quiet}" width="1" height="1"/>`);}));
     const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${total} ${total}" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="white"/><g fill="black">${cells.join("")}</g></svg>`;
-    const blob=new Blob([svg],{type:"image/svg+xml"}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=(businessName||"bookflow").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+"-booking-qr.svg";link.click();URL.revokeObjectURL(url);
+    localStorage.setItem("bookflow_booking_shared","1");const blob=new Blob([svg],{type:"image/svg+xml"}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=(businessName||"bookflow").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+"-booking-qr.svg";link.click();URL.revokeObjectURL(url);
   }
   return <section className="panel booking-qr-card">
     <div><p className="eyebrow">QR BOOKING</p><h2>Share your booking page</h2><p className="muted">This QR code is generated directly in BookFlow. Print it or add it to your storefront, flyers, or social posts.</p><p className="booking-qr-url">{bookingUrl}</p><div className="row-actions"><button type="button" className="secondary" onClick={copy}><FiCopy/>{copied?"Copied":"Copy link"}</button><button type="button" className="primary-button compact-button" onClick={download} disabled={!result.matrix}><FiDownload/>Download QR</button></div>{result.error&&<p className="error">{result.error}</p>}</div>
