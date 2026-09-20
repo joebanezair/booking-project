@@ -189,15 +189,72 @@ Business accounts have access to Dashboard, Services, Bookings, Sales & Analytic
 
 Businesses can create service drafts, edit services, publish/unpublish services, set public/private visibility, configure price and currency, upload a cover image and gallery, enable/disable service ratings, enable/disable booking, and receive comments and reactions.
 
+Bookable services also support native scheduling metadata:
+
+- service duration in minutes;
+- buffer time after a service;
+- simultaneous slot capacity;
+- up to 12 custom guest booking questions;
+- short text, long text, select, and checkbox question types.
+
+These settings do not require a third-party scheduling API.
+
 Paused businesses may keep editing existing services and create drafts, but cannot publish a previously unpublished service.
 
 ### Bookings
 
 Businesses can view guest bookings, open booking details, see guest name/email/phone/location/service/price/schedule/notes/status, create internal booking records while active, and move bookings through Pending, Confirmed, In Progress, Completed, Cancelled, or No Show.
 
+The booking workspace includes:
+
+- list, calendar, and customer-history views;
+- booking reference numbers such as `BF-2026-ABC123`;
+- service duration and buffer snapshots;
+- native rescheduling with conflict checking;
+- search by reference, customer, phone, service, or location;
+- status filtering;
+- private internal business notes;
+- guest custom-question answers;
+- chronological booking history for creation, status changes, and reschedules;
+- returning-customer indicators and booking/no-show/upcoming counts.
+
+BookFlow prevents overlapping reservations according to the configured service capacity.
+
 Marking a booking **Completed** automatically creates one linked sale using the service price and currency snapshotted on the booking. Reopening a completed booking voids that sale while keeping the audit record. A completed booking with a sales audit record cannot be deleted, and its price/service/date cannot be silently rewritten while still completed.
 
 Completing a booking also creates the verified-review invitation.
+
+### Native availability and scheduling
+
+The Business Page contains scheduling controls that power the public booking experience without a paid API.
+
+Businesses can configure:
+
+~~~text
+Timezone
+Weekly opening hours
+Minimum booking notice
+Maximum advance-booking window
+Slot interval
+Blackout / unavailable dates
+~~~
+
+The public booking page requests available slots from the BookFlow backend. Slots are generated from the business schedule and selected service duration, buffer, and capacity. Unavailable or overlapping times are rejected again on the server when the booking is submitted, protecting against two guests selecting the same slot at the same time.
+
+Guests no longer need to type an arbitrary appointment time. They choose a date and then select from BookFlow-generated available times.
+
+### MVP onboarding and QR booking
+
+The business dashboard includes a launch checklist covering:
+
+- Business Page completion;
+- profile and cover photos;
+- first service creation;
+- working availability;
+- a published bookable service;
+- sharing the booking link or QR code.
+
+The Profile hub generates a scannable booking QR code directly in the browser. No QR API is used. Businesses can copy the booking link or download the QR as an SVG for printing or social media.
 
 ### Sales & Analytics
 
@@ -333,9 +390,11 @@ DELETE /api/content/:id
 
 ~~~text
 GET    /api/bookings
+GET    /api/bookings/customers/summary
 GET    /api/bookings/:id
 POST   /api/bookings
 PUT    /api/bookings/:id
+PATCH  /api/bookings/:id/reschedule
 PATCH  /api/bookings/:id/status
 DELETE /api/bookings/:id
 ~~~
@@ -356,6 +415,7 @@ GET  /api/public/content/:contentId
 GET  /api/public/browse
 GET  /api/public/search
 GET  /api/public/book/:userId
+GET  /api/public/book/:userId/slots?date=YYYY-MM-DD&contentId=...
 POST /api/public/book/:userId
 ~~~
 
@@ -392,7 +452,9 @@ The migration:
 
 This preserves existing business, booking, message, and historical database references while moving all future account logic to Business/Admin only.
 
-Server startup also backfills existing completed bookings into the sales ledger. If an older completed booking did not store a price snapshot, BookFlow uses the currently linked service price/currency as the best available historical fallback.
+Server startup also backfills existing booking scheduling metadata, including booking references, end times, and an initial history entry when those fields are missing.
+
+Existing completed bookings are also backfilled into the sales ledger. If an older completed booking did not store a price snapshot, BookFlow uses the currently linked service price/currency as the best available historical fallback.
 
 ## Technology stack
 
