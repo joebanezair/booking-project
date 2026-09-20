@@ -103,7 +103,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
         </Link>
       </section>
 
-      <BookingQrCard bookingUrl={window.location.origin + "/b/" + user.id} businessName={profile.name} />
+      <BookingQrCard bookingUrl={window.location.origin + "/b/" + (user.id || user._id)} businessName={profile.name} />
 
       {error && <p className="error profile-feedback">{error}</p>}
       {message && <p className="success profile-feedback">{message}</p>}
