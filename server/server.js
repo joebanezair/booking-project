@@ -25,6 +25,7 @@ import User from "./models/User.js";
 import Business from "./models/Business.js";
 import Booking from "./models/Booking.js";
 import { syncSaleForBooking } from "./lib/sales.js";
+import { calculateBookingEndsAt, makeBookingReference } from "./lib/scheduling.js";
 
 dotenv.config();
 const app = express();
@@ -147,6 +148,46 @@ async function migrateLegacyAccounts() {
   );
 }
 
+async function backfillBookingScheduling() {
+  const bookings = await Booking.find({
+    $or: [
+      { bookingReference: { $exists: false } },
+      { bookingReference: "" },
+      { bookingEndsAt: null },
+      { history: { $exists: false } }
+    ]
+  }).populate("content", "durationMinutes bufferMinutes");
+
+  for (const booking of bookings) {
+    let changed = false;
+    if (!booking.bookingReference) {
+      let reference = makeBookingReference();
+      while (await Booking.exists({ bookingReference: reference, _id: { $ne: booking._id } })) reference = makeBookingReference();
+      booking.bookingReference = reference;
+      changed = true;
+    }
+    if (!booking.serviceDurationMinutes) {
+      booking.serviceDurationMinutes = Number(booking.content?.durationMinutes || 60);
+      changed = true;
+    }
+    if (booking.bufferMinutes == null) {
+      booking.bufferMinutes = Number(booking.content?.bufferMinutes || 0);
+      changed = true;
+    }
+    if (!booking.bookingEndsAt) {
+      booking.bookingEndsAt = calculateBookingEndsAt(booking.bookingDate, {
+        durationMinutes: booking.serviceDurationMinutes || 60
+      });
+      changed = true;
+    }
+    if (!Array.isArray(booking.history) || booking.history.length === 0) {
+      booking.history = [{ action: "imported", status: booking.status, note: "Existing booking added to scheduling history.", at: booking.createdAt || new Date() }];
+      changed = true;
+    }
+    if (changed) await booking.save();
+  }
+}
+
 async function backfillCompletedSales() {
   const completed = await Booking.find({ status: "completed" })
     .populate("content", "title price currency")
@@ -195,6 +236,7 @@ async function start() {
   }
 
   await migrateLegacyAccounts();
+  await backfillBookingScheduling();
   await backfillCompletedSales();
 
   httpServer.listen(PORT, () => console.log(`API and WebSocket server listening on http://localhost:${PORT}`));
