@@ -112,7 +112,7 @@ async function overlappingBookings({ ownerId, start, blockedEnd, excludeBookingI
   const filter = {
     user: ownerId,
     status: { $in: activeStatuses },
-    bookingDate: { $lt: blockedEnd, $gt: new Date(new Date(start).getTime() - 86400000) }
+    bookingDate: { $lt: blockedEnd, $gt: new Date(new Date(start).getTime() - 2 * 86400000) }
   };
   if (excludeBookingId) filter._id = { $ne: excludeBookingId };
   const candidates = await Booking.find(filter)
@@ -146,7 +146,7 @@ export async function getAvailableSlots({ business, service, ownerId, dateKey })
     user: ownerId,
     status: { $in: activeStatuses },
     bookingDate: {
-      $gte: new Date(approximateStart - 86400000),
+      $gte: new Date(approximateStart - 2 * 86400000),
       $lt: new Date(approximateEnd + 86400000)
     }
   }).select("bookingDate bookingEndsAt serviceDurationMinutes bufferMinutes").lean();
