@@ -2604,3 +2604,16 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
     padding-bottom:28px;
   }
 }
+
+
+/* Square UI system: no rounded corners anywhere except profile imagery. */
+*{
+  border-radius:0 !important;
+}
+.profile-avatar,
+.avatar,
+.linkedin-avatar-wrap,
+.linkedin-avatar-button,
+.linkedin-avatar-button .profile-avatar{
+  border-radius:50% !important;
+}
