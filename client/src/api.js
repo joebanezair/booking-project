@@ -88,7 +88,9 @@ export const api = {
     remove: id => request(`/bookings/${id}`, { method: "DELETE" })
   },
   sales: {
-    analytics: params => request(`/sales/analytics?${new URLSearchParams(params)}`)
+    analytics: params => request(`/sales/analytics?${new URLSearchParams(params)}`),
+    products: () => request("/sales/products"),
+    createProduct: body => request("/sales/products", { method: "POST", body: JSON.stringify(body) })
   },
   admin: {
     overview: () => request("/admin/overview"),
