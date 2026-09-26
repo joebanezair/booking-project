@@ -2470,3 +2470,52 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 .avatar-camera-badge{
   border-radius:50% !important;
 }
+
+
+/* Platform-standard shape repair and spacing */
+.sidebar,
+.sidebar::before,
+.sidebar::after{
+  border-radius:0 !important;
+}
+.page-shell{border-radius:0 !important;}
+.content-shell{
+  padding-bottom:40px;
+}
+.booking-workspace-grid,
+.workspace-grid{
+  margin-bottom:32px;
+}
+.booking-editor-panel,
+.booking-form{
+  margin-bottom:24px;
+}
+.public-profile-actions{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.public-profile-actions .primary-button,
+.public-profile-actions .secondary{
+  min-height:40px;
+  padding:9px 14px;
+}
+.profile-title-row{
+  align-items:flex-start;
+}
+.public-profile-hero{
+  overflow:hidden;
+}
+.public-profile-info{
+  gap:22px;
+}
+.public-profile-copy{
+  padding-bottom:4px;
+}
+@media(max-width:760px){
+  .content-shell{padding-bottom:32px;}
+  .booking-workspace-grid,.workspace-grid{margin-bottom:24px;}
+  .public-profile-actions{width:100%;}
+  .public-profile-actions>*{flex:1;min-width:130px;}
+}
