@@ -2431,3 +2431,27 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
   clip-path:none;
   overflow:visible;
 }
+
+
+/* Temporary simplified authentication screen: hide the marketing/hero pane. */
+.auth-layout{
+  width:min(560px,100%);
+  grid-template-columns:1fr;
+  border-radius:5px;
+}
+.auth-hero{display:none !important;}
+.auth-card{
+  border-radius:5px !important;
+  overflow:hidden;
+}
+.auth-card input,
+.auth-card select,
+.auth-card textarea,
+.auth-card button,
+.auth-card .error{
+  border-radius:5px !important;
+}
+@media(max-width:760px){
+  .auth-shell{padding:18px;}
+  .auth-card{padding:36px 26px;}
+}
