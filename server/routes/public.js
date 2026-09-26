@@ -8,6 +8,7 @@ import Rating from "../models/Rating.js";
 import Comment from "../models/Comment.js";
 import Reaction from "../models/Reaction.js";
 import Review from "../models/Review.js";
+import { Product } from "../models/Sale.js";
 import { notify } from "../lib/notifications.js";
 import optionalAuth from "../middleware/optionalAuth.js";
 import { reactionMap } from "../lib/emojiReactions.js";
@@ -61,7 +62,7 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
       visibility: { $ne: "private" }
     }).select("title description price currency category coverImage createdAt updatedAt").sort({ updatedAt: -1 });
 
-    const [summary, reviewSummary, reviews, businessRatingRows, currentBusinessRating] = await Promise.all([
+    const [summary, reviewSummary, reviews, businessRatingRows, currentBusinessRating, products] = await Promise.all([
       ratingSummary(items.map(item => item._id)),
       verifiedReviewSummary(business._id),
       Review.find({ business: business._id, verified: true })
@@ -70,7 +71,8 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
         .limit(8)
         .lean(),
       Rating.aggregate([{ $match: { business: business._id } }, { $group: { _id: "$business", averageRating: { $avg: "$rating" }, ratingCount: { $sum: 1 } } }]),
-      req.user ? Rating.findOne({ business: business._id, user: req.user.id }).select("rating") : null
+      req.user ? Rating.findOne({ business: business._id, user: req.user.id }).select("rating") : null,
+      Product.find({ user: user._id, published: true }).select("name sku description image price currency stock updatedAt").sort({ updatedAt: -1 }).lean()
     ]);
 
     res.json({
@@ -95,6 +97,7 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
         friendship: req.user ? (() => { const viewer = req.user; return { available: String(viewer.id) !== String(user._id), isFriend: (viewer.friends || []).some(id => String(id) === String(user._id)), requestSent: (user.friendRequests || []).some(r => String(r.from) === String(viewer.id)), incomingRequest: (viewer.friendRequests || []).some(r => String(r.from) === String(user._id)), blocked: (viewer.blockedUsers || []).some(id => String(id) === String(user._id)) }; })() : null
       },
       reviews,
+      products,
       content: items.map(item => ({
         ...item.toObject(),
         ...(summary.get(String(item._id)) || { averageRating: 0, ratingCount: 0 })
