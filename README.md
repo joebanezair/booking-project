@@ -301,6 +301,12 @@ The cover photo and profile photo use one LinkedIn-style connected header. The p
 
 No approval or resubmission state exists.
 
+### Interface shape and layout conventions
+
+BookFlow uses a compact **5px corner radius** for standard interface surfaces such as cards, panels, inputs, buttons, dropdowns, menus, message bubbles, and form controls. Profile photos and user avatars remain circular. The main dashboard sidebar/drawer intentionally uses **0px radius** so it stays flush with the viewport edge.
+
+The Bookings workspace includes dedicated bottom spacing so long create/edit forms and their final controls do not sit against the viewport or container boundary. Public business-profile actions use responsive spacing and wrapping so friendship, messaging, booking, and profile controls remain usable across desktop and mobile layouts.
+
 ## Admin dashboard
 
 Admins have a dedicated business directory:
@@ -331,7 +337,18 @@ Legacy URLs /dashboard/customers and /dashboard/business-requests redirect to th
 
 ## Messaging
 
-Messaging is available only to authenticated Business and Admin accounts. Normal direct messaging is friend-based: businesses can search accounts, send and accept friend requests, and message accepted friends. Admin accounts retain a messaging exception for platform/support communication.\n\nThe Messages workspace uses a viewport-sized layout with independently scrollable conversation and message panes and a composer that remains accessible at the bottom. Conversations are ordered with pinned conversations first and then by latest activity. Unread conversations display bold text and unread counts. Users can pin/unpin, restrict/unrestrict, block/unblock, unfriend, delete a conversation for themselves, delete individual messages for themselves, and unsend their own messages.\n\nMessages support emoji reactions, read tracking, file attachments up to 5 MB for supported image/document formats, business-profile sharing cards, persistent history, direct profile-to-message navigation, and real-time delivery through authenticated Socket.IO rooms. The realtime client can begin with HTTP polling and upgrade to WebSocket instead of requiring a WebSocket-only initial connection.
+Messaging is available only to authenticated Business and Admin accounts. Normal direct messaging is friend-based: businesses can search accounts, send and accept friend requests, and message accepted friends. Admin accounts retain a messaging exception for platform/support communication.
+
+### Business profile friendship controls
+
+Friendship is also integrated directly into public business profiles. When a signed-in registered Business views another business profile, the profile header shows the appropriate relationship action:
+
+- **Add Friend** — sends a friend request.
+- **Request Sent** — indicates an outgoing pending request.
+- **Accept Friend** — appears when the viewed business has already sent the current user a request.
+- **Friends** — indicates an accepted friendship and provides the relationship state used by messaging.
+
+A business never sees an Add Friend control on its own profile. Guests do not receive friendship controls. The **Message** action is available to accepted business friends, while Admin retains the platform/support messaging exception.\n\nThe Messages workspace uses a viewport-sized layout with independently scrollable conversation and message panes and a composer that remains accessible at the bottom. Conversations are ordered with pinned conversations first and then by latest activity. Unread conversations display bold text and unread counts. Users can pin/unpin, restrict/unrestrict, block/unblock, unfriend, delete a conversation for themselves, delete individual messages for themselves, and unsend their own messages.\n\nMessages support emoji reactions, read tracking, file attachments up to 5 MB for supported image/document formats, business-profile sharing cards, persistent history, direct profile-to-message navigation, and real-time delivery through authenticated Socket.IO rooms. The realtime client can begin with HTTP polling and upgrade to WebSocket instead of requiring a WebSocket-only initial connection.
 
 Guests do not receive permanent messaging accounts.
 
