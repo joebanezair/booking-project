@@ -97,7 +97,16 @@ export const api = {
   messages: {
     users: () => request("/messages/users"),
     conversation: userId => request(`/messages/${userId}`),
-    send: (userId, body) => request(`/messages/${userId}`, { method: "POST", body: JSON.stringify({ body }) })
+    send: (userId, payload) => request(`/messages/${userId}`, { method: "POST", body: JSON.stringify(typeof payload === "string" ? { body: payload } : payload) }),
+    searchUsers: q => request(`/messages/friends/search?${new URLSearchParams({ q })}`),
+    friendRequests: () => request("/messages/friends/requests"),
+    addFriend: userId => request(`/messages/friends/${userId}/request`, { method: "POST" }),
+    acceptFriend: userId => request(`/messages/friends/${userId}/accept`, { method: "PATCH" }),
+    unfriend: userId => request(`/messages/friends/${userId}`, { method: "DELETE" }),
+    action: (userId, action) => request(`/messages/users/${userId}/${action}`, { method: "PATCH" }),
+    deleteConversation: userId => request(`/messages/${userId}/conversation`, { method: "DELETE" }),
+    deleteMessage: messageId => request(`/messages/item/${messageId}`, { method: "DELETE" }),
+    unsend: messageId => request(`/messages/item/${messageId}/unsend`, { method: "PATCH" })
   },
   publicBooking: {
     get: userId => request(`/public/book/${userId}`),
