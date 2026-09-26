@@ -10,7 +10,7 @@ export default async function requireAuth(req, res, next) {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(payload.sub).select("email role accountStatus").lean();
+    const user = await User.findById(payload.sub).select("email role accountStatus friends friendRequests blockedUsers restrictedUsers pinnedConversations").lean();
     if (!user) return res.status(401).json({ message: "Your account no longer exists." });
     if (!["business", "admin"].includes(user.role)) {
       return res.status(403).json({ message: "This legacy account type is no longer supported. Public visitors can book services without an account." });
@@ -30,7 +30,12 @@ export default async function requireAuth(req, res, next) {
       email: user.email,
       role: user.role,
       accountStatus,
-      businessId: business?._id ? String(business._id) : null
+      businessId: business?._id ? String(business._id) : null,
+      friends: user.friends || [],
+      friendRequests: user.friendRequests || [],
+      blockedUsers: user.blockedUsers || [],
+      restrictedUsers: user.restrictedUsers || [],
+      pinnedConversations: user.pinnedConversations || []
     };
     next();
   } catch {
