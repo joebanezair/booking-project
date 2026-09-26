@@ -177,7 +177,7 @@ A review stores:
 
 A review is accepted only when the token exists, the linked booking still has completed status, the invitation has not already been submitted, and the rating is an integer from 1 through 5.
 
-Public business profiles display the aggregate verified-review rating and recent verified comments.
+Public business profiles display the aggregate verified-review rating and recent verified comments.\n\n### Direct business-profile ratings\n\nBookFlow also keeps a separate **Business Rating** for profile-level reputation. An authenticated account can rate another business from 1 through 5 stars, update that rating later, or remove it. Each account has at most one direct rating per business, businesses cannot rate themselves, and disabled accounts cannot submit ratings.\n\nDirect Business Ratings, Verified Booking Reviews, and per-service ratings remain separate signals. Direct ratings are never presented as verified booking feedback and are not averaged into the verified-review score.
 
 The current implementation generates and exposes the review link to the business. It does not automatically email or SMS the guest.
 
@@ -297,7 +297,7 @@ The authenticated profile area is split into three distinct routes:
 
 **Business Page** manages business-specific fields such as business name, category, description, business location, email, phone, website, and logo. It is intentionally not a main sidebar navigation item; it is reached from the Profile page.
 
-The cover photo and profile photo use one LinkedIn-style connected header. The profile photo overlaps the cover. Clicking or tapping the cover opens change/remove actions. Clicking or tapping the profile photo opens view/change/reposition/delete actions. Destructive removal actions require confirmation, and the controls work for pointer and touch interaction.
+The cover photo and profile photo use one LinkedIn-style connected header. The profile photo overlaps the cover and its complete photo-selection/clickable area is circular, including the image container and edit target. Clicking or tapping the cover opens change/remove actions. Clicking or tapping the profile photo opens view/change/reposition/delete actions. Destructive removal actions require confirmation, and the controls work for pointer and touch interaction.
 
 No approval or resubmission state exists.
 
@@ -331,7 +331,7 @@ Legacy URLs /dashboard/customers and /dashboard/business-requests redirect to th
 
 ## Messaging
 
-Messaging is available only to authenticated Business and Admin accounts. It includes a registered business/admin directory, one-to-one conversations, persistent history, read tracking, direct profile-to-message navigation for signed-in accounts, emoji reactions, and real-time delivery through authenticated Socket.IO rooms.
+Messaging is available only to authenticated Business and Admin accounts. Normal direct messaging is friend-based: businesses can search accounts, send and accept friend requests, and message accepted friends. Admin accounts retain a messaging exception for platform/support communication.\n\nThe Messages workspace uses a viewport-sized layout with independently scrollable conversation and message panes and a composer that remains accessible at the bottom. Conversations are ordered with pinned conversations first and then by latest activity. Unread conversations display bold text and unread counts. Users can pin/unpin, restrict/unrestrict, block/unblock, unfriend, delete a conversation for themselves, delete individual messages for themselves, and unsend their own messages.\n\nMessages support emoji reactions, read tracking, file attachments up to 5 MB for supported image/document formats, business-profile sharing cards, persistent history, direct profile-to-message navigation, and real-time delivery through authenticated Socket.IO rooms. The realtime client can begin with HTTP polling and upgrade to WebSocket instead of requiring a WebSocket-only initial connection.
 
 Guests do not receive permanent messaging accounts.
 
@@ -513,7 +513,7 @@ GitHub Actions runs a client production build and backend JavaScript syntax chec
 - Disabled accounts are rejected by REST and WebSocket authentication.
 - Public booking validates email, phone, dates, location coordinates, and service availability.
 - Browser geolocation is opt-in.
-- Verified review tokens are random and tied to a single completed booking.
+- Verified review tokens are random and tied to a single completed booking.\n- Direct business ratings enforce one rating per account/business and reject self-rating.\n- Messaging authorization, friendship requirements, block state, attachment size/type checks, and message ownership are enforced on the backend.
 - Private and unpublished services remain protected by server-side queries.
 - JWT secrets and administrator registration keys must not be committed to source control.
 
