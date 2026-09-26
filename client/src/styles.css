@@ -2752,3 +2752,12 @@ button,.primary-button,.secondary,.button-link{
     border-radius:0 !important;
   }
 }
+
+
+/* Navigation rail/drawer must be flush: override legacy radius rules at all breakpoints. */
+html body .page-shell > .sidebar,
+html body .page-shell > .sidebar.mobile-open,
+html body .page-shell > .sidebar::before,
+html body .page-shell > .sidebar::after{
+  border-radius:0 !important;
+}
