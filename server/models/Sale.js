@@ -25,4 +25,22 @@ const saleSchema = new mongoose.Schema(
 saleSchema.index({ businessOwner: 1, status: 1, completedAt: -1 });
 saleSchema.index({ businessOwner: 1, serviceName: 1, completedAt: -1 });
 
+export const Product = mongoose.models.Product || mongoose.model("Product", new mongoose.Schema({
+  user:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
+  name:{type:String,required:true,trim:true,maxlength:120}, sku:{type:String,trim:true,maxlength:80,default:""},
+  description:{type:String,trim:true,maxlength:1200,default:""}, image:{type:String,default:""},
+  price:{type:Number,min:0,default:0}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
+  stock:{type:Number,min:0,default:0}, published:{type:Boolean,default:false,index:true}
+},{timestamps:true}));
+
+export const PosSale = mongoose.models.PosSale || mongoose.model("PosSale", new mongoose.Schema({
+  businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
+  invoiceNumber:{type:String,required:true,unique:true,index:true},
+  items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number}],
+  total:{type:Number,min:0,required:true}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
+  paymentMethod:{type:String,enum:["cash","gcash","maya","card","other"],default:"cash"},
+  customerName:{type:String,trim:true,maxlength:120,default:""}, soldAt:{type:Date,default:Date.now,index:true},
+  status:{type:String,enum:["recorded","voided"],default:"recorded",index:true}
+},{timestamps:true}));
+
 export default mongoose.model("Sale", saleSchema);
