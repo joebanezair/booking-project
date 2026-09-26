@@ -52,7 +52,7 @@ export default function PublicProfilePage({ user }) {
   if (error) return <main className="public-shell"><section className="public-card"><p className="error">{error}</p></section></main>;
   if (!data) return <main className="public-shell"><section className="public-card">Loading...</section></main>;
 
-  const { profile, content, reviews = [] } = data;
+  const { profile, content, products = [], reviews = [] } = data;
   const isOwner = user && String(user.id) === String(profile.id);
   const friendship = profile.friendship || {};
   const canMessage = user && !isOwner && ["business", "admin"].includes(user.role) && (user.role === "admin" || friendship.isFriend);
@@ -100,6 +100,12 @@ export default function PublicProfilePage({ user }) {
       <div className="section-heading"><div><p className="eyebrow">PUBLIC SERVICES</p><h2>Explore {profile.name}&apos;s services</h2></div></div>
       {content.length === 0 ? <div className="panel empty-state"><p className="muted">No public services yet.</p></div> :
         <div className="content-grid">{content.map(item => <Link key={item._id} to={`/services/${item._id}`} className="content-card-link"><ContentCard item={item} /></Link>)}</div>}
+    </section>
+
+    <section className="public-content-section">
+      <div className="section-heading"><div><p className="eyebrow">PRODUCTS</p><h2>Shop {profile.name}&apos;s products</h2></div></div>
+      {products.length === 0 ? <div className="panel empty-state"><p className="muted">No public products yet.</p></div> :
+        <div className="content-grid">{products.map(product => <article className="panel public-product-card" key={product._id}>{product.image && <img src={product.image} alt="" />}<div><h3>{product.name}</h3>{product.description && <p className="muted">{product.description}</p>}<strong>{product.currency} {Number(product.price || 0).toLocaleString()}</strong><small>{product.stock > 0 ? product.stock + " in stock" : "Out of stock"}</small></div></article>)}</div>}
     </section>
 
     <section className="public-content-section verified-reviews-section">
