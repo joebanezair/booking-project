@@ -48,7 +48,7 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
       username: String(req.params.username).toLowerCase(),
       role: "business",
       accountStatus: { $in: ["active", "paused"] }
-    }).select("name username bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage accountStatus createdAt");
+    }).select("name username bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage accountStatus createdAt friendRequests");
 
     if (!user) return res.status(404).json({ message: "Business profile not found." });
 
@@ -91,7 +91,8 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
         ratingSummary: reviewSummary,
         businessId: business._id,
         businessRatingSummary: { averageRating: businessRatingRows[0]?.averageRating ? Number(businessRatingRows[0].averageRating.toFixed(1)) : 0, ratingCount: businessRatingRows[0]?.ratingCount || 0 },
-        currentUserBusinessRating: currentBusinessRating?.rating || null
+        currentUserBusinessRating: currentBusinessRating?.rating || null,
+        friendship: req.user ? (() => { const viewer = req.user; return { available: String(viewer.id) !== String(user._id), isFriend: (viewer.friends || []).some(id => String(id) === String(user._id)), requestSent: (user.friendRequests || []).some(r => String(r.from) === String(viewer.id)), incomingRequest: (viewer.friendRequests || []).some(r => String(r.from) === String(user._id)), blocked: (viewer.blockedUsers || []).some(id => String(id) === String(user._id)) }; })() : null
       },
       reviews,
       content: items.map(item => ({
