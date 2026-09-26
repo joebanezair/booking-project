@@ -49,7 +49,9 @@ export const api = {
   },
   ratings: {
     set: (contentId, rating) => request(`/ratings/${contentId}`, { method: "PUT", body: JSON.stringify({ rating }) }),
-    remove: contentId => request(`/ratings/${contentId}`, { method: "DELETE" })
+    remove: contentId => request(`/ratings/${contentId}`, { method: "DELETE" }),
+    setBusiness: (businessId, rating) => request(`/ratings/business/${businessId}`, { method: "PUT", body: JSON.stringify({ rating }) }),
+    removeBusiness: businessId => request(`/ratings/business/${businessId}`, { method: "DELETE" })
   },
   comments: {
     add: (contentId, comment, parentId = null) => request(`/comments/${contentId}`, { method: "POST", body: JSON.stringify({ comment, parentId }) }),
