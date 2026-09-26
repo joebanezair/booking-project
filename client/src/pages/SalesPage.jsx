@@ -36,6 +36,12 @@ export default function SalesPage({ user, onLogout }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [products,setProducts]=useState([]);
+  const [posSales,setPosSales]=useState([]);
+  const [cart,setCart]=useState({});
+  const [paymentMethod,setPaymentMethod]=useState("cash");
+  const [customerName,setCustomerName]=useState("");
+  const [productForm,setProductForm]=useState({name:"",sku:"",description:"",price:"",currency:"PHP",stock:"",published:true});
 
   const offset = new Date().getTimezoneOffset();
 
@@ -58,6 +64,7 @@ export default function SalesPage({ user, onLogout }) {
   }
 
   useEffect(() => { load(); }, [range, group]);
+  useEffect(() => { Promise.all([api.sales.products(),api.sales.posSales()]).then(([items,sales])=>{setProducts(items);setPosSales(sales);}).catch(e=>setError(e.message)); }, []);
 
   const rangeLabel = useMemo(() => {
     if (range === "custom" && custom.start && custom.end) return `${custom.start}_to_${custom.end}`;
@@ -69,6 +76,10 @@ export default function SalesPage({ user, onLogout }) {
     if (value !== "custom") setCustom({ start: "", end: "" });
   }
 
+  async function addProduct(event){event.preventDefault();try{const item=await api.sales.createProduct(productForm);setProducts(current=>[item,...current]);setProductForm({name:"",sku:"",description:"",price:"",currency:"PHP",stock:"",published:true});}catch(e){setError(e.message);}}
+  async function checkout(){const items=Object.entries(cart).filter(([,quantity])=>quantity>0).map(([productId,quantity])=>({productId,quantity}));if(!items.length)return setError("Add a product to the POS cart.");try{const sale=await api.sales.checkout({items,paymentMethod,customerName});const refreshed=await api.sales.products();setProducts(refreshed);setPosSales(current=>[sale,...current]);setCart({});setCustomerName("");setError("");}catch(e){setError(e.message);}}
+  const cartTotal=products.reduce((sum,item)=>sum+Number(item.price||0)*Number(cart[item._id]||0),0);
+
   const primaryCurrency = data?.primaryCurrency || "PHP";
   const summary = data?.summary || {};
 
@@ -76,13 +87,26 @@ export default function SalesPage({ user, onLogout }) {
     <header className="topbar analytics-topbar">
       <div>
         <p className="eyebrow">SALES & ANALYTICS</p>
-        <h1>Completed-service sales</h1>
-        <p className="muted">A sale is recorded when a booking is marked completed. This is completed service value, not payment settlement.</p>
+        <h1>Sales, products & POS</h1>
+        <p className="muted">Manage products and stock, record in-store POS sales, and review completed service sales.</p>
       </div>
       <button className="primary-button icon-link" disabled={!data?.records?.length} onClick={() => exportSalesSpreadsheet(data, rangeLabel)}>
         <FiDownload />Export spreadsheet
       </button>
     </header>
+
+    <div className="pos-essential-grid">
+      <section className="panel"><div className="panel-title"><div><p className="eyebrow">PRODUCTS</p><h2>Products & inventory</h2></div><span className="count">{products.length}</span></div>
+        <form className="product-quick-form" onSubmit={addProduct}><label>Name<input required value={productForm.name} onChange={e=>setProductForm({...productForm,name:e.target.value})}/></label><label>SKU<input value={productForm.sku} onChange={e=>setProductForm({...productForm,sku:e.target.value})}/></label><label>Price<input required type="number" min="0" step="0.01" value={productForm.price} onChange={e=>setProductForm({...productForm,price:e.target.value})}/></label><label>Stock<input required type="number" min="0" step="1" value={productForm.stock} onChange={e=>setProductForm({...productForm,stock:e.target.value})}/></label><label className="check-row"><input type="checkbox" checked={productForm.published} onChange={e=>setProductForm({...productForm,published:e.target.checked})}/>Publish on profile</label><button className="primary-button">Add product</button></form>
+        <div className="product-essential-list">{products.map(item=><div key={item._id}><div><strong>{item.name}</strong><small>{item.sku||"No SKU"} · {money(item.price,item.currency)}</small></div><span>{item.stock} in stock</span></div>)}</div>
+      </section>
+      <section className="panel"><div className="panel-title"><div><p className="eyebrow">POINT OF SALE</p><h2>Cashier checkout</h2></div></div>
+        <div className="pos-product-list">{products.map(item=><div key={item._id}><div><strong>{item.name}</strong><small>{money(item.price,item.currency)} · {item.stock} available</small></div><input aria-label={"Quantity for "+item.name} type="number" min="0" max={item.stock} value={cart[item._id]||0} onChange={e=>setCart({...cart,[item._id]:Math.min(item.stock,Math.max(0,Number(e.target.value)))})}/></div>)}</div>
+        <label>Customer name <span className="muted">(optional)</span><input value={customerName} onChange={e=>setCustomerName(e.target.value)}/></label><label>Payment<select value={paymentMethod} onChange={e=>setPaymentMethod(e.target.value)}><option value="cash">Cash</option><option value="gcash">GCash</option><option value="maya">Maya</option><option value="card">Card</option><option value="other">Other</option></select></label>
+        <div className="pos-total"><span>Total</span><strong>{money(cartTotal,products[0]?.currency||"PHP")}</strong></div><button className="primary-button" onClick={checkout} disabled={!cartTotal}>Complete sale</button>
+      </section>
+    </div>
+    <section className="panel pos-history-panel"><div className="panel-title"><div><p className="eyebrow">PRODUCT SALES</p><h2>POS sales</h2></div><span className="muted">{posSales.length} records</span></div>{!posSales.length?<p className="muted">No product sales yet.</p>:<div className="sales-table-wrap"><table className="sales-table"><thead><tr><th>Date</th><th>Invoice</th><th>Items</th><th>Payment</th><th>Total</th></tr></thead><tbody>{posSales.map(sale=><tr key={sale._id}><td>{new Date(sale.soldAt).toLocaleString()}</td><td>{sale.invoiceNumber}</td><td>{sale.items?.map(item=>item.name+" × "+item.quantity).join(", ")}</td><td>{sale.paymentMethod}</td><td><strong>{money(sale.total,sale.currency)}</strong></td></tr>)}</tbody></table></div>}</section>
 
     <section className="panel analytics-controls">
       <div className="filter-button-group" aria-label="Sales period">
