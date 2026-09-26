@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBriefcase, FiCalendar, FiEye, FiPause, FiPlay, FiSlash, FiStar } from "react-icons/fi";
+import { FiBriefcase, FiCalendar, FiEye, FiKey, FiPause, FiPlay, FiSlash, FiStar } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { api } from "../api.js";
@@ -31,6 +31,23 @@ export default function BusinessManagementPage({ user, onLogout }) {
     }
   }
 
+  async function resetPassword(id, name) {
+    const password = prompt(`Enter a new password for ${name}. Minimum 8 characters:`);
+    if (password == null) return;
+    if (password.length < 8) return setError("Password must be at least 8 characters.");
+    const confirmation = prompt("Re-enter the new password:");
+    if (confirmation == null) return;
+    if (password !== confirmation) return setError("Passwords do not match.");
+    if (!confirm(`Reset the password for ${name}? Their active realtime sessions will be disconnected.`)) return;
+    try {
+      await api.admin.resetBusinessPassword(id, password);
+      setError("");
+      alert("Password reset successfully.");
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
       <div><p className="eyebrow">ADMIN</p><h1>Business management</h1><p className="muted">Monitor registered businesses and control account availability without an approval queue.</p></div>
@@ -45,7 +62,7 @@ export default function BusinessManagementPage({ user, onLogout }) {
         <span className="metric-cell"><FiCalendar />{item.bookingCount}</span>
         <span className="metric-cell"><FiStar />{item.reviewSummary?.averageRating || 0} ({item.reviewSummary?.count || 0})</span>
         <div className="row-actions">
-          <Link className="secondary button-link small-link" to={`/dashboard/businesses/${item._id}`}><FiEye />View</Link>
+          <Link className="secondary button-link small-link" to={`/dashboard/businesses/${item._id}`}><FiEye />View</Link>\n          <button className="secondary" onClick={() => resetPassword(item._id, item.business?.name || item.name)}><FiKey />Reset password</button>
           {item.accountStatus !== "paused" && item.accountStatus !== "disabled" && <button className="secondary" onClick={() => setStatus(item._id, "paused")}><FiPause />Pause</button>}
           {item.accountStatus !== "active" && <button className="secondary" onClick={() => setStatus(item._id, "active")}><FiPlay />Reactivate</button>}
           {item.accountStatus !== "disabled" && <button className="danger" onClick={() => setStatus(item._id, "disabled")}><FiSlash />Disable</button>}
