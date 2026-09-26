@@ -2832,3 +2832,125 @@ html body .sidebar::after{
 .availability-days{display:grid;gap:8px;margin-bottom:18px}.availability-row{display:grid;grid-template-columns:minmax(130px,1fr) 130px auto 130px;gap:10px;align-items:center}.availability-row label{display:flex;align-items:center;gap:8px}.availability-row label input{width:auto}
 @media(max-width:860px){.pos-essential-grid{grid-template-columns:1fr}.product-quick-form{grid-template-columns:1fr 1fr}.availability-row{grid-template-columns:1fr 1fr}.availability-row span{display:none}}
 @media(max-width:520px){.product-quick-form,.availability-row{grid-template-columns:1fr}}
+
+
+/* 2026-09-26 authoritative UI shape + border system.
+   Interactive controls and surfaces use 5px; navigation drawer stays square; avatars stay circular. */
+:root{--ui-radius:5px;--ui-border:#cbd3df;--ui-border-strong:#aeb9c8;}
+html body button,
+html body input,
+html body select,
+html body textarea,
+html body .primary-button,
+html body .secondary,
+html body .button-link,
+html body .icon-button,
+html body .panel,
+html body .stat-card,
+html body .booking-card,
+html body .date-tile,
+html body .status,
+html body .filter-chip,
+html body .count,
+html body .conversation-menu,
+html body .message-file,
+html body .shared-profile-card,
+html body .attachment-chip,
+html body .public-card,
+html body .public-profile-hero,
+html body .public-product-card,
+html body .calendar-day,
+html body .slot-button,
+html body .selected-content,
+html body .error,
+html body .booking-editor-panel.booking-modal{
+  border-radius:5px !important;
+}
+html body button,
+html body input,
+html body select,
+html body textarea{
+  border:1px solid var(--ui-border) !important;
+}
+html body button:hover,
+html body input:hover,
+html body select:hover,
+html body textarea:hover{
+  border-color:var(--ui-border-strong) !important;
+}
+html body input:focus,
+html body select:focus,
+html body textarea:focus{
+  border-color:#6d82ef !important;
+  box-shadow:0 0 0 3px rgba(93,124,255,.10);
+}
+html body .primary-button{border-color:#3457dc !important;}
+html body .secondary,
+html body .filter-chip,
+html body .icon-button{border-color:var(--ui-border) !important;}
+html body .panel,
+html body .stat-card,
+html body .booking-card,
+html body .public-card,
+html body .public-product-card,
+html body .calendar-day,
+html body .selected-content,
+html body .booking-editor-panel.booking-modal{
+  border:1px solid #d9e0e9 !important;
+}
+html body .status,
+html body .count{border:1px solid rgba(80,96,120,.16) !important;}
+html body input[type="checkbox"],
+html body input[type="radio"]{border-radius:3px !important;}
+html body .profile-avatar,
+html body .avatar,
+html body .linkedin-avatar-wrap,
+html body .linkedin-avatar-button,
+html body .linkedin-avatar-button .profile-avatar,
+html body .avatar-camera-badge{
+  border-radius:50% !important;
+}
+/* Drawer/rail is intentionally the only square, borderless application surface. */
+html body .page-shell>.sidebar,
+html body .page-shell>.sidebar.mobile-open,
+html body .page-shell>.sidebar *,
+html body .page-shell>.sidebar::before,
+html body .page-shell>.sidebar::after{
+  border-radius:0 !important;
+}
+html body .page-shell>.sidebar,
+html body .page-shell>.sidebar.mobile-open{
+  border:0 !important;
+}
+/* Keep the mobile drawer trigger/header flush with the navigation surface. */
+html body .mobile-app-header{border-radius:0 !important;}
+/* Product/POS alignment refinement */
+.product-quick-form{align-items:end;}
+.product-quick-form label{min-width:0;}
+.product-quick-form input{min-height:42px;}
+.pos-product-list>div{min-height:58px;}
+.pos-product-list input{min-height:38px;text-align:center;}
+.pos-total{padding-top:14px;border-top:1px solid #d9e0e9;}
+.sales-table-wrap{border:1px solid #d9e0e9;border-radius:5px !important;overflow:auto;}
+.sales-table{border-collapse:collapse;width:100%;}
+.sales-table th,.sales-table td{border-bottom:1px solid #e3e8ef;}
+.sales-table tbody tr:last-child td{border-bottom:0;}
+[data-theme="dark"]{--ui-border:#445269;--ui-border-strong:#617089;}
+[data-theme="dark"] .panel,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .booking-card,
+[data-theme="dark"] .public-card,
+[data-theme="dark"] .public-product-card,
+[data-theme="dark"] .calendar-day,
+[data-theme="dark"] .selected-content,
+[data-theme="dark"] .booking-editor-panel.booking-modal,
+[data-theme="dark"] .sales-table-wrap{border-color:#344158 !important;}
+[data-theme="dark"] .sales-table th,
+[data-theme="dark"] .sales-table td,
+[data-theme="dark"] .pos-total{border-color:#344158;}
+@media(max-width:700px){
+  .product-quick-form{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:520px){
+  .product-quick-form{grid-template-columns:1fr;}
+}
