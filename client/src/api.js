@@ -90,7 +90,11 @@ export const api = {
   sales: {
     analytics: params => request(`/sales/analytics?${new URLSearchParams(params)}`),
     products: () => request("/sales/products"),
-    createProduct: body => request("/sales/products", { method: "POST", body: JSON.stringify(body) })
+    createProduct: body => request("/sales/products", { method: "POST", body: JSON.stringify(body) }),
+    updateProduct: (id, body) => request(`/sales/products/${id}`, { method: "PUT", body: JSON.stringify(body) }),
+    removeProduct: id => request(`/sales/products/${id}`, { method: "DELETE" }),
+    posSales: () => request("/sales/pos"),
+    checkout: body => request("/sales/pos", { method: "POST", body: JSON.stringify(body) })
   },
   admin: {
     overview: () => request("/admin/overview"),
