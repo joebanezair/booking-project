@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { FiMessageSquare } from "react-icons/fi";
+import { FiMessageSquare, FiUserPlus, FiUserCheck } from "react-icons/fi";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import ContentCard from "../components/ContentCard.jsx";
@@ -12,6 +12,7 @@ export default function PublicProfilePage({ user }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [ratingMessage, setRatingMessage] = useState("");
+  const [friendBusy, setFriendBusy] = useState(false);
 
   useEffect(() => {
     api.publicProfile(resolvedUsername).then(result => {
@@ -35,12 +36,26 @@ export default function PublicProfilePage({ user }) {
     } catch (e) { setError(e.message); }
   }
 
+  async function friendAction(action) {
+    if (!data?.profile?.id || friendBusy) return;
+    setFriendBusy(true); setError("");
+    try {
+      if (action === "add") await api.messages.addFriend(data.profile.id);
+      if (action === "accept") await api.messages.acceptFriend(data.profile.id);
+      if (action === "unfriend") await api.messages.unfriend(data.profile.id);
+      const refreshed = await api.publicProfile(resolvedUsername);
+      setData(refreshed);
+    } catch (e) { setError(e.message); }
+    finally { setFriendBusy(false); }
+  }
+
   if (error) return <main className="public-shell"><section className="public-card"><p className="error">{error}</p></section></main>;
   if (!data) return <main className="public-shell"><section className="public-card">Loading...</section></main>;
 
   const { profile, content, reviews = [] } = data;
   const isOwner = user && String(user.id) === String(profile.id);
-  const canMessage = user && !isOwner && ["business", "admin"].includes(user.role);
+  const friendship = profile.friendship || {};
+  const canMessage = user && !isOwner && ["business", "admin"].includes(user.role) && (user.role === "admin" || friendship.isFriend);
   const conversationPath = `/dashboard/messages/${profile.id}`;
   const paused = profile.accountStatus === "paused";
 
@@ -55,7 +70,12 @@ export default function PublicProfilePage({ user }) {
           <p className="eyebrow">BUSINESS PROFILE</p>
           <div className="profile-title-row">
             <h1>{profile.name}</h1>
-            {canMessage && <Link className="primary-button button-link icon-link" to={conversationPath}><FiMessageSquare aria-hidden="true" />Message</Link>}
+            {user && !isOwner && <div className="public-profile-actions">
+              {friendship.incomingRequest ? <button className="primary-button icon-link" disabled={friendBusy} onClick={() => friendAction("accept")}><FiUserPlus aria-hidden="true" />Accept Friend</button> :
+               friendship.isFriend ? <button className="secondary icon-link" disabled={friendBusy} onClick={() => friendAction("unfriend")}><FiUserCheck aria-hidden="true" />Friends</button> :
+               <button className="primary-button icon-link" disabled={friendBusy || friendship.requestSent || friendship.blocked} onClick={() => friendAction("add")}><FiUserPlus aria-hidden="true" />{friendship.requestSent ? "Request Sent" : "Add Friend"}</button>}
+              {canMessage && <Link className="secondary button-link icon-link" to={conversationPath}><FiMessageSquare aria-hidden="true" />Message</Link>}
+            </div>}
           </div>
           {paused && <div className="paused-public-banner">Temporarily unavailable — this business is not accepting new bookings right now.</div>}
           {profile.headline && <p className="profile-headline">{profile.headline}</p>}
