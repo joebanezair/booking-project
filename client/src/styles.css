@@ -2404,3 +2404,30 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
   .messenger-sidebar .user-list{max-height:none}
   .message-entry{max-width:88%}
 }
+
+
+/* Keep the editable profile-photo selection area fully circular. */
+.linkedin-avatar-wrap{
+  width:152px;
+  height:152px;
+  border-radius:50%;
+}
+.linkedin-avatar-button{
+  box-sizing:border-box;
+  border-radius:50% !important;
+  clip-path:circle(50%);
+  overflow:hidden;
+}
+.linkedin-avatar-button .profile-avatar{
+  display:block;
+  border-radius:50% !important;
+}
+.linkedin-avatar-button .avatar-camera-badge{
+  right:5px;
+  bottom:8px;
+  z-index:3;
+}
+.linkedin-avatar-wrap .profile-photo-menu{
+  clip-path:none;
+  overflow:visible;
+}
