@@ -1,5 +1,6 @@
 import { Router } from "express";
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import Business from "../models/Business.js";
 import Booking from "../models/Booking.js";
@@ -169,6 +170,26 @@ router.patch("/businesses/:id/status", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to update business status." });
+  }
+});
+
+router.patch("/businesses/:id/password", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid business ID." });
+    const password = String(req.body.password || "");
+    if (password.length < 8) return res.status(400).json({ message: "Password must be at least 8 characters." });
+    if (password.length > 128) return res.status(400).json({ message: "Password is too long." });
+
+    const user = await User.findOne({ _id: req.params.id, role: "business" });
+    if (!user) return res.status(404).json({ message: "Business account not found." });
+    user.passwordHash = await bcrypt.hash(password, 12);
+    await user.save();
+
+    req.app.get("io").in(`user:${user._id}`).disconnectSockets(true);
+    res.json({ ok: true, message: "Password reset successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to reset the password." });
   }
 });
 
