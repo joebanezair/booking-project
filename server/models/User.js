@@ -15,7 +15,12 @@ const userSchema = new mongoose.Schema(
     profileImage: { type: String, default: "" },
     profileImagePositionX: { type: Number, min: 0, max: 100, default: 50 },
     profileImagePositionY: { type: Number, min: 0, max: 100, default: 50 },
-    coverImage: { type: String, default: "" }
+    coverImage: { type: String, default: "" },
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    friendRequests: [{ from: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, createdAt: { type: Date, default: Date.now } }],
+    blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    restrictedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    pinnedConversations: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
   },
   { timestamps: true }
 );
