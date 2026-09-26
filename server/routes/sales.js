@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Sale from "../models/Sale.js";
+import Sale, { Product, PosSale } from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
 
@@ -72,6 +72,20 @@ function groupMeta(date, group, offset) {
     label: local.toLocaleString("en", { month: "short", day: "numeric", timeZone: "UTC" })
   };
 }
+
+
+router.get("/products", async (req,res) => {
+  try { res.json(await Product.find({user:req.user.id}).sort({updatedAt:-1})); }
+  catch (error) { console.error(error); res.status(500).json({message:"Unable to load products."}); }
+});
+router.post("/products", async (req,res) => {
+  try {
+    const name=String(req.body.name||"").trim();
+    if(!name) return res.status(400).json({message:"Product name is required."});
+    const product=await Product.create({user:req.user.id,name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),price:Math.max(0,Number(req.body.price||0)),currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)});
+    res.status(201).json(product);
+  } catch(error) { console.error(error); res.status(500).json({message:"Unable to create product."}); }
+});
 
 router.get("/analytics", async (req, res) => {
   try {
