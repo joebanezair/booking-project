@@ -2617,3 +2617,38 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 .linkedin-avatar-button .profile-avatar{
   border-radius:50% !important;
 }
+
+
+/* Business Bookings: contain the editor so form controls never overlap Guest bookings. */
+.booking-workspace-grid{
+  grid-template-columns:minmax(0, 1fr) minmax(0, 1.35fr);
+  width:100%;
+}
+.booking-editor-panel,
+.booking-list-panel{
+  min-width:0;
+  width:100%;
+  overflow:hidden;
+}
+.booking-editor-panel .two-col,
+.booking-editor-panel .three-col{
+  min-width:0;
+}
+.booking-editor-panel .two-col > label,
+.booking-editor-panel .three-col > label{
+  min-width:0;
+  width:100%;
+}
+.booking-editor-panel input,
+.booking-editor-panel select,
+.booking-editor-panel textarea{
+  max-width:100%;
+}
+@media(max-width:1100px){
+  .booking-workspace-grid{
+    grid-template-columns:1fr;
+  }
+  .booking-editor-panel{
+    position:static;
+  }
+}
