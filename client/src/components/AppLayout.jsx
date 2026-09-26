@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiLogOut, FiMessageCircle, FiMessageSquare, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX } from "react-icons/fi";
+import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
@@ -66,7 +66,6 @@ export default function AppLayout({ children, user, onLogout }) {
       <div className="sidebar-footer">
         {user?.role === "business" && user?.accountStatus === "paused" && <p className="sidebar-status-note">Business paused</p>}
         <small className="sidebar-email">{user?.role === "admin" ? "Admin" : "Business"} · {user?.email}</small>
-        <button className="secondary signout-button" onClick={onLogout}><FiLogOut aria-hidden="true" /><span>Sign out</span></button>
       </div>
     </aside>
 
