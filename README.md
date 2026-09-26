@@ -473,6 +473,25 @@ Server startup also backfills existing booking scheduling metadata, including bo
 
 Existing completed bookings are also backfilled into the sales ledger. If an older completed booking did not store a price snapshot, BookFlow uses the currently linked service price/currency as the best available historical fallback.
 
+
+## Responsive UI and navigation
+
+BookFlow uses a responsive dashboard shell for desktop, tablet, and mobile layouts.
+
+- Desktop keeps the persistent left navigation sidebar.
+- Mobile uses a sticky BookFlow header with a hamburger button that opens the existing navigation as a slide-in drawer.
+- The mobile drawer is flush to the viewport with square edges and closes after navigation, backdrop selection, or the Escape key.
+- The mobile shell removes unintended spacing above the header.
+- Sign out is intentionally available only from the **Settings** page rather than the navigation drawer.
+- UI surfaces use square corners; profile imagery remains circular.
+- Typography uses a native UI sans-serif stack (ui-sans-serif, system fonts, Segoe UI, Helvetica, Arial), with lighter normal text and stronger emphasis reserved for labels, active navigation, buttons, and headings.
+
+## Booking workspace responsiveness
+
+The Business Bookings workspace keeps the New Booking editor contained within its panel so controls do not overlap the Guest bookings list.
+
+The Date and time, Duration, and Status controls use a flexible responsive row: Date and time receives more available width on desktop, Duration and Status retain usable widths, narrower layouts place Date and time on its own row with Duration and Status below, and very small mobile layouts stack all three controls vertically.
+
 ## Technology stack
 
 Frontend: React 19, React Router, Vite, React Icons, Socket.IO Client.
