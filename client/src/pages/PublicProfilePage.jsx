@@ -4,13 +4,14 @@ import { FiMessageSquare } from "react-icons/fi";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import ContentCard from "../components/ContentCard.jsx";
-import { RatingSummary } from "../components/StarRating.jsx";
+import { RatingInput, RatingSummary } from "../components/StarRating.jsx";
 
 export default function PublicProfilePage({ user }) {
   const { username } = useParams();
   const resolvedUsername = username || "";
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
+  const [ratingMessage, setRatingMessage] = useState("");
 
   useEffect(() => {
     api.publicProfile(resolvedUsername).then(result => {
@@ -18,6 +19,21 @@ export default function PublicProfilePage({ user }) {
       setError("");
     }).catch(e => setError(e.message));
   }, [resolvedUsername]);
+
+  async function rateBusiness(value) {
+    try {
+      await api.ratings.setBusiness(data.profile.businessId, value);
+      const refreshed = await api.publicProfile(resolvedUsername);
+      setData(refreshed); setRatingMessage("Business rating saved."); setError("");
+    } catch (e) { setError(e.message); }
+  }
+  async function removeBusinessRating() {
+    try {
+      await api.ratings.removeBusiness(data.profile.businessId);
+      const refreshed = await api.publicProfile(resolvedUsername);
+      setData(refreshed); setRatingMessage("Business rating removed."); setError("");
+    } catch (e) { setError(e.message); }
+  }
 
   if (error) return <main className="public-shell"><section className="public-card"><p className="error">{error}</p></section></main>;
   if (!data) return <main className="public-shell"><section className="public-card">Loading...</section></main>;
@@ -43,6 +59,12 @@ export default function PublicProfilePage({ user }) {
           </div>
           {paused && <div className="paused-public-banner">Temporarily unavailable — this business is not accepting new bookings right now.</div>}
           {profile.headline && <p className="profile-headline">{profile.headline}</p>}
+          <div className="business-rating-block">
+            <div className="verified-rating-row"><RatingSummary {...profile.businessRatingSummary} /><span className="verified-badge">Business rating</span></div>
+            {user && !isOwner && <div className="profile-rating-control"><span>Your rating</span><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <button type="button" className="link-button" onClick={removeBusinessRating}>Remove rating</button>}</div>}
+            {!user && <small className="muted">Sign in to rate this business.</small>}
+            {ratingMessage && <small className="success">{ratingMessage}</small>}
+          </div>
           <div className="verified-rating-row"><RatingSummary {...profile.ratingSummary} /><span className="verified-badge">Verified booking reviews</span></div>
           {profile.bio && <p className="public-bio">{profile.bio}</p>}
           <div className="profile-meta">
