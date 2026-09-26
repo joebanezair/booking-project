@@ -1,6 +1,8 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import Content from "../models/Content.js";
+import Business from "../models/Business.js";
+import User from "../models/User.js";
 import Rating from "../models/Rating.js";
 import requireAuth from "../middleware/auth.js";
 
@@ -48,6 +50,31 @@ router.delete("/:contentId", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Unable to remove rating." });
   }
+});
+
+router.put("/business/:businessId", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.businessId)) return res.status(400).json({ message: "Invalid business ID." });
+    const [business, currentUser] = await Promise.all([
+      Business.findById(req.params.businessId).select("owner"),
+      User.findById(req.user.id).select("accountStatus")
+    ]);
+    if (!business) return res.status(404).json({ message: "Business not found." });
+    if ((currentUser?.accountStatus || "active") === "disabled") return res.status(403).json({ message: "Disabled accounts cannot rate businesses." });
+    if (String(business.owner) === String(req.user.id)) return res.status(403).json({ message: "You cannot rate your own business." });
+    const value = Number(req.body.rating);
+    if (!Number.isInteger(value) || value < 1 || value > 5) return res.status(400).json({ message: "Rating must be an integer from 1 to 5." });
+    const rating = await Rating.findOneAndUpdate({ business: business._id, user: req.user.id }, { rating: value, content: null }, { new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true });
+    res.json(rating);
+  } catch (error) { console.error(error); res.status(500).json({ message: "Unable to save business rating." }); }
+});
+
+router.delete("/business/:businessId", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.businessId)) return res.status(400).json({ message: "Invalid business ID." });
+    await Rating.findOneAndDelete({ business: req.params.businessId, user: req.user.id });
+    res.status(204).end();
+  } catch (error) { console.error(error); res.status(500).json({ message: "Unable to remove business rating." }); }
 });
 
 export default router;
