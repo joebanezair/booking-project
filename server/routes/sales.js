@@ -87,6 +87,48 @@ router.post("/products", async (req,res) => {
   } catch(error) { console.error(error); res.status(500).json({message:"Unable to create product."}); }
 });
 
+router.put("/products/:id", async (req,res) => {
+  try {
+    const name=String(req.body.name||"").trim();
+    if(!name) return res.status(400).json({message:"Product name is required."});
+    const product=await Product.findOneAndUpdate({_id:req.params.id,user:req.user.id},{$set:{name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),price:Math.max(0,Number(req.body.price||0)),currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)}},{new:true,runValidators:true});
+    if(!product) return res.status(404).json({message:"Product not found."});
+    res.json(product);
+  } catch(error){console.error(error);res.status(500).json({message:"Unable to update product."});}
+});
+router.delete("/products/:id", async(req,res) => {
+  try { const product=await Product.findOneAndDelete({_id:req.params.id,user:req.user.id}); if(!product)return res.status(404).json({message:"Product not found."}); res.status(204).end(); }
+  catch(error){console.error(error);res.status(500).json({message:"Unable to delete product."});}
+});
+router.get("/pos", async(req,res) => {
+  try { res.json(await PosSale.find({businessOwner:req.user.id}).sort({soldAt:-1}).limit(200).lean()); }
+  catch(error){console.error(error);res.status(500).json({message:"Unable to load POS sales."});}
+});
+router.post("/pos", async(req,res) => {
+  try {
+    const rows=Array.isArray(req.body.items)?req.body.items:[];
+    if(!rows.length)return res.status(400).json({message:"Add at least one product."});
+    const products=await Product.find({_id:{$in:rows.map(row=>row.productId)},user:req.user.id});
+    const productMap=new Map(products.map(product=>[String(product._id),product]));
+    const lines=[]; let total=0; let currency="PHP";
+    for(const row of rows){
+      const product=productMap.get(String(row.productId)); const quantity=Math.max(1,Math.floor(Number(row.quantity||1)));
+      if(!product)return res.status(404).json({message:"Product not found."});
+      if(product.stock<quantity)return res.status(409).json({message:product.name+" has insufficient stock."});
+      const lineTotal=Number(product.price||0)*quantity;
+      lines.push({product:product._id,name:product.name,sku:product.sku,quantity,unitPrice:product.price,lineTotal}); total+=lineTotal; currency=product.currency||currency;
+    }
+    for(const line of lines){
+      const changed=await Product.findOneAndUpdate({_id:line.product,user:req.user.id,stock:{$gte:line.quantity}},{$inc:{stock:-line.quantity}},{new:true});
+      if(!changed)return res.status(409).json({message:"Stock changed during checkout. Refresh and try again."});
+    }
+    const payment=["cash","gcash","maya","card","other"].includes(req.body.paymentMethod)?req.body.paymentMethod:"cash";
+    const invoiceNumber="BFI-"+new Date().getFullYear()+"-"+Date.now();
+    const sale=await PosSale.create({businessOwner:req.user.id,invoiceNumber,items:lines,total,currency,paymentMethod:payment,customerName:String(req.body.customerName||"").trim()});
+    res.status(201).json(sale);
+  } catch(error){console.error(error);res.status(500).json({message:"Unable to complete POS sale."});}
+});
+
 router.get("/analytics", async (req, res) => {
   try {
     const range = ["today", "7d", "month", "year", "custom", "all"].includes(req.query.range) ? req.query.range : "month";
