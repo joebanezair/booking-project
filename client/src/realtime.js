@@ -17,7 +17,9 @@ export function getRealtimeSocket() {
     socketToken = token;
     socket = io(SOCKET_URL, {
       auth: { token },
-      transports: ["websocket"],
+      transports: ["polling", "websocket"],
+      upgrade: true,
+      timeout: 20000,
       reconnection: true
     });
   }
