@@ -2652,3 +2652,103 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
     position:static;
   }
 }
+
+
+/* 2026-09 UI refinement: responsive bookings, mobile navigation, lighter typography. */
+:root{
+  font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+body,button,input,select,textarea{
+  font-family:inherit;
+  font-size:14px;
+  font-weight:400;
+}
+label{
+  font-size:15px;
+  font-weight:700;
+}
+.sidebar-nav a{
+  font-size:14px;
+  font-weight:500;
+}
+.sidebar-nav a.active{
+  font-size:15px;
+  font-weight:700;
+}
+button,.primary-button,.secondary,.button-link{
+  font-size:14px;
+  font-weight:600;
+}
+.primary-button{
+  font-weight:700;
+}
+.topbar h1{
+  font-size:28px;
+  font-weight:700;
+}
+.panel h2,.section-heading h2{
+  font-size:20px;
+  font-weight:700;
+}
+
+/* Let the booking timing row flex without crossing the editor boundary. */
+.booking-editor-panel .three-col{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  align-items:flex-end;
+}
+.booking-editor-panel .three-col > label{
+  flex:1 1 130px;
+  min-width:0;
+}
+.booking-editor-panel .three-col > label:first-child{
+  flex:2 1 240px;
+  grid-column:auto;
+}
+.booking-editor-panel .three-col input,
+.booking-editor-panel .three-col select{
+  min-width:0;
+  max-width:100%;
+}
+@media(max-width:700px){
+  .booking-editor-panel .three-col > label:first-child{
+    flex:1 1 100%;
+  }
+  .booking-editor-panel .three-col > label:not(:first-child){
+    flex:1 1 calc(50% - 7px);
+  }
+}
+@media(max-width:430px){
+  .booking-editor-panel .three-col{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .booking-editor-panel .three-col > label,
+  .booking-editor-panel .three-col > label:first-child{
+    width:100%;
+  }
+}
+
+/* Mobile shell: flush header/drawer with no top gap or rounded drawer edge. */
+@media(max-width:800px){
+  html,body,#root{
+    margin:0 !important;
+    padding-top:0 !important;
+  }
+  .page-shell{
+    margin-top:0 !important;
+    padding-top:0 !important;
+  }
+  .mobile-app-header{
+    margin:0 !important;
+    top:0 !important;
+    border-radius:0 !important;
+  }
+  .sidebar,
+  .sidebar.mobile-open,
+  .sidebar::before,
+  .sidebar::after{
+    border-radius:0 !important;
+  }
+}
