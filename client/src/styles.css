@@ -2519,3 +2519,88 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
   .public-profile-actions{width:100%;}
   .public-profile-actions>*{flex:1;min-width:130px;}
 }
+
+
+/* Business Bookings form layout repair */
+.booking-workspace-grid{
+  grid-template-columns:minmax(460px, .92fr) minmax(520px, 1.35fr);
+  align-items:start;
+  gap:20px;
+}
+.booking-editor-panel{
+  position:sticky;
+  top:24px;
+  padding:26px;
+  min-width:0;
+  margin-bottom:32px;
+}
+.booking-editor-panel form{
+  display:grid;
+  gap:18px;
+  padding-bottom:4px;
+}
+.booking-editor-panel .two-col{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+.booking-editor-panel .three-col{
+  grid-template-columns:minmax(200px,1.6fr) minmax(110px,.65fr) minmax(130px,.75fr);
+  gap:14px;
+}
+.booking-editor-panel label{
+  min-width:0;
+}
+.booking-editor-panel input,
+.booking-editor-panel select,
+.booking-editor-panel textarea{
+  min-width:0;
+  width:100%;
+}
+.booking-editor-panel textarea{
+  resize:vertical;
+}
+.booking-editor-panel .row-actions{
+  padding-top:4px;
+  padding-bottom:4px;
+}
+.booking-list-panel{
+  min-width:0;
+  margin-bottom:32px;
+}
+#bookings{
+  padding-bottom:40px;
+}
+@media(max-width:1180px){
+  .booking-workspace-grid{
+    grid-template-columns:minmax(380px,.9fr) minmax(0,1.1fr);
+  }
+  .booking-editor-panel .three-col{
+    grid-template-columns:1fr 1fr;
+  }
+  .booking-editor-panel .three-col label:first-child{
+    grid-column:1/-1;
+  }
+}
+@media(max-width:900px){
+  .booking-workspace-grid{
+    grid-template-columns:1fr;
+  }
+  .booking-editor-panel{
+    position:static;
+  }
+}
+@media(max-width:600px){
+  .booking-editor-panel{
+    padding:18px;
+  }
+  .booking-editor-panel .two-col,
+  .booking-editor-panel .three-col{
+    grid-template-columns:1fr;
+  }
+  .booking-editor-panel .three-col label:first-child{
+    grid-column:auto;
+  }
+  #bookings{
+    padding-bottom:28px;
+  }
+}
