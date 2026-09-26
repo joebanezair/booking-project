@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiCalendar, FiCheckCircle, FiClock, FiList, FiPlay, FiRotateCcw, FiSearch, FiSlash, FiUserX, FiUsers } from "react-icons/fi";
+import { FiCalendar, FiCheckCircle, FiClock, FiList, FiPlay, FiPlus, FiRotateCcw, FiSearch, FiSlash, FiUserX, FiUsers, FiX } from "react-icons/fi";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
 
@@ -22,6 +22,7 @@ export default function BookingManager({user}){
   const [statusFilter,setStatusFilter]=useState("");
   const [month,setMonth]=useState(()=>new Date().toISOString().slice(0,7));
   const [error,setError]=useState("");
+  const [bookingModalOpen,setBookingModalOpen]=useState(false);
 
   async function refreshCustomers(){try{setCustomers(await api.bookings.customers());}catch{}}
 
@@ -57,7 +58,7 @@ export default function BookingManager({user}){
       const body={...form,bookingDate:new Date(form.bookingDate).toISOString(),servicePrice:Number(form.servicePrice||0),serviceDurationMinutes:Number(form.serviceDurationMinutes||60),bufferMinutes:Number(form.bufferMinutes||0)};
       const updated=editing?await api.bookings.update(editing,body):await api.bookings.create(body);
       setItems(current=>editing?current.map(item=>item._id===editing?updated:item):(current.some(item=>item._id===updated._id)?current:[...current,updated]));
-      setForm(empty);setEditing(null);setError("");refreshCustomers();
+      setForm(empty);setEditing(null);setBookingModalOpen(false);setError("");refreshCustomers();
     }catch(e){setError(e.message);}
   }
 
@@ -70,6 +71,7 @@ export default function BookingManager({user}){
       bookingDate:localInput(booking.bookingDate),notes:booking.notes||"",internalNotes:booking.internalNotes||"",status:booking.status
     });
     setView("list");
+    setBookingModalOpen(true);
   }
 
   async function changeStatus(booking,status){
@@ -125,12 +127,13 @@ export default function BookingManager({user}){
     <div className="stats-grid booking-stats-grid"><article className="stat-card"><span>Total bookings</span><strong>{stats.total}</strong></article><article className="stat-card"><span>Pending</span><strong>{stats.pending}</strong></article><article className="stat-card"><span>Confirmed</span><strong>{stats.confirmed}</strong></article><article className="stat-card"><span>In progress</span><strong>{stats.inProgress}</strong></article><article className="stat-card"><span>Completed</span><strong>{stats.completed}</strong></article></div>
     {error&&<p className="error">{error}</p>}
 
-    <div className="booking-view-tabs"><button className={view==="list"?"filter-chip active":"filter-chip"} onClick={()=>setView("list")}><FiList/>Bookings</button><button className={view==="calendar"?"filter-chip active":"filter-chip"} onClick={()=>setView("calendar")}><FiCalendar/>Calendar</button><button className={view==="customers"?"filter-chip active":"filter-chip"} onClick={()=>setView("customers")}><FiUsers/>Customers</button></div>
+    <div className="booking-view-tabs"><button className={view==="list"?"filter-chip active":"filter-chip"} onClick={()=>setView("list")}><FiList/>Bookings</button><button className={view==="calendar"?"filter-chip active":"filter-chip"} onClick={()=>setView("calendar")}><FiCalendar/>Calendar</button><button className={view==="customers"?"filter-chip active":"filter-chip"} onClick={()=>setView("customers")}><FiUsers/>Customers</button>{canCreate&&<button className="primary-button booking-new-button" onClick={()=>{setEditing(null);setForm(empty);setBookingModalOpen(true);}}><FiPlus/>New booking</button>}</div>
 
     {view==="calendar"?<CalendarView/>:view==="customers"?<CustomerView/>:<>
       <section className="panel booking-filter-bar"><label><span><FiSearch/>Search</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Reference, customer, phone, service…"/></label><label>Status<select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}><option value="">All statuses</option>{statuses.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label></section>
       <div className="workspace-grid booking-workspace-grid">
-        <section className="panel booking-editor-panel"><div className="panel-title"><h2>{editing?"Edit booking":"New booking"}</h2></div>
+        {bookingModalOpen&&<div className="booking-modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget){setBookingModalOpen(false);setEditing(null);setForm(empty);}}}>
+        <section className="panel booking-editor-panel booking-modal" role="dialog" aria-modal="true" aria-label={editing?"Edit booking":"New booking"}><div className="panel-title"><h2>{editing?"Edit booking":"New booking"}</h2><button type="button" className="icon-button booking-modal-close" aria-label="Close booking form" onClick={()=>{setBookingModalOpen(false);setEditing(null);setForm(empty);}}><FiX/></button></div>
           {!editing&&!canCreate?<p className="warning-note">New bookings cannot be created while this business is paused.</p>:<form onSubmit={save}>
             <div className="two-col"><label>Guest name<input value={form.guestName} onChange={e=>setForm({...form,guestName:e.target.value})} required/></label><label>Guest email<input type="email" value={form.guestEmail} onChange={e=>setForm({...form,guestEmail:e.target.value})}/></label></div>
             <div className="two-col"><label>Phone number<input type="tel" value={form.guestPhone} onChange={e=>setForm({...form,guestPhone:e.target.value})}/></label><label>Location / service address<input value={form.locationLabel} onChange={e=>setForm({...form,locationLabel:e.target.value})}/></label></div>
@@ -142,7 +145,7 @@ export default function BookingManager({user}){
             <label>Internal business notes <span className="muted">not shown to the guest</span><textarea rows="3" maxLength="2000" value={form.internalNotes} onChange={e=>setForm({...form,internalNotes:e.target.value})}/></label>
             <div className="row-actions"><button className="primary-button">{editing?"Save changes":"Create booking"}</button>{editing&&<button type="button" className="secondary" onClick={()=>{setEditing(null);setForm(empty);}}>Cancel</button>}</div>
           </form>}
-        </section>
+        </section></div>}
 
         <section className="panel booking-list-panel"><div className="panel-title"><h2>Guest bookings</h2><span className="count">{filtered.length}</span></div><div className="booking-list">
           {filtered.length===0?<p className="muted">No matching bookings.</p>:filtered.map(booking=>{const customer=customerMap.get(customerKey(booking));return <article className="booking-card booking-lifecycle-card" key={booking._id}>
