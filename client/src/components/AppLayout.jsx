@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiLogOut, FiMessageCircle, FiMessageSquare, FiSearch, FiSettings, FiUser, FiUsers } from "react-icons/fi";
+import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiLogOut, FiMessageCircle, FiMessageSquare, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
@@ -20,6 +20,7 @@ const navigation = [
 
 export default function AppLayout({ children, user, onLogout }) {
   const [unread, setUnread] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     api.notifications.list().then(data => setUnread(data.unread)).catch(() => {});
@@ -36,8 +37,17 @@ export default function AppLayout({ children, user, onLogout }) {
     return true;
   });
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const close = event => { if (event.key === "Escape") setMobileOpen(false); };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [mobileOpen]);
+
   return <main className="page-shell">
-    <aside className="sidebar">
+    <header className="mobile-app-header"><Link to="/dashboard" className="sidebar-brand"><span className="brand-mark small"><FiCalendar aria-hidden="true" /></span><strong>BookFlow</strong></Link><button type="button" className="mobile-menu-button" aria-label={mobileOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileOpen} onClick={() => setMobileOpen(v => !v)}>{mobileOpen ? <FiX/> : <FiMenu/>}</button></header>
+    {mobileOpen && <button type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={() => setMobileOpen(false)} />}
+    <aside className={`sidebar ${mobileOpen ? "mobile-open" : ""}`}>
       <div className="sidebar-main">
         <Link to="/dashboard" className="sidebar-brand">
           <span className="brand-mark small"><FiCalendar aria-hidden="true" /></span>
@@ -45,7 +55,7 @@ export default function AppLayout({ children, user, onLogout }) {
         </Link>
 
         <nav className="sidebar-nav" aria-label="Dashboard navigation">
-          {visibleNavigation.map(({ to, label, icon: Icon, end }) => <NavLink to={to} end={end} key={to}>
+          {visibleNavigation.map(({ to, label, icon: Icon, end }) => <NavLink to={to} end={end} key={to} onClick={() => setMobileOpen(false)}>
             <Icon aria-hidden="true" />
             <span>{label}</span>
             {label === "Notifications" && unread > 0 && <b className="nav-badge">{unread > 99 ? "99+" : unread}</b>}
