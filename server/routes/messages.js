@@ -16,6 +16,20 @@ async function canMessage(sender, recipient) {
   if (sender.role === "admin" || recipient.role === "admin") return true;
   return hasId(sender.friends, recipient._id) && hasId(recipient.friends, sender._id);
 }
+async function normalizeFriendship(current, other) {
+  const currentHas = hasId(current.friends, other._id);
+  const otherHas = hasId(other.friends, current._id);
+  if (currentHas === otherHas) return currentHas;
+  if (currentHas) {
+    await User.findByIdAndUpdate(other._id, { $addToSet: { friends: current._id } });
+    return true;
+  }
+  if (otherHas) {
+    await User.findByIdAndUpdate(current._id, { $addToSet: { friends: other._id } });
+    return true;
+  }
+  return false;
+}
 function relationship(current, otherId) {
   return {
     friend: hasId(current.friends, otherId),
@@ -110,7 +124,9 @@ router.get("/:userId", async (req, res) => {
     const messages = await Message.find({ $or: [{ sender:req.user.id,recipient:req.params.userId },{ sender:req.params.userId,recipient:req.user.id }], deletedFor:{$ne:req.user.id} }).sort({createdAt:1}).populate("sharedProfile", publicUserFields);
     await Message.updateMany({sender:req.params.userId,recipient:req.user.id,readAt:null},{$set:{readAt:new Date()}});
     const reactions=await reactionMap("message",messages.map(m=>m._id),req.user.id);
-    res.json({user:{...otherUser,...relationship(current,otherUser._id)},canMessage:await canMessage(current,otherUser),messages:messages.map(m=>({...m.toObject(),emojiReactions:reactions.get(String(m._id))||[]}))});
+    const normalizedFriend = await normalizeFriendship(current, otherUser);
+    if (normalizedFriend && !hasId(current.friends, otherUser._id)) current.friends.push(otherUser._id);
+    res.json({user:{...otherUser,...relationship(current,otherUser._id),friend:normalizedFriend},canMessage:current.role==="admin" || otherUser.role==="admin" || normalizedFriend,messages:messages.map(m=>({...m.toObject(),emojiReactions:reactions.get(String(m._id))||[]}))});
   } catch(error){console.error(error);res.status(500).json({message:"Unable to load conversation."});}
 });
 
@@ -120,7 +136,8 @@ router.post("/:userId", async (req,res) => {
     const [current,recipient]=await Promise.all([me(req.user.id),User.findById(req.params.userId)]);
     if(!recipient) return res.status(404).json({message:"User not found."});
     if(hasId(current.blockedUsers,recipient._id)||hasId(recipient.blockedUsers,req.user.id)) return res.status(403).json({message:"Messaging is unavailable for this account."});
-    if(!(await canMessage(current,recipient))) return res.status(403).json({message:"You can only message friends."});
+    const normalizedFriend = await normalizeFriendship(current,recipient);
+    if(!(current.role==="admin" || recipient.role==="admin" || normalizedFriend)) return res.status(403).json({message:"You can only message accepted friends."});
     const body=String(req.body.body||"").trim(), messageType=req.body.messageType||"text";
     if(!body && !req.body.attachment && !req.body.sharedProfile) return res.status(400).json({message:"Message cannot be empty."});
     if(body.length>2000) return res.status(400).json({message:"Message is too long."});
