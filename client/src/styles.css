@@ -2458,7 +2458,7 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 
 
 /* Global UI corner system: 5px everywhere except circular profile/avatar media. */
-:root{--ui-radius:5px;}
+ :root{--ui-radius:0px;}
 *:not(.profile-avatar):not(.avatar):not(.linkedin-avatar-wrap):not(.linkedin-avatar-button):not(.avatar-camera-badge){
   border-radius:5px !important;
 }
@@ -2758,6 +2758,17 @@ button,.primary-button,.secondary,.button-link{
 html body .page-shell > .sidebar,
 html body .page-shell > .sidebar.mobile-open,
 html body .page-shell > .sidebar::before,
-html body .page-shell > .sidebar::after{
+html body .page-shell > .sidebar::after,
+html body .page-shell > .sidebar .sidebar-brand,
+html body .page-shell > .sidebar .brand-mark,
+html body .page-shell > .sidebar .sidebar-nav,
+html body .page-shell > .sidebar .sidebar-nav a,
+html body .page-shell > .sidebar .sidebar-nav a.active,
+html body .page-shell > .sidebar .sidebar-nav a:hover,
+html body .page-shell > .sidebar .sidebar-footer,
+html body .page-shell > .sidebar .sidebar-user,
+html body .mobile-app-header,
+html body .mobile-app-header .brand-mark,
+html body .mobile-app-header button{
   border-radius:0 !important;
 }
