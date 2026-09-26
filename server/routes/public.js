@@ -42,7 +42,7 @@ async function verifiedReviewSummary(businessId) {
   };
 }
 
-router.get("/profile/:username", async (req, res) => {
+router.get("/profile/:username", optionalAuth, async (req, res) => {
   try {
     const user = await User.findOne({
       username: String(req.params.username).toLowerCase(),
@@ -61,14 +61,16 @@ router.get("/profile/:username", async (req, res) => {
       visibility: { $ne: "private" }
     }).select("title description price currency category coverImage createdAt updatedAt").sort({ updatedAt: -1 });
 
-    const [summary, reviewSummary, reviews] = await Promise.all([
+    const [summary, reviewSummary, reviews, businessRatingRows, currentBusinessRating] = await Promise.all([
       ratingSummary(items.map(item => item._id)),
       verifiedReviewSummary(business._id),
       Review.find({ business: business._id, verified: true })
         .select("rating comment submittedAt")
         .sort({ submittedAt: -1 })
         .limit(8)
-        .lean()
+        .lean(),
+      Rating.aggregate([{ $match: { business: business._id } }, { $group: { _id: "$business", averageRating: { $avg: "$rating" }, ratingCount: { $sum: 1 } } }]),
+      req.user ? Rating.findOne({ business: business._id, user: req.user.id }).select("rating") : null
     ]);
 
     res.json({
@@ -86,7 +88,10 @@ router.get("/profile/:username", async (req, res) => {
         coverImage: user.coverImage,
         accountStatus: user.accountStatus || "active",
         createdAt: user.createdAt,
-        ratingSummary: reviewSummary
+        ratingSummary: reviewSummary,
+        businessId: business._id,
+        businessRatingSummary: { averageRating: businessRatingRows[0]?.averageRating ? Number(businessRatingRows[0].averageRating.toFixed(1)) : 0, ratingCount: businessRatingRows[0]?.ratingCount || 0 },
+        currentUserBusinessRating: currentBusinessRating?.rating || null
       },
       reviews,
       content: items.map(item => ({
