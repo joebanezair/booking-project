@@ -2455,3 +2455,18 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
   .auth-shell{padding:18px;}
   .auth-card{padding:36px 26px;}
 }
+
+
+/* Global UI corner system: 5px everywhere except circular profile/avatar media. */
+:root{--ui-radius:5px;}
+*:not(.profile-avatar):not(.avatar):not(.linkedin-avatar-wrap):not(.linkedin-avatar-button):not(.avatar-camera-badge){
+  border-radius:5px !important;
+}
+.profile-avatar,
+.avatar,
+.linkedin-avatar-wrap,
+.linkedin-avatar-button,
+.linkedin-avatar-button .profile-avatar,
+.avatar-camera-badge{
+  border-radius:50% !important;
+}
