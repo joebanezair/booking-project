@@ -94,7 +94,8 @@ export const api = {
     overview: () => request("/admin/overview"),
     businesses: () => request("/admin/businesses"),
     business: id => request(`/admin/businesses/${id}`),
-    setBusinessStatus: (id, accountStatus) => request(`/admin/businesses/${id}/status`, { method: "PATCH", body: JSON.stringify({ accountStatus }) })
+    setBusinessStatus: (id, accountStatus) => request(`/admin/businesses/${id}/status`, { method: "PATCH", body: JSON.stringify({ accountStatus }) }),
+    resetBusinessPassword: (id, password) => request(`/admin/businesses/${id}/password`, { method: "PATCH", body: JSON.stringify({ password }) })
   },
   messages: {
     users: () => request("/messages/users"),
