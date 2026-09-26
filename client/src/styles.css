@@ -2459,8 +2459,8 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 
 /* Global UI corner system: 5px everywhere except circular profile/avatar media. */
  :root{--ui-radius:0px;}
-*:not(.profile-avatar):not(.avatar):not(.linkedin-avatar-wrap):not(.linkedin-avatar-button):not(.avatar-camera-badge){
-  border-radius:5px !important;
+*:not(.profile-avatar):not(.avatar):not(.linkedin-avatar-wrap):not(.linkedin-avatar-button){
+  border-radius:0 !important;
 }
 .profile-avatar,
 .avatar,
@@ -2770,5 +2770,51 @@ html body .page-shell > .sidebar .sidebar-user,
 html body .mobile-app-header,
 html body .mobile-app-header .brand-mark,
 html body .mobile-app-header button{
+  border-radius:0 !important;
+}
+
+
+/* Bookings: creation/editing is an on-demand popup; the bookings list keeps the full workspace. */
+.booking-workspace-grid{display:block;}
+.booking-list-panel{width:100%;}
+.booking-view-tabs{display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+.booking-new-button{margin-left:auto;}
+.booking-modal-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:1200;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  overflow:auto;
+  background:rgba(8,15,28,.58);
+  border-radius:0 !important;
+}
+.booking-editor-panel.booking-modal{
+  position:relative;
+  top:auto;
+  width:min(760px,100%);
+  max-height:calc(100vh - 48px);
+  margin:0;
+  overflow:auto;
+  padding:26px;
+  border-radius:0 !important;
+}
+.booking-modal .panel-title{position:sticky;top:-26px;z-index:2;margin:-26px -26px 18px;padding:20px 26px;background:inherit;border-bottom:1px solid #e4e8ef;}
+.booking-modal-close{margin-left:auto;}
+[data-theme="dark"] .booking-modal .panel-title{border-color:#344158;}
+@media(max-width:600px){
+  .booking-modal-backdrop{padding:0;align-items:end;}
+  .booking-editor-panel.booking-modal{width:100%;max-height:92vh;padding:20px;}
+  .booking-modal .panel-title{top:-20px;margin:-20px -20px 16px;padding:16px 20px;}
+  .booking-new-button{margin-left:0;}
+}
+
+/* The navigation drawer/rail itself and its complete visual surface are square. */
+html body .sidebar,
+html body .sidebar.mobile-open,
+html body .sidebar *,
+html body .sidebar::before,
+html body .sidebar::after{
   border-radius:0 !important;
 }
