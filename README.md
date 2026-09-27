@@ -226,7 +226,7 @@ Completing a booking also creates the verified-review invitation.
 
 ### Native availability and scheduling
 
-The Business Page contains scheduling controls that power the public booking experience without a paid API.
+The **Bookings → Availability** view contains the scheduling controls that power the public booking experience without a paid API.
 
 Businesses can configure:
 
@@ -299,11 +299,13 @@ The sales system currently tracks:
 - automatic POS stock deduction;
 - automatic stock deduction when an online order is completed;
 - product/order customer information;
-- Daily / Weekly / Monthly / Annual service-sales trend grouping;
+- Daily / Weekly / Monthly / Annual unified sales trend grouping across service, POS, and completed online-product transactions;
 - Today / 7 Days / This Month / This Year / All Time / Custom date filters;
 - multi-currency service summaries when applicable;
-- product-sales totals alongside service-sales totals;
-- spreadsheet export for the existing service-sales analytics dataset.
+- separate service-sales and product-sales totals;
+- Service Sales / POS Sales / Online Product Sales channel breakdowns;
+- POS payment-method breakdowns for recorded Cash, GCash, Maya, Card, and Other methods;
+- unified spreadsheet export covering service, POS, and completed online-product transactions.
 
 A recorded BookFlow sale is an internal sales record. It is **not proof of settled payment** until a supported payment provider is integrated and payment confirmation is verified server-side.
 
@@ -321,7 +323,7 @@ The authenticated profile area is split into three distinct routes:
 
 **Edit Profile** manages account-facing fields such as name, username, biography, headline, location, website, cover photo, profile photo, and profile-photo positioning.
 
-**Business Page** manages business-specific fields such as business name, category, description, business location, email, phone, website, and logo. It is intentionally not a main sidebar navigation item; it is reached from the Profile page.
+**Business Page** manages business-specific fields such as business name, category, description, business location, email, phone, website, and logo. Booking schedule settings are intentionally managed only from **Bookings → Availability** to keep one scheduling source of truth. Business Page is not a main sidebar navigation item; it is reached from the Profile page.
 
 The cover photo and profile photo use one LinkedIn-style connected header. The profile photo overlaps the cover and its complete photo-selection/clickable area is circular, including the image container and edit target. Clicking or tapping the cover opens change/remove actions. Clicking or tapping the profile photo opens view/change/reposition/delete actions. Destructive removal actions require confirmation, and the controls work for pointer and touch interaction.
 
@@ -624,3 +626,12 @@ ADMIN ACCOUNT
  ├── Messages / notifications
  └── Admin settings
 ~~~
+
+
+## Production readiness
+
+BookFlow validates required server configuration at startup. In production, `CLIENT_URL` must use HTTPS, MongoDB cannot point to localhost, and secrets must meet the documented minimum length. The repository also includes GitHub Actions validation for the client production build and critical server route syntax on pushes to `main` and pull requests.
+
+Before a real production launch, the operator must still supply production infrastructure and secrets: a hosted MongoDB instance, HTTPS frontend/backend URLs, production environment variables, domain/DNS configuration, and an appropriate backup/monitoring policy. These are deployment credentials/infrastructure rather than missing BookFlow application features.
+
+Automatic payment verification and payment-provider webhooks are intentionally outside the current implementation.
