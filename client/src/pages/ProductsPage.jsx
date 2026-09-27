@@ -9,6 +9,7 @@ const blank={name:"",sku:"",description:"",price:"",currency:"PHP",stock:"",publ
 export default function ProductsPage({user,onLogout}){
   const [products,setProducts]=useState([]);
   const [form,setForm]=useState(blank);
+  const [creating,setCreating]=useState(false);
   const [editing,setEditing]=useState(null);
   const [selected,setSelected]=useState(null);
   const [quantity,setQuantity]=useState(1);
@@ -21,7 +22,7 @@ export default function ProductsPage({user,onLogout}){
   async function refresh(){setProducts(await api.sales.products());}
   useEffect(()=>{refresh().catch(e=>setError(e.message));},[]);
 
-  async function addProduct(e){e.preventDefault();try{const item=await api.sales.createProduct(form);setProducts(v=>[item,...v]);setForm(blank);setMessage("Product created.");setError("");}catch(e){setError(e.message);}}
+  async function addProduct(e){e.preventDefault();try{const item=await api.sales.createProduct(form);setProducts(v=>[item,...v]);setForm(blank);setCreating(false);setMessage("Product created.");setError("");}catch(e){setError(e.message);}}
   async function saveProduct(e){e.preventDefault();try{const item=await api.sales.updateProduct(editing._id,editing);setProducts(v=>v.map(x=>x._id===item._id?item:x));setEditing(null);setMessage("Product updated.");setError("");}catch(e){setError(e.message);}}
   async function removeProduct(item){if(!confirm(`Delete ${item.name}?`))return;try{await api.sales.removeProduct(item._id);setProducts(v=>v.filter(x=>x._id!==item._id));setCart(v=>{const next={...v};delete next[item._id];return next;});setMessage("Product deleted.");}catch(e){setError(e.message);}}
 
@@ -41,8 +42,7 @@ export default function ProductsPage({user,onLogout}){
 
     <div className="products-page-grid">
       <section className="panel">
-        <div className="panel-title"><div><p className="eyebrow">CATALOG</p><h2>Product inventory</h2></div><span className="count">{products.length}</span></div>
-        <form className="product-quick-form" onSubmit={addProduct}><label>Name<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><label>SKU<input value={form.sku} onChange={e=>setForm({...form,sku:e.target.value})}/></label><label>Price<input required type="number" min="0" step="0.01" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/></label><label>Stock<input required type="number" min="0" step="1" value={form.stock} onChange={e=>setForm({...form,stock:e.target.value})}/></label><label className="check-row"><input type="checkbox" checked={form.published} onChange={e=>setForm({...form,published:e.target.checked})}/>Publish on profile</label><button className="primary-button"><FiPlus/>Add product</button></form>
+        <div className="panel-title"><div><p className="eyebrow">CATALOG</p><h2>Product inventory</h2></div><div className="row-actions"><span className="count">{products.length}</span><button type="button" className="primary-button" onClick={()=>{setForm(blank);setCreating(true);}}><FiPlus/>Add product</button></div></div>
         <div className="product-shop-grid">{products.map(item=><article key={item._id} className={"product-shop-card "+(item.stock<=0?"out-of-stock":"")} onClick={()=>openProduct(item)} role="button" tabIndex={item.stock>0?0:-1} onKeyDown={e=>{if((e.key==="Enter"||e.key===" ")&&item.stock>0)openProduct(item);}}>
           <div className="product-shop-image">{item.image?<img src={item.image} alt=""/>:<FiPackage/>}</div><div className="product-shop-info"><strong>{item.name}</strong><small>{item.sku||"No SKU"}</small><span>{money(item.price,item.currency)}</span><small>{item.stock>0?`${item.stock} in stock`:"Out of stock"}</small></div>
           <div className="product-card-actions" onClick={e=>e.stopPropagation()}><button className="secondary" type="button" onClick={()=>setEditing({...item})}><FiEdit2/>Edit</button><button className="danger" type="button" onClick={()=>removeProduct(item)}><FiTrash2/>Delete</button></div>
@@ -57,6 +57,8 @@ export default function ProductsPage({user,onLogout}){
         <button className="primary-button checkout-button" type="button" disabled={!cartLines.length} onClick={checkout}>Check out</button>
       </aside>
     </div>
+
+    {creating&&<div className="booking-modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setCreating(false);}}><section className="panel booking-modal product-create-modal" role="dialog" aria-modal="true" aria-label="Add new product"><div className="panel-title"><div><p className="eyebrow">NEW PRODUCT</p><h2>Add product</h2></div><button type="button" className="icon-button" aria-label="Close" onClick={()=>setCreating(false)}><FiX/></button></div><form className="product-edit-form" onSubmit={addProduct}><label>Name<input autoFocus required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><div className="two-col"><label>SKU<input value={form.sku} onChange={e=>setForm({...form,sku:e.target.value})}/></label><label>Currency<select value={form.currency} onChange={e=>setForm({...form,currency:e.target.value})}><option value="PHP">PHP</option><option value="USD">USD</option><option value="GBP">GBP</option><option value="SGD">SGD</option><option value="CAD">CAD</option></select></label></div><label>Description<textarea rows="4" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Product description"/></label><div className="two-col"><label>Price<input required type="number" min="0" step="0.01" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/></label><label>Initial stock<input required type="number" min="0" step="1" value={form.stock} onChange={e=>setForm({...form,stock:e.target.value})}/></label></div><label className="check-row"><input type="checkbox" checked={form.published} onChange={e=>setForm({...form,published:e.target.checked})}/>Publish on public profile</label><div className="row-actions"><button className="primary-button"><FiPlus/>Create product</button><button type="button" className="secondary" onClick={()=>setCreating(false)}>Cancel</button></div></form></section></div>}
 
     {selected&&<div className="booking-modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setSelected(null);}}><section className="panel booking-modal product-quantity-modal" role="dialog" aria-modal="true" aria-label={"Add "+selected.name+" to cart"}><div className="panel-title"><div><p className="eyebrow">ADD TO CART</p><h2>{selected.name}</h2></div><button type="button" className="icon-button" onClick={()=>setSelected(null)}><FiX/></button></div><p>{money(selected.price,selected.currency)} · {selected.stock} available</p><label>Quantity<input autoFocus type="number" min="1" max={selected.stock} value={quantity} onChange={e=>setQuantity(Math.min(selected.stock,Math.max(1,Number(e.target.value||1))))}/></label><div className="pos-total"><span>Subtotal</span><strong>{money(selected.price*quantity,selected.currency)}</strong></div><button type="button" className="primary-button" onClick={addToCart}><FiShoppingCart/>Add to cart</button></section></div>}
 
