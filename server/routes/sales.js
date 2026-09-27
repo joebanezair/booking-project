@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Sale, { Product, PosSale } from "../models/Sale.js";
+import Sale, { Product, PosSale, ProductOrder } from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
 
@@ -129,6 +129,9 @@ router.post("/pos", async(req,res) => {
   } catch(error){console.error(error);res.status(500).json({message:"Unable to complete POS sale."});}
 });
 
+router.get("/orders", async(req,res)=>{try{res.json(await ProductOrder.find({businessOwner:req.user.id}).sort({createdAt:-1}).limit(200).lean());}catch(error){console.error(error);res.status(500).json({message:"Unable to load product orders."});}});
+router.patch("/orders/:id/status", async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(order.status==="completed"&&status!=="completed")return res.status(409).json({message:"Completed orders cannot be reopened because inventory has already been recorded."});if(status==="completed"&&order.status!=="completed"){for(const line of order.items){const changed=await Product.findOneAndUpdate({_id:line.product,user:req.user.id,stock:{$gte:line.quantity}},{$inc:{stock:-line.quantity}},{new:true});if(!changed)return res.status(409).json({message:line.name+" has insufficient stock."});}order.completedAt=new Date();}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(500).json({message:"Unable to update order."});}});
+
 router.get("/analytics", async (req, res) => {
   try {
     const range = ["today", "7d", "month", "year", "custom", "all"].includes(req.query.range) ? req.query.range : "month";
@@ -144,6 +147,16 @@ router.get("/analytics", async (req, res) => {
     }
 
     const sales = await Sale.find(filter).sort({ completedAt: -1 }).lean();
+    const productBounds = {};
+    if (bounds.start) productBounds.$gte = bounds.start;
+    if (bounds.end) productBounds.$lt = bounds.end;
+    const posFilter = { businessOwner:req.user.id, status:"recorded", ...(Object.keys(productBounds).length ? {soldAt:productBounds} : {}) };
+    const orderFilter = { businessOwner:req.user.id, status:"completed", ...(Object.keys(productBounds).length ? {completedAt:productBounds} : {}) };
+    const [posSales, productOrders] = await Promise.all([PosSale.find(posFilter).lean(), ProductOrder.find(orderFilter).lean()]);
+    const productRecords = [
+      ...posSales.map(x=>({id:x._id,source:"pos",completedAt:x.soldAt,customerName:x.customerName||"Walk-in",description:x.items.map(i=>i.name+" × "+i.quantity).join(", "),amount:x.total,currency:x.currency,reference:x.invoiceNumber,status:x.status})),
+      ...productOrders.map(x=>({id:x._id,source:"online",completedAt:x.completedAt,customerName:x.customerName,description:x.items.map(i=>i.name+" × "+i.quantity).join(", "),amount:x.total,currency:x.currency,reference:x.orderNumber,status:x.status}))
+    ];
 
     const currencyMap = new Map();
     for (const sale of sales) {
@@ -192,6 +205,8 @@ router.get("/analytics", async (req, res) => {
       totalsByCurrency,
       trend,
       byService,
+      productRecords: productRecords.sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt)),
+      productSalesTotal: productRecords.filter(x=>(x.currency||"PHP")===primaryCurrency).reduce((sum,x)=>sum+Number(x.amount||0),0),
       records: sales.map(sale => ({
         id: sale._id,
         bookingId: sale.booking,
