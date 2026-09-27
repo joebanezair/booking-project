@@ -154,7 +154,7 @@ router.get("/analytics", async (req, res) => {
     const orderFilter = { businessOwner:req.user.id, status:"completed", ...(Object.keys(productBounds).length ? {completedAt:productBounds} : {}) };
     const [posSales, productOrders] = await Promise.all([PosSale.find(posFilter).lean(), ProductOrder.find(orderFilter).lean()]);
     const productRecords = [
-      ...posSales.map(x=>({id:x._id,source:"pos",completedAt:x.soldAt,customerName:x.customerName||"Walk-in",description:x.items.map(i=>i.name+" × "+i.quantity).join(", "),amount:x.total,currency:x.currency,reference:x.invoiceNumber,status:x.status})),
+      ...posSales.map(x=>({id:x._id,source:"pos",completedAt:x.soldAt,customerName:x.customerName||"Walk-in",description:x.items.map(i=>i.name+" × "+i.quantity).join(", "),amount:x.total,currency:x.currency,reference:x.invoiceNumber,status:x.status,paymentMethod:x.paymentMethod||"other"})),
       ...productOrders.map(x=>({id:x._id,source:"online",completedAt:x.completedAt,customerName:x.customerName,description:x.items.map(i=>i.name+" × "+i.quantity).join(", "),amount:x.total,currency:x.currency,reference:x.orderNumber,status:x.status}))
     ];
 
@@ -211,6 +211,26 @@ router.get("/analytics", async (req, res) => {
     const trend = [...trendMap.values()].sort((a, b) => a.key.localeCompare(b.key));
     const byService = [...serviceMap.values()].sort((a, b) => b.revenue - a.revenue || b.sales - a.sales);
 
+    const channelMap = new Map();
+    for (const record of analyticsRecords.filter(item => (item.currency || "PHP") === primaryCurrency)) {
+      const channel = record.source === "service" ? "Service Sales" : record.source === "pos" ? "POS Sales" : "Online Product Sales";
+      const current = channelMap.get(channel) || { channel, revenue: 0, sales: 0 };
+      current.revenue += Number(record.amount || 0);
+      current.sales += 1;
+      channelMap.set(channel, current);
+    }
+    const byChannel = [...channelMap.values()].sort((a,b)=>b.revenue-a.revenue);
+    const paymentMap = new Map();
+    for (const record of productRecords.filter(item => item.source === "pos" && (item.currency || "PHP") === primaryCurrency)) {
+      const method = record.paymentMethod || "other";
+      const current = paymentMap.get(method) || { method, revenue: 0, sales: 0 };
+      current.revenue += Number(record.amount || 0);
+      current.sales += 1;
+      paymentMap.set(method, current);
+    }
+    const byPaymentMethod = [...paymentMap.values()].sort((a,b)=>b.revenue-a.revenue);
+    const serviceSalesTotal = sales.filter(x => (x.currency || "PHP") === primaryCurrency).reduce((sum,x)=>sum+Number(x.saleAmount||0),0);
+
     res.json({
       range,
       group,
@@ -225,6 +245,9 @@ router.get("/analytics", async (req, res) => {
       totalsByCurrency,
       trend,
       byService,
+      byChannel,
+      byPaymentMethod,
+      serviceSalesTotal,
       productRecords: productRecords.sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt)),
       productSalesTotal: productRecords.filter(x=>(x.currency||"PHP")===primaryCurrency).reduce((sum,x)=>sum+Number(x.amount||0),0),
       records: sales.map(sale => ({
