@@ -221,6 +221,12 @@ async function backfillCompletedSales() {
 async function start() {
   if (!process.env.MONGO_URI) throw new Error("MONGO_URI is missing. Copy .env.example to .env and configure it.");
   if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET is missing. Add it to server/.env.");
+  if (process.env.JWT_SECRET.length < 32) throw new Error("JWT_SECRET must be at least 32 characters.");
+  if (process.env.NODE_ENV === "production") {
+    if (!process.env.CLIENT_URL || !/^https:\/\//i.test(process.env.CLIENT_URL)) throw new Error("Production CLIENT_URL must be an HTTPS origin.");
+    if (process.env.MONGO_URI.includes("127.0.0.1") || process.env.MONGO_URI.includes("localhost")) throw new Error("Production MONGO_URI cannot point to localhost.");
+    if (process.env.ADMIN_REGISTRATION_KEY && process.env.ADMIN_REGISTRATION_KEY.length < 32) throw new Error("ADMIN_REGISTRATION_KEY must be at least 32 characters in production.");
+  }
 
   await mongoose.connect(process.env.MONGO_URI);
 
