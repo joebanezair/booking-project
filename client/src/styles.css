@@ -3005,3 +3005,16 @@ html body .mobile-app-header button {
 .product-quantity-modal{max-width:430px}
 @media(max-width:900px){.products-page-grid{grid-template-columns:1fr}.products-cart-panel{position:static}}
 @media(max-width:560px){.product-shop-grid{grid-template-columns:1fr 1fr}.cart-line{grid-template-columns:1fr auto}.cart-line>strong{grid-column:1}.cart-line>.icon-button{grid-column:2;grid-row:2}}
+
+
+/* Profile avatar centering + draggable reposition modal */
+.linkedin-avatar-button .profile-avatar.avatar{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1!important;padding:0!important;}
+.photo-position-modal{position:fixed;inset:0;z-index:130;display:grid;place-items:center;padding:24px;background:rgba(8,13,23,.72);}
+.photo-position-modal .profile-photo-editor{width:min(620px,94vw);max-height:90vh;overflow:auto;background:#fff;padding:22px;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.35);}
+.profile-position-title{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;}
+.profile-position-title h2{margin:2px 0 0;}
+.photo-position-modal .profile-editor-head{justify-content:center;background:#f4f5f7;}
+.photo-position-modal .profile-photo-drag-wrap{justify-items:center;width:100%;}
+.photo-position-modal .profile-photo-drag-frame{width:min(420px,72vw);height:min(420px,72vw);}
+.photo-position-modal .profile-photo-drag-wrap>.muted{max-width:440px;text-align:center;}
+[data-theme="dark"] .photo-position-modal .profile-photo-editor{background:#111827;}
