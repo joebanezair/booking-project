@@ -2954,7 +2954,7 @@ html body .button-link,
 html body .icon-link,
 html body .filter-chip,
 html body .link-button {
-  border-radius: 999px !important;
+  border-radius: 5px !important;
 }
 
 html body .profile-avatar,
@@ -2978,5 +2978,5 @@ html body .page-shell > .sidebar button,
 html body .page-shell > .sidebar .sidebar-nav a,
 html body .page-shell > .sidebar .signout-button,
 html body .mobile-app-header button {
-  border-radius: 999px !important;
+  border-radius: 5px !important;
 }
