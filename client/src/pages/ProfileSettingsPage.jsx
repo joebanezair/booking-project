@@ -10,6 +10,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
   const [form, setForm] = useState(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [repositionOpen, setRepositionOpen] = useState(false);
   const photoDrag = useRef(null);
   const location = useLocation();
 
@@ -72,7 +73,8 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
     if (!file) return;
     try {
       const image = await fileToDataUrl(file);
-      setForm(current => ({ ...current, [field]: image }));
+      setForm(current => ({ ...current, [field]: image, ...(field === "profileImage" ? { profileImagePositionX: 50, profileImagePositionY: 50 } : {}) }));
+      if (field === "profileImage") setRepositionOpen(true);
       setError("");
     } catch (e) {
       setError(e.message);
@@ -106,7 +108,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
   }
 
   function showReposition() {
-    requestAnimationFrame(() => document.getElementById("profile-photo-position")?.scrollIntoView({ behavior: "smooth", block: "center" }));
+    setRepositionOpen(true);
   }
 
   return <AppLayout user={user} onLogout={onLogout}>
@@ -125,7 +127,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
         onReposition={showReposition}
       />
 
-      {form.profileImage && <section className="profile-photo-editor linked-media-reposition" id="profile-photo-position">
+      {form.profileImage && repositionOpen && <div className="photo-position-modal" role="dialog" aria-modal="true" aria-label="Reposition profile photo" onClick={() => setRepositionOpen(false)}><section className="profile-photo-editor linked-media-reposition" id="profile-photo-position" onClick={e => e.stopPropagation()}><div className="profile-position-title"><div><p className="eyebrow">EDIT IMAGE</p><h2>Reposition profile photo</h2></div><button type="button" className="secondary" onClick={() => setRepositionOpen(false)}>Done</button></div>
         <div className="profile-editor-head">
           <div className="profile-photo-drag-wrap">
             <p className="eyebrow">PROFILE PHOTO POSITION</p>
@@ -152,7 +154,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
             <p className="muted">Drag your photo until it is framed correctly. You can also use the arrow keys.</p>
           </div>
         </div>
-      </section>}
+      </section></div>}
 
       <div className="two-col">
         <label>Name<input value={form.name || ""} onChange={e => setForm({ ...form, name: e.target.value })} required /></label>
