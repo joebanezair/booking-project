@@ -74,6 +74,39 @@ function groupMeta(date, group, offset) {
 }
 
 
+
+async function deductInventory(lines, userId) {
+  const deducted = [];
+  try {
+    for (const line of lines) {
+      const changed = await Product.findOneAndUpdate(
+        { _id: line.product, user: userId, stock: { $gte: line.quantity } },
+        { $inc: { stock: -line.quantity } },
+        { new: true }
+      );
+      if (!changed) throw Object.assign(new Error(line.name + " has insufficient stock."), { statusCode: 409 });
+      deducted.push(line);
+    }
+    return deducted;
+  } catch (error) {
+    if (deducted.length) {
+      await Promise.all(deducted.map(line => Product.updateOne(
+        { _id: line.product, user: userId },
+        { $inc: { stock: line.quantity } }
+      )));
+    }
+    throw error;
+  }
+}
+
+async function restoreInventory(lines, userId) {
+  if (!lines?.length) return;
+  await Promise.all(lines.map(line => Product.updateOne(
+    { _id: line.product, user: userId },
+    { $inc: { stock: line.quantity } }
+  )));
+}
+
 router.get("/products", async (req,res) => {
   try { res.json(await Product.find({user:req.user.id}).sort({updatedAt:-1})); }
   catch (error) { console.error(error); res.status(500).json({message:"Unable to load products."}); }
@@ -118,19 +151,21 @@ router.post("/pos", async(req,res) => {
       const lineTotal=Number(product.price||0)*quantity;
       lines.push({product:product._id,name:product.name,sku:product.sku,quantity,unitPrice:product.price,lineTotal}); total+=lineTotal; currency=product.currency||currency;
     }
-    for(const line of lines){
-      const changed=await Product.findOneAndUpdate({_id:line.product,user:req.user.id,stock:{$gte:line.quantity}},{$inc:{stock:-line.quantity}},{new:true});
-      if(!changed)return res.status(409).json({message:"Stock changed during checkout. Refresh and try again."});
+    const deducted=await deductInventory(lines,req.user.id);
+    try {
+      const payment=["cash","gcash","maya","card","other"].includes(req.body.paymentMethod)?req.body.paymentMethod:"cash";
+      const invoiceNumber="BFI-"+new Date().getFullYear()+"-"+Date.now();
+      const sale=await PosSale.create({businessOwner:req.user.id,invoiceNumber,items:lines,total,currency,paymentMethod:payment,customerName:String(req.body.customerName||"").trim()});
+      res.status(201).json(sale);
+    } catch(error) {
+      await restoreInventory(deducted,req.user.id);
+      throw error;
     }
-    const payment=["cash","gcash","maya","card","other"].includes(req.body.paymentMethod)?req.body.paymentMethod:"cash";
-    const invoiceNumber="BFI-"+new Date().getFullYear()+"-"+Date.now();
-    const sale=await PosSale.create({businessOwner:req.user.id,invoiceNumber,items:lines,total,currency,paymentMethod:payment,customerName:String(req.body.customerName||"").trim()});
-    res.status(201).json(sale);
-  } catch(error){console.error(error);res.status(500).json({message:"Unable to complete POS sale."});}
+  } catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to complete POS sale."});}
 });
 
 router.get("/orders", async(req,res)=>{try{res.json(await ProductOrder.find({businessOwner:req.user.id}).sort({createdAt:-1}).limit(200).lean());}catch(error){console.error(error);res.status(500).json({message:"Unable to load product orders."});}});
-router.patch("/orders/:id/status", async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(order.status==="completed"&&status!=="completed")return res.status(409).json({message:"Completed orders cannot be reopened because inventory has already been recorded."});if(status==="completed"&&order.status!=="completed"){for(const line of order.items){const changed=await Product.findOneAndUpdate({_id:line.product,user:req.user.id,stock:{$gte:line.quantity}},{$inc:{stock:-line.quantity}},{new:true});if(!changed)return res.status(409).json({message:line.name+" has insufficient stock."});}order.completedAt=new Date();}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(500).json({message:"Unable to update order."});}});
+router.patch("/orders/:id/status", async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(order.status==="completed"&&status!=="completed")return res.status(409).json({message:"Completed orders cannot be reopened because inventory has already been recorded."});if(status==="completed"&&order.status!=="completed"){const deducted=await deductInventory(order.items,req.user.id);try{order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
 
 router.get("/analytics", async (req, res) => {
   try {
