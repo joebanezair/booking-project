@@ -258,7 +258,13 @@ The Profile hub generates a scannable booking QR code directly in the browser. N
 
 ### Products, POS, Orders & Sales
 
-Businesses manage products and sales from:
+Businesses manage product inventory and in-store checkout from:
+
+~~~text
+/dashboard/products
+~~~
+
+Sales analytics, online-order management, and transaction history remain at:
 
 ~~~text
 /dashboard/sales
@@ -266,11 +272,11 @@ Businesses manage products and sales from:
 
 #### Product management
 
-Businesses can create products, edit existing product data, update SKU/description/price/stock, publish or unpublish products on the public profile, and delete products. Published products are shown on the business public profile with their current price and available stock.
+Businesses can create products, edit existing product data, update SKU/description/price/stock, publish or unpublish products on the public profile, and delete products. The Products page displays the catalog as selectable product cards. Selecting an in-stock product opens a quantity dialog and adds the chosen quantity to a cart. Published products are shown on the business public profile with their current price and available stock.
 
 #### Point of Sale (POS)
 
-The built-in POS supports in-store product checkout. A business selects products and quantities, optionally records a customer name, chooses Cash, GCash, Maya, Card, or Other as the recorded payment method, and completes the sale. Completing a POS transaction creates an invoice record and automatically deducts the sold quantity from inventory. The payment-method field records how the business says the customer paid; it does not independently verify payment with GCash, Maya, or a card processor.
+The built-in POS supports an in-store cart workflow. A business selects a product, chooses its quantity, adds it to the cart, can adjust or remove cart quantities, optionally records a customer name, chooses Cash, GCash, Maya, Card, or Other as the recorded payment method, and checks out the cart. Completing a POS transaction creates an invoice record and automatically deducts the sold quantity from inventory. The payment-method field records how the business says the customer paid; it does not independently verify payment with GCash, Maya, or a card processor.
 
 #### Public product ordering
 
