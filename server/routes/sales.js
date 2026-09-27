@@ -4,7 +4,7 @@ import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
 
 const router = Router();
-router.use(requireAuth, requireBusiness);
+router.use(requireAuth, requireBusiness);\n\nfunction productImages(body){return (Array.isArray(body.images)?body.images:[]).map(value=>String(value||"").trim()).filter(Boolean).slice(0,8);}
 
 function offsetMinutes(req) {
   const value = Number(req.query.offset || 0);
@@ -115,7 +115,7 @@ router.post("/products", async (req,res) => {
   try {
     const name=String(req.body.name||"").trim();
     if(!name) return res.status(400).json({message:"Product name is required."});
-    const product=await Product.create({user:req.user.id,name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),price:Math.max(0,Number(req.body.price||0)),currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)});
+    const product=await Product.create({user:req.user.id,name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),images:productImages(req.body),image:productImages(req.body)[0]||"",price:Math.max(0,Number(req.body.price||0)),currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)});
     res.status(201).json(product);
   } catch(error) { console.error(error); res.status(500).json({message:"Unable to create product."}); }
 });
@@ -124,7 +124,7 @@ router.put("/products/:id", async (req,res) => {
   try {
     const name=String(req.body.name||"").trim();
     if(!name) return res.status(400).json({message:"Product name is required."});
-    const product=await Product.findOneAndUpdate({_id:req.params.id,user:req.user.id},{$set:{name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),price:Math.max(0,Number(req.body.price||0)),currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)}},{new:true,runValidators:true});
+    const product=await Product.findOneAndUpdate({_id:req.params.id,user:req.user.id},{$set:{name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),images:productImages(req.body),image:productImages(req.body)[0]||"",price:Math.max(0,Number(req.body.price||0)),currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)}},{new:true,runValidators:true});
     if(!product) return res.status(404).json({message:"Product not found."});
     res.json(product);
   } catch(error){console.error(error);res.status(500).json({message:"Unable to update product."});}
