@@ -256,30 +256,56 @@ The business dashboard includes a launch checklist covering:
 
 The Profile hub generates a scannable booking QR code directly in the browser. No QR API is used. Businesses can copy the booking link or download the QR as an SVG for printing or social media.
 
-### Sales & Analytics
+### Products, POS, Orders & Sales
 
-Businesses have a dedicated page:
+Businesses manage products and sales from:
 
 ~~~text
 /dashboard/sales
 ~~~
 
-The page provides:
+#### Product management
 
-- recorded completed-service sales;
-- completed service count;
-- average sale value;
-- distinct services sold;
-- Daily / Weekly / Monthly / Annual trend grouping;
+Businesses can create products, edit existing product data, update SKU/description/price/stock, publish or unpublish products on the public profile, and delete products. Published products are shown on the business public profile with their current price and available stock.
+
+#### Point of Sale (POS)
+
+The built-in POS supports in-store product checkout. A business selects products and quantities, optionally records a customer name, chooses Cash, GCash, Maya, Card, or Other as the recorded payment method, and completes the sale. Completing a POS transaction creates an invoice record and automatically deducts the sold quantity from inventory. The payment-method field records how the business says the customer paid; it does not independently verify payment with GCash, Maya, or a card processor.
+
+#### Public product ordering
+
+Guests can order published, in-stock products directly from a business public profile without creating an account. The public order form records quantity, customer name, phone, optional email, and optional notes. New orders appear in the business Sales workspace.
+
+Online product order statuses are:
+
+~~~text
+Pending → Confirmed → Processing → Completed
+                       ↘ Cancelled
+~~~
+
+Inventory is deducted when the business marks an online order **Completed**. Completed orders cannot be reopened through the normal status control because their inventory movement has already been recorded.
+
+#### Sales records versus booking records
+
+**Bookings** remains the workspace for appointment records, guest details, schedules, booking history, rescheduling, and booking status management.
+
+**Sales** is the financial/transaction workspace. A completed service booking contributes a **Service Sale**, but Sales should treat it as a sale transaction rather than as a second booking-management record. Product transactions are tracked as **POS Sales** or **Online Product Sales**.
+
+The sales system currently tracks:
+
+- completed service-sale value;
+- POS product transactions and invoice numbers;
+- completed public product-order value;
+- automatic POS stock deduction;
+- automatic stock deduction when an online order is completed;
+- product/order customer information;
+- Daily / Weekly / Monthly / Annual service-sales trend grouping;
 - Today / 7 Days / This Month / This Year / All Time / Custom date filters;
-- sales-by-service performance bars;
-- detailed completed-sale records;
-- multi-currency summaries when applicable;
-- Excel-compatible spreadsheet export.
+- multi-currency service summaries when applicable;
+- product-sales totals alongside service-sales totals;
+- spreadsheet export for the existing service-sales analytics dataset.
 
-The export contains Summary, Sales Records, Sales Trend, and Service Performance worksheets.
-
-**Recorded Sale = Completed Booking Value.** This is not the same as confirmed payment until a payment provider is integrated.
+A recorded BookFlow sale is an internal sales record. It is **not proof of settled payment** until a supported payment provider is integrated and payment confirmation is verified server-side.
 
 ### Profile and Business Page
 
@@ -416,10 +442,18 @@ PATCH  /api/bookings/:id/status
 DELETE /api/bookings/:id
 ~~~
 
-### Sales analytics
+### Products, orders, POS and sales analytics
 
 ~~~text
-GET /api/sales/analytics?range=month&group=daily
+GET    /api/sales/products
+POST   /api/sales/products
+PUT    /api/sales/products/:id
+DELETE /api/sales/products/:id
+GET    /api/sales/pos
+POST   /api/sales/pos
+GET    /api/sales/orders
+PATCH  /api/sales/orders/:id/status
+GET    /api/sales/analytics?range=month&group=daily
 ~~~
 
 Supported ranges are today, 7d, month, year, all, and custom. Supported chart grouping is daily, weekly, monthly, and annual.
@@ -434,6 +468,7 @@ GET  /api/public/search
 GET  /api/public/book/:userId
 GET  /api/public/book/:userId/slots?date=YYYY-MM-DD&contentId=...
 POST /api/public/book/:userId
+POST /api/public/products/:userId/order
 ~~~
 
 ### Verified reviews
@@ -562,6 +597,8 @@ PUBLIC
  ├── Search businesses
  ├── View profiles
  ├── View services
+ ├── View published products
+ ├── Order products as a guest
  ├── Book services as a guest
  └── Leave verified booking reviews
 
@@ -569,6 +606,8 @@ BUSINESS ACCOUNT
  ├── Business profile
  ├── Services
  ├── Bookings
+ ├── Products / Inventory
+ ├── POS / Online Orders
  ├── Sales & Analytics
  ├── Messages
  ├── Notifications
