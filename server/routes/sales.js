@@ -158,11 +158,31 @@ router.get("/analytics", async (req, res) => {
       ...productOrders.map(x=>({id:x._id,source:"online",completedAt:x.completedAt,customerName:x.customerName,description:x.items.map(i=>i.name+" × "+i.quantity).join(", "),amount:x.total,currency:x.currency,reference:x.orderNumber,status:x.status}))
     ];
 
+    const serviceRecords = sales.map(sale => ({
+      id: sale._id,
+      source: "service",
+      completedAt: sale.completedAt,
+      amount: Number(sale.saleAmount || 0),
+      currency: sale.currency || "PHP",
+      category: sale.serviceName || "Service"
+    }));
+    const analyticsRecords = [
+      ...serviceRecords,
+      ...productRecords.map(record => ({
+        id: record.id,
+        source: record.source,
+        completedAt: record.completedAt,
+        amount: Number(record.amount || 0),
+        currency: record.currency || "PHP",
+        category: record.source === "pos" ? "POS Products" : "Online Products"
+      }))
+    ];
+
     const currencyMap = new Map();
-    for (const sale of sales) {
-      const currency = sale.currency || "PHP";
+    for (const record of analyticsRecords) {
+      const currency = record.currency || "PHP";
       const current = currencyMap.get(currency) || { currency, totalSales: 0, saleCount: 0 };
-      current.totalSales += Number(sale.saleAmount || 0);
+      current.totalSales += Number(record.amount || 0);
       current.saleCount += 1;
       currencyMap.set(currency, current);
     }
@@ -175,18 +195,17 @@ router.get("/analytics", async (req, res) => {
 
     const trendMap = new Map();
     const serviceMap = new Map();
-    for (const sale of sales.filter(item => (item.currency || "PHP") === primaryCurrency)) {
-      const meta = groupMeta(sale.completedAt, group, offset);
+    for (const record of analyticsRecords.filter(item => (item.currency || "PHP") === primaryCurrency)) {
+      const meta = groupMeta(record.completedAt, group, offset);
       const trend = trendMap.get(meta.key) || { key: meta.key, label: meta.label, revenue: 0, sales: 0 };
-      trend.revenue += Number(sale.saleAmount || 0);
+      trend.revenue += Number(record.amount || 0);
       trend.sales += 1;
       trendMap.set(meta.key, trend);
 
-      const serviceKey = sale.serviceName || "Service";
-      const service = serviceMap.get(serviceKey) || { service: serviceKey, revenue: 0, sales: 0 };
-      service.revenue += Number(sale.saleAmount || 0);
-      service.sales += 1;
-      serviceMap.set(serviceKey, service);
+      const category = serviceMap.get(record.category) || { service: record.category, revenue: 0, sales: 0 };
+      category.revenue += Number(record.amount || 0);
+      category.sales += 1;
+      serviceMap.set(record.category, category);
     }
 
     const trend = [...trendMap.values()].sort((a, b) => a.key.localeCompare(b.key));
@@ -199,6 +218,7 @@ router.get("/analytics", async (req, res) => {
       summary: {
         totalSales: primary.totalSales,
         completedServices: sales.length,
+        transactionCount: analyticsRecords.filter(item => (item.currency || "PHP") === primaryCurrency).length,
         averageSale: primary.averageSale,
         servicesSold: new Set(sales.map(item => item.serviceName)).size
       },
