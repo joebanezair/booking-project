@@ -4,6 +4,7 @@ import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckCircle, FiCi
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart } from "../components/SalesCharts.jsx";
 import { api } from "../api.js";
+import { Button } from "../components/ui/button.jsx";
 
 const businessSections = [
   { title: "Services", text: "Create and manage your public, private, or draft services.", to: "/dashboard/services", action: "Manage services", icon: FiBriefcase },
@@ -107,9 +108,9 @@ export default function DashboardPage({ user, onLogout }) {
     </section>}
 
     <section className="dashboard-route-grid">
-      {sections.map(({ icon: Icon, ...section }) => <article className="panel route-card" key={section.to}>
-        <div><span className="route-card-icon"><Icon aria-hidden="true" /></span><p className="eyebrow">{section.title.toUpperCase()}</p><h2>{section.title}</h2><p className="muted">{section.text}</p></div>
-        <Link className="secondary button-link icon-link" to={section.to}>{section.action}<FiArrowRight aria-hidden="true" /></Link>
+      {sections.map(({ icon: Icon, ...section }) => <article className="panel route-card dashboard-compact-card" key={section.to}>
+        <div className="dashboard-route-copy"><span className="route-card-icon"><Icon aria-hidden="true" /></span><div><p className="eyebrow">{section.title.toUpperCase()}</p><h2>{section.title}</h2><p className="muted">{section.text}</p></div></div>
+        <Link className="dashboard-route-action" to={section.to} aria-label={section.action} data-tooltip={section.action}><Button variant="outline" size="icon" tabIndex={-1}><FiArrowRight aria-hidden="true" /></Button></Link>
       </article>)}
     </section>
   </AppLayout>;
