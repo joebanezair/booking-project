@@ -2889,7 +2889,6 @@ html body .avatar-camera-badge{
 /* Drawer/rail is intentionally the only square, borderless application surface. */
 html body .page-shell>.sidebar,
 html body .page-shell>.sidebar.mobile-open,
-html body .page-shell>.sidebar *,
 html body .page-shell>.sidebar::before,
 html body .page-shell>.sidebar::after{
   border-radius:0 !important;
