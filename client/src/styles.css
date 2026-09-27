@@ -2956,12 +2956,42 @@ html body .mobile-app-header{border-radius:0 !important;}
 }
 
 
-/* 2026-09-27 authoritative radius standard: 5px everywhere except the navigation drawer. */
-html body * {
+/* 2026-09-27 shape system: compact surfaces, pill buttons, circular avatars, square drawer. */
+html body input:not([type="checkbox"]):not([type="radio"]),
+html body textarea,
+html body select,
+html body .panel,
+html body .card,
+html body .stat-card,
+html body .booking-card,
+html body .public-card,
+html body .public-product-card,
+html body .calendar-day,
+html body .selected-content,
+html body .sales-table-wrap {
   border-radius: 5px !important;
 }
 
-/* The desktop navigation rail and mobile drawer remain square. */
+html body button,
+html body .primary-button,
+html body .secondary,
+html body .button-link,
+html body .icon-link,
+html body .filter-chip,
+html body .link-button {
+  border-radius: 999px !important;
+}
+
+html body .profile-avatar,
+html body .avatar,
+html body .linkedin-avatar-wrap,
+html body .linkedin-avatar-button,
+html body .linkedin-avatar-button .profile-avatar,
+html body .avatar-camera-badge {
+  border-radius: 50% !important;
+}
+
+/* Navigation rail/drawer stays square even when it contains button-like controls. */
 html body .page-shell > .sidebar,
 html body .page-shell > .sidebar.mobile-open,
 html body .page-shell > .sidebar *,
