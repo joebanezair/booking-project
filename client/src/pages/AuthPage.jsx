@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { api } from "../api.js";
+import { Button } from "../components/ui/button.jsx";
+import { Input } from "../components/ui/input.jsx";
 
 export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
   const navigate = useNavigate();
@@ -37,12 +39,12 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
     <h1>{mode === "login" ? "Welcome back" : "Create your business account"}</h1>
     <p className="muted">{mode === "login" ? "Access your business or administrator dashboard." : "Your business account becomes active immediately. No administrator approval is required."}</p>
     <form onSubmit={submit}>
-      {mode === "register" && <label>Business or account name<input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required /></label>}
-      <label>Email<input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required /></label>
-      <label>Password<input type="password" minLength="8" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required /></label>
+      {mode === "register" && <label>Business or account name<Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required /></label>}
+      <label>Email<Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required /></label>
+      <label>Password<Input type="password" minLength="8" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required /></label>
       {error && <p className="error">{error}</p>}
-      <button className="primary-button">{mode === "login" ? "Sign in" : "Create business account"}</button>
+      <Button>{mode === "login" ? "Sign in" : "Create business account"}</Button>
     </form>
-    <button className="link-button auth-switch" onClick={switchMode}>{mode === "login" ? "Register a business" : "Already have an account? Sign in"}</button>
+    <Button type="button" variant="ghost" className="auth-switch" onClick={switchMode}>{mode === "login" ? "Register a business" : "Already have an account? Sign in"}</Button>
   </section></main>;
 }
