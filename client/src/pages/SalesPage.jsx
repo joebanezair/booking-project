@@ -42,6 +42,8 @@ export default function SalesPage({ user, onLogout }) {
   const [paymentMethod,setPaymentMethod]=useState("cash");
   const [customerName,setCustomerName]=useState("");
   const [productForm,setProductForm]=useState({name:"",sku:"",description:"",price:"",currency:"PHP",stock:"",published:true});
+  const [editingProduct,setEditingProduct]=useState(null);
+  const [orders,setOrders]=useState([]);
 
   const offset = new Date().getTimezoneOffset();
 
@@ -64,7 +66,7 @@ export default function SalesPage({ user, onLogout }) {
   }
 
   useEffect(() => { load(); }, [range, group]);
-  useEffect(() => { Promise.all([api.sales.products(),api.sales.posSales()]).then(([items,sales])=>{setProducts(items);setPosSales(sales);}).catch(e=>setError(e.message)); }, []);
+  useEffect(() => { Promise.all([api.sales.products(),api.sales.posSales(),api.sales.orders()]).then(([items,sales,orderRows])=>{setProducts(items);setPosSales(sales);setOrders(orderRows);}).catch(e=>setError(e.message)); }, []);
 
   const rangeLabel = useMemo(() => {
     if (range === "custom" && custom.start && custom.end) return `${custom.start}_to_${custom.end}`;
@@ -77,6 +79,9 @@ export default function SalesPage({ user, onLogout }) {
   }
 
   async function addProduct(event){event.preventDefault();try{const item=await api.sales.createProduct(productForm);setProducts(current=>[item,...current]);setProductForm({name:"",sku:"",description:"",price:"",currency:"PHP",stock:"",published:true});}catch(e){setError(e.message);}}
+  async function saveProduct(event){event.preventDefault();try{const updated=await api.sales.updateProduct(editingProduct._id,editingProduct);setProducts(current=>current.map(x=>x._id===updated._id?updated:x));setEditingProduct(null);setError("");}catch(e){setError(e.message);}}
+  async function deleteProduct(item){if(!window.confirm(`Delete ${item.name}?`))return;try{await api.sales.removeProduct(item._id);setProducts(current=>current.filter(x=>x._id!==item._id));setEditingProduct(null);}catch(e){setError(e.message);}}
+  async function changeOrderStatus(order,status){try{const updated=await api.sales.setOrderStatus(order._id,status);setOrders(current=>current.map(x=>x._id===updated._id?updated:x));if(status==="completed"){setProducts(await api.sales.products());await load();}setError("");}catch(e){setError(e.message);}}
   async function checkout(){const items=Object.entries(cart).filter(([,quantity])=>quantity>0).map(([productId,quantity])=>({productId,quantity}));if(!items.length)return setError("Add a product to the POS cart.");try{const sale=await api.sales.checkout({items,paymentMethod,customerName});const refreshed=await api.sales.products();setProducts(refreshed);setPosSales(current=>[sale,...current]);setCart({});setCustomerName("");setError("");}catch(e){setError(e.message);}}
   const cartTotal=products.reduce((sum,item)=>sum+Number(item.price||0)*Number(cart[item._id]||0),0);
 
@@ -98,7 +103,7 @@ export default function SalesPage({ user, onLogout }) {
     <div className="pos-essential-grid">
       <section className="panel"><div className="panel-title"><div><p className="eyebrow">PRODUCTS</p><h2>Products & inventory</h2></div><span className="count">{products.length}</span></div>
         <form className="product-quick-form" onSubmit={addProduct}><label>Name<input required value={productForm.name} onChange={e=>setProductForm({...productForm,name:e.target.value})}/></label><label>SKU<input value={productForm.sku} onChange={e=>setProductForm({...productForm,sku:e.target.value})}/></label><label>Price<input required type="number" min="0" step="0.01" value={productForm.price} onChange={e=>setProductForm({...productForm,price:e.target.value})}/></label><label>Stock<input required type="number" min="0" step="1" value={productForm.stock} onChange={e=>setProductForm({...productForm,stock:e.target.value})}/></label><label className="check-row"><input type="checkbox" checked={productForm.published} onChange={e=>setProductForm({...productForm,published:e.target.checked})}/>Publish on profile</label><button className="primary-button">Add product</button></form>
-        <div className="product-essential-list">{products.map(item=><div key={item._id}><div><strong>{item.name}</strong><small>{item.sku||"No SKU"} · {money(item.price,item.currency)}</small></div><span>{item.stock} in stock</span></div>)}</div>
+        <div className="product-essential-list">{products.map(item=><div key={item._id}><div><strong>{item.name}</strong><small>{item.sku||"No SKU"} · {money(item.price,item.currency)} · {item.stock} in stock</small></div><div className="row-actions"><button type="button" className="secondary" onClick={()=>setEditingProduct({...item})}>Edit</button><button type="button" className="danger" onClick={()=>deleteProduct(item)}>Delete</button></div></div>)}</div>{editingProduct&&<form className="product-edit-form" onSubmit={saveProduct}><h3>Edit product</h3><label>Name<input required value={editingProduct.name} onChange={e=>setEditingProduct({...editingProduct,name:e.target.value})}/></label><label>SKU<input value={editingProduct.sku||""} onChange={e=>setEditingProduct({...editingProduct,sku:e.target.value})}/></label><label>Description<textarea value={editingProduct.description||""} onChange={e=>setEditingProduct({...editingProduct,description:e.target.value})}/></label><label>Price<input type="number" min="0" step="0.01" value={editingProduct.price} onChange={e=>setEditingProduct({...editingProduct,price:e.target.value})}/></label><label>Stock<input type="number" min="0" value={editingProduct.stock} onChange={e=>setEditingProduct({...editingProduct,stock:e.target.value})}/></label><label className="check-row"><input type="checkbox" checked={!!editingProduct.published} onChange={e=>setEditingProduct({...editingProduct,published:e.target.checked})}/>Published</label><div className="row-actions"><button className="primary-button">Save changes</button><button type="button" className="secondary" onClick={()=>setEditingProduct(null)}>Cancel</button></div></form>}
       </section>
       <section className="panel"><div className="panel-title"><div><p className="eyebrow">POINT OF SALE</p><h2>Cashier checkout</h2></div></div>
         <div className="pos-product-list">{products.map(item=><div key={item._id}><div><strong>{item.name}</strong><small>{money(item.price,item.currency)} · {item.stock} available</small></div><input aria-label={"Quantity for "+item.name} type="number" min="0" max={item.stock} value={cart[item._id]||0} onChange={e=>setCart({...cart,[item._id]:Math.min(item.stock,Math.max(0,Number(e.target.value)))})}/></div>)}</div>
@@ -106,6 +111,8 @@ export default function SalesPage({ user, onLogout }) {
         <div className="pos-total"><span>Total</span><strong>{money(cartTotal,products[0]?.currency||"PHP")}</strong></div><button className="primary-button" onClick={checkout} disabled={!cartTotal}>Complete sale</button>
       </section>
     </div>
+    <section className="panel pos-history-panel"><div className="panel-title"><div><p className="eyebrow">ONLINE ORDERS</p><h2>Public product orders</h2></div><span className="muted">{orders.length} records</span></div>{!orders.length?<p className="muted">No public product orders yet.</p>:<div className="sales-table-wrap"><table className="sales-table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>{orders.map(order=><tr key={order._id}><td>{order.orderNumber}</td><td><strong>{order.customerName}</strong><small>{order.customerPhone}</small></td><td>{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</td><td>{money(order.total,order.currency)}</td><td><select value={order.status} disabled={order.status==="completed"} onChange={e=>changeOrderStatus(order,e.target.value)}><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></td></tr>)}</tbody></table></div>}</section>
+
     <section className="panel pos-history-panel"><div className="panel-title"><div><p className="eyebrow">PRODUCT SALES</p><h2>POS sales</h2></div><span className="muted">{posSales.length} records</span></div>{!posSales.length?<p className="muted">No product sales yet.</p>:<div className="sales-table-wrap"><table className="sales-table"><thead><tr><th>Date</th><th>Invoice</th><th>Items</th><th>Payment</th><th>Total</th></tr></thead><tbody>{posSales.map(sale=><tr key={sale._id}><td>{new Date(sale.soldAt).toLocaleString()}</td><td>{sale.invoiceNumber}</td><td>{sale.items?.map(item=>item.name+" × "+item.quantity).join(", ")}</td><td>{sale.paymentMethod}</td><td><strong>{money(sale.total,sale.currency)}</strong></td></tr>)}</tbody></table></div>}</section>
 
     <section className="panel analytics-controls">
@@ -128,7 +135,7 @@ export default function SalesPage({ user, onLogout }) {
     {error && <p className="error">{error}</p>}
     {loading && !data ? <section className="panel"><p>Loading sales analytics…</p></section> : <>
       <section className="stats-grid sales-stats-grid">
-        <article className="stat-card analytics-stat"><span><FiDollarSign />Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>{data?.totalsByCurrency?.length > 1 ? `Primary currency · ${data.totalsByCurrency.length} currencies recorded` : "Completed booking value"}</small></article>
+        <article className="stat-card analytics-stat"><span><FiDollarSign />Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>Services {money(summary.totalSales, primaryCurrency)} · Products {money(data?.productSalesTotal || 0, primaryCurrency)}</small></article>
         <article className="stat-card analytics-stat"><span><FiCalendar />Completed services</span><strong>{summary.completedServices || 0}</strong><small>Bookings recorded as sales</small></article>
         <article className="stat-card analytics-stat"><span><FiTrendingUp />Average sale</span><strong>{money(summary.averageSale, primaryCurrency)}</strong><small>Average in primary currency</small></article>
         <article className="stat-card analytics-stat"><span><FiPackage />Services sold</span><strong>{summary.servicesSold || 0}</strong><small>Distinct completed services</small></article>
