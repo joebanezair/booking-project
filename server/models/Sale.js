@@ -49,7 +49,7 @@ export const ProductOrder = mongoose.models.ProductOrder || mongoose.model("Prod
   items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number}],
   total:{type:Number,min:0,required:true}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
   customerName:{type:String,required:true,trim:true,maxlength:120}, customerEmail:{type:String,trim:true,lowercase:true,maxlength:150,default:""},
-  customerPhone:{type:String,required:true,trim:true,maxlength:30}, notes:{type:String,trim:true,maxlength:500,default:""},
+  customerPhone:{type:String,required:true,trim:true,maxlength:30}, deliveryLocation:{type:String,required:true,trim:true,maxlength:250}, notes:{type:String,trim:true,maxlength:500,default:""},
   status:{type:String,enum:["pending","confirmed","processing","completed","cancelled"],default:"pending",index:true},
   completedAt:{type:Date,default:null,index:true}, createdAt:{type:Date,default:Date.now,index:true}
 },{timestamps:true}));
