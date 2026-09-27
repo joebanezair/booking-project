@@ -2457,20 +2457,7 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
 }
 
 
-/* Global UI corner system: 5px everywhere except circular profile/avatar media. */
- :root{--ui-radius:0px;}
-*:not(.profile-avatar):not(.avatar):not(.linkedin-avatar-wrap):not(.linkedin-avatar-button){
-  border-radius:0 !important;
-}
-.profile-avatar,
-.avatar,
-.linkedin-avatar-wrap,
-.linkedin-avatar-button,
-.linkedin-avatar-button .profile-avatar,
-.avatar-camera-badge{
-  border-radius:50% !important;
-}
-
+/* Shape rules are centralized at the end of this stylesheet. */
 
 /* Platform-standard shape repair and spacing */
 .sidebar,
