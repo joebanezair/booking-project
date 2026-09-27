@@ -87,6 +87,10 @@ export default function SalesPage({ user, onLogout }) {
 
   const primaryCurrency = data?.primaryCurrency || "PHP";
   const summary = data?.summary || {};
+  const unifiedTransactions = useMemo(() => [
+    ...(data?.records || []).map(record => ({ id:`service-${record.id}`, type:"Service Sale", completedAt:record.completedAt, customer:record.guestName || "Guest", description:record.serviceName, amount:record.saleAmount, currency:record.currency || primaryCurrency, reference:`SALE-${String(record.id).slice(-8).toUpperCase()}`, status:record.status || "recorded" })),
+    ...(data?.productRecords || []).map(record => ({ id:`${record.source}-${record.id}`, type:record.source === "pos" ? "POS Sale" : "Online Product Sale", completedAt:record.completedAt, customer:record.customerName || "Customer", description:record.description, amount:record.amount, currency:record.currency || primaryCurrency, reference:record.reference, status:record.status || "recorded" }))
+  ].sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt)), [data, primaryCurrency]);
 
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar analytics-topbar">
@@ -158,17 +162,18 @@ export default function SalesPage({ user, onLogout }) {
       </div>
 
       <section className="panel sales-records-panel">
-        <div className="panel-title"><div><p className="eyebrow">SALES RECORDS</p><h2>Completed bookings</h2></div><span className="muted">{data?.records?.length || 0} records</span></div>
-        {!data?.records?.length ? <p className="muted">No completed booking sales in this period.</p> : <div className="sales-table-wrap">
+        <div className="panel-title"><div><p className="eyebrow">TRANSACTION HISTORY</p><h2>All sales</h2></div><span className="muted">{unifiedTransactions.length} transactions</span></div>
+        {!unifiedTransactions.length ? <p className="muted">No sales transactions in this period.</p> : <div className="sales-table-wrap">
           <table className="sales-table">
-            <thead><tr><th>Completed</th><th>Customer</th><th>Service</th><th>Amount</th><th>Booking date</th><th>Status</th></tr></thead>
-            <tbody>{data.records.map(record => <tr key={record.id}>
-              <td data-label="Completed">{new Date(record.completedAt).toLocaleString()}</td>
-              <td data-label="Customer"><strong>{record.guestName || "Guest"}</strong><small>{record.guestEmail || record.guestPhone || ""}</small></td>
-              <td data-label="Service">{record.serviceName}</td>
-              <td data-label="Amount"><strong>{money(record.saleAmount, record.currency || primaryCurrency)}</strong></td>
-              <td data-label="Booking date">{new Date(record.bookingDate).toLocaleString()}</td>
-              <td data-label="Status"><span className="status completed">recorded</span></td>
+            <thead><tr><th>Date</th><th>Type</th><th>Reference</th><th>Customer</th><th>Item / Service</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>{unifiedTransactions.map(record => <tr key={record.id}>
+              <td data-label="Date">{new Date(record.completedAt).toLocaleString()}</td>
+              <td data-label="Type"><strong>{record.type}</strong></td>
+              <td data-label="Reference">{record.reference || "—"}</td>
+              <td data-label="Customer">{record.customer}</td>
+              <td data-label="Item / Service">{record.description}</td>
+              <td data-label="Amount"><strong>{money(record.amount, record.currency)}</strong></td>
+              <td data-label="Status"><span className="status completed">{record.status}</span></td>
             </tr>)}</tbody>
           </table>
         </div>}
