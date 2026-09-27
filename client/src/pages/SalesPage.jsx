@@ -99,7 +99,7 @@ export default function SalesPage({ user, onLogout }) {
         <h1>Sales, products & POS</h1>
         <p className="muted">Manage products and stock, record in-store POS sales, and review completed service sales.</p>
       </div>
-      <button className="primary-button icon-link" disabled={!data?.records?.length} onClick={() => exportSalesSpreadsheet(data, rangeLabel)}>
+      <button className="primary-button icon-link" disabled={!unifiedTransactions.length} onClick={() => exportSalesSpreadsheet(data, rangeLabel)}>
         <FiDownload />Export spreadsheet
       </button>
     </header>
@@ -139,7 +139,7 @@ export default function SalesPage({ user, onLogout }) {
     {error && <p className="error">{error}</p>}
     {loading && !data ? <section className="panel"><p>Loading sales analytics…</p></section> : <>
       <section className="stats-grid sales-stats-grid">
-        <article className="stat-card analytics-stat"><span><FiDollarSign />Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>Services {money(summary.totalSales, primaryCurrency)} · Products {money(data?.productSalesTotal || 0, primaryCurrency)}</small></article>
+        <article className="stat-card analytics-stat"><span><FiDollarSign />Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>Services {money(data?.serviceSalesTotal || 0, primaryCurrency)} · Products {money(data?.productSalesTotal || 0, primaryCurrency)}</small></article>
         <article className="stat-card analytics-stat"><span><FiCalendar />Completed services</span><strong>{summary.completedServices || 0}</strong><small>Bookings recorded as sales</small></article>
         <article className="stat-card analytics-stat"><span><FiTrendingUp />Average sale</span><strong>{money(summary.averageSale, primaryCurrency)}</strong><small>Average in primary currency</small></article>
         <article className="stat-card analytics-stat"><span><FiPackage />Services sold</span><strong>{summary.servicesSold || 0}</strong><small>Distinct completed services</small></article>
@@ -156,10 +156,18 @@ export default function SalesPage({ user, onLogout }) {
           <SalesTrendChart data={data?.trend || []} currency={primaryCurrency} />
         </section>
         <section className="panel analytics-chart-panel">
-          <div className="panel-title"><div><p className="eyebrow">SERVICES</p><h2>Sales by service</h2></div></div>
+          <div className="panel-title"><div><p className="eyebrow">MIX</p><h2>Sales by service / product channel</h2></div></div>
           <ServiceSalesChart data={data?.byService || []} currency={primaryCurrency} />
         </section>
       </div>
+
+      {(data?.byChannel?.length > 0 || data?.byPaymentMethod?.length > 0) && <section className="panel currency-summary">
+        <div className="panel-title"><div><p className="eyebrow">BREAKDOWN</p><h2>Sales channels & POS payments</h2></div></div>
+        <div className="currency-total-list">
+          {(data?.byChannel || []).map(item => <div key={"channel-"+item.channel}><strong>{item.channel}</strong><span>{money(item.revenue, primaryCurrency)}</span><small>{item.sales} transaction{item.sales===1?"":"s"}</small></div>)}
+          {(data?.byPaymentMethod || []).map(item => <div key={"payment-"+item.method}><strong>POS · {item.method.toUpperCase()}</strong><span>{money(item.revenue, primaryCurrency)}</span><small>{item.sales} sale{item.sales===1?"":"s"}</small></div>)}
+        </div>
+      </section>}
 
       <section className="panel sales-records-panel">
         <div className="panel-title"><div><p className="eyebrow">TRANSACTION HISTORY</p><h2>All sales</h2></div><span className="muted">{unifiedTransactions.length} transactions</span></div>
