@@ -495,14 +495,15 @@ router.post("/products/:userId/order", async (req, res) => {
     const owner = await User.findOne({ _id:req.params.userId, role:"business", accountStatus:"active" }).select("_id");
     if (!owner) return res.status(409).json({ message:"This business is unavailable for product orders." });
     const rows=Array.isArray(req.body.items)?req.body.items:[];
-    const customerName=String(req.body.customerName||"").trim(), customerPhone=String(req.body.customerPhone||"").trim(), customerEmail=String(req.body.customerEmail||"").trim().toLowerCase();
-    if(!customerName||!customerPhone||!rows.length) return res.status(400).json({message:"Name, phone number and at least one product are required."});
+    const customerName=String(req.body.customerName||"").trim(), customerPhone=String(req.body.customerPhone||"").trim(), customerEmail=String(req.body.customerEmail||"").trim().toLowerCase(), deliveryLocation=String(req.body.deliveryLocation||"").trim();
+    if(!customerName||!customerPhone||!deliveryLocation||!rows.length) return res.status(400).json({message:"Name, phone number, delivery location and at least one product are required."});
+    if(deliveryLocation.length>250) return res.status(400).json({message:"Delivery location must be 250 characters or fewer."});
     if(customerEmail && !/^\S+@\S+\.\S+$/.test(customerEmail)) return res.status(400).json({message:"Enter a valid email address."});
     const products=await Product.find({_id:{$in:rows.map(x=>x.productId)},user:owner._id,published:true});
     const map=new Map(products.map(p=>[String(p._id),p])); const items=[]; let total=0,currency="PHP";
     for(const row of rows){const p=map.get(String(row.productId));const quantity=Math.max(1,Math.floor(Number(row.quantity||1)));if(!p)return res.status(404).json({message:"A selected product is unavailable."});if(p.stock<quantity)return res.status(409).json({message:p.name+" has insufficient stock."});const lineTotal=Number(p.price||0)*quantity;items.push({product:p._id,name:p.name,sku:p.sku,quantity,unitPrice:p.price,lineTotal});total+=lineTotal;currency=p.currency||currency;}
     const orderNumber="BFO-"+new Date().getFullYear()+"-"+Date.now();
-    const order=await ProductOrder.create({businessOwner:owner._id,orderNumber,items,total,currency,customerName,customerEmail,customerPhone,notes:String(req.body.notes||"").trim()});
+    const order=await ProductOrder.create({businessOwner:owner._id,orderNumber,items,total,currency,customerName,customerEmail,customerPhone,deliveryLocation,notes:String(req.body.notes||"").trim()});
     await notify(req,owner._id,{type:"booking",title:"New product order",body:customerName+" placed product order "+orderNumber+".",link:"/dashboard/sales"});
     res.status(201).json({id:order._id,orderNumber,message:"Product order sent successfully."});
   } catch(error){console.error(error);res.status(500).json({message:"Unable to place product order."});}

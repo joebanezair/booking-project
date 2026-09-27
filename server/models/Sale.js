@@ -28,7 +28,7 @@ saleSchema.index({ businessOwner: 1, serviceName: 1, completedAt: -1 });
 export const Product = mongoose.models.Product || mongoose.model("Product", new mongoose.Schema({
   user:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   name:{type:String,required:true,trim:true,maxlength:120}, sku:{type:String,trim:true,maxlength:80,default:""},
-  description:{type:String,trim:true,maxlength:1200,default:""}, image:{type:String,default:""},
+  description:{type:String,trim:true,maxlength:1200,default:""}, image:{type:String,default:""}, images:{type:[String],default:[],validate:{validator:value=>value.length<=8,message:"A product can have up to 8 images."}},
   price:{type:Number,min:0,default:0}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
   stock:{type:Number,min:0,default:0}, published:{type:Boolean,default:false,index:true}
 },{timestamps:true}));
@@ -49,7 +49,7 @@ export const ProductOrder = mongoose.models.ProductOrder || mongoose.model("Prod
   items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number}],
   total:{type:Number,min:0,required:true}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
   customerName:{type:String,required:true,trim:true,maxlength:120}, customerEmail:{type:String,trim:true,lowercase:true,maxlength:150,default:""},
-  customerPhone:{type:String,required:true,trim:true,maxlength:30}, notes:{type:String,trim:true,maxlength:500,default:""},
+  customerPhone:{type:String,required:true,trim:true,maxlength:30}, deliveryLocation:{type:String,required:true,trim:true,maxlength:250}, notes:{type:String,trim:true,maxlength:500,default:""},
   status:{type:String,enum:["pending","confirmed","processing","completed","cancelled"],default:"pending",index:true},
   completedAt:{type:Date,default:null,index:true}, createdAt:{type:Date,default:Date.now,index:true}
 },{timestamps:true}));
