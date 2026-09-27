@@ -25,6 +25,7 @@ export function exportSalesSpreadsheet(data, rangeLabel = "Sales") {
     row([cell("Period"), cell(rangeLabel)]),
     row([cell("Primary Currency"), cell(data.primaryCurrency || "PHP")]),
     row([cell("Recorded Sales"), cell(data.summary?.totalSales || 0, "Number")]),
+    row([cell("Transactions"), cell(data.summary?.transactionCount || 0, "Number")]),
     row([cell("Completed Services"), cell(data.summary?.completedServices || 0, "Number")]),
     row([cell("Average Sale"), cell(data.summary?.averageSale || 0, "Number")]),
     row([cell("Services Sold"), cell(data.summary?.servicesSold || 0, "Number")])
@@ -54,6 +55,22 @@ export function exportSalesSpreadsheet(data, rangeLabel = "Sales") {
       cell(sale.currency),
       cell(sale.status),
       cell(sale.locationLabel)
+    ]));
+  }
+
+  const transactionRows = [
+    row(["Type","Reference","Completed Date","Customer","Item / Service","Amount","Currency","Status"].map(value => cell(value)))
+  ];
+  for (const sale of data.records || []) {
+    transactionRows.push(row([
+      cell("Service Sale"), cell("SALE-" + String(sale.id).slice(-8).toUpperCase()), cell(new Date(sale.completedAt).toLocaleString()),
+      cell(sale.guestName || "Guest"), cell(sale.serviceName), cell(sale.saleAmount || 0, "Number"), cell(sale.currency || data.primaryCurrency || "PHP"), cell(sale.status || "recorded")
+    ]));
+  }
+  for (const sale of data.productRecords || []) {
+    transactionRows.push(row([
+      cell(sale.source === "pos" ? "POS Sale" : "Online Product Sale"), cell(sale.reference), cell(new Date(sale.completedAt).toLocaleString()),
+      cell(sale.customerName || "Customer"), cell(sale.description), cell(sale.amount || 0, "Number"), cell(sale.currency || data.primaryCurrency || "PHP"), cell(sale.status || "recorded")
     ]));
   }
 
@@ -88,7 +105,8 @@ export function exportSalesSpreadsheet(data, rangeLabel = "Sales") {
  xmlns:x="urn:schemas-microsoft-com:office:excel"
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
  ${worksheet("Summary", summaryRows)}
- ${worksheet("Sales Records", recordRows)}
+ ${worksheet("Transactions", transactionRows)}
+ ${worksheet("Service Sales", recordRows)}
  ${worksheet("Sales Trend", trendRows)}
  ${worksheet("Service Performance", serviceRows)}
 </Workbook>`;
