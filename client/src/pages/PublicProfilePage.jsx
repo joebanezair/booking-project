@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { FiMessageSquare, FiUserPlus, FiUserCheck } from "react-icons/fi";
+import { FiMapPin, FiMessageSquare, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import ContentCard from "../components/ContentCard.jsx";
@@ -14,7 +14,7 @@ export default function PublicProfilePage({ user }) {
   const [ratingMessage, setRatingMessage] = useState("");
   const [friendBusy, setFriendBusy] = useState(false);
   const [orderProduct,setOrderProduct]=useState(null);
-  const [orderForm,setOrderForm]=useState({quantity:1,customerName:"",customerEmail:"",customerPhone:"",notes:""});
+  const [orderForm,setOrderForm]=useState({quantity:1,customerName:"",customerEmail:"",customerPhone:"",deliveryLocation:"",notes:""});
   const [orderMessage,setOrderMessage]=useState("");
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function PublicProfilePage({ user }) {
     } catch (e) { setError(e.message); }
   }
 
-  async function submitProductOrder(event){event.preventDefault();try{const result=await api.publicProductOrder(profile.id,{items:[{productId:orderProduct._id,quantity:Number(orderForm.quantity)}],customerName:orderForm.customerName,customerEmail:orderForm.customerEmail,customerPhone:orderForm.customerPhone,notes:orderForm.notes});setOrderMessage(`Order ${result.orderNumber} sent successfully.`);setOrderProduct(null);setOrderForm({quantity:1,customerName:"",customerEmail:"",customerPhone:"",notes:""});setError("");}catch(e){setError(e.message);}}
+  async function submitProductOrder(event){event.preventDefault();try{const result=await api.publicProductOrder(profile.id,{items:[{productId:orderProduct._id,quantity:Number(orderForm.quantity)}],customerName:orderForm.customerName,customerEmail:orderForm.customerEmail,customerPhone:orderForm.customerPhone,deliveryLocation:orderForm.deliveryLocation,notes:orderForm.notes});setOrderMessage(`Order ${result.orderNumber} sent successfully.`);setOrderProduct(null);setOrderForm({quantity:1,customerName:"",customerEmail:"",customerPhone:"",deliveryLocation:"",notes:""});setError("");}catch(e){setError(e.message);}}
 
   async function friendAction(action) {
     if (!data?.profile?.id || friendBusy) return;
@@ -110,9 +110,9 @@ export default function PublicProfilePage({ user }) {
     <section className="public-content-section">
       <div className="section-heading"><div><p className="eyebrow">PRODUCTS</p><h2>Shop {profile.name}&apos;s products</h2></div></div>
       {products.length === 0 ? <div className="panel empty-state"><p className="muted">No public products yet.</p></div> :
-        <div className="content-grid">{products.map(product => <article className="panel public-product-card" key={product._id}>{product.image && <img src={product.image} alt="" />}<div><h3>{product.name}</h3>{product.description && <p className="muted">{product.description}</p>}<strong>{product.currency} {Number(product.price || 0).toLocaleString()}</strong><small>{product.stock > 0 ? product.stock + " in stock" : "Out of stock"}</small></div><button className="primary-button" disabled={product.stock<1||paused} onClick={()=>{setOrderProduct(product);setOrderForm({...orderForm,quantity:1});}}>Order product</button></article>)}</div>}
+        <div className="content-grid">{products.map(product => <article className="panel public-product-card" key={product._id}>{(product.images?.[0]||product.image) && <img src={product.images?.[0]||product.image} alt={product.name} />}<div><h3>{product.name}</h3>{product.description && <p className="muted">{product.description}</p>}<strong>{product.currency} {Number(product.price || 0).toLocaleString()}</strong><small>{product.stock > 0 ? product.stock + " in stock" : "Out of stock"}</small></div><button className="primary-button" disabled={product.stock<1||paused} onClick={()=>{setOrderProduct(product);setOrderForm({...orderForm,quantity:1});}}>Order product</button></article>)}</div>}
       {orderMessage && <p className="success">{orderMessage}</p>}
-      {orderProduct && <div className="booking-modal-backdrop" onClick={()=>setOrderProduct(null)}><section className="panel booking-editor-panel booking-modal" onClick={e=>e.stopPropagation()}><div className="panel-title"><div><p className="eyebrow">PRODUCT ORDER</p><h2>{orderProduct.name}</h2></div><button type="button" className="secondary" onClick={()=>setOrderProduct(null)}>Close</button></div><form onSubmit={submitProductOrder}><label>Quantity<input type="number" min="1" max={orderProduct.stock} required value={orderForm.quantity} onChange={e=>setOrderForm({...orderForm,quantity:e.target.value})}/></label><label>Name<input required value={orderForm.customerName} onChange={e=>setOrderForm({...orderForm,customerName:e.target.value})}/></label><label>Phone<input required value={orderForm.customerPhone} onChange={e=>setOrderForm({...orderForm,customerPhone:e.target.value})}/></label><label>Email<input type="email" value={orderForm.customerEmail} onChange={e=>setOrderForm({...orderForm,customerEmail:e.target.value})}/></label><label>Notes<textarea value={orderForm.notes} onChange={e=>setOrderForm({...orderForm,notes:e.target.value})}/></label><strong>Total: {orderProduct.currency} {(Number(orderProduct.price||0)*Number(orderForm.quantity||1)).toLocaleString()}</strong><button className="primary-button">Place order</button></form></section></div>}
+      {orderProduct && <div className="booking-modal-backdrop" onClick={()=>setOrderProduct(null)}><section className="panel booking-editor-panel booking-modal" onClick={e=>e.stopPropagation()}><div className="panel-title"><div><p className="eyebrow">PRODUCT ORDER</p><h2>{orderProduct.name}</h2></div><button type="button" className="secondary icon-action" aria-label="Close order" data-tooltip="Close" onClick={()=>setOrderProduct(null)}><FiX/></button></div><form onSubmit={submitProductOrder}><label>Quantity<input type="number" min="1" max={orderProduct.stock} required value={orderForm.quantity} onChange={e=>setOrderForm({...orderForm,quantity:e.target.value})}/></label><label>Name<input required value={orderForm.customerName} onChange={e=>setOrderForm({...orderForm,customerName:e.target.value})}/></label><label>Phone<input required value={orderForm.customerPhone} onChange={e=>setOrderForm({...orderForm,customerPhone:e.target.value})}/></label><label>Email<input type="email" value={orderForm.customerEmail} onChange={e=>setOrderForm({...orderForm,customerEmail:e.target.value})}/></label><label>Notes<textarea value={orderForm.notes} onChange={e=>setOrderForm({...orderForm,notes:e.target.value})}/></label><strong>Total: {orderProduct.currency} {(Number(orderProduct.price||0)*Number(orderForm.quantity||1)).toLocaleString()}</strong><button className="primary-button">Place order</button></form></section></div>}
     </section>
 
     <section className="public-content-section verified-reviews-section">
