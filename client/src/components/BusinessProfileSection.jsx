@@ -39,7 +39,7 @@ export default function BusinessProfileSection({user,onUserUpdate}){
       const saved=await api.business.update({...form,leadTimeMinutes:Number(form.leadTimeMinutes),maxAdvanceDays:Number(form.maxAdvanceDays),slotIntervalMinutes:Number(form.slotIntervalMinutes)});
       setForm({...empty,...saved,workingHours:saved.workingHours?.length?saved.workingHours:defaultHours(),blackoutDates:saved.blackoutDates||[]});
       const next={...user,business:{id:saved._id,name:saved.name,category:saved.category}};
-      localStorage.setItem("booking_user",JSON.stringify(next));onUserUpdate?.(next);setMessage("Business page and availability updated.");
+      localStorage.setItem("booking_user",JSON.stringify(next));onUserUpdate?.(next);setMessage("Business page updated.");
     }catch(e){setError(e.message);}
   }
 
@@ -54,36 +54,7 @@ export default function BusinessProfileSection({user,onUserUpdate}){
       <div className="two-col"><label>Location<input value={form.location} onChange={e=>setForm({...form,location:e.target.value})}/></label><label>Contact phone<input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label></div>
       <div className="two-col"><label>Business email<input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} required/></label><label>Website<input type="url" placeholder="https://..." value={form.website} onChange={e=>setForm({...form,website:e.target.value})}/></label></div>
 
-      <fieldset className="content-options availability-settings">
-        <legend>Booking availability</legend>
-        <div className="three-col">
-          <label>Timezone<input value={form.timezone} onChange={e=>setForm({...form,timezone:e.target.value})} placeholder="Asia/Manila"/></label>
-          <label>Minimum notice (minutes)<input type="number" min="0" max="43200" value={form.leadTimeMinutes} onChange={e=>setForm({...form,leadTimeMinutes:e.target.value})}/></label>
-          <label>Book up to (days)<input type="number" min="1" max="730" value={form.maxAdvanceDays} onChange={e=>setForm({...form,maxAdvanceDays:e.target.value})}/></label>
-        </div>
-        <label>Slot interval
-          <select value={form.slotIntervalMinutes} onChange={e=>setForm({...form,slotIntervalMinutes:e.target.value})}>
-            {[5,10,15,20,30,45,60,90,120].map(v=><option key={v} value={v}>{v} minutes</option>)}
-          </select>
-        </label>
-
-        <div className="working-hours-list">
-          {days.map((label,day)=>{
-            const row=form.workingHours.find(item=>Number(item.day)===day)||{day,enabled:false,start:"09:00",end:"17:00"};
-            return <div className="working-hours-row" key={day}>
-              <label className="toggle-row"><input type="checkbox" checked={Boolean(row.enabled)} onChange={e=>patchHours(day,{enabled:e.target.checked})}/><span>{label}</span></label>
-              <input type="time" value={row.start} onChange={e=>patchHours(day,{start:e.target.value})} disabled={!row.enabled}/>
-              <span className="muted">to</span>
-              <input type="time" value={row.end} onChange={e=>patchHours(day,{end:e.target.value})} disabled={!row.enabled}/>
-            </div>;
-          })}
-        </div>
-
-        <label>Blackout / unavailable dates <span className="muted">one YYYY-MM-DD date per line</span>
-          <textarea rows="4" value={(form.blackoutDates||[]).join("\n")} onChange={e=>setForm({...form,blackoutDates:e.target.value.split("\n").map(v=>v.trim()).filter(Boolean)})} placeholder={"2026-12-25\n2027-01-01"}/>
-        </label>
-        <p className="muted">These rules are used automatically when BookFlow generates public time slots and checks rescheduling.</p>
-      </fieldset>
+      <p className="muted">Booking schedule, timezone, slot interval, notice period, and blackout dates are managed from <strong>Bookings → Availability</strong>.</p>
 
       <div className="image-actions"><label className="upload-button">Choose business logo<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>chooseLogo(e.target.files?.[0])}/></label>{form.logo&&<button type="button" className="danger" onClick={()=>setForm({...form,logo:""})}>Remove logo</button>}</div>
       {error&&<p className="error">{error}</p>}{message&&<p className="success">{message}</p>}
