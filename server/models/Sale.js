@@ -28,7 +28,7 @@ saleSchema.index({ businessOwner: 1, serviceName: 1, completedAt: -1 });
 export const Product = mongoose.models.Product || mongoose.model("Product", new mongoose.Schema({
   user:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   name:{type:String,required:true,trim:true,maxlength:120}, sku:{type:String,trim:true,maxlength:80,default:""},
-  description:{type:String,trim:true,maxlength:1200,default:""}, image:{type:String,default:""},
+  description:{type:String,trim:true,maxlength:1200,default:""}, image:{type:String,default:""}, images:{type:[String],default:[],validate:{validator:value=>value.length<=8,message:"A product can have up to 8 images."}},
   price:{type:Number,min:0,default:0}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
   stock:{type:Number,min:0,default:0}, published:{type:Boolean,default:false,index:true}
 },{timestamps:true}));
