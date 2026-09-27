@@ -94,7 +94,9 @@ export const api = {
     updateProduct: (id, body) => request(`/sales/products/${id}`, { method: "PUT", body: JSON.stringify(body) }),
     removeProduct: id => request(`/sales/products/${id}`, { method: "DELETE" }),
     posSales: () => request("/sales/pos"),
-    checkout: body => request("/sales/pos", { method: "POST", body: JSON.stringify(body) })
+    checkout: body => request("/sales/pos", { method: "POST", body: JSON.stringify(body) }),
+    orders: () => request("/sales/orders"),
+    setOrderStatus: (id, status) => request(`/sales/orders/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) })
   },
   admin: {
     overview: () => request("/admin/overview"),
@@ -127,6 +129,7 @@ export const api = {
     submit: (token, body) => request(`/public/reviews/${encodeURIComponent(token)}`, { method: "PUT", body: JSON.stringify(body) })
   },
   publicProfile: username => request(`/public/profile/${username}`),
+  publicProductOrder: (userId, body) => request(`/public/products/${userId}/order`, { method: "POST", body: JSON.stringify(body) }),
   publicContent: id => request(`/public/content/${id}`),
   browse: () => request("/public/browse"),
   search: params => request(`/public/search?${new URLSearchParams(params)}`)
