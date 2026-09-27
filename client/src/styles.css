@@ -3060,3 +3060,12 @@ th,td{padding:12px 14px;border-bottom:1px solid var(--border);text-align:left}tb
 @media(max-width:650px){.icon-action[data-tooltip]::after,.icon-action[data-tooltip]::before{display:none}.message-send-button{width:42px!important;min-width:42px!important;padding:0!important}.message-send-button span{display:none}th,td{padding:10px 9px}}
 
 .product-image-editor{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px;margin:4px 0 8px}.product-image-thumb{position:relative;aspect-ratio:1;overflow:hidden;border:1px solid var(--border);border-radius:var(--radius);background:var(--muted-bg)}.product-image-thumb img{width:100%;height:100%;object-fit:cover;display:block}.product-image-thumb .icon-button{position:absolute;top:5px;right:5px;width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;background:rgba(17,24,39,.82)!important;color:#fff!important;border:1px solid rgba(255,255,255,.25)!important}.product-edit-form input[type="file"]{padding:8px;background:var(--muted-bg)}
+
+/* Public storefront spacing + order location */
+.public-content-section + .public-content-section{margin-top:36px}
+.public-content-section .section-heading{margin-bottom:18px}
+.public-product-card{overflow:hidden}
+.public-product-card>img{width:100%;height:190px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:14px}
+.booking-modal form{display:grid;gap:16px}
+.location-input-wrap{position:relative;display:flex;align-items:center}.location-input-wrap>svg{position:absolute;left:13px;color:var(--muted-foreground);z-index:1}.location-input-wrap>input{width:100%;padding-left:38px!important}.required-mark{color:var(--destructive)}
+@media(max-width:650px){.public-content-section + .public-content-section{margin-top:28px}.public-product-card>img{height:160px}}
