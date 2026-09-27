@@ -2954,3 +2954,18 @@ html body .mobile-app-header{border-radius:0 !important;}
 @media(max-width:520px){
   .product-quick-form{grid-template-columns:1fr;}
 }
+
+
+/* 2026-09-27 authoritative radius standard: 5px everywhere except the navigation drawer. */
+html body * {
+  border-radius: 5px !important;
+}
+
+/* The desktop navigation rail and mobile drawer remain square. */
+html body .page-shell > .sidebar,
+html body .page-shell > .sidebar.mobile-open,
+html body .page-shell > .sidebar *,
+html body .page-shell > .sidebar::before,
+html body .page-shell > .sidebar::after {
+  border-radius: 0 !important;
+}
