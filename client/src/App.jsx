@@ -23,6 +23,7 @@ import BusinessManagementPage from "./pages/BusinessManagementPage.jsx";
 import BusinessDetailPage from "./pages/BusinessDetailPage.jsx";
 import ReviewPage from "./pages/ReviewPage.jsx";
 import SalesPage from "./pages/SalesPage.jsx";
+import ProductsPage from "./pages/ProductsPage.jsx";
 import { disconnectRealtime } from "./realtime.js";
 import { api } from "./api.js";
 
@@ -86,6 +87,7 @@ export default function App() {
     <Route path="/dashboard/bookings" element={businessPage(BookingsPage)} />
     <Route path="/dashboard/bookings/:bookingId" element={businessPage(BookingDetailPage)} />
     <Route path="/dashboard/sales" element={businessPage(SalesPage)} />
+    <Route path="/dashboard/products" element={businessPage(ProductsPage)} />
     <Route path="/dashboard/messages" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/messages/:userId" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/profile" element={businessPage(ProfilePage)} />
