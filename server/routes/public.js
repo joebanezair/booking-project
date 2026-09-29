@@ -496,7 +496,8 @@ router.post("/products/:userId/order", async (req, res) => {
     if (!owner) return res.status(409).json({ message:"This business is unavailable for product orders." });
     const rows=Array.isArray(req.body.items)?req.body.items:[];
     const customerName=String(req.body.customerName||"").trim(), customerPhone=String(req.body.customerPhone||"").trim(), customerEmail=String(req.body.customerEmail||"").trim().toLowerCase(), deliveryLocation=String(req.body.deliveryLocation||"").trim();
-    if(!customerName||!customerPhone||!deliveryLocation||!rows.length) return res.status(400).json({message:"Name, phone number, delivery location and at least one product are required."});\n    if(deliveryLocation.length>250) return res.status(400).json({message:"Delivery location must be 250 characters or fewer."});
+    if(!customerName||!customerPhone||!deliveryLocation||!rows.length) return res.status(400).json({message:"Name, phone number, delivery location and at least one product are required."});
+    if(deliveryLocation.length>250) return res.status(400).json({message:"Delivery location must be 250 characters or fewer."});
     if(customerEmail && !/^\S+@\S+\.\S+$/.test(customerEmail)) return res.status(400).json({message:"Enter a valid email address."});
     const products=await Product.find({_id:{$in:rows.map(x=>x.productId)},user:owner._id,published:true});
     const map=new Map(products.map(p=>[String(p._id),p])); const items=[]; let total=0,currency="PHP";
