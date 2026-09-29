@@ -4,7 +4,9 @@ import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
 
 const router = Router();
-router.use(requireAuth, requireBusiness);\n\nfunction productImages(body){return (Array.isArray(body.images)?body.images:[]).map(value=>String(value||"").trim()).filter(Boolean).slice(0,8);}
+router.use(requireAuth, requireBusiness);
+
+function productImages(body){return (Array.isArray(body.images)?body.images:[]).map(value=>String(value||"").trim()).filter(Boolean).slice(0,8);}
 
 function offsetMinutes(req) {
   const value = Number(req.query.offset || 0);
