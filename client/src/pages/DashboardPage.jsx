@@ -107,11 +107,18 @@ export default function DashboardPage({ user, onLogout }) {
       </section>
     </section>}
 
-    <section className="dashboard-route-grid">
-      {sections.map(({ icon: Icon, ...section }) => <article className="panel route-card dashboard-compact-card" key={section.to}>
-        <div className="dashboard-route-copy"><span className="route-card-icon"><Icon aria-hidden="true" /></span><div><p className="eyebrow">{section.title.toUpperCase()}</p><h2>{section.title}</h2><p className="muted">{section.text}</p></div></div>
-        <Link className="dashboard-route-action" to={section.to} aria-label={section.action} data-tooltip={section.action}><Button variant="outline" size="icon" tabIndex={-1}><FiArrowRight aria-hidden="true" /></Button></Link>
-      </article>)}
+    <section className="dashboard-route-section">
+      <div className="dashboard-section-heading">
+        <div><p className="eyebrow">QUICK ACCESS</p><h2>Manage your business</h2></div>
+        <p className="muted">Jump straight to the tools you use most.</p>
+      </div>
+      <section className="dashboard-route-grid">
+        {sections.map(({ icon: Icon, ...section }) => <Link className="panel route-card dashboard-compact-card" to={section.to} key={section.to} aria-label={section.action}>
+          <span className="route-card-icon"><Icon aria-hidden="true" /></span>
+          <div className="dashboard-route-copy"><h2>{section.title}</h2><p className="muted">{section.text}</p></div>
+          <span className="dashboard-route-action" aria-hidden="true"><FiArrowRight /></span>
+        </Link>)}
+      </section>
     </section>
   </AppLayout>;
 }
