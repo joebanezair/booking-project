@@ -3124,3 +3124,19 @@ html body .sidebar-brand .brand-mark {
 .dashboard-route-grid .dashboard-compact-card:hover .dashboard-route-action{background:var(--secondary);color:var(--primary);transform:translateX(2px)}
 @media(max-width:1100px){.dashboard-route-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.dashboard-section-heading{align-items:start;flex-direction:column;gap:5px}.dashboard-route-grid{grid-template-columns:1fr}.dashboard-route-grid .dashboard-compact-card{min-height:132px!important}}
+
+
+/* Dashboard navigation built with the local shadcn Card primitive. */
+.dashboard-route-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.dashboard-shadcn-card{display:flex;flex-direction:column;min-height:190px;transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease}
+.dashboard-shadcn-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--primary) 30%,var(--border));box-shadow:var(--shadow-md)}
+.dashboard-shadcn-card-header{grid-template-columns:42px minmax(0,1fr);align-items:start;gap:14px;padding:20px 20px 0}
+.dashboard-shadcn-card-header .route-card-icon{width:42px;height:42px;display:grid;place-items:center;margin:0;background:var(--accent);color:var(--primary);border-radius:5px!important}
+.dashboard-shadcn-card-header .route-card-icon svg{width:20px;height:20px}
+.dashboard-shadcn-card-header .ui-card-title{font-size:16px;line-height:1.3;letter-spacing:-.015em;margin:1px 0 5px}
+.dashboard-shadcn-card-header .ui-card-description{font-size:12.5px;line-height:1.5;max-width:36ch}
+.dashboard-shadcn-card-content{display:flex;align-items:end;justify-content:flex-end;margin-top:auto;padding:18px 20px 20px}
+.dashboard-shadcn-card-content .ui-button{box-shadow:none}
+.dashboard-shadcn-card-content .ui-button a{display:inline-flex;align-items:center;gap:7px;color:inherit;text-decoration:none}
+@media(max-width:1100px){.dashboard-route-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.dashboard-route-grid{grid-template-columns:1fr}.dashboard-shadcn-card{min-height:165px}}
