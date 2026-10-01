@@ -5,6 +5,7 @@ import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart } from "../components/SalesCharts.jsx";
 import { api } from "../api.js";
 import { Button } from "../components/ui/button.jsx";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.jsx";
 
 const businessSections = [
   { title: "Services", text: "Create and manage your public, private, or draft services.", to: "/dashboard/services", action: "Manage services", icon: FiBriefcase },
@@ -113,11 +114,20 @@ export default function DashboardPage({ user, onLogout }) {
         <p className="muted">Jump straight to the tools you use most.</p>
       </div>
       <section className="dashboard-route-grid">
-        {sections.map(({ icon: Icon, ...section }) => <Link className="panel route-card dashboard-compact-card" to={section.to} key={section.to} aria-label={section.action}>
-          <span className="route-card-icon"><Icon aria-hidden="true" /></span>
-          <div className="dashboard-route-copy"><h2>{section.title}</h2><p className="muted">{section.text}</p></div>
-          <span className="dashboard-route-action" aria-hidden="true"><FiArrowRight /></span>
-        </Link>)}
+        {sections.map(({ icon: Icon, ...section }) => <Card className="dashboard-shadcn-card" key={section.to}>
+          <CardHeader className="dashboard-shadcn-card-header">
+            <span className="route-card-icon"><Icon aria-hidden="true" /></span>
+            <div>
+              <CardTitle>{section.title}</CardTitle>
+              <CardDescription>{section.text}</CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="dashboard-shadcn-card-content">
+            <Button asChild variant="outline" size="sm">
+              <Link to={section.to} aria-label={section.action}>{section.action}<FiArrowRight aria-hidden="true" /></Link>
+            </Button>
+          </CardContent>
+        </Card>)}
       </section>
     </section>
   </AppLayout>;
