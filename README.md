@@ -571,6 +571,63 @@ npm install
 npm run dev
 ~~~
 
+### GitHub Codespaces
+
+When running the client in GitHub Codespaces, bind the Vite development server to `0.0.0.0` so the forwarded port can be opened from the Codespaces **Ports** tab:
+
+~~~bash
+cd /workspaces/codespaces-blank/booking-project/client
+npm install
+npm run dev -- --host 0.0.0.0
+~~~
+
+If dependencies are already installed:
+
+~~~bash
+cd /workspaces/codespaces-blank/booking-project/client
+npm run dev -- --host 0.0.0.0
+~~~
+
+Keep the backend running in a separate Codespaces terminal:
+
+~~~bash
+cd /workspaces/codespaces-blank/booking-project/server
+npm run dev
+~~~
+
+For local MongoDB running in Docker inside the Codespace:
+
+~~~bash
+docker start booking-mongodb
+docker ps
+~~~
+
+If the MongoDB container has not been created yet:
+
+~~~bash
+docker run -d \
+  --name booking-mongodb \
+  -p 27017:27017 \
+  -v booking-mongodb-data:/data/db \
+  mongo:latest
+~~~
+
+The server `.env` should use:
+
+~~~env
+MONGO_URI=mongodb://localhost:27017/booking-project
+~~~
+
+A typical Codespaces development session therefore uses three terminals:
+
+~~~text
+Terminal 1 → MongoDB / Docker
+Terminal 2 → server → npm run dev
+Terminal 3 → client → npm run dev -- --host 0.0.0.0
+~~~
+
+After starting Vite, open the forwarded client port (normally **5173**) from the Codespaces **Ports** tab.
+
 Optional client environment variable:
 
 ~~~env
