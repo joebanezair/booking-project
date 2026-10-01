@@ -3200,3 +3200,21 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 .dashboard-route-section .dashboard-route-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 @media(max-width:1100px){.dashboard-route-section .dashboard-route-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:700px){.dashboard-route-section .dashboard-route-grid{grid-template-columns:1fr!important}}
+
+
+/* One responsive rail for setup, analytics and Quick Access. */
+.dashboard-content-rail{
+  width:min(100%,1200px);
+  margin-inline:auto;
+}
+.dashboard-content-rail>.onboarding-panel,
+.dashboard-content-rail>.admin-platform-stats,
+.dashboard-content-rail>.business-dashboard-analytics,
+.dashboard-content-rail>.dashboard-route-section{
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  box-sizing:border-box;
+}
+.dashboard-content-rail>.dashboard-route-section{margin-top:0!important}
