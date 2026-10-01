@@ -3149,3 +3149,33 @@ html body .sidebar-brand .brand-mark {
 .dashboard-section-heading .eyebrow,.dashboard-section-heading h2,.dashboard-section-heading .muted{text-align:left!important;margin-left:0!important}
 .dashboard-section-heading .muted{margin-top:5px!important}
 .dashboard-route-section>.dashboard-route-grid{width:100%!important;margin:0!important;padding:0!important}
+
+
+/* Minimal navigation drawer: no filled hover/active pills, only a thin active marker. */
+html body .page-shell > .sidebar .sidebar-nav a,
+html body .page-shell > .sidebar .sidebar-nav a:hover,
+html body .page-shell > .sidebar .sidebar-nav a:focus-visible,
+html body .page-shell > .sidebar .sidebar-nav a.active{
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+}
+html body .page-shell > .sidebar .sidebar-nav a:hover,
+html body .page-shell > .sidebar .sidebar-nav a:focus-visible{
+  color:#d8deea!important;
+}
+html body .page-shell > .sidebar .sidebar-nav a.active{
+  color:#fff!important;
+}
+html body .page-shell > .sidebar .sidebar-nav a.active::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:9px;
+  bottom:9px;
+  width:1px;
+  background:rgba(255,255,255,.55);
+}
+html body .page-shell > .sidebar .sidebar-nav a.active svg{
+  color:#fff!important;
+}
