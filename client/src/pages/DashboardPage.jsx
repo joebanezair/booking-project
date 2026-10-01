@@ -76,58 +76,60 @@ export default function DashboardPage({ user, onLogout }) {
       {!isAdmin && user.accountStatus === "active" && <Link className="primary-button button-link icon-link" to="/dashboard/services/new"><FiPlus aria-hidden="true" />Post a service</Link>}
     </header>
 
-    {overviewError && <p className="error">{overviewError}</p>}
+    <div className="dashboard-content-rail">
+      {overviewError && <p className="error">{overviewError}</p>}
 
-    {isAdmin && <section className="stats-grid admin-platform-stats">
-      <article className="stat-card"><span>Businesses</span><strong>{overview?.businesses.total ?? "—"}</strong><small>{overview ? `${overview.businesses.active} active · ${overview.businesses.paused} paused · ${overview.businesses.disabled} disabled` : "Loading activity…"}</small></article>
-      <article className="stat-card"><span>Services</span><strong>{overview?.services.total ?? "—"}</strong><small>{overview ? `${overview.services.published} published` : "Loading activity…"}</small></article>
-      <article className="stat-card"><span>Bookings</span><strong>{overview?.bookings.total ?? "—"}</strong><small>{overview ? `${overview.bookings.pending} pending · ${overview.bookings.completed} completed` : "Loading activity…"}</small></article>
-      <article className="stat-card"><span>Recorded sales</span><strong>{overview?.sales?.recorded ?? "—"}</strong><small>{overview?.sales?.totalsByCurrency?.length ? overview.sales.totalsByCurrency.map(item => `${item.currency} ${Number(item.total || 0).toLocaleString()}`).join(" · ") : "Completed booking value"}</small></article>
-      <article className="stat-card"><span>Verified reviews</span><strong>{overview?.reviews.verified ?? "—"}</strong><small>Completed-booking reviews</small></article>
-    </section>}
+      {isAdmin && <section className="stats-grid admin-platform-stats">
+        <article className="stat-card"><span>Businesses</span><strong>{overview?.businesses.total ?? "—"}</strong><small>{overview ? `${overview.businesses.active} active · ${overview.businesses.paused} paused · ${overview.businesses.disabled} disabled` : "Loading activity…"}</small></article>
+        <article className="stat-card"><span>Services</span><strong>{overview?.services.total ?? "—"}</strong><small>{overview ? `${overview.services.published} published` : "Loading activity…"}</small></article>
+        <article className="stat-card"><span>Bookings</span><strong>{overview?.bookings.total ?? "—"}</strong><small>{overview ? `${overview.bookings.pending} pending · ${overview.bookings.completed} completed` : "Loading activity…"}</small></article>
+        <article className="stat-card"><span>Recorded sales</span><strong>{overview?.sales?.recorded ?? "—"}</strong><small>{overview?.sales?.totalsByCurrency?.length ? overview.sales.totalsByCurrency.map(item => `${item.currency} ${Number(item.total || 0).toLocaleString()}`).join(" · ") : "Completed booking value"}</small></article>
+        <article className="stat-card"><span>Verified reviews</span><strong>{overview?.reviews.verified ?? "—"}</strong><small>Completed-booking reviews</small></article>
+      </section>}
 
-    {!isAdmin && <section className="panel onboarding-panel">
-      <div className="panel-title">
-        <div><p className="eyebrow">GET READY TO LAUNCH</p><h2>Business setup checklist</h2><p className="muted">{onboardingDone} of {onboarding.length} completed</p></div>
-        <strong className="onboarding-progress-label">{Math.round((onboardingDone / Math.max(onboarding.length, 1)) * 100)}%</strong>
-      </div>
-      <div className="onboarding-progress"><span style={{ width: ((onboardingDone / Math.max(onboarding.length, 1)) * 100) + "%" }} /></div>
-      <div className="onboarding-list">{onboarding.map(item => <Link className={item.done ? "onboarding-item done" : "onboarding-item"} to={item.to} key={item.label}>{item.done ? <FiCheckCircle /> : <FiCircle />}<span>{item.label}</span><FiArrowRight /></Link>)}</div>
-    </section>}
+      {!isAdmin && <section className="panel onboarding-panel">
+        <div className="panel-title">
+          <div><p className="eyebrow">GET READY TO LAUNCH</p><h2>Business setup checklist</h2><p className="muted">{onboardingDone} of {onboarding.length} completed</p></div>
+          <strong className="onboarding-progress-label">{Math.round((onboardingDone / Math.max(onboarding.length, 1)) * 100)}%</strong>
+        </div>
+        <div className="onboarding-progress"><span style={{ width: ((onboardingDone / Math.max(onboarding.length, 1)) * 100) + "%" }} /></div>
+        <div className="onboarding-list">{onboarding.map(item => <Link className={item.done ? "onboarding-item done" : "onboarding-item"} to={item.to} key={item.label}>{item.done ? <FiCheckCircle /> : <FiCircle />}<span>{item.label}</span><FiArrowRight /></Link>)}</div>
+      </section>}
 
-    {!isAdmin && <section className="business-dashboard-analytics">
-      <div className="stats-grid">
-        <article className="stat-card analytics-stat"><span><FiDollarSign />This month</span><strong>{businessSales ? money(businessSales.summary.totalSales, salesCurrency) : "—"}</strong><small>Recorded completed-service sales</small></article>
-        <article className="stat-card analytics-stat"><span><FiCalendar />Completed</span><strong>{businessSales?.summary.completedServices ?? "—"}</strong><small>Services completed this month</small></article>
-        <article className="stat-card analytics-stat"><span><FiTrendingUp />Average sale</span><strong>{businessSales ? money(businessSales.summary.averageSale, salesCurrency) : "—"}</strong><small>Primary currency</small></article>
-        <article className="stat-card analytics-stat"><span><FiBriefcase />Services sold</span><strong>{businessSales?.summary.servicesSold ?? "—"}</strong><small>Distinct services this month</small></article>
-      </div>
-      <section className="panel dashboard-sales-chart">
-        <div className="panel-title"><div><p className="eyebrow">THIS MONTH</p><h2>Sales trend</h2></div><Link className="secondary button-link icon-link" to="/dashboard/sales">Full analytics<FiArrowRight /></Link></div>
-        <SalesTrendChart data={businessSales?.trend || []} currency={salesCurrency} />
+      {!isAdmin && <section className="business-dashboard-analytics">
+        <div className="stats-grid">
+          <article className="stat-card analytics-stat"><span><FiDollarSign />This month</span><strong>{businessSales ? money(businessSales.summary.totalSales, salesCurrency) : "—"}</strong><small>Recorded completed-service sales</small></article>
+          <article className="stat-card analytics-stat"><span><FiCalendar />Completed</span><strong>{businessSales?.summary.completedServices ?? "—"}</strong><small>Services completed this month</small></article>
+          <article className="stat-card analytics-stat"><span><FiTrendingUp />Average sale</span><strong>{businessSales ? money(businessSales.summary.averageSale, salesCurrency) : "—"}</strong><small>Primary currency</small></article>
+          <article className="stat-card analytics-stat"><span><FiBriefcase />Services sold</span><strong>{businessSales?.summary.servicesSold ?? "—"}</strong><small>Distinct services this month</small></article>
+        </div>
+        <section className="panel dashboard-sales-chart">
+          <div className="panel-title"><div><p className="eyebrow">THIS MONTH</p><h2>Sales trend</h2></div><Link className="secondary button-link icon-link" to="/dashboard/sales">Full analytics<FiArrowRight /></Link></div>
+          <SalesTrendChart data={businessSales?.trend || []} currency={salesCurrency} />
+        </section>
+      </section>}
+
+      <section className="dashboard-route-section">
+        <div className="dashboard-section-heading">
+          <div><p className="eyebrow">QUICK ACCESS</p><h2>Manage your business</h2><p className="muted">Jump straight to the tools you use most.</p></div>
+        </div>
+        <section className="dashboard-route-grid">
+          {sections.map(({ icon: Icon, ...section }) => <Card className="dashboard-shadcn-card" key={section.to}>
+            <CardHeader className="dashboard-shadcn-card-header">
+              <span className="route-card-icon"><Icon aria-hidden="true" /></span>
+              <div>
+                <CardTitle>{section.title}</CardTitle>
+                <CardDescription>{section.text}</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="dashboard-shadcn-card-content">
+              <Button asChild variant="outline" size="sm">
+                <Link to={section.to} aria-label={section.action}>{section.action}<FiArrowRight aria-hidden="true" /></Link>
+              </Button>
+            </CardContent>
+          </Card>)}
+        </section>
       </section>
-    </section>}
-
-    <section className="dashboard-route-section">
-      <div className="dashboard-section-heading">
-        <div><p className="eyebrow">QUICK ACCESS</p><h2>Manage your business</h2><p className="muted">Jump straight to the tools you use most.</p></div>
-      </div>
-      <section className="dashboard-route-grid">
-        {sections.map(({ icon: Icon, ...section }) => <Card className="dashboard-shadcn-card" key={section.to}>
-          <CardHeader className="dashboard-shadcn-card-header">
-            <span className="route-card-icon"><Icon aria-hidden="true" /></span>
-            <div>
-              <CardTitle>{section.title}</CardTitle>
-              <CardDescription>{section.text}</CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className="dashboard-shadcn-card-content">
-            <Button asChild variant="outline" size="sm">
-              <Link to={section.to} aria-label={section.action}>{section.action}<FiArrowRight aria-hidden="true" /></Link>
-            </Button>
-          </CardContent>
-        </Card>)}
-      </section>
-    </section>
-  </AppLayout>;
+  <
+    </div>/AppLayout>;
 }
