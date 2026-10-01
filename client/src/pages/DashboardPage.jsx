@@ -130,6 +130,6 @@ export default function DashboardPage({ user, onLogout }) {
           </Card>)}
         </section>
       </section>
-  <
-    </div>/AppLayout>;
+    </div>
+  </AppLayout>;
 }
