@@ -110,8 +110,7 @@ export default function DashboardPage({ user, onLogout }) {
 
     <section className="dashboard-route-section">
       <div className="dashboard-section-heading">
-        <div><p className="eyebrow">QUICK ACCESS</p><h2>Manage your business</h2></div>
-        <p className="muted">Jump straight to the tools you use most.</p>
+        <div><p className="eyebrow">QUICK ACCESS</p><h2>Manage your business</h2><p className="muted">Jump straight to the tools you use most.</p></div>
       </div>
       <section className="dashboard-route-grid">
         {sections.map(({ icon: Icon, ...section }) => <Card className="dashboard-shadcn-card" key={section.to}>
