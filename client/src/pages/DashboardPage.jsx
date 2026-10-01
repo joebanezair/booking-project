@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckCircle, FiCircle, FiDollarSign, FiMessageSquare, FiPlus, FiSearch, FiSettings, FiTrendingUp, FiUser, FiUsers } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckCircle, FiChevronDown, FiCircle, FiDollarSign, FiMessageSquare, FiPlus, FiSearch, FiSettings, FiTrendingUp, FiUser, FiUsers } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart } from "../components/SalesCharts.jsx";
 import { api } from "../api.js";
@@ -38,6 +38,7 @@ export default function DashboardPage({ user, onLogout }) {
   const [businessSales, setBusinessSales] = useState(null);
   const [setup, setSetup] = useState({ profile: null, business: null, services: null });
   const [overviewError, setOverviewError] = useState("");
+  const [setupExpanded, setSetupExpanded] = useState(true);
 
   useEffect(() => {
     if (isAdmin) {
@@ -88,12 +89,12 @@ export default function DashboardPage({ user, onLogout }) {
       </section>}
 
       {!isAdmin && <section className="panel onboarding-panel">
-        <div className="panel-title">
+        <button className="onboarding-collapse-trigger" type="button" onClick={() => setSetupExpanded(value => !value)} aria-expanded={setupExpanded}>
           <div><p className="eyebrow">GET READY TO LAUNCH</p><h2>Business setup checklist</h2><p className="muted">{onboardingDone} of {onboarding.length} completed</p></div>
-          <strong className="onboarding-progress-label">{Math.round((onboardingDone / Math.max(onboarding.length, 1)) * 100)}%</strong>
-        </div>
+          <span className="onboarding-heading-actions"><strong className="onboarding-progress-label">{Math.round((onboardingDone / Math.max(onboarding.length, 1)) * 100)}%</strong><FiChevronDown className={setupExpanded ? "onboarding-chevron open" : "onboarding-chevron"} aria-hidden="true" /></span>
+        </button>
         <div className="onboarding-progress"><span style={{ width: ((onboardingDone / Math.max(onboarding.length, 1)) * 100) + "%" }} /></div>
-        <div className="onboarding-list">{onboarding.map(item => <Link className={item.done ? "onboarding-item done" : "onboarding-item"} to={item.to} key={item.label}>{item.done ? <FiCheckCircle /> : <FiCircle />}<span>{item.label}</span><FiArrowRight /></Link>)}</div>
+        {setupExpanded && <div className="onboarding-list">{onboarding.map(item => <Link className={item.done ? "onboarding-item done" : "onboarding-item"} to={item.to} key={item.label}>{item.done ? <FiCheckCircle /> : <FiCircle />}<span>{item.label}</span><FiArrowRight /></Link>)}</div>}
       </section>}
 
       {!isAdmin && <section className="business-dashboard-analytics">
