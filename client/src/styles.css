@@ -3218,3 +3218,39 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   box-sizing:border-box;
 }
 .dashboard-content-rail>.dashboard-route-section{margin-top:0!important}
+
+
+/* Setup checklist disclosure + rounded progress track */
+.onboarding-progress{
+  overflow:hidden;
+  border-radius:999px!important;
+}
+.onboarding-progress>span{
+  display:block;
+  height:100%;
+  border-radius:999px!important;
+}
+.onboarding-collapse-trigger{
+  width:100%;
+  min-height:0;
+  padding:0;
+  border:0;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:inherit;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  text-align:left;
+  cursor:pointer;
+}
+.onboarding-collapse-trigger:hover,.onboarding-collapse-trigger:focus-visible{background:transparent!important}
+.onboarding-collapse-trigger:focus-visible{outline:2px solid var(--ring);outline-offset:4px}
+.onboarding-collapse-trigger h2{margin:0}
+.onboarding-collapse-trigger .eyebrow{margin-bottom:8px}
+.onboarding-collapse-trigger .muted{margin-top:3px}
+.onboarding-heading-actions{display:flex;align-items:center;gap:14px;flex:0 0 auto}
+.onboarding-chevron{width:18px;height:18px;transition:transform .18s ease;color:var(--muted-foreground)}
+.onboarding-chevron.open{transform:rotate(180deg)}
+@media(max-width:600px){.onboarding-heading-actions{gap:8px}.onboarding-collapse-trigger{gap:12px}}
