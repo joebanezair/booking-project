@@ -3179,3 +3179,24 @@ html body .page-shell > .sidebar .sidebar-nav a.active::before{
 html body .page-shell > .sidebar .sidebar-nav a.active svg{
   color:#fff!important;
 }
+
+
+/* Dashboard layout: keep every section on one shared content rail. */
+.content-shell > .topbar,
+.content-shell > .error,
+.content-shell > .onboarding-panel,
+.content-shell > .admin-platform-stats,
+.content-shell > .business-dashboard-analytics,
+.content-shell > .dashboard-route-section{
+  width:100%;
+  max-width:1200px;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  box-sizing:border-box;
+}
+.content-shell > .business-dashboard-analytics{margin-bottom:24px!important}
+.content-shell > .dashboard-route-section{margin-top:0!important}
+.dashboard-route-section .dashboard-section-heading{margin-bottom:14px!important}
+.dashboard-route-section .dashboard-route-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+@media(max-width:1100px){.dashboard-route-section .dashboard-route-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:700px){.dashboard-route-section .dashboard-route-grid{grid-template-columns:1fr!important}}
