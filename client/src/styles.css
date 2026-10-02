@@ -3594,3 +3594,43 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   .receipt-thanks{margin:5mm 0 0!important;text-align:center!important;color:#000!important;font-size:9pt!important;}
   .no-print{display:none!important;}
 }
+
+
+/* Receipt print on standard paper: centered and readable while preserving thermal proportions. */
+@media print{
+  @page{size:auto;margin:12mm;}
+  html,body,#root{width:100%!important;min-width:0!important;}
+  .receipt-modal-backdrop{
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    min-width:0!important;
+    display:flex!important;
+    justify-content:center!important;
+    align-items:flex-start!important;
+  }
+  .receipt-modal{
+    width:100mm!important;
+    min-width:100mm!important;
+    max-width:100mm!important;
+    margin:0 auto!important;
+  }
+  .receipt-paper{
+    box-sizing:border-box!important;
+    width:100mm!important;
+    min-width:100mm!important;
+    max-width:100mm!important;
+    margin:0 auto!important;
+    padding:7mm!important;
+    font-size:11pt!important;
+    line-height:1.35!important;
+  }
+  .receipt-paper .eyebrow{font-size:10.5pt!important;}
+  .receipt-paper h2{font-size:16pt!important;}
+  .receipt-details dt{font-size:9pt!important;}
+  .receipt-item div strong{font-size:10.5pt!important;}
+  .receipt-item div small{font-size:8.5pt!important;}
+  .receipt-total{font-size:14pt!important;}
+  .receipt-total strong{font-size:20pt!important;}
+  .receipt-thanks{font-size:10pt!important;}
+}
