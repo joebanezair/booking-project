@@ -3351,3 +3351,43 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 .settings-panel + .settings-panel{
   margin-top:16px!important;
 }
+
+
+/* Realtime search fields for Services and Products. */
+.realtime-search{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  margin:16px 0;
+  padding:0 12px;
+  border:1px solid var(--border);
+  border-radius:5px;
+  background:var(--card);
+}
+.realtime-search>svg{flex:0 0 auto;color:var(--muted-foreground);}
+.realtime-search input{
+  width:100%;
+  min-width:0;
+  height:44px;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+.realtime-search button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:30px;
+  height:30px;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:var(--muted-foreground);
+  cursor:pointer;
+}
+.product-search{margin-top:12px;}
+.search-empty{padding:16px 0;}
