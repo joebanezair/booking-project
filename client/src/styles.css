@@ -3655,3 +3655,16 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   .receipt-modal{display:block!important;}
   .receipt-paper{display:block!important;}
 }
+
+
+/* Final receipt print isolation: receipt portal is a direct body child. */
+@media print{
+  @page{size:auto;margin:12mm;}
+  html,body{height:auto!important;min-height:0!important;margin:0!important;padding:0!important;overflow:visible!important;}
+  body>#root{display:none!important;}
+  body>.receipt-modal-backdrop{position:static!important;inset:auto!important;width:100%!important;height:auto!important;min-height:0!important;display:flex!important;justify-content:center!important;align-items:flex-start!important;margin:0!important;padding:0!important;background:#fff!important;overflow:visible!important;visibility:visible!important;}
+  body>.receipt-modal-backdrop *{visibility:visible!important;}
+  body>.receipt-modal-backdrop .receipt-modal{position:static!important;width:100mm!important;min-width:100mm!important;max-width:100mm!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0 auto!important;padding:0!important;overflow:visible!important;border:0!important;box-shadow:none!important;}
+  body>.receipt-modal-backdrop .receipt-paper{width:100mm!important;min-width:100mm!important;max-width:100mm!important;height:auto!important;min-height:0!important;margin:0!important;padding:7mm!important;box-sizing:border-box!important;break-inside:auto!important;page-break-inside:auto!important;}
+  body>.receipt-modal-backdrop .no-print{display:none!important;}
+}
