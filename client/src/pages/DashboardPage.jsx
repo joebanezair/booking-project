@@ -38,7 +38,7 @@ export default function DashboardPage({ user, onLogout }) {
   const [businessSales, setBusinessSales] = useState(null);
   const [setup, setSetup] = useState({ profile: null, business: null, services: null });
   const [overviewError, setOverviewError] = useState("");
-  const [setupExpanded, setSetupExpanded] = useState(true);
+  const [setupExpanded, setSetupExpanded] = useState(false);
 
   useEffect(() => {
     if (isAdmin) {
