@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { FiEdit2, FiMinus, FiPackage, FiPlus, FiShoppingCart, FiTrash2, FiX } from "react-icons/fi";
+import { FiEdit2, FiMinus, FiPackage, FiPlus, FiSearch, FiShoppingCart, FiTrash2, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
 
@@ -19,6 +19,7 @@ export default function ProductsPage({user,onLogout}){
   const [customerName,setCustomerName]=useState("");
   const [error,setError]=useState("");
   const [message,setMessage]=useState("");
+  const [search,setSearch]=useState("");
 
   async function refresh(){setProducts(await api.sales.products());}
   useEffect(()=>{refresh().catch(e=>setError(e.message));},[]);
@@ -31,6 +32,7 @@ export default function ProductsPage({user,onLogout}){
   function addToCart(){if(!selected)return;const qty=Math.min(Number(selected.stock||0),Math.max(1,Number(quantity||1)));setCart(v=>({...v,[selected._id]:qty}));setSelected(null);setMessage(`${selected.name} added to cart.`);}
   function changeCart(id,next,stock){const qty=Math.min(Number(stock||0),Math.max(0,Number(next||0)));setCart(v=>{const copy={...v};if(qty<=0)delete copy[id];else copy[id]=qty;return copy;});}
 
+  const filteredProducts=useMemo(()=>{const q=search.trim().toLowerCase();return q?products.filter(item=>[item.name,item.sku,item.description,item.currency].some(value=>String(value||"").toLowerCase().includes(q))):products;},[products,search]);
   const cartLines=useMemo(()=>products.filter(p=>Number(cart[p._id]||0)>0).map(p=>({...p,quantity:Number(cart[p._id])})),[products,cart]);
   const currency=cartLines[0]?.currency||"PHP";
   const cartTotal=cartLines.reduce((sum,p)=>sum+Number(p.price||0)*p.quantity,0);
@@ -44,10 +46,10 @@ export default function ProductsPage({user,onLogout}){
     <div className="products-page-grid">
       <section className="panel">
         <div className="panel-title"><div><p className="eyebrow">CATALOG</p><h2>Product inventory</h2></div><div className="row-actions"><span className="count">{products.length}</span><button type="button" className="primary-button" onClick={()=>{setForm(blank);setCreating(true);}}><FiPlus/>Add product</button></div></div>
-        <div className="product-shop-grid">{products.map(item=><article key={item._id} className={"product-shop-card "+(item.stock<=0?"out-of-stock":"")} onClick={()=>openProduct(item)} role="button" tabIndex={item.stock>0?0:-1} onKeyDown={e=>{if((e.key==="Enter"||e.key===" ")&&item.stock>0)openProduct(item);}}>
+        <div className="realtime-search product-search"><FiSearch aria-hidden="true"/><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search products..." aria-label="Search products"/>{search&&<button type="button" onClick={()=>setSearch("")} aria-label="Clear product search"><FiX/></button>}</div>{filteredProducts.length===0&&search?<p className="muted search-empty">No products match “{search}”.</p>:<div className="product-shop-grid">{filteredProducts.map(item=><article key={item._id} className={"product-shop-card "+(item.stock<=0?"out-of-stock":"")} onClick={()=>openProduct(item)} role="button" tabIndex={item.stock>0?0:-1} onKeyDown={e=>{if((e.key==="Enter"||e.key===" ")&&item.stock>0)openProduct(item);}}>
           <div className="product-shop-image">{(item.images?.[0]||item.image)?<img src={item.images?.[0]||item.image} alt={item.name}/>:<FiPackage/>}</div><div className="product-shop-info"><strong>{item.name}</strong><small>{item.sku||"No SKU"}</small><span>{money(item.price,item.currency)}</span><small>{item.stock>0?`${item.stock} in stock`:"Out of stock"}</small></div>
           <div className="product-card-actions" onClick={e=>e.stopPropagation()}><button className="secondary icon-action" type="button" aria-label="Edit product" data-tooltip="Edit product" onClick={()=>setEditing({...item})}><FiEdit2/></button><button className="secondary icon-action product-delete-button" type="button" aria-label="Delete product" data-tooltip="Delete product" onClick={()=>removeProduct(item)}><FiTrash2/></button></div>
-        </article>)}</div>
+        </article>)}</div>}
       </section>
 
       <aside className="panel products-cart-panel"><div className="panel-title"><div><p className="eyebrow">CART</p><h2>Current sale</h2></div><FiShoppingCart/></div>
