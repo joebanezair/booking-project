@@ -3545,3 +3545,18 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 .receipt-thanks{text-align:center;color:var(--muted-foreground);margin:28px 0 0;font-size:13px;}
 @media(max-width:560px){.receipt-paper{padding:20px}.receipt-details>div{grid-template-columns:1fr;gap:3px}.receipt-details dd{text-align:left}}
 @media print{body *{visibility:hidden!important}.receipt-modal-backdrop,.receipt-modal-backdrop *{visibility:visible!important}.receipt-modal-backdrop{position:absolute!important;inset:0!important;padding:0!important;background:#fff!important}.receipt-modal{width:100%!important;max-width:100%!important;max-height:none!important;overflow:visible!important;border:0!important;box-shadow:none!important}.receipt-paper{width:80mm!important;margin:0 auto!important;color:#000!important;background:#fff!important}.no-print{display:none!important}}
+
+
+/* Receipt itemized products and consistent 5px corners. */
+.receipt-modal{border-radius:5px!important;}
+.receipt-modal .secondary,
+.receipt-modal .icon-action{border-radius:5px!important;}
+.receipt-items-block{align-items:start!important;}
+.receipt-items{display:grid;gap:10px;width:100%;}
+.receipt-item{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);text-align:left;}
+.receipt-item:last-child{border-bottom:0;}
+.receipt-item div{display:grid;gap:2px;}
+.receipt-item small{color:var(--muted-foreground);font-size:11px;}
+.receipt-item>span{white-space:nowrap;color:var(--muted-foreground);}
+.receipt-item>strong{white-space:nowrap;text-align:right;}
+@media(max-width:560px){.receipt-item{grid-template-columns:1fr auto}.receipt-item>span{grid-column:1}.receipt-item>strong{grid-column:2;grid-row:1/3}}
