@@ -3279,3 +3279,18 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   padding:16px 18px!important;
   margin:0!important;
 }
+
+
+/* Services: keep delete action subtle instead of solid red. */
+.service-icon-actions .danger,
+.service-icon-actions .ui-button.danger{
+  background:transparent!important;
+  color:var(--destructive)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:none!important;
+}
+.service-icon-actions .danger:hover,
+.service-icon-actions .ui-button.danger:hover{
+  background:var(--destructive-bg, rgba(220,38,38,.06))!important;
+  border-color:color-mix(in srgb,var(--destructive) 35%,var(--border))!important;
+}
