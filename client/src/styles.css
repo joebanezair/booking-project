@@ -3391,3 +3391,21 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 }
 .product-search{margin-top:12px;}
 .search-empty{padding:16px 0;}
+
+
+/* Search cards: contained panel with 5px corners on Services and Products. */
+.realtime-search{
+  box-sizing:border-box;
+  border:1px solid var(--border)!important;
+  border-radius:5px!important;
+  background:var(--card)!important;
+  padding:10px 14px!important;
+  box-shadow:none!important;
+}
+.realtime-search input{
+  height:40px!important;
+  border-radius:5px!important;
+}
+.product-search{
+  border-radius:5px!important;
+}
