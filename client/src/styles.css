@@ -3480,3 +3480,18 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 @media(max-width:700px){
   .services-search{width:100%!important;margin:12px 0 16px!important;}
 }
+
+
+/* Services search exact alignment with the services content column. */
+.services-search{
+  width:auto!important;
+  margin:12px 0 16px!important;
+}
+.services-list-section{
+  margin-left:0!important;
+  margin-right:0!important;
+}
+.services-list-section .content-admin-list{
+  margin-left:0!important;
+  margin-right:0!important;
+}
