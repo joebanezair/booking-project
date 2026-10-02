@@ -3524,3 +3524,24 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   max-width:none!important;
   margin:12px 0 16px!important;
 }
+
+
+/* Sales receipt popup and print view. */
+.sales-receipt-row{cursor:pointer;}
+.sales-receipt-row:hover{background:var(--accent);}
+.sales-receipt-row:focus-visible{outline:2px solid var(--primary);outline-offset:-2px;}
+.receipt-modal-backdrop{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:rgba(15,23,42,.48);}
+.receipt-modal{width:min(520px,100%);max-height:calc(100vh - 40px);overflow:auto;background:var(--card);border:1px solid var(--border);border-radius:5px;box-shadow:0 20px 60px rgba(15,23,42,.2);}
+.receipt-modal-actions{display:flex;justify-content:flex-end;gap:8px;padding:14px;border-bottom:1px solid var(--border);}
+.receipt-paper{padding:28px;}
+.receipt-paper h2{margin:4px 0 18px;}
+.receipt-rule{height:1px;background:var(--border);margin-bottom:18px;}
+.receipt-details{display:grid;gap:12px;margin:0;}
+.receipt-details>div{display:grid;grid-template-columns:120px 1fr;gap:16px;}
+.receipt-details dt{color:var(--muted-foreground);font-size:12px;font-weight:700;text-transform:uppercase;}
+.receipt-details dd{margin:0;text-align:right;overflow-wrap:anywhere;}
+.receipt-total{display:flex;align-items:center;justify-content:space-between;margin-top:22px;padding-top:18px;border-top:1px dashed var(--border);font-size:18px;}
+.receipt-total strong{font-size:24px;}
+.receipt-thanks{text-align:center;color:var(--muted-foreground);margin:28px 0 0;font-size:13px;}
+@media(max-width:560px){.receipt-paper{padding:20px}.receipt-details>div{grid-template-columns:1fr;gap:3px}.receipt-details dd{text-align:left}}
+@media print{body *{visibility:hidden!important}.receipt-modal-backdrop,.receipt-modal-backdrop *{visibility:visible!important}.receipt-modal-backdrop{position:absolute!important;inset:0!important;padding:0!important;background:#fff!important}.receipt-modal{width:100%!important;max-width:100%!important;max-height:none!important;overflow:visible!important;border:0!important;box-shadow:none!important}.receipt-paper{width:80mm!important;margin:0 auto!important;color:#000!important;background:#fff!important}.no-print{display:none!important}}
