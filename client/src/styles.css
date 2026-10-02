@@ -3696,3 +3696,13 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 /* POS cart toggle: borderless header, 5px search field. */
 .cart-items-toggle{border:0!important;border-radius:0!important;}
 .cart-item-search{border:1px solid var(--border)!important;border-radius:5px!important;overflow:hidden;}
+
+
+/* Collapsible cart owns visibility; do not add an inner scrollbar. */
+.cart-lines-scroll{
+  max-height:none!important;
+  overflow:visible!important;
+  overflow-x:visible!important;
+  overflow-y:visible!important;
+  padding-right:0!important;
+}
