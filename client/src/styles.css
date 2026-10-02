@@ -3301,3 +3301,10 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   background:var(--accent)!important;
   border-color:var(--border)!important;
 }
+
+
+/* Product inventory images: 5px corners. */
+.product-shop-image,
+.product-shop-image img{
+  border-radius:5px!important;
+}
