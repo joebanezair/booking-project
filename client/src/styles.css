@@ -3691,3 +3691,8 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 .checkout-confirm-items strong{white-space:nowrap;}
 .checkout-confirm-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;}
 .checkout-confirm-actions button{border-radius:5px!important;}
+
+
+/* POS cart toggle: borderless header, 5px search field. */
+.cart-items-toggle{border:0!important;border-radius:0!important;}
+.cart-item-search{border:1px solid var(--border)!important;border-radius:5px!important;overflow:hidden;}
