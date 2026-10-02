@@ -698,3 +698,10 @@ BookFlow validates required server configuration at startup. In production, `CLI
 Before a real production launch, the operator must still supply production infrastructure and secrets: a hosted MongoDB instance, HTTPS frontend/backend URLs, production environment variables, domain/DNS configuration, and an appropriate backup/monitoring policy. These are deployment credentials/infrastructure rather than missing BookFlow application features.
 
 Automatic payment verification and payment-provider webhooks are intentionally outside the current implementation.
+
+
+## Pull the shadcn-ui branch
+
+```bash
+git checkout shadcn-ui && git pull origin shadcn-ui
+```
