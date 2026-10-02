@@ -3345,3 +3345,9 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   border-radius:5px!important;
 }
 @media(max-width:700px){.admin-content-card .service-card-meta{top:12px!important;right:12px!important;}}
+
+
+/* Settings: spacing between theme and account panels. */
+.settings-panel + .settings-panel{
+  margin-top:16px!important;
+}
