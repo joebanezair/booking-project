@@ -3271,3 +3271,11 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 .dashboard-route-grid .dashboard-shadcn-card{
   border-radius:5px!important;
 }
+
+
+/* Notifications: give the empty state comfortable inner spacing. */
+.notification-list > .muted,
+.notification-list > p:only-child{
+  padding:16px 18px!important;
+  margin:0!important;
+}
