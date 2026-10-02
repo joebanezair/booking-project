@@ -3256,7 +3256,12 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 @media(max-width:600px){.onboarding-heading-actions{gap:8px}.onboarding-collapse-trigger{gap:12px}}
 
 
-/* Business setup checklist: borderless panel on shadcn-ui. */
+/* Business setup checklist: keep outer panel border; remove the inner disclosure border only. */
 .dashboard-content-rail > .onboarding-panel{
+  border:1px solid var(--border)!important;
+}
+.dashboard-content-rail > .onboarding-panel > .onboarding-collapse-trigger{
   border:0!important;
+  outline:0;
+  box-shadow:none!important;
 }
