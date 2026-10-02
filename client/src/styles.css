@@ -3265,3 +3265,9 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   outline:0;
   box-shadow:none!important;
 }
+
+
+/* Quick Access cards: fixed 5px corner radius. */
+.dashboard-route-grid .dashboard-shadcn-card{
+  border-radius:5px!important;
+}
