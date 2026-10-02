@@ -3634,3 +3634,14 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   .receipt-total strong{font-size:20pt!important;}
   .receipt-thanks{font-size:10pt!important;}
 }
+
+
+/* Receipt print pagination fix: print only receipt, no hidden app layout pages. */
+@media print{
+  html,body,#root{height:auto!important;min-height:0!important;overflow:visible!important;}
+  #root>*:not(.receipt-modal-backdrop){display:none!important;}
+  .receipt-modal-backdrop{position:static!important;inset:auto!important;width:100%!important;height:auto!important;min-height:0!important;overflow:visible!important;display:flex!important;justify-content:center!important;align-items:flex-start!important;padding:0!important;margin:0!important;}
+  .receipt-modal{position:static!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;break-inside:avoid!important;page-break-inside:avoid!important;}
+  .receipt-paper{height:auto!important;min-height:0!important;break-inside:avoid!important;page-break-inside:avoid!important;}
+  .receipt-modal-backdrop::before,.receipt-modal-backdrop::after{display:none!important;content:none!important;}
+}
