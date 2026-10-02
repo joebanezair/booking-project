@@ -3495,3 +3495,18 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   margin-left:0!important;
   margin-right:0!important;
 }
+
+
+/* Services: use one shared 1200px column for stats, search and cards. */
+.services-stats-grid,
+.services-search,
+.services-list-section{
+  width:100%!important;
+  max-width:1200px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  box-sizing:border-box!important;
+}
+.services-search{margin-top:12px!important;margin-bottom:16px!important;}
+.services-list-section{margin-bottom:28px!important;}
+.services-list-section .content-admin-list{width:100%!important;}
