@@ -3428,7 +3428,7 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 }
 
 
-/* Services management: compact minimalist layout without removing controls. */
+
 /* tighter stats */
 .stats-grid{gap:12px!important;margin-bottom:14px!important;}
 .stats-grid .stat-card{min-height:104px!important;padding:20px 24px!important;border-radius:5px!important;box-shadow:none!important;}
@@ -3449,3 +3449,23 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 .admin-content-card .service-icon-actions{gap:8px!important;margin-top:6px!important;}
 .admin-content-card .service-icon-actions .icon-action{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;border-radius:5px!important;}
 @media(max-width:700px){.admin-content-card{padding:12px!important;}.admin-content-card .admin-content-cover{width:100%!important;height:190px!important;}.admin-content-card .service-card-meta{top:12px!important;right:12px!important;}}
+
+
+/* Services management only: compact minimalist layout without removing controls. */
+.services-stats-grid{gap:12px!important;margin-bottom:14px!important;}
+.services-stats-grid .stat-card{min-height:104px!important;padding:20px 24px!important;border-radius:5px!important;box-shadow:none!important;}
+.services-stats-grid .stat-card span{font-size:.82rem!important;}
+.services-stats-grid .stat-card strong{font-size:1.9rem!important;line-height:1.1!important;}
+.services-search{margin:12px 0 16px!important;padding:6px 14px!important;min-height:52px!important;border-radius:5px!important;box-shadow:none!important;}
+.services-search input{height:38px!important;}
+.services-list-section .content-admin-list{gap:12px!important;}
+.services-list-section .admin-content-card{min-height:0!important;padding:16px 18px!important;border-radius:5px!important;box-shadow:none!important;align-items:center!important;}
+.services-list-section .admin-content-card .admin-content-cover{width:180px!important;height:150px!important;min-width:180px!important;border-radius:5px!important;object-fit:cover!important;}
+.services-list-section .admin-content-card .content-card-body{gap:7px!important;min-width:0;}
+.services-list-section .admin-content-card .content-card-body h3{margin:0!important;font-size:1.08rem!important;line-height:1.3!important;}
+.services-list-section .admin-content-card .content-card-body>p{margin:0!important;line-height:1.45!important;}
+.services-list-section .admin-content-card .service-card-meta{top:16px!important;right:16px!important;gap:6px!important;}
+.services-list-section .admin-content-card .service-meta-icon{width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;}
+.services-list-section .admin-content-card .service-icon-actions{gap:8px!important;margin-top:6px!important;}
+.services-list-section .admin-content-card .service-icon-actions .icon-action{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;border-radius:5px!important;}
+@media(max-width:700px){.services-list-section .admin-content-card{padding:12px!important;}.services-list-section .admin-content-card .admin-content-cover{width:100%!important;height:190px!important;}.services-list-section .admin-content-card .service-card-meta{top:12px!important;right:12px!important;}}
