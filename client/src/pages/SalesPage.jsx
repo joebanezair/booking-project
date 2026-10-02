@@ -79,7 +79,7 @@ export default function SalesPage({ user, onLogout }) {
   const summary = data?.summary || {};
   const unifiedTransactions = useMemo(() => [
     ...(data?.records || []).map(record => ({ id:`service-${record.id}`, type:"Service Sale", completedAt:record.completedAt, customer:record.guestName || "Guest", description:record.serviceName, amount:record.saleAmount, currency:record.currency || primaryCurrency, reference:`SALE-${String(record.id).slice(-8).toUpperCase()}`, status:record.status || "recorded" })),
-    ...(data?.productRecords || []).map(record => ({ id:`${record.source}-${record.id}`, type:record.source === "pos" ? "POS Sale" : "Online Product Sale", completedAt:record.completedAt, customer:record.customerName || "Customer", description:record.description, amount:record.amount, currency:record.currency || primaryCurrency, reference:record.reference, status:record.status || "recorded" }))
+    ...(data?.productRecords || []).map(record => ({ id:`${record.source}-${record.id}`, type:record.source === "pos" ? "POS Sale" : "Online Product Sale", completedAt:record.completedAt, customer:record.customerName || "Customer", description:record.description, items:record.items || [], amount:record.amount, currency:record.currency || primaryCurrency, reference:record.reference, status:record.status || "recorded" }))
   ].sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt)), [data, primaryCurrency]);
 
   return <AppLayout user={user} onLogout={onLogout}>
@@ -175,7 +175,7 @@ export default function SalesPage({ user, onLogout }) {
               <div><dt>Date</dt><dd>{new Date(receipt.completedAt).toLocaleString()}</dd></div>
               <div><dt>Type</dt><dd>{receipt.type}</dd></div>
               <div><dt>Customer</dt><dd>{receipt.customer}</dd></div>
-              <div><dt>Item / Service</dt><dd>{receipt.description}</dd></div>
+              {receipt.items?.length?<div className="receipt-items-block"><dt>Items</dt><dd><div className="receipt-items">{receipt.items.map((item,index)=><div className="receipt-item" key={index}><div><strong>{item.name}</strong>{item.sku&&<small>{item.sku}</small>}</div><span>{item.quantity} × {money(item.unitPrice,receipt.currency)}</span><strong>{money(item.lineTotal ?? Number(item.unitPrice||0)*Number(item.quantity||0),receipt.currency)}</strong></div>)}</div></dd></div>:<div><dt>Item / Service</dt><dd>{receipt.description}</dd></div>}
               <div><dt>Status</dt><dd>{receipt.status}</dd></div>
             </dl>
             <div className="receipt-total"><span>Total</span><strong>{money(receipt.amount,receipt.currency)}</strong></div>
