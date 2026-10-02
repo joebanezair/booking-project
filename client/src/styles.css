@@ -3706,3 +3706,24 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   overflow-y:visible!important;
   padding-right:0!important;
 }
+
+
+/* Dashboard analytics: mobile responsive cards and chart. */
+@media(max-width:700px){
+  .business-dashboard-analytics .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;}
+  .business-dashboard-analytics .analytics-stat{min-width:0!important;padding:14px!important;}
+  .business-dashboard-analytics .analytics-stat span{font-size:12px!important;}
+  .business-dashboard-analytics .analytics-stat strong{font-size:24px!important;overflow-wrap:anywhere;}
+  .business-dashboard-analytics .analytics-stat small{font-size:11px!important;line-height:1.35!important;}
+  .dashboard-sales-chart{padding:14px!important;overflow:hidden!important;}
+  .dashboard-sales-chart .panel-title{align-items:center!important;gap:10px!important;}
+  .dashboard-sales-chart .panel-title h2{font-size:18px!important;}
+  .dashboard-sales-chart .panel-title .button-link{padding:8px 10px!important;white-space:nowrap!important;}
+  .dashboard-sales-chart svg{max-width:100%!important;height:auto!important;}
+}
+@media(max-width:430px){
+  .business-dashboard-analytics .stats-grid{grid-template-columns:1fr!important;}
+  .dashboard-sales-chart .panel-title{align-items:flex-start!important;}
+  .dashboard-sales-chart .panel-title .button-link{font-size:0!important;padding:8px!important;}
+  .dashboard-sales-chart .panel-title .button-link svg{font-size:16px!important;}
+}
