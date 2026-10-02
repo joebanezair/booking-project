@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { FiCalendar, FiDollarSign, FiDownload, FiPackage, FiPrinter, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
@@ -164,7 +165,7 @@ export default function SalesPage({ user, onLogout }) {
           </table>
         </div>}
       </section>
-      {receipt&&<div className="receipt-modal-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setReceipt(null);}}>
+      {receipt&&createPortal(<div className="receipt-modal-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setReceipt(null);}}>
         <section className="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receipt-title">
           <div className="receipt-modal-actions no-print"><button className="secondary icon-link" onClick={()=>window.print()}><FiPrinter/>Print</button><button className="secondary icon-action" aria-label="Close receipt" onClick={()=>setReceipt(null)}><FiX/></button></div>
           <div className="receipt-paper">
@@ -182,7 +183,7 @@ export default function SalesPage({ user, onLogout }) {
             <p className="receipt-thanks">Thank you for your business.</p>
           </div>
         </section>
-      </div>}
+      </div>,document.body)}
     </>}
   </AppLayout>;
 }
