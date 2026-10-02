@@ -3469,3 +3469,14 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 .services-list-section .admin-content-card .service-icon-actions{gap:8px!important;margin-top:6px!important;}
 .services-list-section .admin-content-card .service-icon-actions .icon-action{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;border-radius:5px!important;}
 @media(max-width:700px){.services-list-section .admin-content-card{padding:12px!important;}.services-list-section .admin-content-card .admin-content-cover{width:100%!important;height:190px!important;}.services-list-section .admin-content-card .service-card-meta{top:12px!important;right:12px!important;}}
+
+
+/* Services search alignment fix. */
+.services-search{
+  box-sizing:border-box!important;
+  width:calc(100% - 64px)!important;
+  margin:12px 32px 16px!important;
+}
+@media(max-width:700px){
+  .services-search{width:100%!important;margin:12px 0 16px!important;}
+}
