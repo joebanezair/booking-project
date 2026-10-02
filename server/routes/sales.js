@@ -191,8 +191,8 @@ router.get("/analytics", async (req, res) => {
     const orderFilter = { businessOwner:req.user.id, status:"completed", ...(Object.keys(productBounds).length ? {completedAt:productBounds} : {}) };
     const [posSales, productOrders] = await Promise.all([PosSale.find(posFilter).lean(), ProductOrder.find(orderFilter).lean()]);
     const productRecords = [
-      ...posSales.map(x=>({id:x._id,source:"pos",completedAt:x.soldAt,customerName:x.customerName||"Walk-in",description:x.items.map(i=>i.name+" × "+i.quantity).join(", "),amount:x.total,currency:x.currency,reference:x.invoiceNumber,status:x.status,paymentMethod:x.paymentMethod||"other"})),
-      ...productOrders.map(x=>({id:x._id,source:"online",completedAt:x.completedAt,customerName:x.customerName,description:x.items.map(i=>i.name+" × "+i.quantity).join(", "),amount:x.total,currency:x.currency,reference:x.orderNumber,status:x.status}))
+      ...posSales.map(x=>({id:x._id,source:"pos",completedAt:x.soldAt,customerName:x.customerName||"Walk-in",description:x.items.map(i=>i.name+" × "+i.quantity).join(", "),items:(x.items||[]).map(i=>({name:i.name,sku:i.sku,quantity:i.quantity,unitPrice:i.unitPrice,lineTotal:i.lineTotal})),amount:x.total,currency:x.currency,reference:x.invoiceNumber,status:x.status,paymentMethod:x.paymentMethod||"other"})),
+      ...productOrders.map(x=>({id:x._id,source:"online",completedAt:x.completedAt,customerName:x.customerName,description:x.items.map(i=>i.name+" × "+i.quantity).join(", "),items:(x.items||[]).map(i=>({name:i.name,sku:i.sku,quantity:i.quantity,unitPrice:i.unitPrice,lineTotal:i.lineTotal})),amount:x.total,currency:x.currency,reference:x.orderNumber,status:x.status}))
     ];
 
     const serviceRecords = sales.map(sale => ({
