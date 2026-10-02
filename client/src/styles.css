@@ -3254,3 +3254,9 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 .onboarding-chevron{width:18px;height:18px;transition:transform .18s ease;color:var(--muted-foreground)}
 .onboarding-chevron.open{transform:rotate(180deg)}
 @media(max-width:600px){.onboarding-heading-actions{gap:8px}.onboarding-collapse-trigger{gap:12px}}
+
+
+/* Business setup checklist: borderless panel on shadcn-ui. */
+.dashboard-content-rail > .onboarding-panel{
+  border:0!important;
+}
