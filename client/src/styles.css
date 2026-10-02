@@ -3560,3 +3560,37 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 .receipt-item>span{white-space:nowrap;color:var(--muted-foreground);}
 .receipt-item>strong{white-space:nowrap;text-align:right;}
 @media(max-width:560px){.receipt-item{grid-template-columns:1fr auto}.receipt-item>span{grid-column:1}.receipt-item>strong{grid-column:2;grid-row:1/3}}
+
+
+/* Thermal receipt print override: isolate receipt and prevent narrow item columns. */
+@media print{
+  @page{size:80mm auto;margin:4mm;}
+  html,body,#root{width:80mm!important;min-width:80mm!important;margin:0!important;padding:0!important;background:#fff!important;}
+  body{overflow:visible!important;}
+  body *{visibility:hidden!important;}
+  .receipt-modal-backdrop,.receipt-modal-backdrop *{visibility:visible!important;}
+  .receipt-modal-backdrop{position:absolute!important;left:0!important;top:0!important;right:auto!important;bottom:auto!important;width:80mm!important;min-width:80mm!important;height:auto!important;display:block!important;padding:0!important;margin:0!important;background:#fff!important;}
+  .receipt-modal{position:static!important;width:80mm!important;min-width:80mm!important;max-width:80mm!important;max-height:none!important;margin:0!important;padding:0!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;}
+  .receipt-paper{box-sizing:border-box!important;width:80mm!important;min-width:80mm!important;max-width:80mm!important;margin:0!important;padding:4mm!important;color:#000!important;background:#fff!important;font-family:'Courier New',monospace!important;font-size:10pt!important;line-height:1.25!important;}
+  .receipt-paper .eyebrow{text-align:center!important;font-size:10pt!important;letter-spacing:.08em!important;margin:0 0 2mm!important;}
+  .receipt-paper h2{text-align:center!important;font-family:'Courier New',monospace!important;font-size:14pt!important;margin:0 0 3mm!important;}
+  .receipt-rule{background:none!important;border-top:1px dashed #000!important;margin:2mm 0 3mm!important;}
+  .receipt-details{display:block!important;width:100%!important;}
+  .receipt-details>div{display:grid!important;grid-template-columns:24mm minmax(0,1fr)!important;gap:2mm!important;width:100%!important;margin:0 0 2mm!important;align-items:start!important;}
+  .receipt-details dt{font-size:8.5pt!important;color:#000!important;white-space:nowrap!important;}
+  .receipt-details dd{min-width:0!important;margin:0!important;text-align:right!important;overflow-wrap:break-word!important;word-break:normal!important;}
+  .receipt-details .receipt-items-block{display:block!important;}
+  .receipt-details .receipt-items-block>dt{display:block!important;margin-bottom:2mm!important;}
+  .receipt-details .receipt-items-block>dd{display:block!important;width:100%!important;text-align:left!important;}
+  .receipt-items{display:block!important;width:100%!important;}
+  .receipt-item{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:1mm 3mm!important;width:100%!important;padding:2mm 0!important;border-bottom:1px dashed #777!important;}
+  .receipt-item>div{grid-column:1 / -1!important;display:block!important;min-width:0!important;}
+  .receipt-item>div strong{display:block!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important;}
+  .receipt-item>div small{display:block!important;margin-top:1mm!important;color:#000!important;font-size:8pt!important;}
+  .receipt-item>span{grid-column:1!important;white-space:nowrap!important;color:#000!important;}
+  .receipt-item>strong{grid-column:2!important;grid-row:2!important;white-space:nowrap!important;text-align:right!important;}
+  .receipt-total{display:flex!important;justify-content:space-between!important;align-items:baseline!important;margin-top:3mm!important;padding-top:3mm!important;border-top:1px dashed #000!important;font-size:12pt!important;}
+  .receipt-total strong{font-size:16pt!important;white-space:nowrap!important;}
+  .receipt-thanks{margin:5mm 0 0!important;text-align:center!important;color:#000!important;font-size:9pt!important;}
+  .no-print{display:none!important;}
+}
