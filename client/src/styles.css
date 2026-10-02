@@ -3510,3 +3510,17 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
 .services-search{margin-top:12px!important;margin-bottom:16px!important;}
 .services-list-section{margin-bottom:28px!important;}
 .services-list-section .content-admin-list{width:100%!important;}
+
+
+/* Services search wrapper: exact same centered column as stats/cards. */
+.services-search-wrap{
+  width:100%!important;
+  max-width:1200px!important;
+  margin:0 auto!important;
+  box-sizing:border-box!important;
+}
+.services-search-wrap .services-search{
+  width:100%!important;
+  max-width:none!important;
+  margin:12px 0 16px!important;
+}
