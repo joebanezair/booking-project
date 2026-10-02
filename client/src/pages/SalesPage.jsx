@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { FiCalendar, FiDollarSign, FiDownload, FiPackage, FiTrendingUp } from "react-icons/fi";
+import { FiCalendar, FiDollarSign, FiDownload, FiPackage, FiPrinter, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
@@ -37,6 +37,7 @@ export default function SalesPage({ user, onLogout }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [orders,setOrders]=useState([]);
+  const [receipt,setReceipt]=useState(null);
 
   const offset = new Date().getTimezoneOffset();
 
@@ -151,7 +152,7 @@ export default function SalesPage({ user, onLogout }) {
         {!unifiedTransactions.length ? <p className="muted">No sales transactions in this period.</p> : <div className="sales-table-wrap">
           <table className="sales-table">
             <thead><tr><th>Date</th><th>Type</th><th>Reference</th><th>Customer</th><th>Item / Service</th><th>Amount</th><th>Status</th></tr></thead>
-            <tbody>{unifiedTransactions.map(record => <tr key={record.id}>
+            <tbody>{unifiedTransactions.map(record => <tr key={record.id} className="sales-receipt-row" tabIndex={0} role="button" aria-label={`View receipt ${record.reference || ""}`} onClick={()=>setReceipt(record)} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setReceipt(record);}}}>
               <td data-label="Date">{new Date(record.completedAt).toLocaleString()}</td>
               <td data-label="Type"><strong>{record.type}</strong></td>
               <td data-label="Reference">{record.reference || "—"}</td>
@@ -163,6 +164,25 @@ export default function SalesPage({ user, onLogout }) {
           </table>
         </div>}
       </section>
+      {receipt&&<div className="receipt-modal-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setReceipt(null);}}>
+        <section className="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receipt-title">
+          <div className="receipt-modal-actions no-print"><button className="secondary icon-link" onClick={()=>window.print()}><FiPrinter/>Print</button><button className="secondary icon-action" aria-label="Close receipt" onClick={()=>setReceipt(null)}><FiX/></button></div>
+          <div className="receipt-paper">
+            <p className="eyebrow">BOOKFLOW RECEIPT</p><h2 id="receipt-title">Sales receipt</h2>
+            <div className="receipt-rule"/>
+            <dl className="receipt-details">
+              <div><dt>Reference</dt><dd>{receipt.reference||"—"}</dd></div>
+              <div><dt>Date</dt><dd>{new Date(receipt.completedAt).toLocaleString()}</dd></div>
+              <div><dt>Type</dt><dd>{receipt.type}</dd></div>
+              <div><dt>Customer</dt><dd>{receipt.customer}</dd></div>
+              <div><dt>Item / Service</dt><dd>{receipt.description}</dd></div>
+              <div><dt>Status</dt><dd>{receipt.status}</dd></div>
+            </dl>
+            <div className="receipt-total"><span>Total</span><strong>{money(receipt.amount,receipt.currency)}</strong></div>
+            <p className="receipt-thanks">Thank you for your business.</p>
+          </div>
+        </section>
+      </div>}
     </>}
   </AppLayout>;
 }
