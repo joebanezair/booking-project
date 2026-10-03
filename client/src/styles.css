@@ -5626,3 +5626,10 @@ td,th{
   border:none !important;
   box-shadow:none !important;
 }
+
+#bookings .booking-history-panel {
+  padding:5px !important;
+}
+#bookings .booking-history-content {
+  padding:5px !important;
+}
