@@ -3735,3 +3735,33 @@ html body .booking-modal-backdrop section.product-quantity-modal{
   border-radius:5px!important;
   overflow:hidden!important;
 }
+
+
+/* POS product details popup. */
+html body .booking-modal-backdrop .product-details-modal{
+  width:min(720px,calc(100vw - 32px))!important;
+  max-width:720px!important;
+  border-radius:5px!important;
+  overflow:hidden!important;
+}
+.product-details-header{margin-bottom:18px;}
+.product-details-layout{display:grid;grid-template-columns:minmax(180px,260px) minmax(0,1fr);gap:24px;align-items:start;}
+.product-details-image{width:100%;aspect-ratio:1/1;display:grid;place-items:center;border:1px solid var(--border);border-radius:5px;overflow:hidden;background:var(--muted-bg);font-size:52px;}
+.product-details-image img{width:100%;height:100%;object-fit:cover;}
+.product-details-content{display:grid;gap:10px;min-width:0;}
+.product-details-content h2{margin:0;font-size:24px;overflow-wrap:anywhere;}
+.product-details-price{font-size:24px;line-height:1.15;}
+.product-details-content label{margin-top:4px;}
+.product-details-cart-button{width:max-content;border-radius:5px!important;}
+.product-details-description{margin-top:8px;padding-top:16px;border-top:1px solid var(--border);}
+.product-details-description>strong{display:block;margin-bottom:6px;}
+.product-details-description p{margin:0;color:var(--muted-foreground);line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;}
+.product-details-meta{display:grid;gap:8px;margin-top:4px;padding-top:14px;border-top:1px solid var(--border);}
+.product-details-meta>div{display:flex;justify-content:space-between;gap:16px;}
+.product-details-meta span{color:var(--muted-foreground);}
+@media(max-width:620px){
+  html body .booking-modal-backdrop .product-details-modal{width:min(94vw,720px)!important;max-height:90vh;overflow-y:auto!important;}
+  .product-details-layout{grid-template-columns:1fr;}
+  .product-details-image{max-width:none;aspect-ratio:16/10;}
+  .product-details-cart-button{width:100%;justify-content:center;}
+}
