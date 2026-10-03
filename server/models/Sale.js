@@ -50,8 +50,17 @@ export const ProductOrder = mongoose.models.ProductOrder || mongoose.model("Prod
   total:{type:Number,min:0,required:true}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
   customerName:{type:String,required:true,trim:true,maxlength:120}, customerEmail:{type:String,trim:true,lowercase:true,maxlength:150,default:""},
   customerPhone:{type:String,required:true,trim:true,maxlength:30}, deliveryLocation:{type:String,required:true,trim:true,maxlength:250}, notes:{type:String,trim:true,maxlength:500,default:""},
-  status:{type:String,enum:["pending","confirmed","processing","completed","cancelled"],default:"pending",index:true},
+  status:{type:String,enum:["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"],default:"pending",index:true},
+  paymentStatus:{type:String,enum:["unpaid","partially_paid","paid","partially_refunded","refunded","voided"],default:"unpaid",index:true},
+  paymentMethod:{type:String,enum:["cash","gcash","maya","bank_transfer","other"],default:"cash"},
+  amountPaid:{type:Number,min:0,default:0}, paymentReference:{type:String,trim:true,maxlength:120,default:""}, paymentNotes:{type:String,trim:true,maxlength:500,default:""}, paidAt:{type:Date,default:null},
   completedAt:{type:Date,default:null,index:true}, createdAt:{type:Date,default:Date.now,index:true}
 },{timestamps:true}));
 
 export default mongoose.model("Sale", saleSchema);
+
+
+export const InventoryMovement = mongoose.models.InventoryMovement || mongoose.model("InventoryMovement", new mongoose.Schema({
+  businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true}, product:{type:mongoose.Schema.Types.ObjectId,ref:"Product",required:true,index:true}, productName:{type:String,required:true},
+  type:{type:String,enum:["sale","order","restock","adjustment","cancellation","return"],required:true,index:true}, quantity:{type:Number,required:true}, stockAfter:{type:Number,min:0,required:true}, reference:{type:String,default:""}, note:{type:String,maxlength:300,default:""}
+},{timestamps:true}));
