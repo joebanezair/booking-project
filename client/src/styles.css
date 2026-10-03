@@ -5151,3 +5151,215 @@ html body .booking-modal-backdrop .product-edit-modal{
 /* CRM, order management, and manual payment responsive UI */
 .crm-grid,.order-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}.crm-card{border:1px solid var(--border);border-radius:5px;padding:14px}.crm-card p{margin:4px 0;color:var(--muted-foreground)}.crm-metrics{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.crm-metrics span,.order-card-head span{border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px}.order-filter-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px}.order-filter-row button{white-space:nowrap;border:1px solid var(--border);border-radius:5px;background:transparent;padding:7px 10px;text-transform:capitalize}.order-filter-row button.active{border-color:var(--primary);color:var(--primary)}.order-card-head,.order-actions{display:flex;align-items:center;justify-content:space-between;gap:8px}.order-card-head p{margin:3px 0}.order-actions{margin-top:14px}.order-actions select,.order-actions button{height:36px;border-radius:5px}.manual-payment-modal{width:min(460px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto}.manual-payment-modal label{display:grid;gap:5px;margin:10px 0}.manual-payment-modal input,.manual-payment-modal select,.manual-payment-modal textarea{width:100%;box-sizing:border-box;border-radius:5px}
 @media(max-width:560px){.crm-grid,.order-grid{grid-template-columns:1fr}.order-actions{align-items:stretch;flex-direction:column}.order-actions select,.order-actions button{width:100%}.crm-panel{padding:10px!important}}
+
+
+/* Unified minimalist design system — final shadcn-ui overrides. */
+:root{
+  --ui-radius:5px;
+  --ui-gap:12px;
+  --ui-control:36px;
+}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit}
+button,input,select,textarea,.panel,.stat-card,.admin-content-card,.public-content-card,.crm-card,.order-card{
+  border-radius:var(--ui-radius)!important;
+}
+button,input,select,textarea{
+  min-height:var(--ui-control);
+}
+button{
+  font-weight:400!important;
+}
+.panel,.stat-card,.admin-content-card,.crm-card,.order-card{
+  box-shadow:none!important;
+}
+.panel{
+  border:1px solid var(--border)!important;
+}
+.topbar{
+  align-items:flex-start!important;
+  margin-bottom:16px!important;
+}
+.topbar h1{
+  margin-top:2px!important;
+  letter-spacing:-.02em;
+}
+.topbar .muted{
+  max-width:760px;
+}
+.eyebrow{
+  letter-spacing:.08em!important;
+  font-size:11px!important;
+}
+.realtime-search{
+  min-height:var(--ui-control)!important;
+  border-radius:var(--ui-radius)!important;
+  box-shadow:none!important;
+}
+.realtime-search input{
+  min-height:34px!important;
+}
+.row-actions,.wrap{
+  gap:8px!important;
+}
+.icon-action{
+  border-radius:var(--ui-radius)!important;
+}
+.empty-state{
+  border-radius:var(--ui-radius)!important;
+}
+table{
+  width:100%;
+}
+th{
+  font-size:12px;
+  font-weight:500!important;
+}
+td,th{
+  vertical-align:middle;
+}
+.service-bar-track,
+.service-bar-track>span{
+  border-radius:999px!important;
+}
+.services-view-grid .admin-content-card > .admin-content-cover{
+  min-width:0!important;
+  width:calc(100% - 20px)!important;
+  max-width:calc(100% - 20px)!important;
+  margin:10px 10px 0!important;
+  border-radius:8px!important;
+}
+.crm-grid,.order-grid{
+  align-items:start;
+}
+.crm-card,.order-card{
+  background:var(--card,transparent);
+}
+.crm-metrics span,.order-card-head span{
+  font-weight:400!important;
+}
+.order-filter-row{
+  scrollbar-width:none;
+}
+.order-filter-row::-webkit-scrollbar{display:none}
+.order-filter-row button{
+  min-height:34px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.order-filter-row button.active{
+  background:transparent!important;
+}
+.manual-payment-modal{
+  border-radius:var(--ui-radius)!important;
+}
+.manual-payment-modal textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+@media(max-width:768px){
+  .content-shell{
+    width:100%!important;
+    min-width:0!important;
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+  .topbar{
+    width:100%!important;
+    max-width:100%!important;
+    gap:10px!important;
+  }
+  .topbar>div{
+    min-width:0!important;
+  }
+  .topbar h1{
+    font-size:clamp(22px,6vw,28px)!important;
+    line-height:1.15!important;
+  }
+  .topbar .muted{
+    font-size:13px!important;
+    line-height:1.45!important;
+  }
+  .panel{
+    padding:12px!important;
+  }
+  .stats-grid,.analytics-grid,.dashboard-grid{
+    gap:10px!important;
+  }
+  .crm-grid,.order-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  .order-filter-row{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  .order-card-head{
+    align-items:flex-start!important;
+  }
+  .order-card-head>div{
+    min-width:0!important;
+  }
+  .order-card-head strong,.order-card-head p{
+    overflow-wrap:anywhere;
+  }
+  .modal-backdrop,.booking-modal-backdrop{
+    padding:12px!important;
+  }
+  .manual-payment-modal,.booking-modal,.product-edit-modal,.product-details-modal{
+    width:calc(100vw - 24px)!important;
+    max-width:calc(100vw - 24px)!important;
+    max-height:calc(100dvh - 24px)!important;
+    overflow:auto!important;
+  }
+}
+
+@media(max-width:560px){
+  .content-shell{
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+  .topbar{
+    flex-wrap:wrap!important;
+    margin-bottom:12px!important;
+  }
+  .topbar>div{
+    width:100%!important;
+  }
+  .topbar .live-indicator{
+    margin-left:0!important;
+  }
+  .panel{
+    padding:10px!important;
+  }
+  .stats-grid,.analytics-grid,.dashboard-grid,.crm-grid,.order-grid{
+    grid-template-columns:1fr!important;
+  }
+  .crm-card,.order-card{
+    padding:12px!important;
+  }
+  .crm-metrics{
+    gap:6px!important;
+  }
+  .order-actions{
+    flex-direction:column!important;
+    align-items:stretch!important;
+  }
+  .order-actions select,.order-actions button{
+    width:100%!important;
+  }
+  .services-controls-card .services-view-toolbar{
+    grid-template-columns:minmax(0,1fr) auto!important;
+  }
+  .services-view-grid .admin-content-card > .admin-content-cover{
+    height:180px!important;
+  }
+  .sales-table-wrap,.chart-shell{
+    margin-left:0!important;
+    margin-right:0!important;
+    max-width:100%!important;
+  }
+}
