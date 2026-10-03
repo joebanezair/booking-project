@@ -4269,3 +4269,18 @@ html body .booking-modal-backdrop .product-edit-modal{
     padding:3px 8px!important;
   }
 }
+
+
+/* Products toolbar: align controls to the right, including mobile. */
+.product-toolbar{
+  margin-left:auto!important;
+  justify-content:flex-end!important;
+  width:fit-content!important;
+}
+@media(max-width:560px){
+  .product-toolbar{
+    margin-left:auto!important;
+    justify-content:flex-end!important;
+    width:fit-content!important;
+  }
+}
