@@ -4805,3 +4805,37 @@ html body .booking-modal-backdrop .product-edit-modal{
 .services-stats-grid .service-stat-card strong{
   font-weight:400!important;
 }
+
+
+/* Services grid: image/placeholder spans the full card top edge. */
+.services-view-grid .admin-content-card{
+  padding:0!important;
+  overflow:hidden!important;
+}
+.services-view-grid .admin-content-cover{
+  width:100%!important;
+  max-width:100%!important;
+  height:200px!important;
+  margin:0!important;
+  border-radius:5px 5px 0 0!important;
+  object-fit:cover!important;
+}
+.services-view-grid .admin-content-body{
+  padding:14px!important;
+}
+.services-view-grid .service-card-meta{
+  top:10px!important;
+  right:10px!important;
+}
+@media(max-width:560px){
+  .services-view-grid .admin-content-cover{
+    height:190px!important;
+  }
+  .services-view-grid .admin-content-body{
+    padding:12px!important;
+  }
+  .services-view-grid .service-card-meta{
+    top:8px!important;
+    right:8px!important;
+  }
+}
