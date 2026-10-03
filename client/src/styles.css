@@ -4736,3 +4736,23 @@ html body .booking-modal-backdrop .product-edit-modal{
 .services-controls-card .services-view-grid{
   grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr))!important;
 }
+
+
+/* Iconized Services summary cards */
+.service-stat-card{
+  display:flex!important;
+  align-items:center!important;
+  gap:14px!important;
+}
+.service-stat-card>svg{
+  width:22px!important;
+  height:22px!important;
+  flex:0 0 auto!important;
+  color:var(--primary)!important;
+}
+.service-stat-card>div{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+  min-width:0!important;
+}
