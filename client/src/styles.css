@@ -5547,3 +5547,19 @@ td,th{
   color:#f8fafc;
   border-color:#4b5563;
 }
+
+#bookings .availability-save-button {
+  width:auto;
+  min-width:max-content;
+  height:40px;
+  padding:0 14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+}
+#bookings .availability-save-button svg {
+  flex:0 0 auto;
+  width:16px;
+  height:16px;
+}
