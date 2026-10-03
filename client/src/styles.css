@@ -3775,3 +3775,11 @@ html body .booking-modal-backdrop .product-details-modal .product-details-image 
 html body .booking-modal-backdrop .product-details-modal .product-details-image{
   overflow:hidden!important;
 }
+
+
+/* Products inventory: single-column cards on mobile. */
+@media(max-width:560px){
+  .product-shop-grid{
+    grid-template-columns:1fr!important;
+  }
+}
