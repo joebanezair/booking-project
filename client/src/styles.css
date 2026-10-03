@@ -3949,3 +3949,37 @@ html body .booking-modal-backdrop .product-details-modal .product-details-image{
   align-items:center!important;
   justify-content:center!important;
 }
+
+
+/* Products: keep search icon inside field and make cart summary pill fully rounded. */
+.product-search{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:0!important;
+  border:1px solid var(--border)!important;
+  border-radius:5px!important;
+  background:var(--card)!important;
+  padding:0 12px!important;
+  overflow:hidden!important;
+}
+.product-search>svg{
+  position:static!important;
+  flex:0 0 auto!important;
+  margin-right:10px!important;
+  color:var(--muted-foreground)!important;
+}
+.product-search input{
+  flex:1 1 auto!important;
+  width:100%!important;
+  height:44px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.product-search button{flex:0 0 auto!important;}
+.cart-header-badge{
+  border-radius:999px!important;
+}
