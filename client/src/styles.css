@@ -4610,3 +4610,38 @@ html body .booking-modal-backdrop .product-edit-modal{
   margin-left:auto!important;
   margin-right:0!important;
 }
+
+
+/* Match Services search height to grid/list buttons. */
+.services-controls-card .services-search{
+  height:36px!important;
+  min-height:36px!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+}
+.services-controls-card .services-search input{
+  height:34px!important;
+  min-height:34px!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+}
+.services-controls-card .service-view-toggle button{
+  width:36px!important;
+  height:36px!important;
+  min-height:36px!important;
+}
+@media(max-width:560px){
+  .services-controls-card .services-search{
+    height:34px!important;
+    min-height:34px!important;
+  }
+  .services-controls-card .services-search input{
+    height:32px!important;
+    min-height:32px!important;
+  }
+  .services-controls-card .service-view-toggle button{
+    width:34px!important;
+    height:34px!important;
+    min-height:34px!important;
+  }
+}
