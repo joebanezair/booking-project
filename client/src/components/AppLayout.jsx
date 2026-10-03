@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX, FiShoppingBag } from "react-icons/fi";
+import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
@@ -10,8 +10,6 @@ const navigation = [
   { to: "/dashboard/bookings", label: "Bookings", icon: FiCalendar, businessOnly: true },
   { to: "/dashboard/sales", label: "Sales", icon: FiBarChart2, businessOnly: true },
   { to: "/dashboard/products", label: "Products", icon: FiPackage, businessOnly: true },
-  { to: "/dashboard/orders", label: "Orders", icon: FiShoppingBag, businessOnly: true },
-  { to: "/dashboard/customers", label: "Customers", icon: FiUsers, businessOnly: true },
   { to: "/dashboard/businesses", label: "Businesses", icon: FiUsers, adminOnly: true },
   { to: "/dashboard/messages", label: "Messages", icon: FiMessageSquare },
   { to: "/dashboard/profile", label: "Profile", icon: FiUser, businessOnly: true },
