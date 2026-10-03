@@ -4094,3 +4094,26 @@ html body .booking-modal-backdrop .delete-product-modal{
 .delete-product-modal .panel-title{
   border-bottom:0!important;
 }
+
+
+/* Product three-dot action popover: padded 5px card and bordered action buttons. */
+.product-action-popover{
+  padding:6px!important;
+  gap:6px!important;
+  border:1px solid var(--border)!important;
+  border-radius:5px!important;
+  background:var(--card)!important;
+  overflow:hidden!important;
+}
+.product-action-popover .icon-action{
+  width:36px!important;
+  height:36px!important;
+  padding:6px!important;
+  border:1px solid var(--border)!important;
+  border-radius:5px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.product-action-popover .icon-action:hover{
+  background:var(--secondary)!important;
+}
