@@ -5442,3 +5442,23 @@ td,th{
 #bookings .availability-save-button.icon-action svg {
   margin:0;
 }
+
+#bookings .availability-settings-grid {
+  align-items:end;
+  gap:10px;
+}
+#bookings .availability-field-label {
+  height:24px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-bottom:6px;
+}
+#bookings .availability-field-label svg {
+  flex:0 0 auto;
+  width:16px;
+  height:16px;
+}
+#bookings .availability-field-label .availability-label-text {
+  line-height:1;
+}
