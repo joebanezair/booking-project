@@ -5000,3 +5000,150 @@ html body .booking-modal-backdrop .product-edit-modal{
   right:auto!important;
   transform:translateX(-50%) rotate(45deg)!important;
 }
+
+
+/* Mobile-friendly app shell and core business pages — shadcn-ui. */
+@media(max-width:768px){
+  html,body,#root{max-width:100%;overflow-x:hidden;}
+  .content-shell,.main-content,.page-content{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  .content-shell > main,
+  .main-content{
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+
+  .topbar{
+    gap:8px!important;
+    min-width:0!important;
+  }
+  .topbar h1,.topbar h2{min-width:0!important;}
+
+  .stats-grid,
+  .analytics-grid,
+  .dashboard-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+
+  .panel{
+    max-width:100%!important;
+    min-width:0!important;
+  }
+
+  .services-controls-card,
+  .product-inventory-panel,
+  .products-cart-panel,
+  .analytics-chart-panel,
+  .currency-summary{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+
+  .services-view-grid,
+  .product-shop-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+
+  .services-view-toolbar,
+  .product-toolbar,
+  .bookings-toolbar,
+  .sales-filters,
+  .filters{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  .chart-shell{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  .chart-shell svg{
+    min-width:560px;
+  }
+
+  .sales-table-wrap{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .booking-modal,
+  .product-edit-modal,
+  .product-details-modal{
+    width:calc(100vw - 24px)!important;
+    max-width:calc(100vw - 24px)!important;
+    max-height:calc(100dvh - 24px)!important;
+  }
+
+  button,input,select,textarea{
+    max-width:100%;
+  }
+}
+
+@media(max-width:560px){
+  .content-shell > main,
+  .main-content{
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+
+  .stats-grid,
+  .analytics-grid,
+  .dashboard-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .services-stats-grid{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:6px!important;
+  }
+  .services-stats-grid .service-stat-card{
+    min-height:34px!important;
+    padding:5px 8px!important;
+  }
+
+  .services-view-grid,
+  .product-shop-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .services-controls-card .services-view-toolbar{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:6px!important;
+  }
+
+  .service-chart,
+  .currency-total-list{
+    min-width:0!important;
+  }
+  .service-bar-meta{
+    gap:6px!important;
+    min-width:0!important;
+  }
+  .service-bar-meta strong,
+  .service-bar-meta span{
+    min-width:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+
+  .panel-title{
+    min-width:0!important;
+    flex-wrap:wrap!important;
+  }
+
+  .booking-modal-backdrop{
+    padding:12px!important;
+  }
+}
