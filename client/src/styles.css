@@ -5563,3 +5563,31 @@ td,th{
   width:16px;
   height:16px;
 }
+
+#bookings .availability-blocked-range {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;
+  gap:8px;
+  margin-top:10px;
+}
+#bookings .availability-blocked-range .availability-control {
+  margin-top:0;
+  min-width:0;
+}
+#bookings .availability-range-arrow {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  color:#7a8497;
+  font-size:16px;
+}
+@media (max-width:640px) {
+  #bookings .availability-blocked-range {
+    grid-template-columns:1fr;
+    gap:5px;
+  }
+  #bookings .availability-range-arrow {
+    transform:rotate(90deg);
+  }
+}
