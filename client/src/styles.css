@@ -4007,3 +4007,30 @@ html body .booking-modal-backdrop .product-details-modal .product-details-image{
   .delete-product-actions{display:grid;grid-template-columns:1fr 1fr;}
   .delete-product-actions button{width:100%;justify-content:center;}
 }
+
+
+/* Product card actions: transparent horizontal-more menu. */
+.product-card-menu{position:relative;display:flex;justify-content:flex-end;align-items:center;}
+.product-card-menu .product-more-button{
+  width:34px!important;height:34px!important;padding:0!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;
+  display:grid!important;place-items:center!important;
+}
+.product-card-menu .product-more-button:hover{background:var(--secondary)!important;}
+.product-action-popover{
+  position:absolute;right:0;bottom:calc(100% + 6px);z-index:20;
+  display:flex;align-items:center;gap:4px;padding:4px;
+  border:1px solid var(--border);border-radius:5px;background:var(--card);
+  box-shadow:0 8px 24px rgba(15,23,42,.12);
+}
+.product-action-popover .icon-action{
+  width:34px!important;height:34px!important;padding:0!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;
+  display:grid!important;place-items:center!important;
+}
+.product-action-popover .icon-action:hover{background:var(--secondary)!important;}
+.product-action-popover .product-delete-button:hover{color:var(--destructive,#b42318)!important;}
+.product-shop-list .product-card-menu{justify-self:end;}
+@media(max-width:560px){
+  .product-shop-list .product-card-menu{grid-column:2;justify-self:start;}
+}
