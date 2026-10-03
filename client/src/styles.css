@@ -3727,3 +3727,11 @@ html body .page-shell > .sidebar .sidebar-nav a.active svg{
   .dashboard-sales-chart .panel-title .button-link{font-size:0!important;padding:8px!important;}
   .dashboard-sales-chart .panel-title .button-link svg{font-size:16px!important;}
 }
+
+
+/* POS product details / add-to-cart modal: enforce requested 5px corners. */
+html body .booking-modal-backdrop .product-quantity-modal,
+html body .booking-modal-backdrop section.product-quantity-modal{
+  border-radius:5px!important;
+  overflow:hidden!important;
+}
