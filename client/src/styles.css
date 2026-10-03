@@ -4905,3 +4905,16 @@ html body .booking-modal-backdrop .product-edit-modal{
   background:var(--muted)!important;
   border-color:var(--foreground)!important;
 }
+
+
+/* Selected Services status filter uses primary blue for border, text, count, and icon. */
+.services-stats-grid .service-stat-card.active{
+  color:var(--primary)!important;
+  border-color:var(--primary)!important;
+  background:transparent!important;
+}
+.services-stats-grid .service-stat-card.active>svg,
+.services-stats-grid .service-stat-card.active span,
+.services-stats-grid .service-stat-card.active strong{
+  color:var(--primary)!important;
+}
