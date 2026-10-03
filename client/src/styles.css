@@ -4251,3 +4251,21 @@ html body .booking-modal-backdrop .product-edit-modal{
 @media(max-width:560px){
   .product-inventory-title{display:none!important;}
 }
+
+
+/* Products toolbar: hide catalog label on mobile and keep Add Product fit-content. */
+.product-toolbar .product-add-icon{
+  width:fit-content!important;
+  min-width:fit-content!important;
+  max-width:max-content!important;
+  flex:0 0 auto!important;
+}
+@media(max-width:560px){
+  .product-catalog-label{display:none!important;}
+  .product-toolbar .product-add-icon{
+    width:fit-content!important;
+    min-width:0!important;
+    max-width:max-content!important;
+    padding:3px 8px!important;
+  }
+}
