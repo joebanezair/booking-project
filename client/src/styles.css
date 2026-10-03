@@ -4756,3 +4756,13 @@ html body .booking-modal-backdrop .product-edit-modal{
   gap:4px!important;
   min-width:0!important;
 }
+
+
+/* Services summary cards: retain labels/counts and enforce 5px card border radius. */
+.services-stats-grid .service-stat-card{
+  border-radius:5px!important;
+}
+.services-stats-grid .service-stat-card span,
+.services-stats-grid .service-stat-card strong{
+  display:block!important;
+}
