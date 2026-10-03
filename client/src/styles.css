@@ -4132,3 +4132,50 @@ html body .booking-modal-backdrop .product-edit-modal{
   box-shadow:none!important;
   background:transparent!important;
 }
+
+
+/* Edit Product modal: keep the full card visible and header/title accessible while scrolling. */
+html body .booking-modal-backdrop:has(.product-edit-modal){
+  padding:20px!important;
+  overflow:hidden!important;
+  align-items:center!important;
+}
+html body .booking-modal-backdrop .product-edit-modal{
+  width:min(680px,100%)!important;
+  max-width:680px!important;
+  height:auto!important;
+  max-height:calc(100dvh - 40px)!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  border-radius:5px!important;
+}
+.product-edit-modal .panel-title{
+  position:static!important;
+  flex:0 0 auto!important;
+  margin:0!important;
+  padding:18px 22px!important;
+  background:var(--card)!important;
+  border:0!important;
+}
+.product-edit-modal .product-edit-form{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  padding:0 22px 22px!important;
+  scrollbar-gutter:stable;
+}
+@media(max-width:600px){
+  html body .booking-modal-backdrop:has(.product-edit-modal){
+    padding:12px!important;
+    align-items:center!important;
+  }
+  html body .booking-modal-backdrop .product-edit-modal{
+    width:100%!important;
+    max-height:calc(100dvh - 24px)!important;
+  }
+  .product-edit-modal .panel-title{padding:16px!important;}
+  .product-edit-modal .product-edit-form{padding:0 16px 16px!important;}
+}
