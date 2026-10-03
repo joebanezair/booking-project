@@ -96,7 +96,9 @@ export const api = {
     posSales: () => request("/sales/pos"),
     checkout: body => request("/sales/pos", { method: "POST", body: JSON.stringify(body) }),
     orders: () => request("/sales/orders"),
-    setOrderStatus: (id, status) => request(`/sales/orders/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) })
+    setOrderStatus: (id, status) => request(`/sales/orders/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }),
+    recordOrderPayment: (id, body) => request(`/sales/orders/${id}/payment`, { method: "PATCH", body: JSON.stringify(body) }),
+    inventoryHistory: () => request("/sales/inventory-history")
   },
   admin: {
     overview: () => request("/admin/overview"),
