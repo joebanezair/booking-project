@@ -4669,3 +4669,10 @@ html body .booking-modal-backdrop .product-edit-modal{
   margin-top:0!important;
   margin-bottom:0!important;
 }
+
+
+/* Remove vertical padding from Services controls toolbar. */
+.services-controls-card .services-view-toolbar{
+  padding-top:0!important;
+  padding-bottom:0!important;
+}
