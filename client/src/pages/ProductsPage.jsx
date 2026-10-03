@@ -22,7 +22,8 @@ export default function ProductsPage({user,onLogout}){
   const [search,setSearch]=useState("");
   const [cartSearch,setCartSearch]=useState("");
   const [cartOpen,setCartOpen]=useState(true);
-  const [confirmCheckout,setConfirmCheckout]=useState(false);\n  const [productView,setProductView]=useState("grid");
+  const [confirmCheckout,setConfirmCheckout]=useState(false);
+  const [productView,setProductView]=useState("grid");
 
   async function refresh(){setProducts(await api.sales.products());}
   useEffect(()=>{refresh().catch(e=>setError(e.message));},[]);
