@@ -4676,3 +4676,29 @@ html body .booking-modal-backdrop .product-edit-modal{
   padding-top:0!important;
   padding-bottom:0!important;
 }
+
+
+/* Keep Services controls aligned while the viewport narrows. */
+.services-controls-card .services-view-toolbar{
+  display:grid!important;
+  grid-template-columns:minmax(180px,420px) auto!important;
+  align-items:center!important;
+  column-gap:10px!important;
+  padding:0!important;
+}
+.services-controls-card .services-search-wrap{
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+}
+.services-controls-card .service-view-toggle{
+  justify-self:end!important;
+  align-self:center!important;
+  margin:0!important;
+}
+@media(max-width:560px){
+  .services-controls-card .services-view-toolbar{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    column-gap:6px!important;
+  }
+}
