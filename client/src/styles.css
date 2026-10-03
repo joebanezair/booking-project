@@ -4349,3 +4349,48 @@ html body .booking-modal-backdrop .product-edit-modal{
 .product-toolbar .product-add-icon .product-add-full{
   font-weight:400!important;
 }
+
+
+/* Services grid/list view controls */
+.services-view-toolbar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.services-view-toolbar .services-search-wrap{flex:1 1 auto;min-width:0;}
+.service-view-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  flex:0 0 auto;
+}
+.service-view-toggle button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:36px;
+  padding:0;
+  border:0;
+  border-radius:5px;
+  background:transparent;
+  color:var(--muted-foreground);
+  box-shadow:none;
+}
+.service-view-toggle button.active{color:var(--primary);}
+.services-view-grid{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr))!important;
+  gap:14px!important;
+}
+.services-view-list{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:10px!important;
+}
+.services-view-list>*{width:100%!important;}
+@media(max-width:560px){
+  .services-view-toolbar{gap:6px;}
+  .services-view-grid{grid-template-columns:1fr!important;}
+  .service-view-toggle button{width:34px;height:34px;}
+}
