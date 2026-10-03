@@ -3765,3 +3765,13 @@ html body .booking-modal-backdrop .product-details-modal{
   .product-details-image{max-width:none;aspect-ratio:16/10;}
   .product-details-cart-button{width:100%;justify-content:center;}
 }
+
+
+/* Product Details popup image: final override for 10px image corners. */
+html body .booking-modal-backdrop .product-details-modal .product-details-image,
+html body .booking-modal-backdrop .product-details-modal .product-details-image img{
+  border-radius:10px!important;
+}
+html body .booking-modal-backdrop .product-details-modal .product-details-image{
+  overflow:hidden!important;
+}
