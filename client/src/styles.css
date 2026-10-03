@@ -2168,6 +2168,9 @@ button, input, select, textarea, .panel, .stat-card, .route-card, .auth-layout, 
   display:grid;
   grid-template-columns:repeat(7,minmax(0,1fr));
 }
+.booking-calendar-grid {
+  gap:5px;
+}
 .booking-calendar-weekdays strong {
   padding:8px;
   color:#7a8497;
