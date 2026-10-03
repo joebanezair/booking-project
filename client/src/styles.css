@@ -4766,3 +4766,35 @@ html body .booking-modal-backdrop .product-edit-modal{
 .services-stats-grid .service-stat-card strong{
   display:block!important;
 }
+
+
+/* Compact Services summary stats to button-sized chips. */
+.services-stats-grid{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+}
+.services-stats-grid .service-stat-card{
+  width:fit-content!important;
+  min-width:0!important;
+  min-height:36px!important;
+  padding:6px 10px!important;
+  gap:8px!important;
+  flex:0 0 auto!important;
+  border-radius:5px!important;
+}
+.services-stats-grid .service-stat-card>svg{
+  width:16px!important;
+  height:16px!important;
+}
+.services-stats-grid .service-stat-card>div{
+  flex-direction:row!important;
+  align-items:center!important;
+  gap:6px!important;
+}
+.services-stats-grid .service-stat-card span,
+.services-stats-grid .service-stat-card strong{
+  margin:0!important;
+  line-height:1!important;
+  font-size:13px!important;
+}
