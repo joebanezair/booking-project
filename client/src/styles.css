@@ -5405,3 +5405,19 @@ td,th{
   color:inherit;
   cursor:pointer;
 }
+
+/* Keep Availability controls visually aligned with the Save availability button. */
+#bookings .availability-days input[type="time"],
+#bookings .three-col input,
+#bookings .three-col select,
+#bookings .panel > label > input,
+#bookings .panel > label > select {
+  height:40px;
+  min-height:40px;
+  box-sizing:border-box;
+}
+#bookings .availability-save-button {
+  height:40px;
+  min-height:40px;
+  box-sizing:border-box;
+}
