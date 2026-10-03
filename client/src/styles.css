@@ -4974,3 +4974,12 @@ html body .booking-modal-backdrop .product-edit-modal{
   margin:5px 5px 0!important;
   border-radius:10px!important;
 }
+
+
+/* Services grid media: 10px inset gap with 8px image radius. */
+.services-view-grid .admin-content-card > .admin-content-cover{
+  width:calc(100% - 20px)!important;
+  max-width:calc(100% - 20px)!important;
+  margin:10px 10px 0!important;
+  border-radius:8px!important;
+}
