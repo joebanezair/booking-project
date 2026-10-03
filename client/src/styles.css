@@ -4983,3 +4983,20 @@ html body .booking-modal-backdrop .product-edit-modal{
   margin:10px 10px 0!important;
   border-radius:8px!important;
 }
+
+
+/* Services grid image action tooltips: show below the icon buttons. */
+.services-view-grid .service-card-meta [data-tooltip]::after{
+  top:calc(100% + 7px)!important;
+  bottom:auto!important;
+  left:50%!important;
+  right:auto!important;
+  transform:translateX(-50%)!important;
+}
+.services-view-grid .service-card-meta [data-tooltip]::before{
+  top:100%!important;
+  bottom:auto!important;
+  left:50%!important;
+  right:auto!important;
+  transform:translateX(-50%) rotate(45deg)!important;
+}
