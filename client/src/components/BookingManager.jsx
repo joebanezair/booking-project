@@ -23,7 +23,8 @@ export default function BookingManager({user}){
   const [month,setMonth]=useState(()=>new Date().toISOString().slice(0,7));
   const [error,setError]=useState("");
   const [bookingModalOpen,setBookingModalOpen]=useState(false);
-  const [availability,setAvailability]=useState(null);\n  const [availabilitySavedAt,setAvailabilitySavedAt]=useState(null);
+  const [availability,setAvailability]=useState(null);
+  const [availabilitySavedAt,setAvailabilitySavedAt]=useState(null);
 
   async function refreshCustomers(){try{setCustomers(await api.bookings.customers());}catch{}}
 
