@@ -4871,3 +4871,11 @@ html body .booking-modal-backdrop .product-edit-modal{
   font-weight:400!important;
   color:#000!important;
 }
+
+
+/* Post a service: transparent background. */
+.service-create-link button,
+.service-create-link button:hover,
+.service-create-link button:focus-visible{
+  background:transparent!important;
+}
