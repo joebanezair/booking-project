@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiX } from "react-icons/fi";
+import { FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
 
@@ -25,6 +25,7 @@ export default function ProductsPage({user,onLogout}){
   const [confirmCheckout,setConfirmCheckout]=useState(false);
   const [productView,setProductView]=useState("grid");
   const [deleteTarget,setDeleteTarget]=useState(null);
+  const [productMenu,setProductMenu]=useState(null);
 
   async function refresh(){setProducts(await api.sales.products());}
   useEffect(()=>{refresh().catch(e=>setError(e.message));},[]);
@@ -54,7 +55,7 @@ export default function ProductsPage({user,onLogout}){
         <div className="panel-title"><div><p className="eyebrow">CATALOG</p><h2>Product inventory</h2></div><div className="row-actions product-toolbar"><button type="button" className="primary-button icon-action product-add-icon" aria-label="Add product" data-tooltip="Add product" onClick={()=>{setForm(blank);setCreating(true);}}><FiPlus/></button><div className="product-view-toggle" role="group" aria-label="Product view"><button type="button" className={"icon-action "+(productView==="grid"?"active":"")} aria-label="Grid view" data-tooltip="Grid view" aria-pressed={productView==="grid"} onClick={()=>setProductView("grid")}><FiGrid/></button><button type="button" className={"icon-action "+(productView==="list"?"active":"")} aria-label="List view" data-tooltip="List view" aria-pressed={productView==="list"} onClick={()=>setProductView("list")}><FiList/></button></div><span className="count product-count-icon" aria-label={`${products.length} products`} data-tooltip={`${products.length} products`}><FiShoppingBag/><strong>{products.length}</strong></span></div></div>
         <div className="realtime-search product-search"><FiSearch aria-hidden="true"/><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search products..." aria-label="Search products"/>{search&&<button type="button" onClick={()=>setSearch("")} aria-label="Clear product search"><FiX/></button>}</div>{filteredProducts.length===0&&search?<p className="muted search-empty">No products match “{search}”.</p>:<div className={"product-shop-grid "+(productView==="list"?"product-shop-list":"")}>{filteredProducts.map(item=><article key={item._id} className={"product-shop-card "+(item.stock<=0?"out-of-stock":"")} onClick={()=>openProduct(item)} role="button" tabIndex={item.stock>0?0:-1} onKeyDown={e=>{if((e.key==="Enter"||e.key===" ")&&item.stock>0)openProduct(item);}}>
           <div className="product-shop-image">{(item.images?.[0]||item.image)?<img src={item.images?.[0]||item.image} alt={item.name}/>:<FiPackage/>}</div><div className="product-shop-info"><strong>{item.name}</strong><small>{item.sku||"No SKU"}</small><span>{money(item.price,item.currency)}</span><small>{item.stock>0?`${item.stock} in stock`:"Out of stock"}</small></div>
-          <div className="product-card-actions" onClick={e=>e.stopPropagation()}><button className="secondary icon-action" type="button" aria-label="Edit product" data-tooltip="Edit product" onClick={()=>setEditing({...item})}><FiEdit2/></button><button className="secondary icon-action product-delete-button" type="button" aria-label="Delete product" data-tooltip="Delete product" onClick={()=>removeProduct(item)}><FiTrash2/></button></div>
+          <div className="product-card-actions product-card-menu" onClick={e=>e.stopPropagation()}><button className="icon-action product-more-button" type="button" aria-label="Product actions" data-tooltip="Product actions" aria-expanded={productMenu===item._id} onClick={()=>setProductMenu(v=>v===item._id?null:item._id)}><FiMoreHorizontal/></button>{productMenu===item._id&&<div className="product-action-popover"><button className="icon-action" type="button" aria-label="Edit product" data-tooltip="Edit product" onClick={()=>{setEditing({...item});setProductMenu(null);}}><FiEdit2/></button><button className="icon-action product-delete-button" type="button" aria-label="Delete product" data-tooltip="Delete product" onClick={()=>{setDeleteTarget(item);setProductMenu(null);}}><FiTrash2/></button></div>}</div>
         </article>)}</div>}
       </section>
 
