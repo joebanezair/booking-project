@@ -5613,7 +5613,7 @@ td,th{
   color:#9ca3af !important;
 }
 
-#bookings .booking-history-panel{margin-top:12px;}
+#bookings .booking-history-panel{margin-top:10px;}
 #bookings .booking-history-toggle{width:100%;min-height:44px;display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:10px 12px;background:transparent;border:0;color:inherit;text-align:left;}
 #bookings .booking-history-toggle>span:first-child{display:flex;align-items:center;gap:8px;font-weight:700;}
 #bookings .booking-history-content{padding:0 12px 12px;}
