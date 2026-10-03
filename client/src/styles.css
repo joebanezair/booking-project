@@ -4245,3 +4245,9 @@ html body .booking-modal-backdrop .product-edit-modal{
 .product-add-label{
   font-weight:400!important;
 }
+
+
+/* Products mobile: hide Product inventory heading. */
+@media(max-width:560px){
+  .product-inventory-title{display:none!important;}
+}
