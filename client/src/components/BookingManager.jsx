@@ -24,7 +24,10 @@ export default function BookingManager({user}){
   const [error,setError]=useState("");
   const [bookingModalOpen,setBookingModalOpen]=useState(false);
   const [availability,setAvailability]=useState(null);
-  const [availabilitySavedAt,setAvailabilitySavedAt]=useState(null);\n  const [historyOpen,setHistoryOpen]=useState(false);\n  const [historyFrom,setHistoryFrom]=useState("");\n  const [historyTo,setHistoryTo]=useState("");
+  const [availabilitySavedAt,setAvailabilitySavedAt]=useState(null);
+  const [historyOpen,setHistoryOpen]=useState(false);
+  const [historyFrom,setHistoryFrom]=useState("");
+  const [historyTo,setHistoryTo]=useState("");
 
   async function refreshCustomers(){try{setCustomers(await api.bookings.customers());}catch{}}
 
@@ -43,7 +46,8 @@ export default function BookingManager({user}){
     if(!search)return true;
     const q=search.toLowerCase();return [item.bookingReference,item.guestName,item.guestEmail,item.guestPhone,item.service,item.locationLabel].some(v=>String(v||"").toLowerCase().includes(q));
   }),[items,search,statusFilter]);
-  const completedHistory=useMemo(()=>items.filter(item=>{ if(item.status!=="completed")return false; const when=new Date(item.bookingDate).getTime(); if(historyFrom&&when<new Date(historyFrom).getTime())return false; if(historyTo&&when>new Date(historyTo).getTime())return false; return true; }).sort((a,b)=>new Date(b.bookingDate)-new Date(a.bookingDate)),[items,historyFrom,historyTo]);\n  const customerMap=useMemo(()=>new Map(customers.map(row=>[row.key,row])),[customers]);
+  const completedHistory=useMemo(()=>items.filter(item=>{ if(item.status!=="completed")return false; const when=new Date(item.bookingDate).getTime(); if(historyFrom&&when<new Date(historyFrom).getTime())return false; if(historyTo&&when>new Date(historyTo).getTime())return false; return true; }).sort((a,b)=>new Date(b.bookingDate)-new Date(a.bookingDate)),[items,historyFrom,historyTo]);
+  const customerMap=useMemo(()=>new Map(customers.map(row=>[row.key,row])),[customers]);
 
   function selectService(contentId){
     const service=services.find(item=>item._id===contentId);
