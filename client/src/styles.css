@@ -5621,3 +5621,8 @@ td,th{
 #bookings .booking-history-filters label{display:grid;gap:5px;font-size:.82rem;color:#6b7280;}
 #bookings .booking-history-filters input{width:100%;min-height:40px;box-sizing:border-box;}
 @media(max-width:640px){#bookings .booking-history-filters{grid-template-columns:1fr;}#bookings .booking-history-filters .availability-range-arrow{transform:rotate(90deg);justify-self:center;}}
+
+#bookings .booking-history-panel {
+  border:none !important;
+  box-shadow:none !important;
+}
