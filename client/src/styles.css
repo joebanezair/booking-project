@@ -4195,3 +4195,44 @@ html body .booking-modal-backdrop .product-edit-modal{
   background:var(--border);
   border-radius:5px;
 }
+
+
+/* Product toolbar: pill Add Product action and borderless count. */
+.product-toolbar .product-count-icon{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+.product-toolbar .product-add-icon{
+  width:auto!important;
+  height:36px!important;
+  min-width:0!important;
+  padding:3px 10px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  border:1px solid var(--border)!important;
+  border-radius:999px!important;
+  background:transparent!important;
+  color:var(--foreground)!important;
+  box-shadow:none!important;
+}
+.product-toolbar .product-add-icon:hover{
+  background:var(--secondary)!important;
+}
+.product-add-label{
+  display:inline!important;
+  font-size:13px;
+  font-weight:700;
+  white-space:nowrap;
+}
+@media(max-width:560px){
+  .product-toolbar .product-add-icon{
+    width:34px!important;
+    height:34px!important;
+    padding:3px!important;
+  }
+  .product-add-label{display:none!important;}
+}
