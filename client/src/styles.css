@@ -4839,3 +4839,23 @@ html body .booking-modal-backdrop .product-edit-modal{
     right:8px!important;
   }
 }
+
+
+/* Services grid: remove legacy image inset/max-width so media is truly edge-to-edge. */
+.services-view-grid .admin-content-card > .admin-content-cover{
+  display:block!important;
+  width:calc(100% + 2px)!important;
+  max-width:none!important;
+  min-width:calc(100% + 2px)!important;
+  height:200px!important;
+  margin:-1px -1px 0 -1px!important;
+  align-self:stretch!important;
+  flex:0 0 auto!important;
+  border-radius:5px 5px 0 0!important;
+  object-fit:cover!important;
+}
+.services-view-grid .admin-content-card > .content-placeholder.admin-content-cover{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
