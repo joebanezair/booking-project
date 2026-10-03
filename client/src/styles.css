@@ -4715,3 +4715,24 @@ html body .booking-modal-backdrop .product-edit-modal{
   padding-left:0!important;
   padding-right:0!important;
 }
+
+
+/* Keep Services content card constrained to the same page column as the top components. */
+.services-controls-card{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  align-self:stretch!important;
+  overflow:hidden!important;
+}
+.services-controls-card .services-list-section,
+.services-controls-card .content-admin-list{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+}
+.services-controls-card .services-view-grid{
+  grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr))!important;
+}
