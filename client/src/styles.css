@@ -4340,3 +4340,12 @@ html body .booking-modal-backdrop .product-edit-modal{
     padding:3px 6px!important;
   }
 }
+
+
+/* Add action label should use normal font weight on all breakpoints. */
+.product-toolbar .product-add-icon,
+.product-toolbar .product-add-icon .product-add-label,
+.product-toolbar .product-add-icon .product-add-short,
+.product-toolbar .product-add-icon .product-add-full{
+  font-weight:400!important;
+}
