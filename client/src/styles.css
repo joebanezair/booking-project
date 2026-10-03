@@ -4529,3 +4529,38 @@ html body .booking-modal-backdrop .product-edit-modal{
   .services-view-grid .admin-content-cover{height:165px!important;}
   .services-view-grid .service-card-meta{top:20px!important;right:20px!important;}
 }
+
+
+/* Compact Services search/view controls card */
+.services-controls-card{
+  width:fit-content!important;
+  max-width:100%!important;
+  padding:8px!important;
+  margin:0 0 14px!important;
+  border-radius:5px!important;
+}
+.services-controls-card .services-view-toolbar{
+  width:auto!important;
+  justify-content:flex-start!important;
+}
+.services-controls-card .services-search-wrap{
+  flex:0 1 420px!important;
+  width:min(420px,60vw)!important;
+}
+.services-controls-card .services-search{
+  width:100%!important;
+}
+.services-controls-card .services-search input{
+  height:38px!important;
+}
+@media(max-width:560px){
+  .services-controls-card{
+    width:100%!important;
+    padding:6px!important;
+  }
+  .services-controls-card .services-view-toolbar{width:100%!important;}
+  .services-controls-card .services-search-wrap{
+    flex:1 1 auto!important;
+    width:auto!important;
+  }
+}
