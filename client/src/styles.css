@@ -4082,3 +4082,15 @@ html body .booking-modal-backdrop .product-details-modal .product-details-image{
   .delete-product-modal>p{padding:16px 16px 0!important;}
   .delete-product-actions{padding:18px 16px 16px!important;grid-template-columns:1fr 1fr!important;}
 }
+
+
+/* Delete confirmation: one unified square card with 5px corners. */
+html body .booking-modal-backdrop .delete-product-modal{
+  border:1px solid var(--border)!important;
+  border-radius:5px!important;
+  overflow:hidden!important;
+  background:var(--card)!important;
+}
+.delete-product-modal .panel-title{
+  border-bottom:0!important;
+}
