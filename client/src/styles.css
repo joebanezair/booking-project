@@ -3909,3 +3909,43 @@ html body .booking-modal-backdrop .product-details-modal .product-details-image{
 }
 .product-count-icon svg{width:17px;height:17px;}
 .product-count-icon strong{font-size:11px;color:var(--primary);}
+
+
+/* Product inventory toolbar alignment and requested action order. */
+.product-toolbar{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center;
+  gap:8px!important;
+}
+.product-toolbar .product-add-icon,
+.product-toolbar .product-view-toggle,
+.product-toolbar .product-view-toggle button,
+.product-toolbar .product-count-icon{
+  align-self:center!important;
+}
+.product-toolbar .product-add-icon{
+  width:40px!important;
+  height:40px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.product-toolbar .product-view-toggle{
+  height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+}
+.product-toolbar .product-view-toggle button{
+  width:40px!important;
+  height:40px!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.product-toolbar .product-count-icon{
+  min-height:40px!important;
+  padding:3px 6px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
