@@ -5653,3 +5653,35 @@ td,th{
   width:fit-content;
   min-width:0;
 }
+
+/* Keep booking history From/To controls compact with no stretched gap */
+#bookings .booking-history-filters {
+  display:flex !important;
+  align-items:flex-end !important;
+  justify-content:flex-start !important;
+  flex-wrap:wrap;
+  gap:5px !important;
+}
+#bookings .booking-history-filters label {
+  flex:0 0 auto !important;
+  width:auto !important;
+}
+#bookings .booking-history-filters input[type="datetime-local"] {
+  width:auto !important;
+  min-width:0 !important;
+}
+#bookings .booking-history-filters .availability-range-arrow {
+  flex:0 0 auto;
+  align-self:flex-end;
+  min-height:40px;
+}
+@media(max-width:640px){
+  #bookings .booking-history-filters {
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:flex-end !important;
+  }
+  #bookings .booking-history-filters .availability-range-arrow {
+    transform:none !important;
+  }
+}
