@@ -4885,3 +4885,23 @@ html body .booking-modal-backdrop .product-edit-modal{
 .service-create-link button{
   border-radius:5px!important;
 }
+
+
+/* Interactive Services status filters. */
+.services-stats-grid .service-stat-card{
+  cursor:pointer!important;
+  color:#000!important;
+  background:transparent!important;
+}
+.services-stats-grid .service-stat-card>svg,
+.services-stats-grid .service-stat-card span,
+.services-stats-grid .service-stat-card strong{
+  color:#000!important;
+}
+.services-stats-grid .service-stat-card:hover{
+  background:var(--muted)!important;
+}
+.services-stats-grid .service-stat-card.active{
+  background:var(--muted)!important;
+  border-color:var(--foreground)!important;
+}
