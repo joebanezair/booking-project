@@ -5366,3 +5366,42 @@ td,th{
     max-width:100%!important;
   }
 }
+
+.availability-save-button {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:10px 14px;
+  border:1px solid #aeb7c5;
+  border-radius:5px;
+  background:transparent;
+  color:inherit;
+  cursor:pointer;
+}
+.availability-save-button:hover { background:rgba(127,127,127,.08); }
+.availability-saved-toast {
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 12px;
+  border:1px solid #aeb7c5;
+  border-radius:5px;
+  background:transparent;
+  color:inherit;
+  backdrop-filter:blur(8px);
+}
+.availability-toast-close {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:2px;
+  border:0;
+  background:transparent;
+  color:inherit;
+  cursor:pointer;
+}
