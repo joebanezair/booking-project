@@ -3983,3 +3983,27 @@ html body .booking-modal-backdrop .product-details-modal .product-details-image{
 .cart-header-badge{
   border-radius:999px!important;
 }
+
+
+/* Product delete confirmation: in-app modal instead of browser confirm(). */
+.delete-product-modal{
+  width:min(440px,calc(100vw - 32px))!important;
+  max-width:440px!important;
+  border-radius:5px!important;
+}
+.delete-product-modal .panel-title{align-items:flex-start;}
+.delete-product-modal>p{margin:14px 0 0;line-height:1.55;}
+.delete-product-actions{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:8px;
+  margin-top:22px;
+}
+.delete-product-actions button{border-radius:5px!important;}
+.delete-product-actions .danger{display:inline-flex;align-items:center;gap:7px;}
+@media(max-width:480px){
+  .delete-product-modal{width:100%!important;}
+  .delete-product-actions{display:grid;grid-template-columns:1fr 1fr;}
+  .delete-product-actions button{width:100%;justify-content:center;}
+}
