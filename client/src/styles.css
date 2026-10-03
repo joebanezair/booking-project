@@ -3783,3 +3783,83 @@ html body .booking-modal-backdrop .product-details-modal .product-details-image{
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* Product Details popup: compact mobile layout. */
+@media(max-width:620px){
+  html body .booking-modal-backdrop{
+    padding:12px!important;
+    align-items:center!important;
+  }
+  html body .booking-modal-backdrop .product-details-modal{
+    width:100%!important;
+    max-width:440px!important;
+    max-height:calc(100dvh - 24px)!important;
+    padding:18px!important;
+    overflow-y:auto!important;
+    border-radius:5px!important;
+  }
+  .product-details-modal .product-details-header{
+    margin-bottom:14px!important;
+  }
+  .product-details-modal .product-details-header .eyebrow{
+    margin:0!important;
+  }
+  .product-details-modal .product-details-layout{
+    display:grid!important;
+    grid-template-columns:112px minmax(0,1fr)!important;
+    gap:14px!important;
+    align-items:start!important;
+  }
+  .product-details-modal .product-details-image{
+    width:112px!important;
+    height:112px!important;
+    aspect-ratio:auto!important;
+    border-radius:10px!important;
+  }
+  .product-details-modal .product-details-content{
+    gap:7px!important;
+  }
+  .product-details-modal .product-details-content h2{
+    font-size:19px!important;
+    line-height:1.2!important;
+  }
+  .product-details-modal .product-details-price{
+    font-size:21px!important;
+  }
+  .product-details-modal .product-details-content label,
+  .product-details-modal .product-details-cart-button,
+  .product-details-modal .product-details-description,
+  .product-details-modal .product-details-meta{
+    grid-column:1/-1;
+  }
+  .product-details-modal .product-details-content label{
+    margin-top:5px!important;
+  }
+  .product-details-modal .product-details-content input{
+    min-height:44px!important;
+  }
+  .product-details-modal .product-details-cart-button{
+    width:100%!important;
+    justify-content:center!important;
+  }
+  .product-details-modal .product-details-description{
+    margin-top:6px!important;
+    padding-top:12px!important;
+  }
+  .product-details-modal .product-details-meta{
+    padding-top:10px!important;
+  }
+}
+@media(max-width:390px){
+  .product-details-modal .product-details-layout{
+    grid-template-columns:92px minmax(0,1fr)!important;
+    gap:12px!important;
+  }
+  .product-details-modal .product-details-image{
+    width:92px!important;
+    height:92px!important;
+  }
+  .product-details-modal .product-details-content h2{font-size:17px!important;}
+  .product-details-modal .product-details-price{font-size:19px!important;}
+}
