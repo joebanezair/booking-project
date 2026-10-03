@@ -4702,3 +4702,16 @@ html body .booking-modal-backdrop .product-edit-modal{
     column-gap:6px!important;
   }
 }
+
+
+/* Align the Services content card with the header/stats content width. */
+.services-controls-card{
+  width:auto!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+.services-list-section{
+  padding-left:0!important;
+  padding-right:0!important;
+}
