@@ -4798,3 +4798,10 @@ html body .booking-modal-backdrop .product-edit-modal{
   line-height:1!important;
   font-size:13px!important;
 }
+
+
+/* Services summary chip text uses normal weight. */
+.services-stats-grid .service-stat-card span,
+.services-stats-grid .service-stat-card strong{
+  font-weight:400!important;
+}
