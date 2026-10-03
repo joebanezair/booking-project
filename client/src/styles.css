@@ -3002,7 +3002,7 @@ html body .mobile-app-header button {
 .cart-quantity{display:flex;align-items:center;gap:6px}
 .cart-quantity button{width:30px;height:30px;padding:0;display:grid;place-items:center}
 .checkout-button{width:100%;justify-content:center}
-.product-quantity-modal{max-width:430px}
+.product-quantity-modal{max-width:430px;border-radius:5px!important}
 @media(max-width:900px){.products-page-grid{grid-template-columns:1fr}.products-cart-panel{position:static}}
 @media(max-width:560px){.product-shop-grid{grid-template-columns:1fr 1fr}.cart-line{grid-template-columns:1fr auto}.cart-line>strong{grid-column:1}.cart-line>.icon-button{grid-column:2;grid-row:2}}
 
