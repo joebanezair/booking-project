@@ -4328,3 +4328,15 @@ html body .booking-modal-backdrop .product-edit-modal{
     box-shadow:none!important;
   }
 }
+
+
+/* Add Product responsive label: desktop "Add Product", mobile "Add". */
+.product-add-short,.product-add-full{display:inline;}
+@media(max-width:560px){
+  .product-add-label{display:inline!important;font-weight:400!important;}
+  .product-add-full{display:none!important;}
+  .product-toolbar .product-add-icon{
+    width:fit-content!important;
+    padding:3px 6px!important;
+  }
+}
