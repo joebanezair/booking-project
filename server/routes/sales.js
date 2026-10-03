@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Sale, { Product, PosSale, ProductOrder } from "../models/Sale.js";
+import Sale, { Product, PosSale, ProductOrder, InventoryMovement } from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
 
@@ -88,6 +88,7 @@ async function deductInventory(lines, userId) {
       );
       if (!changed) throw Object.assign(new Error(line.name + " has insufficient stock."), { statusCode: 409 });
       deducted.push(line);
+      await InventoryMovement.create({businessOwner:userId,product:changed._id,productName:changed.name,type:"sale",quantity:-line.quantity,stockAfter:changed.stock,reference:"checkout"});
     }
     return deducted;
   } catch (error) {
@@ -166,8 +167,21 @@ router.post("/pos", async(req,res) => {
   } catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to complete POS sale."});}
 });
 
+router.get("/inventory-history", async(req,res)=>{try{res.json(await InventoryMovement.find({businessOwner:req.user.id}).sort({createdAt:-1}).limit(300).lean());}catch(error){console.error(error);res.status(500).json({message:"Unable to load inventory history."});}});
 router.get("/orders", async(req,res)=>{try{res.json(await ProductOrder.find({businessOwner:req.user.id}).sort({createdAt:-1}).limit(200).lean());}catch(error){console.error(error);res.status(500).json({message:"Unable to load product orders."});}});
-router.patch("/orders/:id/status", async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(order.status==="completed"&&status!=="completed")return res.status(409).json({message:"Completed orders cannot be reopened because inventory has already been recorded."});if(status==="completed"&&order.status!=="completed"){const deducted=await deductInventory(order.items,req.user.id);try{order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
+router.patch("/orders/:id/status", async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(order.status==="completed"&&status!=="completed")return res.status(409).json({message:"Completed orders cannot be reopened because inventory has already been recorded."});if(status==="completed"&&order.status!=="completed"){const deducted=await deductInventory(order.items,req.user.id);try{order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
+
+router.patch("/orders/:id/payment", async(req,res)=>{try{
+  const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});
+  if(!order)return res.status(404).json({message:"Order not found."});
+  const method=String(req.body.paymentMethod||"cash");
+  if(!["cash","gcash","maya","bank_transfer","other"].includes(method))return res.status(400).json({message:"Invalid payment method."});
+  const amount=Math.max(0,Number(req.body.amountPaid||0));
+  order.paymentMethod=method; order.amountPaid=amount; order.paymentReference=String(req.body.paymentReference||"").trim().slice(0,120); order.paymentNotes=String(req.body.paymentNotes||"").trim().slice(0,500);
+  order.paymentStatus=amount<=0?"unpaid":amount<Number(order.total||0)?"partially_paid":"paid";
+  order.paidAt=amount>0?new Date():null;
+  await order.save(); res.json(order);
+}catch(error){console.error(error);res.status(500).json({message:"Unable to record payment."});}});
 
 router.get("/analytics", async (req, res) => {
   try {
