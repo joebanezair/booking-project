@@ -4179,3 +4179,19 @@ html body .booking-modal-backdrop .product-edit-modal{
   .product-edit-modal .panel-title{padding:16px!important;}
   .product-edit-modal .product-edit-form{padding:0 16px 16px!important;}
 }
+
+
+/* Edit Product modal: thin form scrollbar. */
+.product-edit-modal .product-edit-form{
+  scrollbar-width:thin;
+}
+.product-edit-modal .product-edit-form::-webkit-scrollbar{
+  width:5px;
+}
+.product-edit-modal .product-edit-form::-webkit-scrollbar-track{
+  background:transparent;
+}
+.product-edit-modal .product-edit-form::-webkit-scrollbar-thumb{
+  background:var(--border);
+  border-radius:5px;
+}
