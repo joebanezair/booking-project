@@ -5591,3 +5591,24 @@ td,th{
     transform:rotate(90deg);
   }
 }
+
+/* Services status filters: neutral when unselected */
+#root .services-stats-grid .service-stat-card:not(.active) {
+  color:#6b7280 !important;
+  border-color:#d1d5db !important;
+  background:transparent !important;
+}
+#root .services-stats-grid .service-stat-card:not(.active) > svg,
+#root .services-stats-grid .service-stat-card:not(.active) span,
+#root .services-stats-grid .service-stat-card:not(.active) strong {
+  color:#6b7280 !important;
+}
+[data-theme="dark"] #root .services-stats-grid .service-stat-card:not(.active) {
+  color:#9ca3af !important;
+  border-color:#4b5563 !important;
+}
+[data-theme="dark"] #root .services-stats-grid .service-stat-card:not(.active) > svg,
+[data-theme="dark"] #root .services-stats-grid .service-stat-card:not(.active) span,
+[data-theme="dark"] #root .services-stats-grid .service-stat-card:not(.active) strong {
+  color:#9ca3af !important;
+}
