@@ -3881,3 +3881,31 @@ html body .booking-modal-backdrop .product-details-modal .product-details-image{
   .product-shop-list .product-shop-image{width:72px;height:72px;}
   .product-shop-list .product-card-actions{grid-column:2;justify-content:flex-start;}
 }
+
+
+/* Product inventory toolbar: borderless transparent view controls + iconized count. */
+.product-view-toggle{
+  border:0!important;
+  background:transparent!important;
+  padding:0!important;
+}
+.product-view-toggle button,
+.product-view-toggle button.active{
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.product-view-toggle button{color:var(--muted-foreground)!important;}
+.product-view-toggle button.active{color:var(--primary)!important;}
+.product-count-icon{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  padding:6px!important;
+  color:var(--muted-foreground)!important;
+}
+.product-count-icon svg{width:17px;height:17px;}
+.product-count-icon strong{font-size:11px;color:var(--primary);}
