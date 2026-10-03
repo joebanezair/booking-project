@@ -5633,3 +5633,23 @@ td,th{
 #bookings .booking-history-content {
   padding:5px !important;
 }
+
+/* Booking history compact date/time filters */
+#bookings .booking-history-panel,
+#bookings .booking-history-content {
+  padding:0 !important;
+}
+#bookings .booking-history-filters input[type="datetime-local"] {
+  width:fit-content !important;
+  min-width:0 !important;
+  max-width:100%;
+  min-height:40px;
+  padding:0 6px !important;
+  border:none !important;
+  box-shadow:none !important;
+  background:transparent;
+}
+#bookings .booking-history-filters label {
+  width:fit-content;
+  min-width:0;
+}
