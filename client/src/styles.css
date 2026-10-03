@@ -4117,3 +4117,18 @@ html body .booking-modal-backdrop .delete-product-modal{
 .product-action-popover .icon-action:hover{
   background:var(--secondary)!important;
 }
+
+
+/* Edit Product modal: one unified card, no internal header divider. */
+html body .booking-modal-backdrop .product-edit-modal{
+  border:1px solid var(--border)!important;
+  border-radius:5px!important;
+  overflow:hidden!important;
+  background:var(--card)!important;
+}
+.product-edit-modal .panel-title{
+  border:0!important;
+  border-bottom:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
