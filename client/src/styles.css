@@ -4964,3 +4964,13 @@ html body .booking-modal-backdrop .product-edit-modal{
 .service-bar-track{
   overflow:hidden!important;
 }
+
+
+/* Services grid media: 5px inset gap with 10px image radius. */
+.services-view-grid .admin-content-card > .admin-content-cover{
+  width:calc(100% - 10px)!important;
+  min-width:0!important;
+  max-width:calc(100% - 10px)!important;
+  margin:5px 5px 0!important;
+  border-radius:10px!important;
+}
