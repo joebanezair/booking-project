@@ -4859,3 +4859,15 @@ html body .booking-modal-backdrop .product-edit-modal{
   align-items:center!important;
   justify-content:center!important;
 }
+
+
+/* Post a service: pill radius, normal weight, black text. */
+.service-create-link button{
+  border-radius:999px!important;
+  font-weight:400!important;
+  color:#000!important;
+}
+.service-create-link button *{
+  font-weight:400!important;
+  color:#000!important;
+}
