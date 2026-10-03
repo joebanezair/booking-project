@@ -4930,3 +4930,15 @@ html body .booking-modal-backdrop .product-edit-modal{
 .services-stats-grid .service-stat-card:not(.active) strong{
   color:#4b5563!important;
 }
+
+
+/* Unselected Services status filters use neutral gray. */
+.services-stats-grid .service-stat-card:not(.active){
+  color:#9ca3af!important;
+  border-color:#9ca3af!important;
+}
+.services-stats-grid .service-stat-card:not(.active)>svg,
+.services-stats-grid .service-stat-card:not(.active) span,
+.services-stats-grid .service-stat-card:not(.active) strong{
+  color:#9ca3af!important;
+}
