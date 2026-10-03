@@ -4564,3 +4564,26 @@ html body .booking-modal-backdrop .product-edit-modal{
     width:auto!important;
   }
 }
+
+
+/* Shared Services card contains controls and service results. */
+.services-controls-card{
+  width:100%!important;
+  max-width:none!important;
+  padding:14px!important;
+}
+.services-controls-card .services-list-section{
+  margin-top:14px!important;
+  margin-bottom:0!important;
+}
+.services-controls-card .services-view-toolbar{
+  width:100%!important;
+}
+.services-controls-card .services-search-wrap{
+  flex:0 1 420px!important;
+  width:min(420px,100%)!important;
+}
+@media(max-width:560px){
+  .services-controls-card{padding:10px!important;}
+  .services-controls-card .services-list-section{margin-top:10px!important;}
+}
