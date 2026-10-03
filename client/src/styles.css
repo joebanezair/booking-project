@@ -4879,3 +4879,9 @@ html body .booking-modal-backdrop .product-edit-modal{
 .service-create-link button:focus-visible{
   background:transparent!important;
 }
+
+
+/* Post a service: use standard 5px radius. */
+.service-create-link button{
+  border-radius:5px!important;
+}
