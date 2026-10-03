@@ -4645,3 +4645,14 @@ html body .booking-modal-backdrop .product-edit-modal{
     min-height:34px!important;
   }
 }
+
+
+/* Use the compact mobile Services search dimensions on every screen size. */
+.services-controls-card .services-search{
+  height:34px!important;
+  min-height:34px!important;
+}
+.services-controls-card .services-search input{
+  height:32px!important;
+  min-height:32px!important;
+}
