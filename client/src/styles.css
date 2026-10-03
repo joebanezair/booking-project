@@ -4587,3 +4587,26 @@ html body .booking-modal-backdrop .product-edit-modal{
   .services-controls-card{padding:10px!important;}
   .services-controls-card .services-list-section{margin-top:10px!important;}
 }
+
+
+/* Services controls alignment: search left, view buttons right, no vertical outer margin. */
+.services-controls-card{
+  margin-top:0!important;
+  margin-bottom:0!important;
+}
+.services-controls-card .services-view-toolbar{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  width:100%!important;
+  margin-top:0!important;
+  margin-bottom:0!important;
+}
+.services-controls-card .services-search-wrap{
+  margin-left:0!important;
+  margin-right:auto!important;
+}
+.services-controls-card .service-view-toggle{
+  margin-left:auto!important;
+  margin-right:0!important;
+}
