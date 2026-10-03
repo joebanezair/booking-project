@@ -4303,3 +4303,14 @@ html body .booking-modal-backdrop .product-edit-modal{
   padding-top:3px!important;
   padding-bottom:3px!important;
 }
+
+
+/* Mobile Products: borderless cart summary. */
+@media(max-width:560px){
+  .products-cart-panel .cart-header-badge,
+  .cart-header-badge{
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+  }
+}
