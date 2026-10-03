@@ -4656,3 +4656,16 @@ html body .booking-modal-backdrop .product-edit-modal{
   height:32px!important;
   min-height:32px!important;
 }
+
+
+/* Vertically center Services search with grid/list controls. */
+.services-controls-card .services-view-toolbar{
+  align-items:center!important;
+}
+.services-controls-card .services-search-wrap,
+.services-controls-card .services-search,
+.services-controls-card .service-view-toggle{
+  align-self:center!important;
+  margin-top:0!important;
+  margin-bottom:0!important;
+}
