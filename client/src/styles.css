@@ -4236,3 +4236,12 @@ html body .booking-modal-backdrop .product-edit-modal{
   }
   .product-add-label{display:none!important;}
 }
+
+
+/* Add Product final shape/label refinement. */
+.product-toolbar .product-add-icon{
+  border-radius:5px!important;
+}
+.product-add-label{
+  font-weight:400!important;
+}
