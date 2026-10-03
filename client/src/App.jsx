@@ -24,6 +24,8 @@ import BusinessDetailPage from "./pages/BusinessDetailPage.jsx";
 import ReviewPage from "./pages/ReviewPage.jsx";
 import SalesPage from "./pages/SalesPage.jsx";
 import ProductsPage from "./pages/ProductsPage.jsx";
+import CustomersPage from "./pages/CustomersPage.jsx";
+import OrdersPage from "./pages/OrdersPage.jsx";
 import { disconnectRealtime } from "./realtime.js";
 import { api } from "./api.js";
 
@@ -88,6 +90,8 @@ export default function App() {
     <Route path="/dashboard/bookings/:bookingId" element={businessPage(BookingDetailPage)} />
     <Route path="/dashboard/sales" element={businessPage(SalesPage)} />
     <Route path="/dashboard/products" element={businessPage(ProductsPage)} />
+    <Route path="/dashboard/orders" element={businessPage(OrdersPage)} />
+    <Route path="/dashboard/customers" element={businessPage(CustomersPage)} />
     <Route path="/dashboard/messages" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/messages/:userId" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/profile" element={businessPage(ProfilePage)} />
@@ -98,7 +102,6 @@ export default function App() {
 
     <Route path="/dashboard/businesses" element={adminPage(BusinessManagementPage)} />
     <Route path="/dashboard/businesses/:businessId" element={adminPage(BusinessDetailPage)} />
-    <Route path="/dashboard/customers" element={<Navigate to="/dashboard/businesses" replace />} />
     <Route path="/dashboard/business-requests" element={<Navigate to="/dashboard/businesses" replace />} />
 
     <Route path="/profile/:username" element={<PublicProfilePage user={user} />} />
