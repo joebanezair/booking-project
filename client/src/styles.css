@@ -5421,3 +5421,24 @@ td,th{
   min-height:40px;
   box-sizing:border-box;
 }
+
+#bookings .availability-save-actions {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  margin-top:10px;
+}
+#bookings .availability-save-button.icon-action {
+  width:40px;
+  height:40px;
+  min-height:40px;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+}
+#bookings .availability-save-button.icon-action svg {
+  margin:0;
+}
