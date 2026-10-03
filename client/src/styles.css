@@ -5689,3 +5689,12 @@ td,th{
 #bookings .booking-history-panel {
   margin-top:5px !important;
 }
+
+#bookings .booking-history-filters input[type="datetime-local"] {
+  border:1px solid #d1d5db !important;
+  border-radius:5px !important;
+  background:var(--surface, #fff);
+}
+[data-theme="dark"] #bookings .booking-history-filters input[type="datetime-local"] {
+  border-color:#4b5563 !important;
+}
