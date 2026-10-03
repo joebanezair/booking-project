@@ -4314,3 +4314,17 @@ html body .booking-modal-backdrop .product-edit-modal{
     box-shadow:none!important;
   }
 }
+
+
+/* Correct mobile border target: restore cart summary border, remove Add Product border. */
+@media(max-width:560px){
+  .products-cart-panel .cart-header-badge,
+  .cart-header-badge{
+    border:1px solid var(--border)!important;
+  }
+  .product-toolbar .product-add-icon{
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+  }
+}
