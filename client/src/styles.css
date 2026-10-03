@@ -4954,3 +4954,13 @@ html body .booking-modal-backdrop .product-edit-modal{
 .services-stats-grid .service-stat-card:not(.active) strong{
   color:#000!important;
 }
+
+
+/* Sales by service/product channel: fully rounded progress bars. */
+.service-bar-track,
+.service-bar-track > span{
+  border-radius:999px!important;
+}
+.service-bar-track{
+  overflow:hidden!important;
+}
