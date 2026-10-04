@@ -6376,3 +6376,18 @@ td,th{
   background:rgba(48,84,210,.34);
   transform:rotate(-15deg);
 }
+
+
+/* Search business cards: circular avatar and remove excess white space */
+.public-page .user-result {
+  min-height:0 !important;
+  height:auto !important;
+  padding-bottom:20px !important;
+}
+.public-page .user-result .business-card-avatar .profile-avatar,
+.public-page .user-result .business-card-avatar img {
+  border-radius:9999px !important;
+}
+.public-page .user-result .business-rating {
+  margin-bottom:0 !important;
+}
