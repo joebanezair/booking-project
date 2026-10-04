@@ -6017,3 +6017,11 @@ td,th{
   .public-page .search-panel > input:not([type="search"]),
   .public-page .search-panel > select{flex:1 1 100% !important;width:100% !important;}
 }
+
+/* Match selected Search tab to BookFlow logo */
+.public-page .discovery-tabs button.active {
+  background:#5d7cff !important;
+  border-color:#5d7cff !important;
+  color:#fff !important;
+}
+.public-page .discovery-tabs button.active svg { color:#fff !important; }
