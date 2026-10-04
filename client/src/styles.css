@@ -5636,11 +5636,15 @@ td,th{
 
 /* Booking history compact date/time filters */
 #bookings .booking-history-panel {
-  padding:20px !important;
+  padding:0 !important;
   border:1px solid var(--border) !important;
 }
+#bookings .booking-history-toggle {
+  min-height:0 !important;
+  padding:10px !important;
+}
 #bookings .booking-history-content {
-  padding:0 !important;
+  padding:10px !important;
 }
 #bookings .booking-history-filters input[type="datetime-local"] {
   width:fit-content !important;
