@@ -6397,3 +6397,13 @@ td,th{
 .public-page .browse-top .primary-button {
   font-weight:400 !important;
 }
+
+
+/* Search business cards: reduce card width by 20px */
+.public-page .user-results {
+  grid-template-columns:repeat(auto-fill,minmax(300px,calc(50% - 18px))) !important;
+}
+.public-page .user-result {
+  width:calc(100% - 20px) !important;
+  box-sizing:border-box;
+}
