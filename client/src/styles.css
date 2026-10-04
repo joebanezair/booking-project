@@ -6025,3 +6025,8 @@ td,th{
   color:#fff !important;
 }
 .public-page .discovery-tabs button.active svg { color:#fff !important; }
+
+/* Product images in public Search results */
+.public-page .search-product-card > img {
+  border-radius:5px !important;
+}
