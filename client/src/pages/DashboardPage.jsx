@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckCircle, FiChevronDown, FiCircle, FiDollarSign, FiMessageSquare, FiPlus, FiSearch, FiSettings, FiTrendingUp, FiUser, FiUsers } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckCircle, FiChevronDown, FiCircle, FiDollarSign, FiMessageSquare, FiPackage, FiPlus, FiSearch, FiSettings, FiTrendingUp, FiUser, FiUsers } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart } from "../components/SalesCharts.jsx";
 import { api } from "../api.js";
@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 const businessSections = [
   { title: "Services", text: "Create and manage your public, private, or draft services.", to: "/dashboard/services", action: "Manage services", icon: FiBriefcase },
   { title: "Bookings", text: "Manage guest booking requests and service status.", to: "/dashboard/bookings", action: "Manage bookings", icon: FiCalendar },
+  { title: "Products", text: "Manage products, inventory, pricing, and items available for sale.", to: "/dashboard/products", action: "Manage products", icon: FiPackage },
   { title: "Sales & Analytics", text: "Track completed-service sales, trends, and spreadsheet reports.", to: "/dashboard/sales", action: "View sales", icon: FiBarChart2 },
   { title: "Messages", text: "Chat with other registered businesses and administrators.", to: "/dashboard/messages", action: "Open messages", icon: FiMessageSquare },
   { title: "Business profile", text: "Update your public profile, contact details, photos, and business information.", to: "/dashboard/profile", action: "Manage profile", icon: FiUser },
