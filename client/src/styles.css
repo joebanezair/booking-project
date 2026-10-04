@@ -5950,3 +5950,9 @@ td,th{
 .search-product-card p{color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .search-product-card small{color:var(--muted-foreground);}
 .discovery-tabs button{display:inline-flex;align-items:center;gap:6px;}
+
+
+/* Search tabs: space between icon and label */
+.discovery-tabs button {
+  gap:10px !important;
+}
