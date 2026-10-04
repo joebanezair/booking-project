@@ -6345,3 +6345,34 @@ td,th{
 .public-page .user-result .business-rating {
   margin-bottom:0 !important;
 }
+
+
+/* Business card bottom breathing room + branded fallback cover */
+.public-page .user-result {
+  padding-bottom:32px !important;
+}
+.public-page .business-card-cover-fallback {
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#4167ee 0%,#5d7cff 55%,#6f8cff 100%) !important;
+}
+.public-page .business-card-cover-fallback .cover-wave {
+  position:absolute;
+  display:block;
+  width:75%;
+  height:120%;
+  border-radius:50%;
+  pointer-events:none;
+}
+.public-page .business-card-cover-fallback .cover-wave-one {
+  left:-16%;
+  top:22%;
+  background:rgba(28,64,190,.42);
+  transform:rotate(12deg);
+}
+.public-page .business-card-cover-fallback .cover-wave-two {
+  right:-20%;
+  top:38%;
+  background:rgba(48,84,210,.34);
+  transform:rotate(-15deg);
+}
