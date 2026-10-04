@@ -5851,3 +5851,20 @@ td,th{
   background:#5d7cff !important;
   border-color:#5d7cff !important;
 }
+
+
+/* Booking history total on the right */
+#bookings .booking-history-header .booking-history-count {
+  margin-left:auto !important;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:36px;
+  padding:0 10px;
+  border-radius:5px;
+}
+#bookings .booking-history-count svg {
+  width:14px;
+  height:14px;
+}
