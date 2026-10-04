@@ -6194,3 +6194,24 @@ td,th{
 @media(max-width:560px){
   .public-page .user-result{min-height:300px !important;}
 }
+
+
+/* Search business cards: larger avatar + 20% cover */
+.public-page .user-result {
+  min-height:360px !important;
+}
+.public-page .user-result .business-card-cover {
+  height:20% !important;
+  min-height:100px !important;
+}
+.public-page .user-result .business-card-avatar {
+  margin-top:-42px !important;
+  margin-bottom:16px !important;
+}
+.public-page .user-result .business-card-avatar .profile-avatar,
+.public-page .user-result .business-card-avatar img {
+  width:96px !important;
+  height:96px !important;
+  border-radius:5px !important;
+  object-fit:cover !important;
+}
