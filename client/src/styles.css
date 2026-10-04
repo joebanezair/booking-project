@@ -5839,3 +5839,15 @@ td,th{
 #bookings .booking-history-content {
   padding:0 !important;
 }
+
+
+/* Booking history button matches BookFlow logo */
+#bookings .booking-history-header .booking-history-toggle {
+  background:#5d7cff !important;
+  border-color:#5d7cff !important;
+  color:#fff !important;
+}
+#bookings .booking-history-header .booking-history-toggle:hover {
+  background:#5d7cff !important;
+  border-color:#5d7cff !important;
+}
