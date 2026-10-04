@@ -6324,3 +6324,9 @@ td,th{
     height:120px !important;
   }
 }
+
+
+/* Search business cards: 20px bottom padding */
+.public-page .user-result {
+  padding-bottom:20px !important;
+}
