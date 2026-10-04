@@ -5989,3 +5989,31 @@ td,th{
   background:#5d7cff !important;
   border-color:#5d7cff !important;
 }
+
+
+/* Search controls: fit content instead of stretching */
+.public-page .search-panel {
+  display:flex !important;
+  align-items:center;
+  justify-content:flex-start;
+  gap:10px;
+}
+.public-page .search-panel > input[type="search"] {
+  flex:0 1 520px !important;
+  width:520px !important;
+  max-width:100%;
+}
+.public-page .search-panel > input:not([type="search"]) {
+  flex:0 0 220px !important;
+  width:220px !important;
+}
+.public-page .search-panel > select {
+  flex:0 0 180px !important;
+  width:180px !important;
+}
+@media(max-width:760px){
+  .public-page .search-panel{flex-wrap:wrap;}
+  .public-page .search-panel > input[type="search"],
+  .public-page .search-panel > input:not([type="search"]),
+  .public-page .search-panel > select{flex:1 1 100% !important;width:100% !important;}
+}
