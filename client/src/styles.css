@@ -5922,3 +5922,9 @@ td,th{
 #bookings .booking-history-export svg{width:15px;height:15px;}
 #bookings .booking-history-export:hover{background:#5d7cff;border-color:#5d7cff;}
 #bookings .booking-history-export:disabled{opacity:.5;cursor:not-allowed;}
+
+
+/* Space above Booking History From/To controls */
+#bookings .booking-history-filters {
+  margin-top:10px !important;
+}
