@@ -5940,3 +5940,13 @@ td,th{
 #bookings .booking-workspace-grid {
   row-gap:0 !important;
 }
+
+
+/* Public search product results */
+.search-product-card{display:flex;gap:12px;align-items:center;text-decoration:none;color:inherit;padding:12px;border-radius:5px!important;}
+.search-product-card>img{width:72px;height:72px;object-fit:cover;border-radius:5px;}
+.search-product-card>div{min-width:0;display:grid;gap:4px;}
+.search-product-card h3,.search-product-card p{margin:0;}
+.search-product-card p{color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.search-product-card small{color:var(--muted-foreground);}
+.discovery-tabs button{display:inline-flex;align-items:center;gap:6px;}
