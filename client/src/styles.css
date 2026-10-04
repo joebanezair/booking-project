@@ -5807,3 +5807,23 @@ td,th{
 #bookings .booking-history-header .booking-history-search {
   border-radius:5px !important;
 }
+
+
+/* Booking history primary button */
+#bookings .booking-history-header .booking-history-toggle {
+  background:#2563eb !important;
+  border-color:#2563eb !important;
+  color:#fff !important;
+  border-radius:5px !important;
+}
+#bookings .booking-history-header .booking-history-toggle svg {
+  color:#fff !important;
+}
+#bookings .booking-history-header .booking-history-toggle:hover {
+  background:#1d4ed8 !important;
+  border-color:#1d4ed8 !important;
+}
+[data-theme="dark"] #bookings .booking-history-header .booking-history-toggle,
+[data-theme="dark"] #bookings .booking-history-header .booking-history-toggle svg {
+  color:#fff !important;
+}
