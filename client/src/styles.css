@@ -6391,3 +6391,9 @@ td,th{
 .public-page .user-result .business-rating {
   margin-bottom:0 !important;
 }
+
+
+/* Search page Dashboard button text weight */
+.public-page .browse-top .primary-button {
+  font-weight:400 !important;
+}
