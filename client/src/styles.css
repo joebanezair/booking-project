@@ -6064,3 +6064,24 @@ td,th{
   .public-page .user-results{grid-template-columns:1fr !important;}
   .public-page .user-result{min-height:0;}
 }
+
+
+/* Business rating at bottom of Search cards */
+.public-page .user-result .business-rating {
+  margin-top:14px;
+  display:inline-flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  color:var(--muted-foreground);
+  font-size:13px;
+}
+.public-page .user-result .business-rating svg {
+  width:15px;
+  height:15px;
+  color:#f59e0b;
+}
+.public-page .user-result .business-rating strong {
+  color:var(--foreground);
+}
