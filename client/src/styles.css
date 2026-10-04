@@ -6030,3 +6030,37 @@ td,th{
 .public-page .search-product-card > img {
   border-radius:5px !important;
 }
+
+
+/* Search Businesses: vertical profile cards */
+.public-page .user-results {
+  display:grid !important;
+  grid-template-columns:repeat(auto-fill,minmax(220px,280px)) !important;
+  gap:12px !important;
+  justify-content:start;
+}
+.public-page .user-result {
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  text-align:center !important;
+  gap:10px !important;
+  padding:20px !important;
+  min-height:240px;
+  border-radius:5px !important;
+}
+.public-page .user-result > div {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-width:0;
+}
+.public-page .user-result h2,
+.public-page .user-result p {
+  margin:0;
+}
+@media(max-width:560px){
+  .public-page .user-results{grid-template-columns:1fr !important;}
+  .public-page .user-result{min-height:0;}
+}
