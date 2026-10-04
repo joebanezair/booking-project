@@ -5968,3 +5968,12 @@ td,th{
 .discovery-tabs button:not(.active) svg {
   color:var(--muted-foreground) !important;
 }
+
+
+/* Search filter container: no outer border or padding */
+.public-page .search-panel {
+  padding:0 !important;
+  border:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+}
