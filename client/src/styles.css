@@ -5829,7 +5829,13 @@ td,th{
 }
 
 
-/* Booking history result cards: remove inner padding */
+/* Booking history result cards: keep their normal card padding */
 #bookings .booking-history-content .booking-card {
+  padding:10px !important;
+}
+
+
+/* Booking history expanded content container: no padding */
+#bookings .booking-history-content {
   padding:0 !important;
 }
