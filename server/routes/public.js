@@ -236,7 +236,7 @@ router.get("/search", async (req, res) => {
 
     const matchingIds = [...new Map([...userMatches, ...businessMatches].map(id => [String(id), id])).values()];
     const matchingUsers = await User.find({ _id: { $in: matchingIds } })
-      .select("name username headline location profileImage profileImagePositionX profileImagePositionY accountStatus")
+      .select("name username headline location profileImage profileImagePositionX profileImagePositionY coverImage accountStatus")
       .sort({ name: 1 });
 
     const pagedUsers = matchingUsers.slice(skip, skip + limit);
