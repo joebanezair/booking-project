@@ -6122,3 +6122,75 @@ td,th{
   align-items:center;
   min-width:0;
 }
+
+
+/* Refined public Search business cards */
+.public-page .user-results {
+  grid-template-columns:repeat(auto-fill,minmax(260px,320px)) !important;
+  gap:16px !important;
+}
+.public-page .user-result {
+  min-height:330px !important;
+  padding:0 18px 18px !important;
+  gap:0 !important;
+  background:var(--card);
+  transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease;
+}
+.public-page .user-result:hover {
+  border-color:#5d7cff !important;
+  box-shadow:0 6px 18px rgba(15,23,42,.08);
+  transform:translateY(-1px);
+}
+.public-page .user-result .business-card-cover {
+  width:calc(100% + 36px);
+  height:92px;
+  min-height:92px;
+  margin:0 -18px;
+  background:linear-gradient(135deg,rgba(93,124,255,.14),rgba(93,124,255,.04));
+}
+.public-page .user-result .business-card-cover img {
+  object-position:center;
+}
+.public-page .user-result .business-card-avatar {
+  margin-top:-34px;
+  margin-bottom:14px;
+}
+.public-page .user-result .business-card-avatar .profile-avatar,
+.public-page .user-result .business-card-avatar img {
+  width:82px !important;
+  height:82px !important;
+  border-radius:5px !important;
+  border:4px solid var(--card);
+  box-shadow:0 2px 8px rgba(15,23,42,.12);
+  object-fit:cover;
+}
+.public-page .user-result .business-card-info {
+  width:100%;
+  gap:3px;
+}
+.public-page .user-result .business-card-info h2 {
+  font-size:19px;
+  line-height:1.25;
+  margin:0;
+}
+.public-page .user-result .business-card-info > strong {
+  font-size:14px;
+}
+.public-page .user-result .business-card-info > p,
+.public-page .user-result .business-card-info > small {
+  color:var(--muted-foreground);
+}
+.public-page .user-result .business-rating {
+  width:100%;
+  margin-top:16px;
+  padding-top:12px;
+  border-top:1px solid var(--border);
+  gap:6px;
+}
+.public-page .user-result .business-rating svg {
+  color:#f59e0b;
+  fill:none;
+}
+@media(max-width:560px){
+  .public-page .user-result{min-height:300px !important;}
+}
