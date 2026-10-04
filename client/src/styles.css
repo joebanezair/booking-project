@@ -5956,3 +5956,15 @@ td,th{
 .discovery-tabs button {
   gap:10px !important;
 }
+
+
+/* Search tabs: neutral unselected state */
+.discovery-tabs button:not(.active) {
+  background:transparent !important;
+  color:var(--muted-foreground) !important;
+  border-color:var(--border) !important;
+  box-shadow:none !important;
+}
+.discovery-tabs button:not(.active) svg {
+  color:var(--muted-foreground) !important;
+}
