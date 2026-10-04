@@ -5705,3 +5705,26 @@ td,th{
 [data-theme="dark"] #bookings .booking-history-filters input[type="datetime-local"] {
   border-color:#4b5563 !important;
 }
+
+
+/* Booking history search */
+#bookings .booking-history-search {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:100%;
+  margin-bottom:10px;
+  padding:0 10px;
+  min-height:40px;
+  border:1px solid var(--border);
+  border-radius:5px;
+  box-sizing:border-box;
+}
+#bookings .booking-history-search input {
+  flex:1;
+  min-width:0;
+  border:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  padding:0 !important;
+}
