@@ -5928,3 +5928,15 @@ td,th{
 #bookings .booking-history-filters {
   margin-top:10px !important;
 }
+
+
+/* Exact gap between Guest bookings and Booking history */
+#bookings .booking-list-panel {
+  margin-bottom:0 !important;
+}
+#bookings .booking-history-panel {
+  margin-top:10px !important;
+}
+#bookings .booking-workspace-grid {
+  row-gap:0 !important;
+}
