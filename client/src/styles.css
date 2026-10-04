@@ -5977,3 +5977,15 @@ td,th{
   box-shadow:none !important;
   background:transparent !important;
 }
+
+
+/* Search page Dashboard button matches BookFlow logo */
+.public-page .browse-top .primary-button {
+  background:#5d7cff !important;
+  border-color:#5d7cff !important;
+  color:#fff !important;
+}
+.public-page .browse-top .primary-button:hover {
+  background:#5d7cff !important;
+  border-color:#5d7cff !important;
+}
