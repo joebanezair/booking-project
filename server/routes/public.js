@@ -271,7 +271,19 @@ router.get("/search", async (req, res) => {
       ...(ratings.get(String(service._id)) || { averageRating: 0, ratingCount: 0 })
     })).filter(service => service.averageRating >= minRating);
 
-    res.json({ users, services: mapped, page, hasMore: users.length === limit || services.length === limit });
+    const productFilter = {
+      user: { $in: ownerIds },
+      published: true,
+      ...(regex ? { $or: [{ name: regex }, { description: regex }, { sku: regex }, { user: { $in: matchingIds } }] } : {})
+    };
+    const products = await Product.find(productFilter)
+      .populate("user", "name username profileImage accountStatus")
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    res.json({ users, services: mapped, products, page, hasMore: users.length === limit || services.length === limit || products.length === limit });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to search businesses and services." });
