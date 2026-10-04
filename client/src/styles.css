@@ -5901,3 +5901,24 @@ td,th{
   padding:20px !important;
   box-sizing:border-box;
 }
+
+
+/* Booking history export */
+#bookings .booking-history-export {
+  align-self:end;
+  min-height:40px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:0 12px;
+  border:1px solid #5d7cff;
+  border-radius:5px;
+  background:#5d7cff;
+  color:#fff;
+  font-weight:700;
+  white-space:nowrap;
+}
+#bookings .booking-history-export svg{width:15px;height:15px;}
+#bookings .booking-history-export:hover{background:#5d7cff;border-color:#5d7cff;}
+#bookings .booking-history-export:disabled{opacity:.5;cursor:not-allowed;}
