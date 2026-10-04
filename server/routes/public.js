@@ -239,16 +239,20 @@ router.get("/search", async (req, res) => {
       .select("name username headline location profileImage profileImagePositionX profileImagePositionY accountStatus")
       .sort({ name: 1 });
 
-    const users = matchingUsers.slice(skip, skip + limit).map(user => {
+    const pagedUsers = matchingUsers.slice(skip, skip + limit);
+    const users = await Promise.all(pagedUsers.map(async user => {
       const profile = businessByOwner.get(String(user._id));
+      const reviewSummary = await verifiedReviewSummary(profile?._id);
       return {
         ...user.toObject(),
         name: profile?.name || user.name,
         headline: profile?.category || user.headline,
         location: profile?.location || user.location,
-        profileImage: profile?.logo || user.profileImage
+        profileImage: profile?.logo || user.profileImage,
+        averageRating: reviewSummary.averageRating,
+        ratingCount: reviewSummary.ratingCount
       };
-    });
+    }));
 
     const serviceFilter = {
       user: { $in: ownerIds },
