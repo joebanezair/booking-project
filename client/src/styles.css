@@ -5636,7 +5636,8 @@ td,th{
 
 /* Booking history compact date/time filters */
 #bookings .booking-history-panel {
-  padding:10px !important;
+  padding:20px !important;
+  border:1px solid var(--border) !important;
 }
 #bookings .booking-history-content {
   padding:0 !important;
