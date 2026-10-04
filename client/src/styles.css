@@ -5868,3 +5868,29 @@ td,th{
   width:14px;
   height:14px;
 }
+
+
+/* Booking history count: plain right-aligned icon + number */
+#bookings .booking-history-header .booking-history-count {
+  margin-left:auto !important;
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:5px;
+  min-height:0;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:var(--muted-foreground);
+}
+#bookings .booking-history-count svg {
+  width:16px;
+  height:16px;
+  display:block;
+  color:var(--primary);
+}
+#bookings .booking-history-count strong {
+  line-height:1;
+  color:var(--foreground);
+}
