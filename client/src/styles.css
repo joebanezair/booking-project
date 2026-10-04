@@ -5827,3 +5827,9 @@ td,th{
 [data-theme="dark"] #bookings .booking-history-header .booking-history-toggle svg {
   color:#fff !important;
 }
+
+
+/* Booking history result cards: remove inner padding */
+#bookings .booking-history-content .booking-card {
+  padding:0 !important;
+}
