@@ -5898,6 +5898,6 @@ td,th{
 
 /* Booking history entire card spacing */
 #bookings .booking-history-panel {
-  padding:10px !important;
+  padding:20px !important;
   box-sizing:border-box;
 }
