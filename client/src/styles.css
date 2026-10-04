@@ -5802,3 +5802,8 @@ td,th{
 [data-theme="dark"] #bookings .booking-history-header .booking-history-toggle svg {
   color:#fff !important;
 }
+
+
+#bookings .booking-history-header .booking-history-search {
+  border-radius:5px !important;
+}
