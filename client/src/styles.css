@@ -5780,3 +5780,25 @@ td,th{
 #bookings .booking-history-header .count {
   margin-left:0 !important;
 }
+
+
+/* Booking history header sizing */
+#bookings .booking-history-panel {
+  padding:10px !important;
+}
+#bookings .booking-history-header .booking-history-toggle,
+#bookings .booking-history-header .booking-history-search {
+  height:40px !important;
+  min-height:40px !important;
+  box-sizing:border-box;
+}
+#bookings .booking-history-header .booking-history-toggle {
+  color:#000 !important;
+}
+#bookings .booking-history-header .booking-history-toggle svg {
+  color:#000 !important;
+}
+[data-theme="dark"] #bookings .booking-history-header .booking-history-toggle,
+[data-theme="dark"] #bookings .booking-history-header .booking-history-toggle svg {
+  color:#fff !important;
+}
