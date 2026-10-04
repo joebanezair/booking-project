@@ -5763,3 +5763,20 @@ td,th{
   #bookings .booking-history-header{flex-wrap:wrap;}
   #bookings .booking-history-header .booking-history-search{order:3;width:100%;margin-left:0;}
 }
+
+
+/* Booking history: compact left-aligned controls */
+#bookings .booking-history-panel {
+  padding:5px !important;
+}
+#bookings .booking-history-header {
+  justify-content:flex-start !important;
+  gap:5px !important;
+}
+#bookings .booking-history-header .booking-history-search {
+  width:min(360px,40vw);
+  margin:0 !important;
+}
+#bookings .booking-history-header .count {
+  margin-left:0 !important;
+}
