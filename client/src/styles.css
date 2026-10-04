@@ -5894,3 +5894,10 @@ td,th{
   line-height:1;
   color:var(--foreground);
 }
+
+
+/* Booking history entire card spacing */
+#bookings .booking-history-panel {
+  padding:10px !important;
+  box-sizing:border-box;
+}
