@@ -6330,3 +6330,18 @@ td,th{
 .public-page .user-result {
   padding-bottom:20px !important;
 }
+
+
+/* Search business cards: tighter bottom + 20px profile radius */
+.public-page .user-result {
+  min-height:380px !important;
+  height:auto !important;
+  padding-bottom:12px !important;
+}
+.public-page .user-result .business-card-avatar .profile-avatar,
+.public-page .user-result .business-card-avatar img {
+  border-radius:20px !important;
+}
+.public-page .user-result .business-rating {
+  margin-bottom:0 !important;
+}
