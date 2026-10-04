@@ -6085,3 +6085,40 @@ td,th{
 .public-page .user-result .business-rating strong {
   color:var(--foreground);
 }
+
+
+/* Search business cards: cover + square profile image */
+.public-page .user-result {
+  position:relative;
+  overflow:hidden;
+  padding:0 20px 20px !important;
+}
+.public-page .user-result .business-card-cover {
+  width:calc(100% + 40px);
+  height:20%;
+  min-height:58px;
+  margin:0 -20px;
+  background:var(--muted);
+  overflow:hidden;
+}
+.public-page .user-result .business-card-cover img {
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+.public-page .user-result .business-card-avatar {
+  margin-top:-28px;
+  position:relative;
+  z-index:1;
+}
+.public-page .user-result .business-card-avatar .profile-avatar,
+.public-page .user-result .business-card-avatar img {
+  border-radius:5px !important;
+}
+.public-page .user-result .business-card-info {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-width:0;
+}
