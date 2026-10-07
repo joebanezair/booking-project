@@ -6801,3 +6801,21 @@ td,th{
     height:48px !important;
   }
 }
+
+
+/* Search businesses: seamless list rows with bottom divider only */
+.public-page .user-results.list-view {
+  gap:0 !important;
+}
+.public-page .user-results.list-view .user-result {
+  border:0 !important;
+  border-bottom:1px solid var(--border) !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+.public-page .user-results.list-view .user-result:hover {
+  border-color:var(--border) !important;
+  border-bottom:1px solid var(--border) !important;
+  box-shadow:none !important;
+  transform:none !important;
+}
