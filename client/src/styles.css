@@ -6889,3 +6889,28 @@ td,th{
     animation:none;
   }
 }
+
+
+/* Search discovery tabs: icon + total only on mobile */
+@media(max-width:560px){
+  .discovery-tabs {
+    display:grid !important;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px !important;
+  }
+  .discovery-tabs button {
+    min-width:0;
+    padding:10px 8px !important;
+    justify-content:center;
+    gap:5px !important;
+  }
+  .discovery-tabs button svg {
+    flex:0 0 auto;
+  }
+  .discovery-tabs .discovery-tab-label {
+    display:none;
+  }
+  .discovery-tabs .discovery-tab-count {
+    white-space:nowrap;
+  }
+}
