@@ -6819,3 +6819,12 @@ td,th{
   box-shadow:none !important;
   transform:none !important;
 }
+
+
+/* Search businesses: branded hover outline for list rows */
+.public-page .user-results.list-view .user-result:hover {
+  border:1px solid #5d7cff !important;
+  border-radius:5px !important;
+  box-shadow:none !important;
+  transform:none !important;
+}
