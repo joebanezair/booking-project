@@ -6828,3 +6828,31 @@ td,th{
   box-shadow:none !important;
   transform:none !important;
 }
+
+
+/* Search businesses: animated brand accent for list rows */
+.public-page .user-results.list-view .user-result {
+  position:relative;
+  overflow:hidden;
+}
+.public-page .user-results.list-view .user-result::before {
+  content:"";
+  position:absolute;
+  left:0;
+  top:50%;
+  width:6px;
+  height:0;
+  background:#5d7cff;
+  transform:translateY(-50%);
+  transition:height .2s ease;
+}
+.public-page .user-results.list-view .user-result:hover {
+  border:0 !important;
+  border-bottom:1px solid var(--border) !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  transform:none !important;
+}
+.public-page .user-results.list-view .user-result:hover::before {
+  height:100%;
+}
