@@ -6695,3 +6695,14 @@ td,th{
   position:relative;
   z-index:2;
 }
+
+
+/* Search businesses: cover photo at 50% more height than compact baseline */
+.public-page .user-results:not(.list-view) .business-card-cover {
+  height:108px !important;
+  min-height:108px !important;
+  flex:0 0 108px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-avatar {
+  margin-top:-50px !important;
+}
