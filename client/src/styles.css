@@ -6862,3 +6862,30 @@ td,th{
 .public-page .browse-section .section-heading h1 {
   font-size:clamp(27px,4vw,43px) !important;
 }
+
+
+/* Search page: typing animation for active discovery heading */
+.search-typing-heading {
+  display:inline-block;
+  width:0;
+  max-width:max-content;
+  overflow:hidden;
+  white-space:nowrap;
+  border-right:2px solid #5d7cff;
+  animation:search-heading-type .55s steps(16,end) forwards,search-heading-caret .7s step-end 2;
+}
+@keyframes search-heading-type {
+  from { width:0; }
+  to { width:100%; }
+}
+@keyframes search-heading-caret {
+  0%,100% { border-color:transparent; }
+  50% { border-color:#5d7cff; }
+}
+@media(prefers-reduced-motion:reduce){
+  .search-typing-heading {
+    width:auto;
+    border-right:0;
+    animation:none;
+  }
+}
