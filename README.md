@@ -803,6 +803,14 @@ Automatic payment verification and payment-provider webhooks are intentionally o
 
 ## Pull the shadcn-ui branch
 
+Update the branch:
+
 ```bash
 git checkout shadcn-ui && git pull origin shadcn-ui
+```
+
+Update the branch and immediately run the frontend in GitHub Codespaces:
+
+```bash
+git checkout shadcn-ui && git pull origin shadcn-ui && cd client && npm run dev -- --host 0.0.0.0
 ```
