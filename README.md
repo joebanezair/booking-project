@@ -612,6 +612,107 @@ docker run -d \
   mongo:latest
 ~~~
 
+### Fix a corrupted MongoDB Docker container
+
+This is a **MongoDB/Docker problem, not a problem with your Node.js code**.
+
+If the server is correctly trying to connect to:
+
+~~~text
+127.0.0.1:27017
+~~~
+
+but the existing `booking-mongodb` Docker container reports an error such as:
+
+~~~text
+RWLayer ... is unexpectedlynil
+~~~
+
+the container itself appears to be corrupted. The simplest fix is to delete **only that broken container** and recreate it. Your application files will not be deleted.
+
+From the Codespace terminal, run:
+
+~~~bash
+docker rm -f booking-mongodb
+~~~
+
+Then recreate MongoDB:
+
+~~~bash
+docker run -d \
+  --name booking-mongodb \
+  -p 27017:27017 \
+  -v booking-mongodb-data:/data/db \
+  mongo:7
+~~~
+
+Check that it started:
+
+~~~bash
+docker ps
+~~~
+
+You should see something similar to:
+
+~~~text
+booking-mongodb    mongo:7    Up ...    0.0.0.0:27017->27017/tcp
+~~~
+
+Then test MongoDB:
+
+~~~bash
+docker logs booking-mongodb
+~~~
+
+Look for:
+
+~~~text
+Waiting for connections
+~~~
+
+Now return to the server:
+
+~~~bash
+cd /workspaces/codespaces-blank/booking-project/server
+npm run dev
+~~~
+
+#### If Docker still gives `RWLayer ... unexpectedlynil`
+
+That means the Codespace Docker storage itself may be damaged rather than just the MongoDB container. Run:
+
+~~~bash
+docker ps -a
+docker volume ls
+~~~
+
+If `booking-mongodb-data` exists, **don't delete that volume yet** because it may contain the existing booking-app database.
+
+Also check the server `.env`:
+
+~~~bash
+grep MONGO .env
+~~~
+
+For the current local Docker setup, expect something along the lines of:
+
+~~~env
+MONGO_URI=mongodb://127.0.0.1:27017/booking
+~~~
+
+The key issue is:
+
+~~~text
+Node/Mongoose
+     ↓
+127.0.0.1:27017
+     ↓
+MongoDB container
+     ✗ container currently broken
+~~~
+
+So **don't change `server.js` yet**. Fix or recreate MongoDB first.
+
 The server `.env` should use:
 
 ~~~env
