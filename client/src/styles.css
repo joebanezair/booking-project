@@ -6542,3 +6542,90 @@ td,th{
     height:60px !important;
   }
 }
+
+
+/* Search businesses: polished grid layout */
+.public-page .user-results:not(.list-view) {
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr)) !important;
+  gap:20px !important;
+  align-items:stretch;
+}
+.public-page .user-results:not(.list-view) .user-result {
+  max-width:none !important;
+  min-width:0;
+  min-height:300px !important;
+  padding:0 22px 22px !important;
+  overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 1px 2px rgba(15,23,42,.03);
+}
+.public-page .user-results:not(.list-view) .user-result:hover {
+  border-color:rgba(93,124,255,.55) !important;
+  box-shadow:0 10px 28px rgba(15,23,42,.09) !important;
+  transform:translateY(-2px);
+}
+.public-page .user-results:not(.list-view) .business-card-cover {
+  width:calc(100% + 44px) !important;
+  margin:0 -22px !important;
+  height:92px !important;
+  min-height:92px !important;
+  flex:0 0 92px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-avatar {
+  margin-top:-38px !important;
+  margin-bottom:13px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-avatar .profile-avatar,
+.public-page .user-results:not(.list-view) .business-card-avatar img {
+  width:92px !important;
+  height:92px !important;
+  border:4px solid var(--card) !important;
+  box-shadow:0 4px 14px rgba(15,23,42,.14) !important;
+}
+.public-page .user-results:not(.list-view) .business-card-info {
+  flex:1;
+  justify-content:flex-start;
+  gap:4px !important;
+  text-align:center;
+}
+.public-page .user-results:not(.list-view) .business-card-info h2 {
+  max-width:100%;
+  margin:0 !important;
+  font-size:19px !important;
+  line-height:1.25 !important;
+  overflow-wrap:anywhere;
+}
+.public-page .user-results:not(.list-view) .business-card-info > strong {
+  color:#3457dc;
+  font-size:13px !important;
+  font-weight:600;
+}
+.public-page .user-results:not(.list-view) .business-card-info > p {
+  margin:6px 0 0;
+  line-height:1.45;
+}
+.public-page .user-results:not(.list-view) .business-card-info > small {
+  margin-top:2px;
+}
+.public-page .user-results:not(.list-view) .business-rating {
+  width:100% !important;
+  margin-top:auto !important;
+  padding-top:14px !important;
+  border-top:1px solid var(--border) !important;
+  justify-content:center;
+  font-size:13px !important;
+}
+@media(max-width:760px){
+  .public-page .user-results:not(.list-view) {
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr)) !important;
+    gap:14px !important;
+  }
+}
+@media(max-width:560px){
+  .public-page .user-results:not(.list-view) {
+    grid-template-columns:1fr !important;
+  }
+  .public-page .user-results:not(.list-view) .user-result {
+    min-height:280px !important;
+  }
+}
