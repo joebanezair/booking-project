@@ -6856,3 +6856,9 @@ td,th{
 .public-page .user-results.list-view .user-result:hover::before {
   height:100%;
 }
+
+
+/* Search page: reduce main heading by 20% */
+.public-page .browse-section .section-heading h1 {
+  font-size:clamp(27px,4vw,43px) !important;
+}
