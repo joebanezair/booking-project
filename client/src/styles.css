@@ -6706,3 +6706,50 @@ td,th{
 .public-page .user-results:not(.list-view) .business-card-avatar {
   margin-top:-50px !important;
 }
+
+
+/* Search businesses: scale grid cards down 20% while preserving proportions */
+.public-page .user-results:not(.list-view) {
+  grid-template-columns:repeat(auto-fill,minmax(184px,216px)) !important;
+  gap:14px !important;
+}
+.public-page .user-results:not(.list-view) .user-result {
+  min-height:216px !important;
+  padding:0 13px 13px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-cover {
+  width:calc(100% + 26px) !important;
+  margin:0 -13px !important;
+  height:86px !important;
+  min-height:86px !important;
+  flex:0 0 86px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-avatar {
+  margin-top:-40px !important;
+  margin-bottom:8px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-avatar .profile-avatar,
+.public-page .user-results:not(.list-view) .business-card-avatar img {
+  width:86px !important;
+  height:86px !important;
+  border-width:3px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-info {
+  gap:3px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-info h2 {
+  font-size:14px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-info > strong,
+.public-page .user-results:not(.list-view) .business-card-info > p,
+.public-page .user-results:not(.list-view) .business-card-info > small {
+  font-size:11px !important;
+}
+.public-page .user-results:not(.list-view) .business-rating {
+  padding-top:8px !important;
+  font-size:11px !important;
+}
+.public-page .user-results:not(.list-view) .business-rating svg {
+  width:13px !important;
+  height:13px !important;
+}
