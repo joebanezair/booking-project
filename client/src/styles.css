@@ -6672,3 +6672,26 @@ td,th{
     grid-template-columns:1fr !important;
   }
 }
+
+
+/* Search businesses: taller cover treatment */
+.public-page .user-results:not(.list-view) .business-card-cover {
+  height:86px !important;
+  min-height:86px !important;
+  flex:0 0 86px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-cover img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+}
+.public-page .user-results:not(.list-view) .business-card-avatar {
+  margin-top:-46px !important;
+  margin-bottom:10px !important;
+}
+.public-page .user-results:not(.list-view) .business-card-avatar .profile-avatar,
+.public-page .user-results:not(.list-view) .business-card-avatar img {
+  position:relative;
+  z-index:2;
+}
