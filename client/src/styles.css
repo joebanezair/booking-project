@@ -6457,3 +6457,88 @@ td,th{
   width:16px !important;
   height:16px !important;
 }
+
+
+/* Search business results: grid/list view toggle */
+.business-view-toggle {
+  display:flex;
+  justify-content:flex-end;
+  gap:6px;
+  margin:-8px 0 16px;
+}
+.business-view-toggle button {
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 12px;
+  border:1px solid var(--border);
+  border-radius:7px;
+  background:var(--card);
+  color:var(--muted-foreground);
+  cursor:pointer;
+}
+.business-view-toggle button.active {
+  border-color:#5d7cff;
+  background:#eef2ff;
+  color:#3457dc;
+}
+.public-page .user-results.list-view {
+  display:flex !important;
+  flex-direction:column;
+  gap:12px !important;
+}
+.public-page .user-results.list-view .user-result {
+  width:100%;
+  min-height:132px !important;
+  height:auto !important;
+  padding:16px 20px !important;
+  display:grid !important;
+  grid-template-columns:96px minmax(0,1fr);
+  grid-template-rows:auto;
+  align-items:center !important;
+  gap:18px !important;
+}
+.public-page .user-results.list-view .business-card-cover {
+  display:none !important;
+}
+.public-page .user-results.list-view .business-card-avatar {
+  margin:0 !important;
+}
+.public-page .user-results.list-view .business-card-avatar .profile-avatar,
+.public-page .user-results.list-view .business-card-avatar img {
+  width:88px !important;
+  height:88px !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+.public-page .user-results.list-view .business-card-info {
+  align-items:flex-start !important;
+  gap:3px !important;
+}
+.public-page .user-results.list-view .business-card-info h2 {
+  font-size:20px !important;
+}
+.public-page .user-results.list-view .business-card-info > strong,
+.public-page .user-results.list-view .business-card-info > p,
+.public-page .user-results.list-view .business-card-info > small {
+  font-size:14px !important;
+}
+.public-page .user-results.list-view .business-rating {
+  width:auto !important;
+  margin-top:10px !important;
+  padding-top:0 !important;
+  border-top:0 !important;
+}
+@media(max-width:560px){
+  .business-view-toggle { justify-content:flex-start; }
+  .public-page .user-results.list-view .user-result {
+    grid-template-columns:64px minmax(0,1fr);
+    padding:14px !important;
+    gap:12px !important;
+  }
+  .public-page .user-results.list-view .business-card-avatar .profile-avatar,
+  .public-page .user-results.list-view .business-card-avatar img {
+    width:60px !important;
+    height:60px !important;
+  }
+}
