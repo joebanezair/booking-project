@@ -1,0 +1,148 @@
+/* Product discovery cards: real inventory photos, equal-height cards and mobile layout.
+   Reuse existing palette variables. No BookFlow color or theme changes. */
+.public-page .search-product-grid {
+  align-items: stretch;
+}
+
+.public-page .search-product-grid > .search-product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.public-page .search-product-grid > .search-product-card:hover {
+  transform: translateY(-2px);
+}
+
+.public-page .search-product-grid > .search-product-card:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.public-page .search-product-card > .search-product-media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  height: 172px;
+  flex: 0 0 172px;
+  overflow: hidden;
+  background: var(--muted-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.public-page .search-product-card .search-product-media > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.public-page .search-product-card .search-product-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--muted-foreground);
+}
+
+.public-page .search-product-card .search-product-placeholder svg {
+  width: 30px;
+  height: 30px;
+}
+
+.public-page .search-product-card .search-product-image-count {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 7px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.public-page .search-product-card > .search-product-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px 15px 16px;
+}
+
+.public-page .search-product-card .search-product-body h3 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.public-page .search-product-card .search-product-body p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.public-page .search-product-card .search-product-price {
+  display: block;
+  margin-top: auto;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.public-page .search-product-card .search-product-meta {
+  margin-top: 2px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 980px) {
+  .public-page .search-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .public-page .search-product-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 420px) {
+  .public-page .search-product-card > .search-product-media {
+    height: 160px;
+    flex-basis: 160px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-page .search-product-grid > .search-product-card {
+    transition: none;
+  }
+  .public-page .search-product-grid > .search-product-card:hover {
+    transform: none;
+  }
+}
