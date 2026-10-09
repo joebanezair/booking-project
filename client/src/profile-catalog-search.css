@@ -1,0 +1,74 @@
+/* Scoped catalog search controls for public business profile.
+   Use BookFlow's existing input styles, colors and focus treatment. */
+.public-page .profile-catalog-search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 0 16px;
+  min-width: 0;
+}
+
+.public-page .profile-catalog-search-field {
+  position: relative;
+  flex: 0 1 360px;
+  width: 100%;
+  min-width: 0;
+}
+
+.public-page .profile-catalog-search-field .profile-catalog-search-input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 47px 10px 40px;
+  font-size: 14px;
+}
+
+.public-page .profile-catalog-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  width: 17px;
+  height: 17px;
+  pointer-events: none;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
+}
+
+.public-page .profile-catalog-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  border: 0 !important;
+  background: transparent;
+  box-shadow: none;
+  transform: translateY(-50%);
+}
+
+.public-page .profile-catalog-search-clear:hover,
+.public-page .profile-catalog-search-clear:focus-visible {
+  transform: translateY(-50%);
+}
+
+.public-page .profile-catalog-search-clear svg {
+  width: 16px;
+  height: 16px;
+}
+
+.public-page .profile-catalog-search-count {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+@media (max-width: 560px) {
+  .public-page .profile-catalog-search-field {
+    flex: 1 1 100%;
+  }
+}
