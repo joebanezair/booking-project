@@ -7000,3 +7000,14 @@ td,th{
   box-shadow:none;
 }
 .public-profile-info .business-rating-feedback svg { width:10px; height:10px; flex-shrink:0; }
+
+/* Group business rating controls and feedback in a compact card */
+.public-profile-info .business-rating-card {
+  box-sizing:border-box;
+  width:fit-content;
+  max-width:100%;
+  padding:10px;
+  border:1px solid var(--border, #cbd5e1);
+  border-radius:5px;
+  background:var(--surface, #fff);
+}
