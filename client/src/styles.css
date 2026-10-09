@@ -7028,3 +7028,13 @@ td,th{
 .public-profile-info .profile-rating-actions .remove-business-rating {
   padding-top:0 !important;
 }
+
+/* Compact rating star buttons with 5px corners */
+.public-profile-info .profile-rating-actions .rating-input button {
+  width:36px !important;
+  height:36px !important;
+  min-width:36px !important;
+  flex:0 0 36px !important;
+  padding:0 !important;
+  border-radius:5px !important;
+}
