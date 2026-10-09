@@ -7038,3 +7038,9 @@ td,th{
   padding:0 !important;
   border-radius:5px !important;
 }
+
+/* Fine-tune vertical position of business rating stars */
+.public-profile-info .profile-rating-actions .rating-input button {
+  padding-top:2px !important;
+  padding-bottom:0 !important;
+}
