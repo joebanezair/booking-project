@@ -54,14 +54,9 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
         <Link className="brand-row auth-brand" to="/" aria-label="BookFlow home">
           <span className="brand-mark" aria-hidden="true">B</span><strong>BookFlow</strong>
         </Link>
-        <nav className="auth-mode-tabs" aria-label="Account access">
-          <Button type="button" variant="ghost" className="auth-mode-tab" aria-current={!isRegister ? "page" : undefined} disabled={submitting} onClick={() => changeMode("login")}>Sign in</Button>
-          <Button type="button" variant="ghost" className="auth-mode-tab" aria-current={isRegister ? "page" : undefined} disabled={submitting} onClick={() => changeMode("register")}>Sign up</Button>
-        </nav>
       </header>
 
       <div className="auth-copy">
-        <p className="eyebrow">{isRegister ? "BUSINESS REGISTRATION" : "SIGN IN"}</p>
         <h1 id="auth-heading">{isRegister ? "Create your business account" : "Welcome back"}</h1>
         <p className="muted">{isRegister
           ? "Your business account becomes active immediately. No administrator approval is required."
@@ -90,9 +85,9 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
       </form>
 
       <div className="auth-footer">
-        <span>{isRegister ? "Already have an account?" : "New to BookFlow?"}</span>
+        <span>{isRegister ? "Already have an account?" : "Don't have a business account?"}</span>
         <Button type="button" variant="ghost" className="auth-switch" onClick={() => changeMode(isRegister ? "login" : "register")} disabled={submitting}>
-          {isRegister ? "Sign in" : "Register a business"}
+          {isRegister ? "Sign in" : "Sign up"}
         </Button>
       </div>
       <Link className="auth-browse" to="/">Browse services and businesses</Link>
