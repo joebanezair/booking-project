@@ -97,9 +97,11 @@ export default function PublicProfilePage({ user }) {
           {profile.headline && <p className="profile-headline">{profile.headline}</p>}
           <div className="business-rating-block">
             <div className="verified-rating-row"><RatingSummary {...profile.businessRatingSummary} /><span className="verified-badge">Business rating</span></div>
-            {user && !isOwner && <div className="profile-rating-control"><span className="profile-rating-label">Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <button type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></button>}</div></div>}
+            {(user && !isOwner || ratingMessage) && <div className="business-rating-card">
+              {user && !isOwner && <div className="profile-rating-control"><span className="profile-rating-label">Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <button type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></button>}</div></div>}
+              {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
+            </div>}
             {!user && <small className="muted">Sign in to rate this business.</small>}
-            {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
           </div>
           <div className="verified-rating-row"><RatingSummary {...profile.ratingSummary} /><span className="verified-badge">Verified booking reviews</span></div>
           {profile.bio && <p className="public-bio">{profile.bio}</p>}
