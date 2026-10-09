@@ -6962,3 +6962,20 @@ td,th{
   margin-top:10px;
 }
 .public-profile-info .business-rating-feedback svg { width:14px; height:14px; flex-shrink:0; }
+
+/* Business rating controls: compact reference styling */
+.public-profile-info .profile-rating-actions .rating-input { gap:5px; }
+.public-profile-info .profile-rating-actions .rating-input button,
+.public-profile-info .profile-rating-actions .remove-business-rating {
+  width:40px; height:40px; min-width:40px; padding:0;
+  border:1px solid #343434; border-radius:6px;
+  background:transparent; box-shadow:none;
+}
+.public-profile-info .profile-rating-actions .rating-input button { font-size:20px; color:#f5a623; }
+.public-profile-info .profile-rating-actions .rating-input button:not(.active) { color:#8c919b; }
+.public-profile-info .business-rating-feedback {
+  margin-top:10px; padding:7px 14px; border:0;
+  border-radius:999px; background:#e2f9e9; color:#17753c;
+  font-size:12px; line-height:1.2; box-shadow:none;
+}
+.public-profile-info .business-rating-feedback svg { width:14px; height:14px; }
