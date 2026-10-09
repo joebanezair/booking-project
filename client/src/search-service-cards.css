@@ -1,0 +1,108 @@
+/* Public Search > Services only: approximately 30% more compact.
+   Maintain all service links, ratings, pricing and BookFlow theme colors.
+   Grid/layout changes are real dimensions, not visual transforms. */
+.public-page .browse-section .search-service-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  align-items: stretch;
+  gap: 13px;
+}
+
+.public-page .browse-section .search-service-grid > .content-card-link {
+  display: block;
+  min-width: 0;
+  height: 100%;
+  text-decoration: none;
+}
+
+.public-page .browse-section .search-service-grid .public-content-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Reduce the original 200px image/placeholder area by exactly 30%. */
+.public-page .browse-section .search-service-grid .public-content-card > img,
+.public-page .browse-section .search-service-grid .public-content-card > .content-placeholder {
+  display: block;
+  width: 100%;
+  height: 140px;
+  min-height: 140px;
+  object-fit: cover;
+}
+
+.public-page .browse-section .search-service-grid .public-content-card > .content-placeholder {
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+}
+
+.public-page .browse-section .search-service-grid .public-content-card-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  padding: 12px;
+}
+
+.public-page .browse-section .search-service-grid .content-card-top {
+  min-height: 20px;
+  gap: 5px;
+}
+
+.public-page .browse-section .search-service-grid .service-meta-icon.icon-action {
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+}
+
+.public-page .browse-section .search-service-grid .service-meta-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+.public-page .browse-section .search-service-grid .public-content-card-body h3 {
+  margin: 6px 0 5px;
+  font-size: 16px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.public-page .browse-section .search-service-grid .public-content-card-body p {
+  min-height: 0;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-line-clamp: 2;
+}
+
+.public-page .browse-section .search-service-grid .public-content-card-body > strong {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.public-page .browse-section .search-service-grid .rating-summary {
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 9px;
+  font-size: 12px;
+}
+
+.public-page .browse-section .search-service-grid .rating-summary .stars {
+  font-size: 13px;
+}
+
+.public-page .browse-section .search-service-grid > .content-card-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Keep cards usable when the layout or text is magnified. */
+@media (max-width: 560px) {
+  .public-page .browse-section .search-service-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
