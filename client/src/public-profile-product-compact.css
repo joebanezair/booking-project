@@ -1,0 +1,115 @@
+/* Public BUSINESS PROFILE products only: approximately half-size cards.
+   Preserve existing light/dark palette, data, image gallery and order actions.
+   Real grid sizing (not transform:scale) keeps surrounding layout functional. */
+.public-page .public-profile-products .content-grid {
+  grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+  align-items: stretch;
+  gap: 12px;
+}
+
+.public-page .public-profile-products .public-product-card {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0 !important;
+  min-width: 0;
+  min-height: 0 !important;
+  height: 100%;
+  padding: 0 !important;
+}
+
+.public-page .public-profile-products .public-product-card > .public-product-media {
+  width: 100% !important;
+  height: 110px !important;
+  min-height: 110px !important;
+  flex: 0 0 110px;
+  aspect-ratio: auto;
+}
+
+.public-page .public-profile-products .public-product-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: cover;
+}
+
+.public-page .public-profile-products .product-image-placeholder svg {
+  width: 24px;
+  height: 24px;
+}
+
+.public-page .public-profile-products .public-product-card .image-count-badge {
+  right: 6px;
+  bottom: 6px;
+  padding: 3px 5px;
+  font-size: 10px;
+}
+
+.public-page .public-profile-products .public-product-card > .public-product-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  gap: 4px;
+  padding: 10px 11px;
+}
+
+.public-page .public-profile-products .public-product-body h3 {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.32;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.public-page .public-profile-products .public-product-body p {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.public-page .public-profile-products .public-product-body strong {
+  display: block;
+  margin: auto 0 0;
+  padding-top: 4px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.public-page .public-profile-products .public-product-body small {
+  margin-top: 1px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.public-page .public-profile-products .public-product-card > .public-order-button {
+  align-self: stretch;
+  width: calc(100% - 20px) !important;
+  min-height: 44px !important;
+  margin: 0 10px 10px !important;
+  padding: 9px 7px;
+  gap: 6px;
+  font-size: 12px;
+}
+
+/* Keep two compact, usable cards on normal phones; avoid squeezed 320px layouts. */
+@media (max-width: 600px) {
+  .public-page .public-profile-products .content-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 350px) {
+  .public-page .public-profile-products .content-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
