@@ -11,6 +11,10 @@
 - **Implementation reality:** React/Vite, React Icons, hand-written CSS, and local UI primitives. The branch name `shadcn-ui` does not imply the shadcn/ui package or Tailwind is installed.
 - **Target:** design for WCAG 2.2 AA; practical comfortable mobile touch targets; clear privacy and data handling; validate real behavior before reporting compliance.
 
+## Completed safe improvements
+
+- **2026-10-09 — Search accessible names and selected category state.** Added programmatic names to the search input, category filter and rating select; added `aria-pressed` to Services, Businesses and Products category buttons in `client/src/pages/SearchPage.jsx` (commit `b6fbf5d`). Existing search logic, routing, categories, filters, pagination and card layouts were not intentionally changed. **Validation:** code edit checked for exact targets only; build, automated accessibility and browser testing have **not yet been run**. A later review should consider visible labels and fuller tab semantics.
+
 ## Prioritized initial findings and recommendations
 
 | Priority | Area | Source observation / check required | Recommended action | Status |
