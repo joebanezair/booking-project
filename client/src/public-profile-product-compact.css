@@ -2,7 +2,7 @@
    Preserve existing light/dark palette, data, image gallery and order actions.
    Real grid sizing (not transform:scale) keeps surrounding layout functional. */
 .public-page .public-profile-products .content-grid {
-  grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(234px, 1fr));
   align-items: stretch;
   gap: 12px;
 }
@@ -91,16 +91,25 @@
 }
 
 .public-page .public-profile-products .public-product-card > .public-order-button {
-  align-self: stretch;
-  width: calc(100% - 20px) !important;
-  min-height: 44px !important;
-  margin: 0 10px 10px !important;
-  padding: 9px 7px;
-  gap: 6px;
+  position: relative;
+  align-self: center;
+  width: calc(80% - 16px) !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  margin: 0 auto 10px !important;
+  padding: 6px 5px;
+  gap: 5px;
   font-size: 12px;
 }
 
-/* Keep two compact, usable cards on normal phones; avoid squeezed 320px layouts. */
+/* Expand the interactive hit area beyond the compact visual button. */
+.public-page .public-profile-products .public-product-card > .public-order-button::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+}
+
+/* Preserve the existing two-column mobile behavior; avoid squeezing narrow screens. */
 @media (max-width: 600px) {
   .public-page .public-profile-products .content-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
