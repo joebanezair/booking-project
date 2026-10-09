@@ -1,35 +1,53 @@
-/* Scoped catalog search controls for public business profile.
-   Use BookFlow's existing input styles, colors and focus treatment. */
+/* One public-profile search bar with classification and service-rating filters.
+   Reuses BookFlow inputs, focus styles and theme colors; no palette changes. */
+.public-page .profile-catalog-filter-section {
+  margin-top: 24px;
+}
+.public-page .public-content-section[hidden] {
+  display: none !important;
+}
+.public-page .profile-catalog-filter-section + .public-content-section {
+  margin-top: 18px;
+}
 .public-page .profile-catalog-search {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 12px;
-  margin: 0 0 16px;
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(150px, 190px) minmax(150px, 190px);
+  align-items: end;
+  gap: 10px 12px;
+  margin: 0 0 8px;
   min-width: 0;
 }
-
 .public-page .profile-catalog-search-field {
-  position: relative;
-  flex: 0 1 360px;
-  width: 100%;
+  display: grid;
+  gap: 7px;
   min-width: 0;
 }
-
-.public-page .profile-catalog-search-field .profile-catalog-search-input {
+.public-page .profile-catalog-search-input-wrap {
+  position: relative;
+  min-width: 0;
+}
+.public-page .profile-catalog-search-field .profile-catalog-search-input,
+.public-page .profile-catalog-search-filter .ui-input {
   display: block;
   width: 100%;
   min-height: 44px;
-  padding: 10px 47px 10px 40px;
   font-size: 14px;
 }
-
-/* Native search clear affordances would duplicate our accessible clear button. */
+.public-page .profile-catalog-search-field .profile-catalog-search-input {
+  padding: 10px 47px 10px 40px;
+}
+.public-page .profile-catalog-search-filter {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+}
+.public-page .profile-catalog-search-filter .ui-input {
+  padding: 9px 11px;
+}
 .public-page .profile-catalog-search-input::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
 }
-
 .public-page .profile-catalog-search-icon {
   position: absolute;
   top: 50%;
@@ -40,7 +58,6 @@
   transform: translateY(-50%);
   color: var(--muted-foreground);
 }
-
 .public-page .profile-catalog-search-clear {
   position: absolute;
   top: 50%;
@@ -57,24 +74,34 @@
   box-shadow: none;
   transform: translateY(-50%);
 }
-
 .public-page .profile-catalog-search-clear:hover,
 .public-page .profile-catalog-search-clear:focus-visible {
   transform: translateY(-50%);
 }
-
 .public-page .profile-catalog-search-clear svg {
   width: 16px;
   height: 16px;
 }
-
+.public-page .profile-catalog-search-help,
 .public-page .profile-catalog-search-count {
+  grid-column: 1 / -1;
+  margin: 0;
   font-size: 12px;
   line-height: 1.4;
 }
-
-@media (max-width: 560px) {
+@media (max-width: 760px) {
+  .public-page .profile-catalog-search {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .public-page .profile-catalog-search-field {
-    flex: 1 1 100%;
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 420px) {
+  .public-page .profile-catalog-search {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .public-page .profile-catalog-search-field {
+    grid-column: auto;
   }
 }
