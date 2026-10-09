@@ -4364,7 +4364,7 @@ html body .booking-modal-backdrop .product-edit-modal{
 .service-view-toggle{
   display:inline-flex;
   align-items:center;
-  gap:4px;
+  gap:3px;
   flex:0 0 auto;
 }
 .service-view-toggle button{
@@ -6942,17 +6942,17 @@ td,th{
   display:grid;
   place-items:center;
   box-sizing:border-box;
-  flex:0 0 36px;
-  width:36px;
-  height:36px;
-  min-width:36px;
+  flex:0 0 25px;
+  width:25px;
+  height:25px;
+  min-width:25px;
   margin:0;
   padding:0;
   border:1px solid var(--border, #cbd5e1);
   border-radius:5px;
   background:transparent;
   box-shadow:none;
-  font-size:20px;
+  font-size:14px;
   line-height:1;
   color:#f5a623;
 }
@@ -6970,33 +6970,33 @@ td,th{
   flex:0 0 auto;
   width:auto;
   min-width:0;
-  height:32px;
-  padding:0 10px;
+  height:23px;
+  padding:0 7px;
   margin:0;
   border:1px solid var(--border, #cbd5e1);
   border-radius:9999px;
   background:transparent;
   box-shadow:none;
   color:var(--text, #172033);
-  font-size:12px;
+  font-size:10px;
   line-height:1;
   white-space:nowrap;
 }
-.public-profile-info .profile-rating-actions .remove-business-rating svg { width:13px; height:13px; }
+.public-profile-info .profile-rating-actions .remove-business-rating svg { width:10px; height:10px; }
 .public-profile-info .business-rating-feedback {
   display:inline-flex;
   align-items:center;
   gap:5px;
   width:fit-content;
   max-width:100%;
-  margin-top:10px;
-  padding:7px 14px;
+  margin-top:7px;
+  padding:5px 10px;
   border:0;
   border-radius:9999px;
   background:#e2f9e9;
   color:#17753c;
-  font-size:12px;
+  font-size:10px;
   line-height:1.2;
   box-shadow:none;
 }
-.public-profile-info .business-rating-feedback svg { width:14px; height:14px; flex-shrink:0; }
+.public-profile-info .business-rating-feedback svg { width:10px; height:10px; flex-shrink:0; }
