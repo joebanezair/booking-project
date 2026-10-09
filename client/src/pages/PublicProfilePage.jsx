@@ -4,6 +4,7 @@ import { FiCheckCircle, FiChevronLeft, FiChevronRight, FiMapPin, FiMessageSquare
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import ContentCard from "../components/ContentCard.jsx";
+import ProfileCatalogSearch from "../components/ProfileCatalogSearch.jsx";
 import { RatingInput, RatingSummary } from "../components/StarRating.jsx";
 import { Button } from "../components/ui/button.jsx";
 
@@ -21,8 +22,12 @@ export default function PublicProfilePage({ user }) {
   const [productGallery,setProductGallery]=useState(null);
   const [galleryIndex,setGalleryIndex]=useState(0);
   const [detailProduct,setDetailProduct]=useState(null);
+  const [serviceSearch, setServiceSearch] = useState("");
+  const [productSearch, setProductSearch] = useState("");
 
   useEffect(() => {
+    setServiceSearch("");
+    setProductSearch("");
     api.publicProfile(resolvedUsername).then(result => {
       setData(result);
       setError("");
@@ -74,6 +79,14 @@ export default function PublicProfilePage({ user }) {
   const canMessage = user && !isOwner && ["business", "admin"].includes(user.role) && (user.role === "admin" || friendship.isFriend);
   const conversationPath = `/dashboard/messages/${profile.id}`;
   const paused = profile.accountStatus === "paused";
+  const normalizedServiceSearch = serviceSearch.trim().toLocaleLowerCase();
+  const normalizedProductSearch = productSearch.trim().toLocaleLowerCase();
+  const visibleServices = normalizedServiceSearch
+    ? content.filter(item => [item.title, item.description, item.category].some(value => String(value || "").toLocaleLowerCase().includes(normalizedServiceSearch)))
+    : content;
+  const visibleProducts = normalizedProductSearch
+    ? products.filter(item => [item.name, item.description, item.sku].some(value => String(value || "").toLocaleLowerCase().includes(normalizedProductSearch)))
+    : products;
 
   return <main className="public-page">
     <header className="public-top"><Link className="brand-row" to="/search"><span className="brand-mark small">B</span><strong>BookFlow</strong></Link></header>
@@ -122,14 +135,18 @@ export default function PublicProfilePage({ user }) {
 
     <section className="public-content-section">
       <div className="section-heading"><div><p className="eyebrow">PUBLIC SERVICES</p><h2>Explore {profile.name}&apos;s services</h2></div></div>
+      {content.length > 0 && <ProfileCatalogSearch label="Search services" value={serviceSearch} onChange={setServiceSearch} matchingCount={visibleServices.length} totalCount={content.length} />}
       {content.length === 0 ? <div className="panel empty-state"><p className="muted">No public services yet.</p></div> :
-        <div className="content-grid public-services-grid">{content.map(item => <Link key={item._id} to={`/services/${item._id}`} className="content-card-link"><ContentCard item={item} /></Link>)}</div>}
+        visibleServices.length === 0 ? <div className="panel empty-state" role="status"><p className="muted">No services match your search.</p></div> :
+        <div className="content-grid public-services-grid">{visibleServices.map(item => <Link key={item._id} to={`/services/${item._id}`} className="content-card-link"><ContentCard item={item} /></Link>)}</div>}
     </section>
 
     <section className="public-content-section public-profile-products">
       <div className="section-heading"><div><p className="eyebrow">PRODUCTS</p><h2>Shop {profile.name}&apos;s products</h2></div></div>
+      {products.length > 0 && <ProfileCatalogSearch label="Search products" value={productSearch} onChange={setProductSearch} matchingCount={visibleProducts.length} totalCount={products.length} />}
       {products.length === 0 ? <div className="panel empty-state"><p className="muted">No public products yet.</p></div> :
-        <div className="content-grid">{products.map(product => {const images=(product.images?.length?product.images:(product.image?[product.image]:[]));return <article className="panel public-product-card" key={product._id}><button type="button" className="public-product-media" disabled={!images.length} aria-label={images.length>1?`View ${images.length} images for ${product.name}`:`View image for ${product.name}`} onClick={()=>{if(images.length){setProductGallery({...product,images});setGalleryIndex(0);}}}>{images.length?<><img src={images[0]} alt={product.name}/>{images.length>1&&<span className="image-count-badge">1 / {images.length}</span>}</>:<span className="product-image-placeholder"><FiShoppingBag/></span>}</button><div className="public-product-body"><h3>{product.name}</h3>{product.description && <p className="muted">{product.description}</p>}<strong>{product.currency} {Number(product.price || 0).toLocaleString()}</strong><small>{product.stock > 0 ? product.stock + " in stock" : "Out of stock"}</small></div><Button className="public-order-button" disabled={product.stock<1||paused} onClick={()=>{setOrderProduct(product);setOrderForm({...orderForm,quantity:1});}}><FiShoppingBag/>Order product</Button></article>})}</div>}
+        visibleProducts.length === 0 ? <div className="panel empty-state" role="status"><p className="muted">No products match your search.</p></div> :
+        <div className="content-grid">{visibleProducts.map(product => {const images=(product.images?.length?product.images:(product.image?[product.image]:[]));return <article className="panel public-product-card" key={product._id}><button type="button" className="public-product-media" disabled={!images.length} aria-label={images.length>1?`View ${images.length} images for ${product.name}`:`View image for ${product.name}`} onClick={()=>{if(images.length){setProductGallery({...product,images});setGalleryIndex(0);}}}>{images.length?<><img src={images[0]} alt={product.name}/>{images.length>1&&<span className="image-count-badge">1 / {images.length}</span>}</>:<span className="product-image-placeholder"><FiShoppingBag/></span>}</button><div className="public-product-body"><h3>{product.name}</h3>{product.description && <p className="muted">{product.description}</p>}<strong>{product.currency} {Number(product.price || 0).toLocaleString()}</strong><small>{product.stock > 0 ? product.stock + " in stock" : "Out of stock"}</small></div><Button className="public-order-button" disabled={product.stock<1||paused} onClick={()=>{setOrderProduct(product);setOrderForm({...orderForm,quantity:1});}}><FiShoppingBag/>Order product</Button></article>})}</div>}
       {orderMessage && <p className="success">{orderMessage}</p>}
       {orderProduct && <div className="booking-modal-backdrop" onClick={()=>setOrderProduct(null)}><section className="panel booking-editor-panel booking-modal" onClick={e=>e.stopPropagation()}><div className="panel-title"><div><p className="eyebrow">PRODUCT ORDER</p><h2>{orderProduct.name}</h2></div><Button type="button" variant="outline" size="icon" className="icon-action" aria-label="Close order" data-tooltip="Close" onClick={()=>setOrderProduct(null)}><FiX/></Button></div><form onSubmit={submitProductOrder}><label>Quantity<input type="number" min="1" max={orderProduct.stock} required value={orderForm.quantity} onChange={e=>setOrderForm({...orderForm,quantity:e.target.value})}/></label><label>Name<input required value={orderForm.customerName} onChange={e=>setOrderForm({...orderForm,customerName:e.target.value})}/></label><label>Phone<input required value={orderForm.customerPhone} onChange={e=>setOrderForm({...orderForm,customerPhone:e.target.value})}/></label><label>Email<input type="email" value={orderForm.customerEmail} onChange={e=>setOrderForm({...orderForm,customerEmail:e.target.value})}/></label><label>Delivery location <span className="required-mark">*</span><div className="location-input-wrap"><FiMapPin aria-hidden="true"/><input required maxLength="250" autoComplete="street-address" placeholder="Street, barangay, city / delivery address" value={orderForm.deliveryLocation} onChange={e=>setOrderForm({...orderForm,deliveryLocation:e.target.value})}/></div></label><label>Notes<textarea value={orderForm.notes} onChange={e=>setOrderForm({...orderForm,notes:e.target.value})}/></label><strong>Total: {orderProduct.currency} {(Number(orderProduct.price||0)*Number(orderForm.quantity||1)).toLocaleString()}</strong><Button className="public-place-order"><FiShoppingBag/>Place order</Button></form></section></div>}
     </section>
