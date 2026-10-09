@@ -3,6 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./styles.css";
 import "./mobile-navigation.css";
+import "./auth-enhancements.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
