@@ -6914,3 +6914,13 @@ td,th{
     white-space:nowrap;
   }
 }
+
+/* Product details dialog: compact 5px corners */
+.search-product-details {
+  border-radius:5px !important;
+  overflow:hidden;
+}
+.search-product-details .public-gallery-stage {
+  border-radius:5px;
+  overflow:hidden;
+}
