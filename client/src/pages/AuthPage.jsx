@@ -54,12 +54,11 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
         <Link className="brand-row auth-brand" to="/" aria-label="BookFlow home">
           <span className="brand-mark" aria-hidden="true">B</span><strong>BookFlow</strong>
         </Link>
+        <nav className="auth-mode-tabs" aria-label="Account access">
+          <Button type="button" variant="ghost" className="auth-mode-tab" aria-current={!isRegister ? "page" : undefined} disabled={submitting} onClick={() => changeMode("login")}>Sign in</Button>
+          <Button type="button" variant="ghost" className="auth-mode-tab" aria-current={isRegister ? "page" : undefined} disabled={submitting} onClick={() => changeMode("register")}>Sign up</Button>
+        </nav>
       </header>
-
-      <div className="auth-mode-tabs" role="group" aria-label="Account access">
-        <Button type="button" variant={!isRegister ? "default" : "outline"} className="auth-mode-tab" aria-pressed={!isRegister} disabled={submitting} onClick={() => changeMode("login")}>Sign in</Button>
-        <Button type="button" variant={isRegister ? "default" : "outline"} className="auth-mode-tab" aria-pressed={isRegister} disabled={submitting} onClick={() => changeMode("register")}>Sign up</Button>
-      </div>
 
       <div className="auth-copy">
         <p className="eyebrow">{isRegister ? "BUSINESS REGISTRATION" : "SIGN IN"}</p>
