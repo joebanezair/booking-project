@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { FiChevronLeft, FiChevronRight, FiMapPin, FiMessageSquare, FiShoppingBag, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiCheckCircle, FiChevronLeft, FiChevronRight, FiMapPin, FiMessageSquare, FiShoppingBag, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import ContentCard from "../components/ContentCard.jsx";
@@ -99,7 +99,7 @@ export default function PublicProfilePage({ user }) {
             <div className="verified-rating-row"><RatingSummary {...profile.businessRatingSummary} /><span className="verified-badge">Business rating</span></div>
             {user && !isOwner && <div className="profile-rating-control"><span>Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <button type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/></button>}</div></div>}
             {!user && <small className="muted">Sign in to rate this business.</small>}
-            {ratingMessage && <small className="success">{ratingMessage}</small>}
+            {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
           </div>
           <div className="verified-rating-row"><RatingSummary {...profile.ratingSummary} /><span className="verified-badge">Verified booking reviews</span></div>
           {profile.bio && <p className="public-bio">{profile.bio}</p>}
