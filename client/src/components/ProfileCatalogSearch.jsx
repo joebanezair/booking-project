@@ -18,30 +18,33 @@ export default function ProfileCatalogSearch({
   return (
     <div className="profile-catalog-search" role="search" aria-label="Search this business's products and services">
       <div className="profile-catalog-search-field">
-        <FiSearch className="profile-catalog-search-icon" aria-hidden="true" />
-        <input
-          ref={inputRef}
-          type="search"
-          className="ui-input profile-catalog-search-input"
-          aria-label="Search products or services"
-          placeholder="Search products or services..."
-          autoComplete="off"
-          value={value}
-          onChange={event => onChange(event.target.value)}
-        />
-        {value && (
-          <button
-            type="button"
-            className="profile-catalog-search-clear"
-            aria-label="Clear search"
-            onClick={() => {
-              onChange("");
-              inputRef.current?.focus();
-            }}
-          >
-            <FiX aria-hidden="true" />
-          </button>
-        )}
+        <label htmlFor="profile-catalog-keyword">Search</label>
+        <div className="profile-catalog-search-input-wrap">
+          <FiSearch className="profile-catalog-search-icon" aria-hidden="true" />
+          <input
+            id="profile-catalog-keyword"
+            ref={inputRef}
+            type="search"
+            className="ui-input profile-catalog-search-input"
+            placeholder="Search products or services..."
+            autoComplete="off"
+            value={value}
+            onChange={event => onChange(event.target.value)}
+          />
+          {value && (
+            <button
+              type="button"
+              className="profile-catalog-search-clear"
+              aria-label="Clear search"
+              onClick={() => {
+                onChange("");
+                inputRef.current?.focus();
+              }}
+            >
+              <FiX aria-hidden="true" />
+            </button>
+          )}
+        </div>
       </div>
       <label className="profile-catalog-search-filter">
         <span>Classification</span>
