@@ -19,9 +19,9 @@
 
 .public-page .public-profile-products .public-product-card > .public-product-media {
   width: 100% !important;
-  height: 110px !important;
-  min-height: 110px !important;
-  flex: 0 0 110px;
+  height: 132px !important;
+  min-height: 132px !important;
+  flex: 0 0 132px;
   aspect-ratio: auto;
 }
 
