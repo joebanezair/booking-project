@@ -1,21 +1,44 @@
 /* Authentication layout polish: spacing and usability only.
    All color, shadow, theme and focus-ring values come from existing BookFlow styles. */
 .auth-shell > .auth-card {
-  width: min(470px, 100%);
+  width: min(440px, 100%);
   min-width: 0;
   min-height: auto;
-  padding: clamp(24px, 4vw, 40px);
+  padding: clamp(22px, 3vw, 32px);
 }
-.auth-card .auth-card-header { margin-bottom: 22px; }
-.auth-card .auth-brand { width: max-content; margin: 0; gap: 11px; }
-.auth-card .auth-brand strong { font-size: 18px; letter-spacing: -.025em; }
+.auth-card .auth-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 25px;
+}
+.auth-card .auth-brand { width: max-content; margin: 0; gap: 8px; }
+.auth-card .auth-brand .brand-mark { width: 38px; height: 38px; font-size: 19px; }
+.auth-card .auth-brand strong { font-size: 17px; letter-spacing: -.025em; }
 .auth-card .auth-mode-tabs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
 }
-.auth-card .auth-mode-tab { min-width: 0; min-height: 44px; font-size: 14px; }
+.auth-card .auth-mode-tab {
+  width: auto !important;
+  min-width: 0;
+  min-height: 38px;
+  padding: 8px 9px !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 13px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.auth-card .auth-mode-tab[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
+}
 .auth-card .auth-copy { margin-bottom: 25px; }
 .auth-card .auth-copy .eyebrow { margin-bottom: 8px; }
 .auth-card .auth-copy h1 {
@@ -89,8 +112,10 @@
 }
 @media (max-width: 480px) {
   .auth-shell { padding: 12px; }
-  .auth-shell > .auth-card { padding: 26px 20px; }
-  .auth-card .auth-card-header { margin-bottom: 18px; }
-  .auth-card .auth-mode-tabs { margin-bottom: 22px; }
+  .auth-shell > .auth-card { padding: 22px 18px; }
+  .auth-card .auth-card-header { margin-bottom: 22px; }
+  .auth-card .auth-brand .brand-mark { width: 34px; height: 34px; font-size: 17px; }
+  .auth-card .auth-brand strong { font-size: 16px; }
+  .auth-card .auth-mode-tab { padding: 7px 6px !important; font-size: 12px; }
   .auth-card .auth-copy { margin-bottom: 23px; }
 }
