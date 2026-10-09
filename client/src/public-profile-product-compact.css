@@ -2,7 +2,7 @@
    Preserve existing light/dark palette, data, image gallery and order actions.
    Real grid sizing (not transform:scale) keeps surrounding layout functional. */
 .public-page .public-profile-products .content-grid {
-  grid-template-columns: repeat(auto-fill, minmax(234px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(210.6px, 1fr));
   align-items: stretch;
   gap: 12px;
 }
