@@ -18,10 +18,11 @@
 }
 
 .public-page .public-profile-products .public-product-card > .public-product-media {
-  width: 100% !important;
-  height: 110px !important;
-  min-height: 110px !important;
-  flex: 0 0 110px;
+  width: 95% !important;
+  height: 126.5px !important;
+  min-height: 126.5px !important;
+  flex: 0 0 126.5px;
+  margin-inline: auto;
   aspect-ratio: auto;
 }
 
