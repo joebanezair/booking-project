@@ -7092,3 +7092,91 @@ td,th{
   .public-profile-info .business-rating-card { width:100%; }
   .public-profile-info .profile-rating-actions { flex-wrap:wrap; }
 }
+
+/* Unified profile reputation section: replace floating badges and nested boxes */
+.public-profile-info .profile-reputation-panel {
+  width:min(100%, 530px);
+  margin:18px 0 16px;
+  border:1px solid var(--border, #e2e8f0);
+  border-radius:10px;
+  background:var(--surface, #fff);
+  overflow:hidden;
+}
+.public-profile-info .profile-reputation-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px 18px;
+  padding:16px 18px;
+}
+.public-profile-info .profile-reputation-copy {
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.public-profile-info .profile-reputation-title {
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  color:var(--text, #172033);
+}
+.public-profile-info .profile-reputation-subtitle {
+  font-size:11px;
+  color:var(--muted, #748095);
+  line-height:1.4;
+}
+.public-profile-info .profile-reputation-row .rating-summary {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.public-profile-info .profile-reputation-row .rating-summary .stars {
+  white-space:nowrap;
+}
+.public-profile-info .profile-reputation-panel .business-rating-card {
+  box-sizing:border-box;
+  width:auto;
+  max-width:none;
+  margin:0 18px 16px;
+  padding:12px 14px;
+  border:1px solid var(--border, #e2e8f0);
+  border-radius:7px;
+  background:rgba(125,140,165,.035);
+}
+.public-profile-info .profile-reputation-panel .profile-rating-label {
+  margin-bottom:9px;
+  font-size:12px;
+}
+.public-profile-info .profile-reputation-panel .profile-rating-actions {
+  gap:9px;
+}
+.public-profile-info .profile-reputation-panel .rating-input button {
+  width:30px;
+  height:30px;
+  min-width:30px;
+  flex-basis:30px;
+  border-radius:6px;
+  font-size:17px;
+}
+.public-profile-info .profile-reputation-panel .rating-star-glyph {
+  transform:translateY(-1px);
+}
+.public-profile-info .profile-reputation-panel .remove-business-rating {
+  height:28px;
+  padding:0 10px;
+  border-radius:999px;
+  font-size:11px;
+}
+.public-profile-info .profile-reputation-panel .business-rating-feedback {
+  margin-top:10px;
+  font-size:11px;
+}
+.public-profile-info .profile-reputation-reviews {
+  border-top:1px solid var(--border, #e2e8f0);
+}
+@media(max-width:540px) {
+  .public-profile-info .profile-reputation-row { padding:14px; }
+  .public-profile-info .profile-reputation-panel .business-rating-card { margin:0 14px 14px; padding:12px; }
+}
