@@ -5,6 +5,12 @@
 **Created:** 2026-10-09  
 **Review type:** Initial *static source review* of representative frontend components and current CI workflows. **No live browser, accessibility scanner, device, security, or legal conformance test has been completed.**
 
+## Owner's current requirements (2026-10-09)
+
+- **Color freeze:** Never change the project's existing colors, theme tokens, backgrounds, text colors, borders, hover/focus colors or dark-mode palette. New controls must reuse matching existing colors. Functional and mobile navigation fixes only until the owner explicitly changes this constraint.
+- **No feature removal:** Keep every existing capability, route, navigation destination, role gate, interaction and API flow.
+- **Priority:** Fully functional mobile navigation, discoverability of every role-permitted page, reliable overlays and responsive touch/keyboard functionality. Preserve desktop behavior.
+
 ## Product and design baseline
 - **Keep every existing feature:** service, product and business discovery; grid/list toggle; ratings and reviews; public profiles; bookings; product ordering; messaging; admin/business dashboards; auth/roles; notifications; sales and content management.
 - **Design direction:** lightweight, minimalist, balanced, mobile-first, recognizable BookFlow branding, clean typographic hierarchy, consistent icon/button sizes, subtle borders, sensible whitespace, and preserved dark-mode support.
@@ -12,6 +18,9 @@
 - **Target:** design for WCAG 2.2 AA; practical comfortable mobile touch targets; clear privacy and data handling; validate real behavior before reporting compliance.
 
 ## Completed safe improvements
+
+- **2026-10-09 — Mobile navigation functionality.** `client/src/components/AppLayout.jsx` now provides a role-aware five-slot mobile bottom navigation (Home, business Bookings/admin Businesses, Messages, Search, and More), retains **all** existing role-filtered sidebar destinations in a full-height mobile drawer, closes the drawer on Escape/backdrop/selection, traps focus while open, returns focus to the triggering control on explicit close, disables offscreen drawer keyboard interaction via `inert`, and closes on route/viewport changes. `client/src/mobile-navigation.css` restores the drawer layout previously overridden by a later sticky horizontal rail rule and keeps content above the bottom bar; `client/src/main.jsx` loads this CSS after existing styles. **Color policy:** No existing stylesheet color values or theme tokens changed. The only four explicit colors used for the newly added More button copy values already in the existing bottom-navigation rules, including dark mode. Commits: `4d8f802`, `a637684`, `f8f2b8a`. **Validation:** Static source comparison confirmed the 12 existing drawer routes are retained. GitHub clone/build and physical-browser tests were **not run** because the execution environment could not resolve github.com, and there is no available full local checkout. Verify mobile behavior on device, plus React build/CI, before treating the change as production-tested.
+
 
 - **2026-10-09 — Search accessible names and selected category state.** Added programmatic names to the search input, category filter and rating select; added `aria-pressed` to Services, Businesses and Products category buttons in `client/src/pages/SearchPage.jsx` (commit `b6fbf5d`). Existing search logic, routing, categories, filters, pagination and card layouts were not intentionally changed. **Validation:** code edit checked for exact targets only; build, automated accessibility and browser testing have **not yet been run**. A later review should consider visible labels and fuller tab semantics.
 
@@ -23,7 +32,7 @@
 | P0 | Product order modal | `client/src/pages/PublicProfilePage.jsx` renders an order overlay without `role="dialog"` / accessible dialog naming or explicit focus management. | Use a reusable accessible dialog pattern: label, focus entry/trap/return, Escape close, scroll locking; retain order form and submit behavior. | Source-inspected; keyboard testing required |
 | P1 | Product details / gallery | These overlays declare `role="dialog"`, but no explicit Escape handling, focus trap or focus restoration appears in this component. | Share the order dialog's accessible focus and dismissal behavior. | Source-inspected; browser confirmation required |
 | P1 | Search UX and stale responses | Debounced async search calls in `SearchPage.jsx` have no cancellation or request-sequence check. | Prevent a slower earlier response from replacing newer results; preserve tabs, filters, grid/list, pagination. Add loading and error announcements. | Source-inspected |
-| P1 | Mobile navigation | `AppLayout.jsx` closes the drawer on Escape, but does not visibly restore keyboard focus to the opener or isolate background navigation. | Validate tab order and focus after open/close; preserve every existing role-based navigation item. | Source-inspected; browser confirmation required |
+| P1 | Mobile navigation | Drawer/bottom bar were implemented with a 2026-10-09 source-level fix; accessibility and layout behaviors still need live verification. | Run real-device / keyboard checks at 320, 375, 390, 768 and 800px, both roles and both themes; fix any remaining issues without color changes. | Implemented in source; browser/build verification pending |
 | P1 | Tap targets / rating | `StarRating.jsx` has accessible star names and pressed state; `styles.css` includes very compact star-button padding in one rule and many later overrides. | Measure final computed hit targets and spacing at mobile widths; retain square stars and clear remove-rating action; don't shrink target hitboxes when shrinking icons. | Needs browser measurement |
 | P1 | CSS consistency | `client/src/styles.css` is over 7,000 lines with multiple scattered responsive/theme/component rules. | Inventory cascades and progressively consolidate duplicate overrides into existing semantic tokens/components without wholesale rewrite. | Source-inspected |
 | P1 | Responsive coverage | Responsive rules exist, but live behavior at 320–390px and 200–400% zoom is unverified. | Test public search, cards, profiles, order/booking forms, dashboard sidebar, charts and tables at 320/375/390/768/1024/1440px; eliminate overflow/clipping. | Needs browser testing |
