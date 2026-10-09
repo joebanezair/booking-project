@@ -97,7 +97,7 @@ export default function PublicProfilePage({ user }) {
           {profile.headline && <p className="profile-headline">{profile.headline}</p>}
           <div className="business-rating-block">
             <div className="verified-rating-row"><RatingSummary {...profile.businessRatingSummary} /><span className="verified-badge">Business rating</span></div>
-            {user && !isOwner && <div className="profile-rating-control"><span>Your rating</span><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <button type="button" className="link-button" onClick={removeBusinessRating}>Remove rating</button>}</div>}
+            {user && !isOwner && <div className="profile-rating-control"><span>Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <button type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/></button>}</div></div>}
             {!user && <small className="muted">Sign in to rate this business.</small>}
             {ratingMessage && <small className="success">{ratingMessage}</small>}
           </div>
