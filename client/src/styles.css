@@ -6979,3 +6979,10 @@ td,th{
   font-size:12px; line-height:1.2; box-shadow:none;
 }
 .public-profile-info .business-rating-feedback svg { width:14px; height:14px; }
+
+/* Square corners for business rating buttons and confirmation chip */
+.public-profile-info .profile-rating-actions .rating-input button,
+.public-profile-info .profile-rating-actions .remove-business-rating,
+.public-profile-info .business-rating-feedback {
+  border-radius:0 !important;
+}
