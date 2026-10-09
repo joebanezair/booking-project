@@ -24,6 +24,12 @@
   font-size: 14px;
 }
 
+/* Native search clear affordances would duplicate our accessible clear button. */
+.public-page .profile-catalog-search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .public-page .profile-catalog-search-icon {
   position: absolute;
   top: 50%;
