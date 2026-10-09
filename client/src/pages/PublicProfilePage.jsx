@@ -95,15 +95,21 @@ export default function PublicProfilePage({ user }) {
           </div>
           {paused && <div className="paused-public-banner">Temporarily unavailable — this business is not accepting new bookings right now.</div>}
           {profile.headline && <p className="profile-headline">{profile.headline}</p>}
-          <div className="business-rating-block">
-            <div className="verified-rating-row"><span className="verified-badge">Business rating</span><RatingSummary {...profile.businessRatingSummary} /></div>
+          <div className="profile-reputation-panel">
+            <div className="profile-reputation-row">
+              <div className="profile-reputation-copy"><span className="profile-reputation-title">Business rating</span><span className="profile-reputation-subtitle">Ratings from visitors</span></div>
+              <RatingSummary {...profile.businessRatingSummary} />
+            </div>
             {(user && !isOwner || ratingMessage) && <div className="business-rating-card">
               {user && !isOwner && <div className="profile-rating-control"><span className="profile-rating-label">Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <button type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></button>}</div></div>}
               {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
             </div>}
             {!user && <small className="muted">Sign in to rate this business.</small>}
+            <div className="profile-reputation-row profile-reputation-reviews">
+              <div className="profile-reputation-copy"><span className="profile-reputation-title">Verified booking reviews</span><span className="profile-reputation-subtitle">Reviews from completed bookings</span></div>
+              <RatingSummary {...profile.ratingSummary} />
+            </div>
           </div>
-          <div className="verified-rating-row verified-booking-rating"><span className="verified-badge">Verified booking reviews</span><RatingSummary {...profile.ratingSummary} /></div>
           {profile.bio && <p className="public-bio">{profile.bio}</p>}
           <div className="profile-meta">
             {profile.location && <span>{profile.location}</span>}
