@@ -6993,3 +6993,32 @@ td,th{
 .public-profile-info .business-rating-feedback {
   border-radius:9999px !important;
 }
+
+/* Keep business rating controls in a single horizontal row and center stars */
+.public-profile-info .profile-rating-actions {
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  flex-wrap:nowrap !important;
+  gap:5px !important;
+}
+.public-profile-info .profile-rating-actions .rating-input {
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  flex-wrap:nowrap !important;
+  gap:5px !important;
+}
+.public-profile-info .profile-rating-actions .rating-input button,
+.public-profile-info .profile-rating-actions .remove-business-rating {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  flex:0 0 40px;
+  width:40px !important;
+  height:40px !important;
+  min-width:40px !important;
+  padding:0 !important;
+  line-height:1 !important;
+}
