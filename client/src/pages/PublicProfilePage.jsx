@@ -123,7 +123,7 @@ export default function PublicProfilePage({ user }) {
     <section className="public-content-section">
       <div className="section-heading"><div><p className="eyebrow">PUBLIC SERVICES</p><h2>Explore {profile.name}&apos;s services</h2></div></div>
       {content.length === 0 ? <div className="panel empty-state"><p className="muted">No public services yet.</p></div> :
-        <div className="content-grid">{content.map(item => <Link key={item._id} to={`/services/${item._id}`} className="content-card-link"><ContentCard item={item} /></Link>)}</div>}
+        <div className="content-grid public-services-grid">{content.map(item => <Link key={item._id} to={`/services/${item._id}`} className="content-card-link"><ContentCard item={item} /></Link>)}</div>}
     </section>
 
     <section className="public-content-section">
