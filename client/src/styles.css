@@ -6986,3 +6986,10 @@ td,th{
 .public-profile-info .business-rating-feedback {
   border-radius:0 !important;
 }
+
+/* Fully rounded business rating controls */
+.public-profile-info .profile-rating-actions .rating-input button,
+.public-profile-info .profile-rating-actions .remove-business-rating,
+.public-profile-info .business-rating-feedback {
+  border-radius:9999px !important;
+}
