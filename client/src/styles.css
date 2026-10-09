@@ -6925,135 +6925,78 @@ td,th{
   overflow:hidden;
 }
 
-/* Business profile rating: horizontal on desktop, stacked on mobile */
-.public-profile-info .profile-rating-actions { display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
-.public-profile-info .profile-rating-actions .rating-input { display:flex; gap:5px; }
-.public-profile-info .profile-rating-actions .rating-input button,
+/* Business profile rating: one consistent layout (replaces older conflicting overrides) */
+.public-profile-info .profile-rating-control .profile-rating-label {
+  display:block;
+  margin-bottom:5px;
+}
+.public-profile-info .profile-rating-actions,
+.public-profile-info .profile-rating-actions .rating-input {
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:5px;
+}
+.public-profile-info .profile-rating-actions .rating-input button {
+  display:grid;
+  place-items:center;
+  box-sizing:border-box;
+  flex:0 0 36px;
+  width:36px;
+  height:36px;
+  min-width:36px;
+  margin:0;
+  padding:0;
+  border:1px solid var(--border, #cbd5e1);
+  border-radius:5px;
+  background:transparent;
+  box-shadow:none;
+  font-size:20px;
+  line-height:1;
+  color:#f5a623;
+}
+.public-profile-info .profile-rating-actions .rating-input button:not(.active) { color:#8c919b; }
+.public-profile-info .profile-rating-actions .rating-input .rating-star-glyph {
+  display:block;
+  line-height:1;
+  transform:translateY(-2px);
+}
 .public-profile-info .profile-rating-actions .remove-business-rating {
-  box-sizing:border-box; display:inline-flex; align-items:center; justify-content:center;
-  width:44px; height:44px; min-width:44px; padding:0; border:1px solid var(--border);
-  border-radius:5px; line-height:1; background:transparent;
-}
-.public-profile-info .profile-rating-actions .remove-business-rating { color:var(--text, #172033); font-size:20px; }
-@media (max-width:600px) {
-  .public-profile-info .profile-rating-actions { flex-direction:column; align-items:flex-start; gap:5px; }
-  .public-profile-info .profile-rating-actions .rating-input button,
-  .public-profile-info .profile-rating-actions .remove-business-rating { width:40px; height:40px; min-width:40px; }
-}
-
-/* Compact success chip for business profile rating feedback */
-.public-profile-info .success {
   display:inline-flex;
   align-items:center;
-  width:fit-content;
-  max-width:100%;
-  padding:4px 10px;
-  border-radius:999px;
+  justify-content:center;
+  gap:4px;
+  flex:0 0 auto;
+  width:auto;
+  min-width:0;
+  height:32px;
+  padding:0 10px;
+  margin:0;
+  border:1px solid var(--border, #cbd5e1);
+  border-radius:9999px;
+  background:transparent;
+  box-shadow:none;
+  color:var(--text, #172033);
   font-size:12px;
-  line-height:1.3;
-  white-space:normal;
+  line-height:1;
+  white-space:nowrap;
 }
-
-/* Rating confirmation: icon and breathing room above chip */
+.public-profile-info .profile-rating-actions .remove-business-rating svg { width:13px; height:13px; }
 .public-profile-info .business-rating-feedback {
   display:inline-flex;
   align-items:center;
   gap:5px;
+  width:fit-content;
+  max-width:100%;
   margin-top:10px;
+  padding:7px 14px;
+  border:0;
+  border-radius:9999px;
+  background:#e2f9e9;
+  color:#17753c;
+  font-size:12px;
+  line-height:1.2;
+  box-shadow:none;
 }
 .public-profile-info .business-rating-feedback svg { width:14px; height:14px; flex-shrink:0; }
-
-/* Business rating controls: compact reference styling */
-.public-profile-info .profile-rating-actions .rating-input { gap:5px; }
-.public-profile-info .profile-rating-actions .rating-input button,
-.public-profile-info .profile-rating-actions .remove-business-rating {
-  width:40px; height:40px; min-width:40px; padding:0;
-  border:1px solid #343434; border-radius:6px;
-  background:transparent; box-shadow:none;
-}
-.public-profile-info .profile-rating-actions .rating-input button { font-size:20px; color:#f5a623; }
-.public-profile-info .profile-rating-actions .rating-input button:not(.active) { color:#8c919b; }
-.public-profile-info .business-rating-feedback {
-  margin-top:10px; padding:7px 14px; border:0;
-  border-radius:999px; background:#e2f9e9; color:#17753c;
-  font-size:12px; line-height:1.2; box-shadow:none;
-}
-.public-profile-info .business-rating-feedback svg { width:14px; height:14px; }
-
-/* Square corners for business rating buttons and confirmation chip */
-.public-profile-info .profile-rating-actions .rating-input button,
-.public-profile-info .profile-rating-actions .remove-business-rating,
-.public-profile-info .business-rating-feedback {
-  border-radius:0 !important;
-}
-
-/* Fully rounded business rating controls */
-.public-profile-info .profile-rating-actions .rating-input button,
-.public-profile-info .profile-rating-actions .remove-business-rating,
-.public-profile-info .business-rating-feedback {
-  border-radius:9999px !important;
-}
-
-/* Keep business rating controls in a single horizontal row and center stars */
-.public-profile-info .profile-rating-actions {
-  display:flex !important;
-  flex-direction:row !important;
-  align-items:center !important;
-  flex-wrap:nowrap !important;
-  gap:5px !important;
-}
-.public-profile-info .profile-rating-actions .rating-input {
-  display:flex !important;
-  flex-direction:row !important;
-  align-items:center !important;
-  flex-wrap:nowrap !important;
-  gap:5px !important;
-}
-.public-profile-info .profile-rating-actions .rating-input button,
-.public-profile-info .profile-rating-actions .remove-business-rating {
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  text-align:center !important;
-  flex:0 0 40px;
-  width:40px !important;
-  height:40px !important;
-  min-width:40px !important;
-  padding:0 !important;
-  line-height:1 !important;
-}
-
-/* Reduce top padding of business rating buttons by 5px while keeping stars centered */
-.public-profile-info .profile-rating-actions .rating-input button,
-.public-profile-info .profile-rating-actions .remove-business-rating {
-  padding-top:0 !important;
-}
-
-/* Compact rating star buttons with 5px corners */
-.public-profile-info .profile-rating-actions .rating-input button {
-  width:36px !important;
-  height:36px !important;
-  min-width:36px !important;
-  flex:0 0 36px !important;
-  padding:0 !important;
-  border-radius:5px !important;
-}
-
-/* Fine-tune vertical position of business rating stars */
-.public-profile-info .profile-rating-actions .rating-input button {
-  padding-top:2px !important;
-  padding-bottom:0 !important;
-}
-
-/* Rounded chip-style remove-rating button */
-.public-profile-info .profile-rating-actions .remove-business-rating {
-  width:52px !important;
-  min-width:52px !important;
-  height:36px !important;
-  flex:0 0 52px !important;
-  padding:0 12px !important;
-  border-radius:9999px !important;
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-}
