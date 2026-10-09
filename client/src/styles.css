@@ -7044,3 +7044,16 @@ td,th{
   padding-top:2px !important;
   padding-bottom:0 !important;
 }
+
+/* Rounded chip-style remove-rating button */
+.public-profile-info .profile-rating-actions .remove-business-rating {
+  width:52px !important;
+  min-width:52px !important;
+  height:36px !important;
+  flex:0 0 52px !important;
+  padding:0 12px !important;
+  border-radius:9999px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
