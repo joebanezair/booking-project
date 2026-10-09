@@ -7022,3 +7022,9 @@ td,th{
   padding:0 !important;
   line-height:1 !important;
 }
+
+/* Reduce top padding of business rating buttons by 5px while keeping stars centered */
+.public-profile-info .profile-rating-actions .rating-input button,
+.public-profile-info .profile-rating-actions .remove-business-rating {
+  padding-top:0 !important;
+}
