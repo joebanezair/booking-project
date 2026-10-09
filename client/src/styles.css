@@ -7011,3 +7011,84 @@ td,th{
   border-radius:5px;
   background:var(--surface, #fff);
 }
+
+/* Refined business profile rating panel */
+.public-profile-info .business-rating-block {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:10px;
+  width:fit-content;
+  max-width:100%;
+  margin:12px 0 14px;
+}
+.public-profile-info .business-rating-block .verified-rating-row,
+.public-profile-info > .verified-rating-row.verified-booking-rating {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.public-profile-info .business-rating-block .verified-badge,
+.public-profile-info > .verified-rating-row.verified-booking-rating .verified-badge {
+  display:inline-flex;
+  align-items:center;
+  padding:4px 8px;
+  border:1px solid var(--border, #dbe3f1);
+  border-radius:5px;
+  background:transparent;
+  color:var(--text, #172033);
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.02em;
+  line-height:1.3;
+}
+.public-profile-info .business-rating-card {
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  padding:12px;
+  border:1px solid var(--border, #dbe3f1);
+  border-radius:5px;
+  background:var(--surface, #fff);
+}
+.public-profile-info .profile-rating-control .profile-rating-label {
+  display:block;
+  margin-bottom:8px;
+  color:var(--text, #172033);
+  font-size:12px;
+  font-weight:600;
+  line-height:1.3;
+}
+.public-profile-info .profile-rating-actions { gap:8px; }
+.public-profile-info .profile-rating-actions .rating-input { gap:5px; }
+.public-profile-info .profile-rating-actions .rating-input button {
+  transition:border-color .15s ease, background-color .15s ease, transform .15s ease;
+}
+.public-profile-info .profile-rating-actions .rating-input button:hover,
+.public-profile-info .profile-rating-actions .rating-input button:focus-visible {
+  border-color:#6478e8;
+  background:rgba(100,120,232,.07);
+}
+.public-profile-info .profile-rating-actions .remove-business-rating {
+  color:var(--muted, #586477);
+  background:transparent;
+  transition:background-color .15s ease, border-color .15s ease;
+}
+.public-profile-info .profile-rating-actions .remove-business-rating:hover {
+  background:rgba(100,120,232,.07);
+  border-color:#6478e8;
+}
+.public-profile-info .business-rating-feedback {
+  margin-top:9px;
+  padding:5px 8px;
+  border-radius:5px;
+}
+.public-profile-info > .verified-rating-row.verified-booking-rating {
+  margin:2px 0 8px;
+}
+@media(max-width:480px) {
+  .public-profile-info .business-rating-block { width:100%; }
+  .public-profile-info .business-rating-card { width:100%; }
+  .public-profile-info .profile-rating-actions { flex-wrap:wrap; }
+}
