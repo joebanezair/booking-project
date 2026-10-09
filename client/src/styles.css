@@ -6953,3 +6953,12 @@ td,th{
   line-height:1.3;
   white-space:normal;
 }
+
+/* Rating confirmation: icon and breathing room above chip */
+.public-profile-info .business-rating-feedback {
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin-top:10px;
+}
+.public-profile-info .business-rating-feedback svg { width:14px; height:14px; flex-shrink:0; }
