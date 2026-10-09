@@ -7,6 +7,7 @@ import "./auth-enhancements.css";
 import "./search-product-cards.css";
 import "./public-profile-product-compact.css";
 import "./profile-catalog-search.css";
+import "./search-service-cards.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
