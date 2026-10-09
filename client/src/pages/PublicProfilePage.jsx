@@ -163,7 +163,7 @@ export default function PublicProfilePage({ user }) {
         matchingCount={totalMatches}
         totalCount={totalOfferings}
       />
-      {noMatches && <div className="panel empty-state" role="status"><p className="muted">No products or services match these filters.</p></div>}
+      {noMatches && <div className="panel empty-state" role="status"><p className="muted">{catalogType === "services" ? "No services match these filters." : catalogType === "products" ? "No products match these filters." : "No products or services match these filters."}</p></div>}
     </section>
 
     <section className="public-content-section" hidden={!showServices}>
