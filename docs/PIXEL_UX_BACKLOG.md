@@ -19,6 +19,8 @@
 
 ## Completed safe improvements
 
+- **2026-10-09 — Product media height +20% (full-width preserved).** Updated only `client/src/public-profile-product-compact.css` from 110px to 132px for `height`, `min-height` and `flex-basis` of the public-profile product media area. Kept **width:100%**, with no margin gap, after the owner rejected a previous 95%-width variation. All colors, overall card width, order buttons, product/gallery functions and mobile breakpoints unchanged. Commit `ee92d9a`. **Validation:** 8/8 source checks passed; browser/build testing not run. Reconfirm image full-bleed visually before making further media adjustments.
+
 - **2026-10-09 — Reverted last product image adjustment at owner's request.** Restored the public-profile product image box to **100% card width and 110px height** after the 95%-wide/126.5px-high variation introduced visual gaps. Revert commit: `444353d`. The older compact card width, order-button sizing, original colors and gallery/order behavior remain unchanged. **Do not reintroduce the 95% image width or the last aspect adjustment without explicit owner approval.** Live browser validation pending.
 
 - **2026-10-09 — Public-profile product media proportions refined.** In `client/src/public-profile-product-compact.css`, changed only the image/gallery trigger media box from 110px tall to 126.5px (+15%), reduced width to 95% of the card (−5%) and centered it with `margin-inline:auto`. Kept product card grid widths, image object-fit, ordering buttons, gallery behavior, responsive sizing and all colors unchanged. Commit `ee43084`. **Validation:** 9/9 static source checks passed; a live browser/build check remains pending.
