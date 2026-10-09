@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FiArrowRight } from "react-icons/fi";
 import { api } from "../api.js";
 import { Button } from "../components/ui/button.jsx";
 import { Input } from "../components/ui/input.jsx";
@@ -10,11 +11,19 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
   const [mode, setMode] = useState(initialMode);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => { setMode(initialMode); }, [initialMode]);
+  useEffect(() => {
+    setMode(initialMode);
+    setError("");
+    setShowPassword(false);
+  }, [initialMode]);
 
   async function submit(event) {
     event.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
     setError("");
     try {
       const data = mode === "register" ? await api.register(form) : await api.login(form);
@@ -23,28 +32,70 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
       onAuthenticated(data.user);
       navigate(location.state?.from || "/dashboard", { replace: true });
     } catch (e) {
-      setError(e.message);
+      setError(e.message || "Unable to complete this request. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
-  function switchMode() {
-    const next = mode === "login" ? "register" : "login";
+  function changeMode(next) {
+    if (submitting || next === mode) return;
     setMode(next);
+    setError("");
+    setShowPassword(false);
     navigate(next === "register" ? "/register" : "/login", { replace: true, state: location.state });
   }
 
-  return <main className="auth-shell"><section className="auth-card">
-    <Link className="brand-row" to="/"><span className="brand-mark">B</span><strong>BookFlow</strong></Link>
-    <p className="eyebrow">{mode === "login" ? "SIGN IN" : "BUSINESS REGISTRATION"}</p>
-    <h1>{mode === "login" ? "Welcome back" : "Create your business account"}</h1>
-    <p className="muted">{mode === "login" ? "Access your business or administrator dashboard." : "Your business account becomes active immediately. No administrator approval is required."}</p>
-    <form onSubmit={submit}>
-      {mode === "register" && <label>Business or account name<Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required /></label>}
-      <label>Email<Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required /></label>
-      <label>Password<Input type="password" minLength="8" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required /></label>
-      {error && <p className="error">{error}</p>}
-      <Button>{mode === "login" ? "Sign in" : "Create business account"}</Button>
-    </form>
-    <Button type="button" variant="ghost" className="auth-switch" onClick={switchMode}>{mode === "login" ? "Register a business" : "Already have an account? Sign in"}</Button>
-  </section></main>;
+  const isRegister = mode === "register";
+
+  return <main className="auth-shell">
+    <section className="auth-card" aria-labelledby="auth-heading">
+      <header className="auth-card-header">
+        <Link className="brand-row auth-brand" to="/" aria-label="BookFlow home">
+          <span className="brand-mark" aria-hidden="true">B</span><strong>BookFlow</strong>
+        </Link>
+      </header>
+
+      <div className="auth-mode-tabs" role="group" aria-label="Account access">
+        <Button type="button" variant={!isRegister ? "default" : "outline"} className="auth-mode-tab" aria-pressed={!isRegister} disabled={submitting} onClick={() => changeMode("login")}>Sign in</Button>
+        <Button type="button" variant={isRegister ? "default" : "outline"} className="auth-mode-tab" aria-pressed={isRegister} disabled={submitting} onClick={() => changeMode("register")}>Sign up</Button>
+      </div>
+
+      <div className="auth-copy">
+        <p className="eyebrow">{isRegister ? "BUSINESS REGISTRATION" : "SIGN IN"}</p>
+        <h1 id="auth-heading">{isRegister ? "Create your business account" : "Welcome back"}</h1>
+        <p className="muted">{isRegister
+          ? "Your business account becomes active immediately. No administrator approval is required."
+          : "Access your business or administrator dashboard."}</p>
+      </div>
+
+      <form className="auth-fields" onSubmit={submit} aria-busy={submitting}>
+        {isRegister && <label htmlFor="auth-name">Business or account name
+          <Input id="auth-name" name="name" autoComplete="organization" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} disabled={submitting} required />
+        </label>}
+        <label htmlFor="auth-email">Email
+          <Input id="auth-email" name="email" type="email" autoComplete="email" inputMode="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} disabled={submitting} required />
+        </label>
+        <label htmlFor="auth-password">Password
+          <span className="auth-password-field">
+            <Input id="auth-password" name="password" type={showPassword ? "text" : "password"} autoComplete={isRegister ? "new-password" : "current-password"} minLength="8" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} disabled={submitting} required />
+            <Button type="button" variant="ghost" className="auth-password-toggle" aria-label={showPassword ? "Hide password" : "Show password"} aria-controls="auth-password" aria-pressed={showPassword} disabled={submitting} onClick={() => setShowPassword(v => !v)}>{showPassword ? "Hide" : "Show"}</Button>
+          </span>
+        </label>
+        {error && <p className="error" role="alert">{error}</p>}
+        <Button type="submit" size="lg" className="auth-submit" disabled={submitting}>
+          {submitting ? (isRegister ? "Creating account…" : "Signing in…") : (isRegister ? "Create business account" : "Sign in")}
+          {!submitting && <FiArrowRight aria-hidden="true" />}
+        </Button>
+      </form>
+
+      <div className="auth-footer">
+        <span>{isRegister ? "Already have an account?" : "New to BookFlow?"}</span>
+        <Button type="button" variant="ghost" className="auth-switch" onClick={() => changeMode(isRegister ? "login" : "register")} disabled={submitting}>
+          {isRegister ? "Sign in" : "Register a business"}
+        </Button>
+      </div>
+      <Link className="auth-browse" to="/">Browse services and businesses</Link>
+    </section>
+  </main>;
 }
