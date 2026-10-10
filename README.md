@@ -913,3 +913,7 @@ VPS costs still apply; RabbitMQ Community Edition software itself does not requi
 7. **Validation:** functional/regression tests and k6/Artillery tests at 100, 1K, 5K, 10K+ concurrent users; **100K concurrent users remain unverified**.
 
 Keep existing BookFlow behavior, designs, business profiles, messaging, bookings, products, POS, sales, reviews, and admin capabilities intact. Work only on `betta-vone` until each release candidate is tested.
+
+### 5. Continuous validation and startup migrations
+
+The CI workflow now runs on pushes to `betta-vone` and checks the client build and server `.js`/`.mjs` syntax. Historical account/booking/sales backfills no longer execute unconditionally at every server startup; use `RUN_LEGACY_MIGRATIONS=1` only during a controlled maintenance window after a backup. This switch does not replace a formal migration runner and needs operational oversight.

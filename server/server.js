@@ -254,9 +254,12 @@ async function start() {
     );
   }
 
-  await migrateLegacyAccounts();
-  await backfillBookingScheduling();
-  await backfillCompletedSales();
+  if (process.env.RUN_LEGACY_MIGRATIONS === "1") {
+    // Run deliberately during a maintenance window, never on every production restart.
+    await migrateLegacyAccounts();
+    await backfillBookingScheduling();
+    await backfillCompletedSales();
+  }
 
   httpServer.listen(PORT, () => console.log(`API and WebSocket server listening on http://localhost:${PORT}`));
 }
