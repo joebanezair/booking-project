@@ -8,15 +8,18 @@ import Reaction from "../models/Reaction.js";
 import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
 import EmojiReaction from "../models/EmojiReaction.js";
+import { storeImageFields, publicMediaInput } from "../lib/mediaStore.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
+router.use(storeImageFields(["coverImage", "images"]));
 
 const imagePattern = /^data:image\/(jpeg|png|webp|gif);base64,[a-z0-9+/=]+$/i;
 const questionTypes = new Set(["text", "textarea", "select", "checkbox"]);
 
 function validateImage(value, label) {
   if (!value) return null;
+  if (publicMediaInput(value)) return null;
   if (!imagePattern.test(value)) return `${label} must be a JPEG, PNG, WebP, or GIF.`;
   const base64 = value.split(",")[1] || "";
   const bytes = Math.ceil(base64.length * 3 / 4);

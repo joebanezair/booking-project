@@ -2,9 +2,11 @@ import { Router } from "express";
 import Business from "../models/Business.js";
 import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
+import { storeImageFields, publicMediaInput } from "../lib/mediaStore.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
+router.use(storeImageFields(["logo"]));
 
 const imagePattern = /^data:image\/(jpeg|png|webp|gif);base64,[a-z0-9+/=]+$/i;
 const defaultWorkingHours = () => [
@@ -56,8 +58,8 @@ function validate(input) {
   if (!/^\S+@\S+\.\S+$/.test(input.email)) return "Enter a valid business email.";
   if (input.name.length > 120 || input.category.length > 80 || input.description.length > 2000 || input.location.length > 160 || input.phone.length > 40) return "One or more business profile fields are too long.";
   if (input.website && !/^https?:\/\//i.test(input.website)) return "Website must start with http:// or https://.";
-  if (input.logo && !imagePattern.test(input.logo)) return "Logo must be a JPEG, PNG, WebP, or GIF.";
-  if (input.logo && Math.ceil((input.logo.split(",")[1] || "").length * 3 / 4) > 2 * 1024 * 1024) return "Logo must be 2 MB or smaller.";
+  if (input.logo && !publicMediaInput(input.logo) && !imagePattern.test(input.logo)) return "Logo must be a JPEG, PNG, WebP, or GIF.";
+  if (input.logo && !publicMediaInput(input.logo) && Math.ceil((input.logo.split(",")[1] || "").length * 3 / 4) > 2 * 1024 * 1024) return "Logo must be 2 MB or smaller.";
   try { new Intl.DateTimeFormat("en-US", { timeZone: input.timezone }).format(new Date()); }
   catch { return "Enter a valid IANA timezone, such as Asia/Manila."; }
   if (!Number.isInteger(input.leadTimeMinutes) || input.leadTimeMinutes < 0 || input.leadTimeMinutes > 43200) return "Lead time must be between 0 and 43,200 minutes.";

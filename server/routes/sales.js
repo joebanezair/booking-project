@@ -2,9 +2,11 @@ import { Router } from "express";
 import Sale, { Product, PosSale, ProductOrder, InventoryMovement } from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
+import { storeImageFields } from "../lib/mediaStore.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
+router.use(storeImageFields(["images", "image"]));
 
 function productImages(body){return (Array.isArray(body.images)?body.images:[]).map(value=>String(value||"").trim()).filter(Boolean).slice(0,8);}
 

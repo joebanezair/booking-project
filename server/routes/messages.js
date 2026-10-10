@@ -5,6 +5,7 @@ import User from "../models/User.js";
 import requireAuth from "../middleware/auth.js";
 import { notify } from "../lib/notifications.js";
 import { reactionMap } from "../lib/emojiReactions.js";
+import { mediaEnabled, saveDataUri, attachmentForClient } from "../lib/mediaStore.js";
 
 const router = Router();
 router.use(requireAuth);
@@ -126,7 +127,7 @@ router.get("/:userId", async (req, res) => {
     const reactions=await reactionMap("message",messages.map(m=>m._id),req.user.id);
     const normalizedFriend = await normalizeFriendship(current, otherUser);
     if (normalizedFriend && !hasId(current.friends, otherUser._id)) current.friends.push(otherUser._id);
-    res.json({user:{...otherUser,...relationship(current,otherUser._id),friend:normalizedFriend},canMessage:current.role==="admin" || otherUser.role==="admin" || normalizedFriend,messages:messages.map(m=>({...m.toObject(),emojiReactions:reactions.get(String(m._id))||[]}))});
+    res.json({user:{...otherUser,...relationship(current,otherUser._id),friend:normalizedFriend},canMessage:current.role==="admin" || otherUser.role==="admin" || normalizedFriend,messages:messages.map(m=>({...m.toObject(),attachment:attachmentForClient(m.attachment),emojiReactions:reactions.get(String(m._id))||[]}))});
   } catch(error){console.error(error);res.status(500).json({message:"Unable to load conversation."});}
 });
 
@@ -146,13 +147,13 @@ router.post("/:userId", async (req,res) => {
       const a=req.body.attachment;
       if(Number(a.size)>5*1024*1024) return res.status(413).json({message:"Files must be 5 MB or smaller."});
       if(!/^data:(image\/|application\/pdf|text\/|application\/(msword|vnd\.openxmlformats-officedocument|vnd\.ms-excel|vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet))/.test(a.dataUrl||"")) return res.status(400).json({message:"Unsupported file type."});
-      attachment={name:String(a.name||"file").slice(0,180),mimeType:a.mimeType,size:Number(a.size)||0,dataUrl:a.dataUrl};
+      attachment={name:String(a.name||"file").slice(0,180),mimeType:a.mimeType,size:Number(a.size)||0,dataUrl:mediaEnabled()?await saveDataUri(a.dataUrl,{visibility:"private",ownerId:req.user.id,name:a.name}):a.dataUrl};
     }
     const message=await Message.create({sender:req.user.id,recipient:req.params.userId,body,messageType,attachment,sharedProfile:req.body.sharedProfile||null});
     const populated=await Message.findById(message._id).populate("sharedProfile",publicUserFields);
-    req.app.get("io").to(`user:${req.params.userId}`).emit("message:new",populated);
+    req.app.get("io").to(`user:${req.params.userId}`).emit("message:new",{...populated.toObject(),attachment:attachmentForClient(populated.attachment)});
     await notify(req,req.params.userId,{type:"message",title:"New message",body:(body|| (attachment?"Sent a file":"Shared a profile")).slice(0,120),link:`/dashboard/messages/${req.user.id}`});
-    res.status(201).json({...populated.toObject(),emojiReactions:[]});
+    res.status(201).json({...populated.toObject(),attachment:attachmentForClient(populated.attachment),emojiReactions:[]});
   } catch(error){console.error(error);res.status(500).json({message:"Unable to send message."});}
 });
 

@@ -26,6 +26,8 @@ import Business from "./models/Business.js";
 import Booking from "./models/Booking.js";
 import { syncSaleForBooking } from "./lib/sales.js";
 import { calculateBookingEndsAt, makeBookingReference } from "./lib/scheduling.js";
+import { connectMediaStore } from "./lib/mediaStore.js";
+import mediaRoutes from "./routes/media.js";
 
 dotenv.config();
 const app = express();
@@ -81,6 +83,7 @@ app.use("/api/sales", salesRoutes);
 app.use("/api/emoji-reactions", emojiReactionRoutes);
 app.use("/api/public/reviews", reviewRoutes);
 app.use("/api/public", publicRoutes);
+app.use("/api/media", mediaRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
@@ -229,6 +232,10 @@ async function start() {
   }
 
   await mongoose.connect(process.env.MONGO_URI);
+  if (process.env.MEDIA_MONGO_URI) {
+    await connectMediaStore();
+    console.log("Separate GridFS media database connected.");
+  }
 
   const adminEmails = String(process.env.ADMIN_EMAILS || "")
     .split(",")
