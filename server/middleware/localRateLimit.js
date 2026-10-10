@@ -6,7 +6,8 @@ export function localRateLimit({ windowMs = 60_000, max = 60 } = {}) {
     if (windows.size > 20_000) {
       for (const [key, state] of windows) if (state.reset <= now) windows.delete(key);
     }
-    const key = req.ip + ":" + req.baseUrl + ":" + req.path;
+    if (windows.size > 50_000) return res.status(503).json({ message: "Request limiter is at capacity." });
+    const key = req.ip + ":" + req.baseUrl;
     let state = windows.get(key);
     if (!state || state.reset <= now) state = { count: 0, reset: now + windowMs };
     state.count += 1;
