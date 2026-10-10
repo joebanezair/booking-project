@@ -109,7 +109,7 @@ export const api = {
   },
   messages: {
     users: () => request("/messages/users"),
-    conversation: userId => request(`/messages/${userId}`),
+    conversation: (userId, before = "") => request(`/messages/${userId}${before ? "?before=" + encodeURIComponent(before) : ""}`),
     send: (userId, payload) => request(`/messages/${userId}`, { method: "POST", body: JSON.stringify(typeof payload === "string" ? { body: payload } : payload) }),
     searchUsers: q => request(`/messages/friends/search?${new URLSearchParams({ q })}`),
     friendRequests: () => request("/messages/friends/requests"),

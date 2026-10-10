@@ -927,3 +927,7 @@ k6 run -e BASE_URL=https://staging-api.example.com tests/load/public-discovery.j
 ```
 
 The script ramps to 100 virtual users, checks API error rates and p95 duration for browse/search, and **does not prove 100K concurrency**. Test data, deployment capacity, and authorization scenarios must be representative before claiming a production capacity number. The API health route now reports 503 when the main MongoDB connection is unavailable.
+
+### 7. Chat history pagination
+
+Conversation retrieval now returns the most recent 50 messages and `hasMoreMessages`, retaining the existing `messages` response field. The frontend's **Load older messages** control requests previous pages using the earliest loaded message ID as its cursor. The messaging sidebar's latest-message aggregation also uses database grouping rather than transferring full histories to Node.js. Existing message and reaction controls remain available.

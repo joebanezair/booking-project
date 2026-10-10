@@ -9,8 +9,8 @@ function applyRealtimeReaction(reactions=[],event,currentUserId){const previous=
 const fileToDataUrl=file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file);});
 
 export default function Messages({currentUser,initialUserId}){
-  const navigate=useNavigate(), listRef=useRef(null), selectedRef=useRef(null), fileRef=useRef(null);
-  const [users,setUsers]=useState([]),[selected,setSelected]=useState(null),[conversation,setConversation]=useState([]),[body,setBody]=useState(""),[error,setError]=useState(""),[query,setQuery]=useState(""),[results,setResults]=useState([]),[requests,setRequests]=useState([]),[menu,setMenu]=useState(false),[canMessage,setCanMessage]=useState(false),[attachment,setAttachment]=useState(null);
+  const navigate=useNavigate(), listRef=useRef(null), selectedRef=useRef(null), fileRef=useRef(null), scrollSnapshotRef=useRef(null);
+  const [users,setUsers]=useState([]),[selected,setSelected]=useState(null),[conversation,setConversation]=useState([]),[body,setBody]=useState(""),[error,setError]=useState(""),[query,setQuery]=useState(""),[results,setResults]=useState([]),[requests,setRequests]=useState([]),[menu,setMenu]=useState(false),[canMessage,setCanMessage]=useState(false),[attachment,setAttachment]=useState(null),[hasMoreMessages,setHasMoreMessages]=useState(false),[loadingOlder,setLoadingOlder]=useState(false);
 
   const loadUsers=()=>api.messages.users().then(setUsers).catch(e=>setError(e.message));
   const loadRequests=()=>api.messages.friendRequests().then(setRequests).catch(()=>{});
@@ -18,9 +18,30 @@ export default function Messages({currentUser,initialUserId}){
   useEffect(()=>{selectedRef.current=selected;},[selected]);
   useEffect(()=>{if(initialUserId&&String(initialUserId)!==String(currentUser.id))openById(initialUserId);},[initialUserId,currentUser.id]);
   useEffect(()=>{if(!query.trim()){setResults([]);return;}const t=setTimeout(()=>api.messages.searchUsers(query).then(setResults).catch(e=>setError(e.message)),250);return()=>clearTimeout(t);},[query]);
-  useEffect(()=>{listRef.current?.scrollTo({top:listRef.current.scrollHeight,behavior:"smooth"});},[conversation]);
+  useEffect(()=>{
+    if (!listRef.current) return;
+    if (scrollSnapshotRef.current) {
+      const previous = scrollSnapshotRef.current;
+      listRef.current.scrollTop = previous.scrollTop + listRef.current.scrollHeight - previous.scrollHeight;
+      scrollSnapshotRef.current = null;
+    } else listRef.current.scrollTo({top:listRef.current.scrollHeight,behavior:"smooth"});
+  },[conversation]);
 
-  async function openById(id){try{setError("");setMenu(false);const d=await api.messages.conversation(id);setSelected(d.user);setConversation(d.messages);setCanMessage(d.canMessage);setUsers(u=>u.map(x=>String(x._id)===String(id)?{...x,unreadCount:0}:x));if(String(initialUserId)!==String(id))navigate(`/dashboard/messages/${id}`);}catch(e){setError(e.message);}}
+  async function openById(id){try{setError("");setMenu(false);const d=await api.messages.conversation(id);scrollSnapshotRef.current=null;setSelected(d.user);setConversation(d.messages);setHasMoreMessages(Boolean(d.hasMoreMessages));setCanMessage(d.canMessage);setUsers(u=>u.map(x=>String(x._id)===String(id)?{...x,unreadCount:0}:x));if(String(initialUserId)!==String(id))navigate(`/dashboard/messages/${id}`);}catch(e){setError(e.message);}}
+  async function loadOlder(){
+    if (!selected || !hasMoreMessages || loadingOlder || !conversation.length) return;
+    const peerId = selected._id;
+    setLoadingOlder(true);
+    try {
+      const d = await api.messages.conversation(peerId,conversation[0]._id);
+      if (String(selectedRef.current?._id) !== String(peerId)) return;
+      const el = listRef.current;
+      if (el) scrollSnapshotRef.current = { scrollTop: el.scrollTop, scrollHeight: el.scrollHeight };
+      setConversation(current => [...d.messages.filter(m => !current.some(x=>x._id===m._id)), ...current]);
+      setHasMoreMessages(Boolean(d.hasMoreMessages));
+    } catch(e) { setError(e.message); }
+    finally { setLoadingOlder(false); }
+  }
   async function send(e){e.preventDefault();if(!selected||(!body.trim()&&!attachment))return;try{const m=await api.messages.send(selected._id,{body,messageType:attachment?"file":"text",attachment});setConversation(c=>[...c,m]);setBody("");setAttachment(null);loadUsers();}catch(e){setError(e.message);}}
   async function pickFile(e){const file=e.target.files?.[0];if(!file)return;if(file.size>5*1024*1024){setError("Files must be 5 MB or smaller.");return;}setAttachment({name:file.name,mimeType:file.type,size:file.size,dataUrl:await fileToDataUrl(file)});e.target.value="";}
   async function react(id,emoji){try{const r=await api.emojiReactions.toggle("message",id,emoji);setConversation(c=>c.map(m=>String(m._id)===String(id)?{...m,emojiReactions:r.reactions}:m));}catch(e){setError(e.message);}}
@@ -44,7 +65,7 @@ export default function Messages({currentUser,initialUserId}){
       </aside>
       <div className="conversation">{!selected?<div className="empty-state"><p className="muted">Select a friend to start a conversation.</p></div>:<>
         <div className="conversation-header"><div><strong>{selected.username?<Link className="entity-link" to={`/profile/${selected.username}`}>{selected.name}</Link>:selected.name}</strong><small>{selected.restricted?"Restricted":selected.friend?"Friend":selected.role==="admin"?"Administrator":"Not friends"}</small></div><div className="conversation-actions"><button className="secondary" onClick={shareProfile} disabled={!canMessage}>Share profile</button><button className="secondary menu-trigger icon-action" aria-label="Conversation actions" data-tooltip="More actions" onClick={()=>setMenu(v=>!v)}><FiMoreHorizontal/></button>{menu&&<div className="conversation-menu"><button onClick={()=>userAction(selected.pinned?"unpin":"pin")}>{selected.pinned?"Unpin":"Pin"} conversation</button><button onClick={()=>userAction(selected.restricted?"unrestrict":"restrict")}>{selected.restricted?"Unrestrict":"Restrict"}</button><button onClick={()=>userAction(selected.blocked?"unblock":"block")}>{selected.blocked?"Unblock":"Block"}</button>{selected.friend&&<button onClick={async()=>{await api.messages.unfriend(selected._id);setCanMessage(false);setSelected(s=>({...s,friend:false}));setMenu(false);loadUsers();}}>Unfriend</button>}<button className="danger-text" onClick={removeConversation}>Delete conversation</button></div>}</div></div>
-        <div className="message-list" ref={listRef}>{conversation.map(m=><div key={m._id} className={`message-entry ${String(m.sender)===String(currentUser.id)?"mine":"theirs"}`}><div className="message-bubble">{m.unsentAt?<em>Message removed</em>:<>{m.messageType==="profile"&&m.sharedProfile&&<Link className="shared-profile-card" to={`/profile/${m.sharedProfile.username}`}><strong>{m.sharedProfile.name}</strong><span>{m.sharedProfile.headline||"Business profile"}</span><b>View profile →</b></Link>}{m.attachment&&<a className="message-file" href={m.attachment.dataUrl} download={m.attachment.name}>📎 {m.attachment.name}<small>{Math.ceil(m.attachment.size/1024)} KB</small></a>}{m.body&&<span>{m.body}</span>}</>}<small>{new Date(m.createdAt).toLocaleString()}</small></div>{!m.unsentAt&&<div className="message-tools"><EmojiReactions reactions={m.emojiReactions} canReact onToggle={emoji=>react(m._id,emoji)} label="message" /><button className="icon-action" aria-label="Delete message" data-tooltip="Delete message" onClick={()=>removeMessage(m._id)}><FiTrash2/></button>{String(m.sender)===String(currentUser.id)&&<button onClick={()=>unsend(m._id)}>Unsend</button>}</div>}</div>)}</div>
+        <div className="message-list" ref={listRef}>{hasMoreMessages&&<button type="button" className="secondary" disabled={loadingOlder} onClick={loadOlder}>{loadingOlder?"Loading older messages...":"Load older messages"}</button>}{conversation.map(m=><div key={m._id} className={`message-entry ${String(m.sender)===String(currentUser.id)?"mine":"theirs"}`}><div className="message-bubble">{m.unsentAt?<em>Message removed</em>:<>{m.messageType==="profile"&&m.sharedProfile&&<Link className="shared-profile-card" to={`/profile/${m.sharedProfile.username}`}><strong>{m.sharedProfile.name}</strong><span>{m.sharedProfile.headline||"Business profile"}</span><b>View profile →</b></Link>}{m.attachment&&<a className="message-file" href={m.attachment.dataUrl} download={m.attachment.name}>📎 {m.attachment.name}<small>{Math.ceil(m.attachment.size/1024)} KB</small></a>}{m.body&&<span>{m.body}</span>}</>}<small>{new Date(m.createdAt).toLocaleString()}</small></div>{!m.unsentAt&&<div className="message-tools"><EmojiReactions reactions={m.emojiReactions} canReact onToggle={emoji=>react(m._id,emoji)} label="message" /><button className="icon-action" aria-label="Delete message" data-tooltip="Delete message" onClick={()=>removeMessage(m._id)}><FiTrash2/></button>{String(m.sender)===String(currentUser.id)&&<button onClick={()=>unsend(m._id)}>Unsend</button>}</div>}</div>)}</div>
         <form className="message-compose" onSubmit={send}>{attachment&&<div className="attachment-chip">📎 {attachment.name}<button type="button" className="icon-action" aria-label="Remove attachment" data-tooltip="Remove attachment" onClick={()=>setAttachment(null)}><FiX/></button></div>}<input ref={fileRef} type="file" className="visually-hidden" onChange={pickFile} accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv" /><button type="button" className="secondary attach-button icon-action" aria-label="Attach file" data-tooltip="Attach file" onClick={()=>fileRef.current?.click()} disabled={!canMessage}><FiPaperclip/></button><input value={body} onChange={e=>setBody(e.target.value)} placeholder={canMessage?"Write a message...":"Add this person as a friend to message them"} disabled={!canMessage}/><button className="primary-button message-send-button" aria-label="Send message" data-tooltip="Send message" disabled={!canMessage}><FiSend/><span>Send</span></button></form>
       </>}</div>
     </div>

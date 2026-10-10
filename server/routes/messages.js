@@ -50,13 +50,20 @@ router.get("/users", async (req, res) => {
     const users = await User.find(filter).select(publicUserFields).lean();
     const messages = await Message.aggregate([
       { $match: { $or: [{ sender: new mongoose.Types.ObjectId(req.user.id) }, { recipient: new mongoose.Types.ObjectId(req.user.id) }], deletedFor: { $ne: new mongoose.Types.ObjectId(req.user.id) } } },
-      { $sort: { createdAt: -1 } }
+      { $sort: { createdAt: -1, _id: -1 } },
+      { $project: {
+        other: { $cond: [{ $eq: ["$sender", new mongoose.Types.ObjectId(req.user.id)] }, "$recipient", "$sender"] },
+        createdAt: 1, body: 1, unsentAt: 1, messageType: 1
+      } },
+      { $group: { _id: "$other", lastMessage: { $first: "$$ROOT" } } }
     ]);
-    const meta = new Map();
-    for (const m of messages) {
-      const other = String(m.sender) === String(req.user.id) ? String(m.recipient) : String(m.sender);
-      if (!meta.has(other)) meta.set(other, { lastMessageAt: m.createdAt, preview: m.unsentAt ? "Message removed" : (m.body || (m.messageType === "file" ? "Sent a file" : "Shared a profile")) });
-    }
+    const meta = new Map(messages.map(row => {
+      const item = row.lastMessage;
+      return [String(row._id), {
+        lastMessageAt: item.createdAt,
+        preview: item.unsentAt ? "Message removed" : (item.body || (item.messageType === "file" ? "Sent a file" : "Shared a profile"))
+      }];
+    }));
     const unread = await Message.aggregate([
       { $match: { recipient: new mongoose.Types.ObjectId(req.user.id), readAt: null, unsentAt: null } },
       { $group: { _id: "$sender", count: { $sum: 1 } } }
@@ -122,12 +129,24 @@ router.get("/:userId", async (req, res) => {
     const [current, otherUser] = await Promise.all([me(req.user.id), User.findById(req.params.userId).select(publicUserFields).lean()]);
     if (!otherUser) return res.status(404).json({ message: "User not found." });
     if (hasId(current.blockedUsers, otherUser._id)) return res.status(403).json({message:"You blocked this account."});
-    const messages = await Message.find({ $or: [{ sender:req.user.id,recipient:req.params.userId },{ sender:req.params.userId,recipient:req.user.id }], deletedFor:{$ne:req.user.id} }).sort({createdAt:1}).populate("sharedProfile", publicUserFields);
+    const filter = { $or: [{ sender:req.user.id,recipient:req.params.userId },{ sender:req.params.userId,recipient:req.user.id }], deletedFor:{$ne:req.user.id} };
+    let cursor = null;
+    if (req.query.before && mongoose.isValidObjectId(req.query.before)) {
+      cursor = await Message.findOne({ ...filter, _id: req.query.before }).select("createdAt").lean();
+    }
+    if (cursor) filter.$and = [{ $or: [
+      { createdAt: { $lt: cursor.createdAt } },
+      { createdAt: cursor.createdAt, _id: { $lt: cursor._id } }
+    ] }];
+    const pageSize = 50;
+    const page = await Message.find(filter).sort({createdAt:-1,_id:-1}).limit(pageSize+1).populate("sharedProfile", publicUserFields);
+    const hasMoreMessages = page.length > pageSize;
+    const messages = page.slice(0,pageSize).reverse();
     await Message.updateMany({sender:req.params.userId,recipient:req.user.id,readAt:null},{$set:{readAt:new Date()}});
     const reactions=await reactionMap("message",messages.map(m=>m._id),req.user.id);
     const normalizedFriend = await normalizeFriendship(current, otherUser);
     if (normalizedFriend && !hasId(current.friends, otherUser._id)) current.friends.push(otherUser._id);
-    res.json({user:{...otherUser,...relationship(current,otherUser._id),friend:normalizedFriend},canMessage:current.role==="admin" || otherUser.role==="admin" || normalizedFriend,messages:messages.map(m=>({...m.toObject(),attachment:attachmentForClient(m.attachment),emojiReactions:reactions.get(String(m._id))||[]}))});
+    res.json({user:{...otherUser,...relationship(current,otherUser._id),friend:normalizedFriend},canMessage:current.role==="admin" || otherUser.role==="admin" || normalizedFriend,hasMoreMessages,messages:messages.map(m=>({...m.toObject(),attachment:attachmentForClient(m.attachment),emojiReactions:reactions.get(String(m._id))||[]}))});
   } catch(error){console.error(error);res.status(500).json({message:"Unable to load conversation."});}
 });
 
