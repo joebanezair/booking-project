@@ -814,3 +814,102 @@ Update the branch and immediately run the frontend in GitHub Codespaces:
 ```bash
 git checkout shadcn-ui && git pull origin shadcn-ui && cd client && npm run dev -- --host 0.0.0.0
 ```
+
+
+---
+
+## Betta V1 — Self-hosted scalability upgrade (`betta-vone`)
+
+The [betta-vone branch](https://github.com/joebanezair/booking-project/tree/betta-vone) contains **incremental, backward-compatible code changes** toward a 100,000+ registered-user goal. This is **not** a measured claim of 100,000 concurrent users and is **not yet a complete production rollout**. The original `shadcn-ui` branch is intentionally unchanged.
+
+### What is already implemented
+
+| Component | State | Details |
+| --- | --- | --- |
+| Public discovery | Code updated | MongoDB aggregation filters active business owners, returns 12 items per category/page plus has-more detection, and avoids materializing every business in the Node.js process. Existing response shape is preserved. |
+| Indexes | Code updated | Added compound booking/message/product indexes and business search indexes. Compound search performance must be benchmarked with production-like datasets; substring regex queries remain expensive. |
+| Media | Opt-in implementation | Separate MongoDB GridFS connection with public image and signed private attachment routes. Existing JSON forms can still submit Base64 and are converted before persistence once the media DB is configured. |
+| Media migration | Script included | Dry-run and resumable-by-retry migration for users, businesses, services, products, and chat attachments. **Take backups first.** |
+| API protection | Baseline only | Per-process rate limits for login, registration, public search, and booking endpoints. Not a substitute for distributed Redis/Nginx limits. |
+| Self-hosted services | Configuration included | Optional Docker Compose examples for separate GridFS MongoDB, RabbitMQ Community Edition, Redis, and Nginx public-media caching. They are not automatically deployed. |
+| RabbitMQ chat events | Opt-in implementation | Persisted message flag serves as an outbox. Standalone worker publishes persistent broker events with publisher confirms and idempotent consumer processing. Existing realtime Socket.IO behavior remains. |
+
+### 1. Separate MongoDB GridFS media storage
+
+Configure a distinct media MongoDB server/replica set using these `server/.env` values:
+
+```dotenv
+MONGO_URI=mongodb://main-user:YOUR_PASSWORD@main-host:27017/booking_app?authSource=admin
+MEDIA_MONGO_URI=mongodb://media-user:YOUR_PASSWORD@media-host:27017/bookflow_media?authSource=admin
+MEDIA_PUBLIC_BASE_URL=https://api.your-domain.example
+MEDIA_SIGNING_SECRET=replace-with-a-unique-random-secret-at-least-32-characters
+```
+
+**Never commit the real credentials.** Configure `MEDIA_PUBLIC_BASE_URL` when the API is not served from the same origin as the frontend. Without `MEDIA_MONGO_URI`, existing Base64 upload behavior remains enabled to preserve development compatibility. Setting the media URI causes startup to require a working media DB.
+
+Image and attachment behavior:
+
+- Images: `/api/media/public/:id`, cacheable for 24 hours; JPEG, PNG, WebP, GIF, max 2 MB.
+- Chat attachments: `/api/media/private/:id`, time-limited signed download URLs; allowed document/image MIME types, max 5 MB. Signed links expire after 15 minutes and are never cached publicly.
+- New GridFS files use native binary storage; MongoDB #1 stores the resulting reference URL rather than the original Base64 string.
+- For a future binary frontend, authenticated `POST /api/media/upload?visibility=public|private` accepts `application/octet-stream` with the actual type in the `X-File-Mime` header. Do not put bearer tokens in public HTML image URLs.
+- Existing frontend upload dialogs remain visually unchanged; they still use Base64 previews and JSON upload transport. Converting the client upload path to direct binary and generating WebP/AVIF thumbnails are **follow-up tasks**.
+- GridFS is **not** an image CDN. Optional `infrastructure/nginx-media-cache.conf` caches public images only. The private route must never be publicly cached.
+
+#### Migrate existing Base64 media
+
+Back up main and media databases before migration. Test the dry-run in a clone/staging environment:
+
+```bash
+cd server
+node scripts/migrate-media.js --dry-run
+node scripts/migrate-media.js
+```
+
+Run with both `MONGO_URI` and `MEDIA_MONGO_URI` configured. Running the real migration uploads files then updates their references. Re-running after an interruption skips already converted values, but a crash between upload and reference update can leave orphaned GridFS files. Verify all references and keep backups until migration validation is complete. Do not migrate live data concurrently without additional write coordination.
+
+### 2. Self-host RabbitMQ and Redis on your VPS
+
+The included services file is a **development / single-host example**, not a production HA topology. Create `infrastructure/.env` locally with strong secrets and appropriate private-network URLs:
+
+```dotenv
+MEDIA_MONGO_USER=bookflowmedia
+MEDIA_MONGO_PASSWORD=replace-with-long-unique-password
+RABBITMQ_USER=bookflow
+RABBITMQ_PASSWORD=replace-with-long-unique-password
+REDIS_PASSWORD=replace-with-long-unique-password
+# Required only if starting the optional chat-broker profile
+MONGO_URI=mongodb://main-user:YOUR_PASSWORD@main-host:27017/booking_app?authSource=admin
+RABBITMQ_URL=amqp://bookflow:URL_ENCODED_PASSWORD@rabbitmq:5672
+```
+
+```bash
+docker compose --env-file infrastructure/.env -f infrastructure/compose.services.yml up -d
+# Optional event publishing / processing worker:
+docker compose --env-file infrastructure/.env -f infrastructure/compose.services.yml --profile chat up -d
+```
+
+Set `RABBITMQ_URL` in the **API server** environment only after the worker is running and both can reach the RabbitMQ broker. Newly created messages then carry `queuePending=true`, the worker publishes persisted events to a durable broker queue, and an idempotent handler records the processing acknowledgment. The queued payload contains metadata only, not message bodies or file bytes. Direct realtime messages and notifications are **still** delivered by existing Socket.IO/Express code; RabbitMQ does **not** replace Socket.IO or guarantee delivery to a browser. A broker crash/reconnect may cause duplicate events, handled idempotently.
+
+VPS costs still apply; RabbitMQ Community Edition software itself does not require a subscription. Bind broker/Redis/MongoDB ports to loopback or a private VPN. Production deployments require proper authentication, TLS, monitoring, backups, and an HA design when uptime targets demand it. A single VPS is a single point of failure.
+
+### 3. Rate limiting, search, indexes and monitoring
+
+- API endpoints have basic in-process limits. Set `TRUST_PROXY=1` **only when Express is behind a trusted reverse proxy**. Use shared rate limits at the proxy/Redis layer for multiple API replicas.
+- Search now executes user/provider filtering and pagination in the database; however case-insensitive substring matching and a large number of lookups can still become slow. Index analysis, dedicated search indexing, and performance testing with 100K+ synthetic business accounts are required.
+- All existing service/profile/product API shapes remain compatible. The main routes (private bookings, messages, admin lists, sales) still have unbounded or heavy queries and require subsequent pagination/aggregation changes.
+- `server/server.js` still contains startup backfills. Migrate them to a separate maintenance job **before** high-availability deployments; they are not removed in this iteration.
+- `infrastructure/nginx-media-cache.conf` is a sample Nginx block; configure HTTPS, origin proxying, request limits, cache zone, and monitoring for your actual VPS.
+- Database availability, migrations, backups, logs, alerting, CDN-equivalent cache efficiency, multiple API instances, and the Socket.IO Redis adapter are **not automatically configured** by the code changes.
+
+### 4. Remaining priority upgrades (not implemented yet)
+
+1. **Booking concurrency:** enforce atomic capacity claims under simultaneous reservations and prevent conflicting reschedules across replicas. Avoid advertising zero double-bookings until race tests pass.
+2. **Full pagination:** add cursor pagination to chats, private booking lists, sales analytics, admin directory, and public profile collections, together with compatible frontend Load More controls.
+3. **Image delivery:** move browser uploads from JSON/Base64 to direct binary, create responsive WebP/AVIF variants, and measure Nginx cache hit ratio.
+4. **RabbitMQ operations:** add business-specific consumers for notifications/email as needed, a dead-letter/retry policy, operational dashboards, and multiple broker nodes when availability warrants.
+5. **Horizontal deployment:** add multiple API instances, configure cross-instance Socket.IO messaging (such as its Redis adapter), and distributed rate limits.
+6. **Reliability:** extract all server-startup data migrations, implement backup/restore drills, structured logs, metrics, deployment rollback, and security tests.
+7. **Validation:** functional/regression tests and k6/Artillery tests at 100, 1K, 5K, 10K+ concurrent users; **100K concurrent users remain unverified**.
+
+Keep existing BookFlow behavior, designs, business profiles, messaging, bookings, products, POS, sales, reviews, and admin capabilities intact. Work only on `betta-vone` until each release candidate is tested.
