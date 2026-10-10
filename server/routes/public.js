@@ -190,17 +190,22 @@ router.get("/content/:contentId", optionalAuth, async (req, res) => {
 
 router.get("/browse", async (_req, res) => {
   try {
-    const ownerIds = await providerOwnerIds();
-    const items = await Content.find({
-      user: { $in: ownerIds },
-      published: true,
-      visibility: { $ne: "private" }
-    }).populate("user", "name username profileImage accountStatus").sort({ updatedAt: -1 }).limit(60);
-
+    const items = await Content.aggregate([
+      { $match: { published: true, visibility: { $ne: "private" } } },
+      { $lookup: { from: "users", localField: "user", foreignField: "_id", as: "provider" } },
+      { $unwind: "$provider" },
+      { $match: { "provider.role": "business", "provider.accountStatus": { $in: ["active", "paused"] } } },
+      { $sort: { updatedAt: -1, _id: -1 } },
+      { $limit: 60 },
+      { $addFields: { user: {
+        _id: "$provider._id", name: "$provider.name", username: "$provider.username",
+        profileImage: "$provider.profileImage", accountStatus: "$provider.accountStatus"
+      } } },
+      { $project: { provider: 0 } }
+    ]);
     const summary = await ratingSummary(items.map(item => item._id));
     res.json(items.map(item => ({
-      ...item.toObject(),
-      owner: item.user,
+      ...item, owner: item.user,
       ...(summary.get(String(item._id)) || { averageRating: 0, ratingCount: 0 })
     })));
   } catch (error) {
@@ -209,85 +214,82 @@ router.get("/browse", async (_req, res) => {
   }
 });
 
+// Search stays database-paginated. Never materialize every eligible provider in Node.js.
 router.get("/search", async (req, res) => {
   try {
     const q = String(req.query.q || "").trim().slice(0, 100);
-    const category = String(req.query.category || "").trim();
-    const minRating = Math.max(0, Math.min(5, Number(req.query.minRating || 0)));
-    const page = Math.max(1, Number(req.query.page || 1));
+    const category = String(req.query.category || "").trim().slice(0, 80);
+    const minRating = Math.max(0, Math.min(5, Number(req.query.minRating || 0) || 0));
+    const page = Math.min(1000, Math.max(1, Math.floor(Number(req.query.page) || 1)));
     const limit = 12;
     const skip = (page - 1) * limit;
-    const regex = q ? new RegExp(q.replace(/[.*+?^$()|[\]\\{}]/g, "\\$&"), "i") : null;
+    const regex = q ? new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") : null;
+    const eligible = { role: "business", accountStatus: { $in: ["active", "paused"] } };
 
-    const ownerIds = await providerOwnerIds();
-    const businessProfiles = await Business.find({ owner: { $in: ownerIds } }).select("owner name category location logo").lean();
-    const businessByOwner = new Map(businessProfiles.map(profile => [String(profile.owner), profile]));
+    const usersPipeline = [
+      { $match: eligible },
+      { $lookup: { from: "businesses", localField: "_id", foreignField: "owner", as: "business" } },
+      { $unwind: "$business" },
+      ...(regex ? [{ $match: { $or: [
+        { name: regex }, { username: regex }, { headline: regex }, { location: regex },
+        { "business.name": regex }, { "business.category": regex }, { "business.location": regex }
+      ] } }] : []),
+      { $sort: { name: 1, _id: 1 } },
+      { $skip: skip }, { $limit: limit + 1 },
+      { $project: {
+        name: { $ifNull: ["$business.name", "$name"] },
+        username: 1, headline: { $ifNull: ["$business.category", "$headline"] },
+        location: { $ifNull: ["$business.location", "$location"] },
+        profileImage: { $ifNull: ["$business.logo", "$profileImage"] },
+        profileImagePositionX: 1, profileImagePositionY: 1, coverImage: 1,
+        accountStatus: 1, businessId: "$business._id"
+      } }
+    ];
+    const discoveryPipeline = (collection, match, searchFields) => [
+      { $match: match },
+      { $lookup: { from: "users", localField: "user", foreignField: "_id", as: "provider" } },
+      { $unwind: "$provider" },
+      { $match: { "provider.role": "business", "provider.accountStatus": { $in: ["active", "paused"] } } },
+      ...(regex ? [
+        { $lookup: { from: "businesses", localField: "user", foreignField: "owner", as: "business" } },
+        { $unwind: { path: "$business", preserveNullAndEmptyArrays: true } },
+        { $match: { $or: [
+          ...searchFields.map(field => ({ [field]: regex })),
+          { "provider.name": regex }, { "provider.username": regex },
+          { "provider.headline": regex }, { "provider.location": regex },
+          { "business.name": regex }, { "business.category": regex }, { "business.location": regex }
+        ] } }
+      ] : []),
+      { $sort: { updatedAt: -1, _id: -1 } },
+      { $skip: skip }, { $limit: limit + 1 },
+      { $addFields: { user: {
+        _id: "$provider._id", name: "$provider.name", username: "$provider.username",
+        profileImage: "$provider.profileImage", accountStatus: "$provider.accountStatus"
+      } } },
+      { $project: { provider: 0, business: 0 } }
+    ];
 
-    const userMatches = regex
-      ? await User.find({
-          _id: { $in: ownerIds },
-          $or: [{ name: regex }, { username: regex }, { headline: regex }, { location: regex }]
-        }).distinct("_id")
-      : ownerIds;
-
-    const businessMatches = regex
-      ? businessProfiles.filter(profile => [profile.name, profile.category, profile.location].some(value => regex.test(String(value || "")))).map(profile => profile.owner)
-      : ownerIds;
-
-    const matchingIds = [...new Map([...userMatches, ...businessMatches].map(id => [String(id), id])).values()];
-    const matchingUsers = await User.find({ _id: { $in: matchingIds } })
-      .select("name username headline location profileImage profileImagePositionX profileImagePositionY coverImage accountStatus")
-      .sort({ name: 1 });
-
-    const pagedUsers = matchingUsers.slice(skip, skip + limit);
-    const users = await Promise.all(pagedUsers.map(async user => {
-      const profile = businessByOwner.get(String(user._id));
-      const reviewSummary = await verifiedReviewSummary(profile?._id);
-      return {
-        ...user.toObject(),
-        name: profile?.name || user.name,
-        headline: profile?.category || user.headline,
-        location: profile?.location || user.location,
-        profileImage: profile?.logo || user.profileImage,
-        averageRating: reviewSummary.averageRating,
-        ratingCount: reviewSummary.ratingCount
-      };
+    const [userRows, serviceRows, productRows] = await Promise.all([
+      User.aggregate(usersPipeline),
+      Content.aggregate(discoveryPipeline("contents", {
+        published: true, visibility: { $ne: "private" }, ...(category ? { category } : {})
+      }, ["title", "description", "category"])),
+      Product.aggregate(discoveryPipeline("products", { published: true }, ["name", "description", "sku"]))
+    ]);
+    const hasMore = userRows.length > limit || serviceRows.length > limit || productRows.length > limit;
+    const users = await Promise.all(userRows.slice(0, limit).map(async user => {
+      const summary = await verifiedReviewSummary(user.businessId);
+      const { businessId, ...profile } = user;
+      return { ...profile, ...summary };
     }));
-
-    const serviceFilter = {
-      user: { $in: ownerIds },
-      published: true,
-      visibility: { $ne: "private" },
-      ...(category ? { category } : {}),
-      ...(regex ? { $or: [{ title: regex }, { description: regex }, { category: regex }, { user: { $in: matchingIds } }] } : {})
-    };
-
-    const services = await Content.find(serviceFilter)
-      .populate("user", "name username profileImage accountStatus")
-      .sort({ updatedAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const ratings = await ratingSummary(services.map(service => service._id));
+    const services = serviceRows.slice(0, limit);
+    const ratings = await ratingSummary(services.map(item => item._id));
     const mapped = services.map(service => ({
-      ...service.toObject(),
-      owner: service.user,
+      ...service, owner: service.user,
       ...(ratings.get(String(service._id)) || { averageRating: 0, ratingCount: 0 })
     })).filter(service => service.averageRating >= minRating);
-
-    const productFilter = {
-      user: { $in: ownerIds },
-      published: true,
-      ...(regex ? { $or: [{ name: regex }, { description: regex }, { sku: regex }, { user: { $in: matchingIds } }] } : {})
-    };
-    const products = await Product.find(productFilter)
-      .populate("user", "name username profileImage accountStatus")
-      .sort({ updatedAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
-
-    res.json({ users, services: mapped, products, page, hasMore: users.length === limit || services.length === limit || products.length === limit });
+    const products = productRows.slice(0, limit);
+    res.json({ users, services: mapped, products, page, hasMore });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to search businesses and services." });

@@ -41,4 +41,7 @@ const businessSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+businessSchema.index({ name: "text", category: "text", location: "text" });
+businessSchema.index({ category: 1, name: 1 });
+
 export default mongoose.model("Business", businessSchema);

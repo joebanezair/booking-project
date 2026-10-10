@@ -33,6 +33,8 @@ export const Product = mongoose.models.Product || mongoose.model("Product", new 
   stock:{type:Number,min:0,default:0}, published:{type:Boolean,default:false,index:true}
 },{timestamps:true}));
 
+Product.schema.index({ user: 1, published: 1, updatedAt: -1 });
+
 export const PosSale = mongoose.models.PosSale || mongoose.model("PosSale", new mongoose.Schema({
   businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   invoiceNumber:{type:String,required:true,unique:true,index:true},
