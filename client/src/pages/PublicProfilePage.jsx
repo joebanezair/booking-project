@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { FiCheckCircle, FiChevronLeft, FiChevronRight, FiMapPin, FiMessageSquare, FiShoppingBag, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiCalendar, FiCheckCircle, FiChevronLeft, FiChevronRight, FiMapPin, FiMessageSquare, FiShoppingBag, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import ContentCard from "../components/ContentCard.jsx";
@@ -112,7 +112,6 @@ export default function PublicProfilePage({ user }) {
       <div className="public-profile-info">
         <ProfileAvatar profile={profile} size="xl" />
         <div className="public-profile-copy">
-          <p className="eyebrow">BUSINESS PROFILE</p>
           <div className="profile-title-row">
             <h1>{profile.name}</h1>
             {user && !isOwner && <div className="public-profile-actions">
@@ -143,7 +142,7 @@ export default function PublicProfilePage({ user }) {
           <div className="profile-meta">
             {profile.location && <span>{profile.location}</span>}
             {profile.website && <a href={profile.website} target="_blank" rel="noreferrer">Website</a>}
-            {!paused && <Link to={`/b/${profile.id}`}>Book a session</Link>}
+            {!paused && <Link className="public-book-session-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link>}
           </div>
         </div>
       </div>
