@@ -28,6 +28,7 @@ import { syncSaleForBooking } from "./lib/sales.js";
 import { calculateBookingEndsAt, makeBookingReference } from "./lib/scheduling.js";
 import { connectMediaStore } from "./lib/mediaStore.js";
 import mediaRoutes from "./routes/media.js";
+import { localRateLimit } from "./middleware/localRateLimit.js";
 
 dotenv.config();
 const app = express();
@@ -63,10 +64,15 @@ io.on("connection", socket => {
 });
 
 app.set("io", io);
+if (process.env.TRUST_PROXY === "1") app.set("trust proxy", 1);
 app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
 app.use(express.json({ limit: "20mb" }));
 
 app.get("/api/health", (_req, res) => res.json({ ok: true, message: "Booking API is running" }));
+app.use("/api/auth/login", localRateLimit({ max: 20 }));
+app.use("/api/auth/register", localRateLimit({ max: 10 }));
+app.use("/api/public/search", localRateLimit({ max: 120 }));
+app.use("/api/public/book", localRateLimit({ max: 60 }));
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/messages", messageRoutes);
