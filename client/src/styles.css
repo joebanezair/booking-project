@@ -7222,3 +7222,90 @@ td,th{
     gap:12px;
   }
 }
+
+/* Public profile: raised left avatar with title safely below the cover */
+/* Only affect public profiles with uploaded cover photos; keep no-cover profiles untouched. */
+.public-profile-hero.has-cover {
+  --public-avatar-size: 160px;
+  --public-avatar-overlap: 90px;
+}
+
+/* Raise just the left avatar across the cover/card edge, instead of lifting the title. */
+.public-profile-hero.has-cover .public-profile-info {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  margin-top: calc(-1 * var(--public-avatar-overlap));
+  padding: 0 34px 34px;
+}
+
+.public-profile-hero.has-cover .public-profile-info > .profile-avatar {
+  position: relative;
+  z-index: 2;
+  display: block;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: var(--public-avatar-size);
+  height: var(--public-avatar-size);
+  margin: 0 0 5px !important;
+  border: 5px solid var(--card);
+  border-radius: 50% !important;
+  object-fit: cover;
+  box-shadow: 0 8px 24px rgba(25, 36, 58, .16);
+}
+
+/* Name, category, ratings and booking details start after the avatar, not on the cover. */
+.public-profile-hero.has-cover .public-profile-copy {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  flex: none;
+  padding: 0;
+}
+.public-profile-hero.has-cover .public-profile-copy > .eyebrow {
+  margin: 2px 0 7px;
+}
+.public-profile-hero.has-cover .profile-title-row {
+  width: 100%;
+  align-items: flex-start;
+}
+.public-profile-hero.has-cover .profile-title-row h1 {
+  margin: 0;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+/* Match the reference: profile actions float at the cover's lower-right corner. */
+.public-profile-hero.has-cover .public-profile-actions {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--public-avatar-overlap) - 60px);
+  right: 24px;
+}
+
+@media (max-width: 800px) {
+  .public-profile-hero.has-cover {
+    --public-avatar-size: 128px;
+    --public-avatar-overlap: 72px;
+  }
+  .public-profile-hero.has-cover .public-profile-info {
+    padding: 0 24px 28px;
+  }
+  /* Keep action buttons readable instead of covering the banner on small screens. */
+  .public-profile-hero.has-cover .public-profile-actions {
+    position: static;
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .public-profile-hero.has-cover {
+    --public-avatar-size: 110px;
+    --public-avatar-overlap: 62px;
+  }
+  .public-profile-hero.has-cover .public-profile-info {
+    padding: 0 18px 24px;
+  }
+}
