@@ -917,3 +917,13 @@ Keep existing BookFlow behavior, designs, business profiles, messaging, bookings
 ### 5. Continuous validation and startup migrations
 
 The CI workflow now runs on pushes to `betta-vone` and checks the client build and server `.js`/`.mjs` syntax. Historical account/booking/sales backfills no longer execute unconditionally at every server startup; use `RUN_LEGACY_MIGRATIONS=1` only during a controlled maintenance window after a backup. This switch does not replace a formal migration runner and needs operational oversight.
+
+### 6. Public-discovery load-test baseline
+
+Run a read-only ramp test against a controlled staging deployment after installing [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/):
+
+```bash
+k6 run -e BASE_URL=https://staging-api.example.com tests/load/public-discovery.js
+```
+
+The script ramps to 100 virtual users, checks API error rates and p95 duration for browse/search, and **does not prove 100K concurrency**. Test data, deployment capacity, and authorization scenarios must be representative before claiming a production capacity number. The API health route now reports 503 when the main MongoDB connection is unavailable.

@@ -68,7 +68,13 @@ if (process.env.TRUST_PROXY === "1") app.set("trust proxy", 1);
 app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
 app.use(express.json({ limit: "20mb" }));
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, message: "Booking API is running" }));
+app.get("/api/health", (_req, res) => {
+  const databaseConnected = mongoose.connection.readyState === 1;
+  res.status(databaseConnected ? 200 : 503).json({
+    ok: databaseConnected,
+    message: databaseConnected ? "Booking API is running" : "Main database is unavailable"
+  });
+});
 app.use("/api/auth/login", localRateLimit({ max: 20 }));
 app.use("/api/auth/register", localRateLimit({ max: 10 }));
 app.use("/api/public/search", localRateLimit({ max: 120 }));
