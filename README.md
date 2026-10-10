@@ -897,7 +897,7 @@ VPS costs still apply; RabbitMQ Community Edition software itself does not requi
 
 - API endpoints have basic in-process limits. Set `TRUST_PROXY=1` **only when Express is behind a trusted reverse proxy**. Use shared rate limits at the proxy/Redis layer for multiple API replicas.
 - Search now executes user/provider filtering and pagination in the database; however case-insensitive substring matching and a large number of lookups can still become slow. Index analysis, dedicated search indexing, and performance testing with 100K+ synthetic business accounts are required.
-- All existing service/profile/product API shapes remain compatible. The main routes (private bookings, messages, admin lists, sales) still have unbounded or heavy queries and require subsequent pagination/aggregation changes.
+- All existing service/profile/product API shapes remain compatible. Several main routes (private bookings, messaging contact lists, admin lists, sales) still have unbounded or heavy queries and require subsequent pagination/aggregation changes.
 - `server/server.js` still contains startup backfills. Migrate them to a separate maintenance job **before** high-availability deployments; they are not removed in this iteration.
 - `infrastructure/nginx-media-cache.conf` is a sample Nginx block; configure HTTPS, origin proxying, request limits, cache zone, and monitoring for your actual VPS.
 - Database availability, migrations, backups, logs, alerting, CDN-equivalent cache efficiency, multiple API instances, and the Socket.IO Redis adapter are **not automatically configured** by the code changes.
@@ -905,7 +905,7 @@ VPS costs still apply; RabbitMQ Community Edition software itself does not requi
 ### 4. Remaining priority upgrades (not implemented yet)
 
 1. **Booking concurrency:** enforce atomic capacity claims under simultaneous reservations and prevent conflicting reschedules across replicas. Avoid advertising zero double-bookings until race tests pass.
-2. **Full pagination:** add cursor pagination to chats, private booking lists, sales analytics, admin directory, and public profile collections, together with compatible frontend Load More controls.
+2. **Remaining pagination:** add cursor pagination to private booking lists, sales analytics, admin directory, messaging contact lists, and public profile collections. Conversation history already has a 50-message cursor and Load Older control.
 3. **Image delivery:** move browser uploads from JSON/Base64 to direct binary, create responsive WebP/AVIF variants, and measure Nginx cache hit ratio.
 4. **RabbitMQ operations:** add business-specific consumers for notifications/email as needed, a dead-letter/retry policy, operational dashboards, and multiple broker nodes when availability warrants.
 5. **Horizontal deployment:** add multiple API instances, configure cross-instance Socket.IO messaging (such as its Redis adapter), and distributed rate limits.
