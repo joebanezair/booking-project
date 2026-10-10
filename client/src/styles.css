@@ -6354,7 +6354,8 @@ td,th{
 .public-page .business-card-cover-fallback {
   position:relative;
   overflow:hidden;
-  background:linear-gradient(135deg,#4167ee 0%,#5d7cff 55%,#6f8cff 100%) !important;
+  background:linear-gradient(135deg,#b8c0cb 0%,#d4dae3 55%,#e9edf2 100%) !important;
+  opacity:.5;
 }
 .public-page .business-card-cover-fallback .cover-wave {
   position:absolute;
@@ -6367,13 +6368,13 @@ td,th{
 .public-page .business-card-cover-fallback .cover-wave-one {
   left:-16%;
   top:22%;
-  background:rgba(28,64,190,.42);
+  background:rgba(71,85,105,.26);
   transform:rotate(12deg);
 }
 .public-page .business-card-cover-fallback .cover-wave-two {
   right:-20%;
   top:38%;
-  background:rgba(48,84,210,.34);
+  background:rgba(100,116,139,.2);
   transform:rotate(-15deg);
 }
 
