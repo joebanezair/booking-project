@@ -9,6 +9,10 @@ const messageSchema = new mongoose.Schema(
     attachment: { name: String, mimeType: String, size: Number, dataUrl: String },
     sharedProfile: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
     readAt: { type: Date, default: null },
+    // Queue event is derived from the committed message, avoiding a second-write outbox gap.
+    queuePending: { type: Boolean, default: false },
+    queuePublishedAt: { type: Date, default: null },
+    queueProcessedAt: { type: Date, default: null },
     unsentAt: { type: Date, default: null },
     deletedFor: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
   },
@@ -18,5 +22,6 @@ const messageSchema = new mongoose.Schema(
 messageSchema.index({ sender: 1, recipient: 1, createdAt: -1 });
 messageSchema.index({ recipient: 1, sender: 1, createdAt: -1 });
 messageSchema.index({ recipient: 1, readAt: 1 });
+messageSchema.index({ queuePending: 1, createdAt: 1 }, { partialFilterExpression: { queuePending: true } });
 
 export default mongoose.model("Message", messageSchema);

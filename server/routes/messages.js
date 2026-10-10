@@ -149,7 +149,7 @@ router.post("/:userId", async (req,res) => {
       if(!/^data:(image\/|application\/pdf|text\/|application\/(msword|vnd\.openxmlformats-officedocument|vnd\.ms-excel|vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet))/.test(a.dataUrl||"")) return res.status(400).json({message:"Unsupported file type."});
       attachment={name:String(a.name||"file").slice(0,180),mimeType:a.mimeType,size:Number(a.size)||0,dataUrl:mediaEnabled()?await saveDataUri(a.dataUrl,{visibility:"private",ownerId:req.user.id,name:a.name}):a.dataUrl};
     }
-    const message=await Message.create({sender:req.user.id,recipient:req.params.userId,body,messageType,attachment,sharedProfile:req.body.sharedProfile||null});
+    const message=await Message.create({sender:req.user.id,recipient:req.params.userId,body,messageType,attachment,sharedProfile:req.body.sharedProfile||null,queuePending:Boolean(process.env.RABBITMQ_URL)});
     const populated=await Message.findById(message._id).populate("sharedProfile",publicUserFields);
     req.app.get("io").to(`user:${req.params.userId}`).emit("message:new",{...populated.toObject(),attachment:attachmentForClient(populated.attachment)});
     await notify(req,req.params.userId,{type:"message",title:"New message",body:(body|| (attachment?"Sent a file":"Shared a profile")).slice(0,120),link:`/dashboard/messages/${req.user.id}`});

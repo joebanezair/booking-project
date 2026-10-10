@@ -1,0 +1,11 @@
+{
+  "name": "bookflow-chat-broker-worker",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node worker.mjs" },
+  "dependencies": {
+    "amqplib": "^0.10.9",
+    "mongodb": "^6.20.0"
+  }
+}

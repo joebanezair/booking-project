@@ -24,6 +24,16 @@ services:
       - "127.0.0.1:15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+  chat-broker:
+    profiles: ["chat"]
+    build:
+      context: ../server/workers/chat-broker
+    restart: unless-stopped
+    environment:
+      MONGO_URI: ${MONGO_URI:?Set MONGO_URI}
+      RABBITMQ_URL: ${RABBITMQ_URL:?Set RABBITMQ_URL}
+    depends_on:
+      - rabbitmq
   redis:
     image: redis:7-alpine
     restart: unless-stopped
