@@ -461,6 +461,27 @@ router.patch("/:id/status", async (req, res) => {
     const booking = await Booking.findOne({ _id: req.params.id, user: req.user.id });
     if (!booking) return res.status(404).json({ message: "Booking not found." });
 
+    // Reopening a cancelled or completed booking must not bypass the capacity
+    // check used when creating and rescheduling reservations.
+    if (schedulableStatuses.has(status) && !schedulableStatuses.has(booking.status)) {
+      const business = await Business.findOne({ owner: req.user.id });
+      const service = booking.content
+        ? await Content.findOne({ _id: booking.content, user: req.user.id }).select("durationMinutes bufferMinutes capacity")
+        : null;
+      const scheduleError = await validateBookingWindow({
+        business,
+        service: service || {
+          durationMinutes: booking.serviceDurationMinutes || 60,
+          bufferMinutes: booking.bufferMinutes || 0,
+          capacity: 1
+        },
+        ownerId: req.user.id,
+        start: booking.bookingDate,
+        excludeBookingId: booking._id
+      });
+      if (scheduleError) return res.status(409).json({ message: scheduleError });
+    }
+
     await applyStatus(booking, status);
     req.app.get("io").to(`user:${req.user.id}`).emit("booking:updated", booking);
     res.json(await responsePayload(booking));
