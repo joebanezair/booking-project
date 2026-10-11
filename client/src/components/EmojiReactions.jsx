@@ -1,3 +1,4 @@
+import { Button } from "./ui/button.jsx";
 import { useEffect, useRef, useState } from "react";
 
 export const EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
@@ -22,9 +23,9 @@ export default function EmojiReactions({ reactions = [], canReact = false, onTog
 
   return <div className="emoji-reactions" ref={rootRef}>
     <div className="emoji-reaction-summary">
-      {reactions.filter(reaction => reaction.count > 0).map(reaction => <button type="button" key={reaction.emoji} className={`emoji-reaction ${reaction.reacted ? "active" : ""}`} disabled={!canReact} aria-pressed={reaction.reacted} aria-label={`${reaction.emoji}: ${reaction.count} reaction${reaction.count === 1 ? "" : "s"}`} onClick={() => choose(reaction.emoji)}><span>{reaction.emoji}</span><strong>{reaction.count}</strong></button>)}
-      {canReact && <button type="button" className="emoji-picker-trigger" aria-expanded={open} aria-label={`React to this ${label}`} onClick={() => setOpen(value => !value)}>☺<span>+</span></button>}
+      {reactions.filter(reaction => reaction.count > 0).map(reaction => <Button variant="plain" type="button" key={reaction.emoji} className={`emoji-reaction ${reaction.reacted ? "active" : ""}`} disabled={!canReact} aria-pressed={reaction.reacted} aria-label={`${reaction.emoji}: ${reaction.count} reaction${reaction.count === 1 ? "" : "s"}`} onClick={() => choose(reaction.emoji)}><span>{reaction.emoji}</span><strong>{reaction.count}</strong></Button>)}
+      {canReact && <Button variant="plain" type="button" className="emoji-picker-trigger" aria-expanded={open} aria-label={`React to this ${label}`} onClick={() => setOpen(value => !value)}>☺<span>+</span></Button>}
     </div>
-    {open && <div className="emoji-picker" role="menu" aria-label={`Choose a reaction for this ${label}`}>{EMOJIS.map(emoji => <button type="button" role="menuitem" key={emoji} aria-label={`React with ${emoji}`} onClick={() => choose(emoji)}>{emoji}</button>)}</div>}
+    {open && <div className="emoji-picker" role="menu" aria-label={`Choose a reaction for this ${label}`}>{EMOJIS.map(emoji => <Button variant="plain" type="button" role="menuitem" key={emoji} aria-label={`React with ${emoji}`} onClick={() => choose(emoji)}>{emoji}</Button>)}</div>}
   </div>;
 }
