@@ -165,7 +165,7 @@ router.post("/:userId", async (req,res) => {
     if(req.body.attachment){
       const a=req.body.attachment;
       if(Number(a.size)>5*1024*1024) return res.status(413).json({message:"Files must be 5 MB or smaller."});
-      const legacyBase64 = /^data:(image\\/|application\\/pdf|text\\/|application\\/(msword|vnd\\.openxmlformats-officedocument|vnd\\.ms-excel|vnd\\.openxmlformats-officedocument\\.spreadsheetml\\.sheet))/.test(a.dataUrl || "");
+      const legacyBase64 = /^data:(image\/|application\/pdf|text\/|application\/(msword|vnd\.openxmlformats-officedocument|vnd\.ms-excel|vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet))/.test(a.dataUrl || "");
       // A guessed GridFS identifier must never let one user attach another user's file.
       const ownedBinary = !legacyBase64 && await ownedPrivateMediaInput(a.dataUrl, req.user.id);
       if (!legacyBase64 && !ownedBinary) return res.status(400).json({message:"Unsupported or unauthorized file attachment."});
