@@ -1,6 +1,7 @@
 import { Button } from "./ui/button.jsx";
+import { Card } from "./ui/card.jsx";
 import { useMemo, useState } from "react";
-import { FiCopy, FiDownload } from "react-icons/fi";
+import { FiCopy, FiDownload, FiGrid, FiLink } from "react-icons/fi";
 
 const SIZE=41;
 const CAPACITY=134;
@@ -67,8 +68,18 @@ export default function BookingQrCard({bookingUrl,businessName="Business"}){
     const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${total} ${total}" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="white"/><g fill="black">${cells.join("")}</g></svg>`;
     localStorage.setItem("bookflow_booking_shared","1");const blob=new Blob([svg],{type:"image/svg+xml"}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=(businessName||"bookflow").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+"-booking-qr.svg";link.click();URL.revokeObjectURL(url);
   }
-  return <section className="panel booking-qr-card">
-    <div><p className="eyebrow">QR BOOKING</p><h2>Share your booking page</h2><p className="muted">This QR code is generated directly in BookFlow. Print it or add it to your storefront, flyers, or social posts.</p><p className="booking-qr-url">{bookingUrl}</p><div className="row-actions"><Button variant="plain" type="button" className="secondary" onClick={copy}><FiCopy/>{copied?"Copied":"Copy link"}</Button><Button variant="plain" type="button" className="primary-button compact-button" onClick={download} disabled={!result.matrix}><FiDownload/>Download QR</Button></div>{result.error&&<p className="error">{result.error}</p>}</div>
-    {result.matrix&&<svg className="booking-qr-svg" viewBox={`0 0 ${total} ${total}`} aria-label="Booking page QR code" role="img" shapeRendering="crispEdges"><rect width={total} height={total} fill="white"/>{result.matrix.map((row,y)=>row.map((dark,x)=>dark?<rect key={x+"-"+y} x={x+quiet} y={y+quiet} width="1" height="1" fill="black"/>:null))}</svg>}
-  </section>;
+  return <Card as="section" className="panel booking-qr-card" aria-labelledby="booking-qr-title">
+    <div className="booking-qr-details">
+      <p className="eyebrow booking-qr-eyebrow"><FiGrid aria-hidden="true" /> QR BOOKING</p>
+      <h2 id="booking-qr-title">Share your booking page</h2>
+      <p className="muted">This QR code is generated directly in BookFlow. Print it or add it to your storefront, flyers, or social posts.</p>
+      <p className="booking-qr-url"><FiLink aria-hidden="true" /><span>{bookingUrl}</span></p>
+      <div className="row-actions booking-qr-actions">
+        <Button variant="outline" type="button" onClick={copy}><FiCopy aria-hidden="true" />{copied ? "Copied" : "Copy link"}</Button>
+        <Button variant="default" type="button" onClick={download} disabled={!result.matrix}><FiDownload aria-hidden="true" />Download QR</Button>
+      </div>
+      {result.error && <p className="error">{result.error}</p>}
+    </div>
+    {result.matrix && <svg className="booking-qr-svg" viewBox={`0 0 ${total} ${total}`} aria-label="Booking page QR code" role="img" shapeRendering="crispEdges"><rect width={total} height={total} fill="white"/>{result.matrix.map((row,y)=>row.map((dark,x)=>dark?<rect key={x+"-"+y} x={x+quiet} y={y+quiet} width="1" height="1" fill="black"/>:null))}</svg>}
+  </Card>;
 }
