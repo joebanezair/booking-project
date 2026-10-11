@@ -8,6 +8,28 @@ BookFlow is a full-stack MERN application for service businesses. The account mo
 
 There is no customer account role and no customer-to-business approval workflow.
 
+## Full-page dashboard redesign — October 11, 2026
+
+The approved BookFlow business dashboard design is implemented on **`betta-vone`**, while keeping the existing booking, sales, profile, search and account workflows.
+
+- **Persistent desktop drawer (235px):** Workspace and Activity groups, accessible More dropdown (expanded by default), same role-filtered URLs, notification badge, and signed-in account identity at the footer. Active page now has a soft blue background with **no glowing left border**. The existing mobile slide-out drawer and bottom navigation still function.
+- **Workspace header:** Search businesses, services and products from any signed-in workspace page; submitting opens the existing `/search?q=...` page with the query filled in. On the dashboard, the calendar range selector switches between Today, Last 7 days, This Month, This Year, and All Time. The account dropdown exposes Profile (business users), Settings, and Sign out with keyboard and outside-click dismissal.
+- **Live KPI row:** Four equal desktop cards (recorded sales, completed services, average sale and services sold), using the existing sales analytics endpoint. A sparkline renders only when actual trend data supports it; no fake upward trends or imaginary comparisons.
+- **Sales Overview:** Switch between Sales (real recorded sales), Completed (real completed-service records), and Services (actual service-sales breakdown), with a link to Full analytics. A quiet empty state replaces misleading zero-growth projections.
+- **Service status:** Donut and numeric breakdown for completed, upcoming (pending/confirmed/in-progress), and cancelled/no-show bookings. A new indexed-filter-friendly MongoDB aggregation route `GET /api/bookings/status-summary?range=month&offset=...` produces counts for the signed-in business and selected date window without fetching all bookings into the browser.
+- **Top Services:** Up to five actual completed service categories from recorded sales. Shows a genuine empty state when there is no data.
+- **Quick access:** All seven original destination cards (including Search) remain in a consistent responsive grid.
+- **Responsive:** Four/two/one KPI columns; compact analytics grid; appropriately stacked mobile panels; theme-aware surfaces. No third-party UI framework or illustration asset was added.
+- **Files:** `client/src/components/DashboardAnalytics.jsx`, `client/src/components/AppLayout.jsx`, `client/src/pages/DashboardPage.jsx`, `client/src/components/SalesCharts.jsx`, `client/src/pages/SearchPage.jsx`, `client/src/dashboard-fullpage.css`, `server/routes/bookings.js`, `client/src/api.js` and `client/src/main.jsx`. Source-level UI guards are in `client/scripts/audit-ui.mjs`.
+- **Validation:** GitHub CI checks the client build, UI audit, and server tests/syntax. Perform additional visual and interaction testing on your Codespace at desktop, tablet, and phone breakpoints in light and dark mode.
+
+Update your workspace:
+
+```bash
+cd /workspaces/codespaces-blank/booking-project
+git checkout betta-vone && git pull origin betta-vone
+```
+
 ## Sidebar navigation redesign — October 11, 2026
 
 The `betta-vone` dashboard sidebar is reorganized to avoid the tall, permanently visible scrollbar shown on smaller desktop windows, while retaining every page.
