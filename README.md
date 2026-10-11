@@ -8,6 +8,24 @@ BookFlow is a full-stack MERN application for service businesses. The account mo
 
 There is no customer account role and no customer-to-business approval workflow.
 
+## Business setup checklist redesign — October 11, 2026
+
+On `betta-vone`, the business dashboard setup checklist now follows the approved **Get Ready to Launch** design. Only the **business dashboard** changes; administrator stats, existing analytics and booking flows are unaffected.
+
+- **Header:** Left-aligned onboarding title and supporting description, live completion percentage/count, and an illustrated rocket. The header remains an accessible, keyboard-operated expand/collapse control. Unfinished checklists begin expanded so the next tasks are easy to find.
+- **Progress:** Semantic progress bar with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`, based on the same seven existing business setup conditions.
+- **Checklist:** Seven unchanged destinations and completion checks, now shown as descriptive icon cards: three columns on wide desktops, two on tablets, and one on phones. Completed steps use a subtle green tint; remaining tasks use a neutral card style.
+- **Compatibility:** Local shadcn-style `Card` and `Button asChild` components, theme-aware colors, 10px card corners, focus outlines, reduced-motion support, dark theme and no new image/CDN dependency. The rocket is a lightweight inline SVG, not an uploaded file.
+- **Files:** `client/src/components/BusinessSetupChecklist.jsx`, `client/src/business-onboarding-refresh.css`, dashboard integration in `client/src/pages/DashboardPage.jsx`, and `client/src/main.jsx`.
+- **Checks:** `node client/scripts/audit-ui.mjs` is part of CI and verifies all seven steps, disclosure/progress semantics, responsive grid CSS, and stylesheet load order. Run a browser visual review at 375px, 768px and 1440px for final spacing.
+
+Refresh the Codespaces frontend after updating the branch:
+
+```bash
+git checkout betta-vone && git pull origin betta-vone
+cd client && npm run dev -- --host 0.0.0.0
+```
+
 ## Shadcn-style component modernization — October 11, 2026
 
 **Branch:** `betta-vone` only. BookFlow's original theme variables, dark/light colors, existing features, routes, media data, and service/product/booking actions are preserved. The UI uses **local shadcn-style React primitives**, not an installed upstream shadcn/Radix/Tailwind component registry; migrating to Radix-based primitives remains a separate task.
