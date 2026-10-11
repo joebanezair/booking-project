@@ -159,6 +159,32 @@ if (!sidebarRefinements.includes("overflow-y: auto !important") ||
   failures.push("Sidebar must scroll on short screens with visually hidden scrollbar.");
 if (!appEntry.includes('import "./sidebar-redesign.css";'))
   failures.push("Sidebar redesign must be loaded last in client/main.jsx.");
+// Approved full-page dashboard: preserve real data, all quick links,
+ // period selector, accessible controls, and the glow-free full-width drawer.
+const analyticsSource = readFileSync(join(root,"components/DashboardAnalytics.jsx"),"utf8");
+const fullDashboardCss = readFileSync(join(root,"dashboard-fullpage.css"),"utf8");
+const searchPageSource = readFileSync(join(root,"pages/SearchPage.jsx"),"utf8");
+for (const required of [
+  "<DashboardAnalytics", "statusSummary={bookingSummary}", "dashboardRange={isAdmin ? null : dashboardRange}",
+  "onDashboardRangeChange={setDashboardRange}", "api.bookings.statusSummary", "api.sales.analytics"
+]) if (!dashboardSource.includes(required))
+  failures.push("Live dashboard integration missing: " + required);
+for (const required of [
+  "data?.records", "statusSummary", "ServiceSalesChart", "SalesTrendChart", "dashboard-v2-stats",
+  "dashboard-v2-analysis-grid", "dashboard-v2-top-services", "aria-pressed={chartTab === key}"
+]) if (!analyticsSource.includes(required))
+  failures.push("Real dashboard analytics feature missing: " + required);
+for (const required of [
+  'className="workspace-global-search"', 'className="workspace-account-menu"',
+  'onLogout?.()', 'aria-label="Dashboard analytics period"', 'aria-label="Search BookFlow"'
+]) if (!sidebarSource.includes(required))
+  failures.push("Functional workspace topbar missing: " + required);
+if (!searchPageSource.includes('searchParams.get("q")') ||
+    !fullDashboardCss.includes("grid-template-columns: repeat(4, minmax(0, 1fr))") ||
+    !fullDashboardCss.includes("box-shadow: none !important") ||
+    !fullDashboardCss.includes("dashboard-v2-analysis-grid") ||
+    !appEntry.includes('import "./dashboard-fullpage.css";'))
+  failures.push("Full-page responsive UI, search wiring or glow-free drawer missing.");
 const editorCover=readFileSync(join(root,"components/ProfileMediaHeader.jsx"),"utf8");
 const publicCover=readFileSync(join(root,"pages/PublicProfilePage.jsx"),"utf8");
 if (!editorCover.includes('className="ui-profile-cover-image"')) failures.push("ProfileMediaHeader cover is not using shared Image");
