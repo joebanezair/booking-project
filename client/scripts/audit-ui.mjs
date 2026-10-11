@@ -185,6 +185,24 @@ if (!searchPageSource.includes('searchParams.get("q")') ||
     !fullDashboardCss.includes("dashboard-v2-analysis-grid") ||
     !appEntry.includes('import "./dashboard-fullpage.css";'))
   failures.push("Full-page responsive UI, search wiring or glow-free drawer missing.");
+// The approved desktop analysis is a single compact THREE-CARD row, with
+// circular donut geometry and truthful handling of single-period results.
+const dashboardCss = readFileSync(join(root,"dashboard-fullpage.css"),"utf8");
+for (const token of [
+  "Analytics row alignment correction.",
+  "grid-template-columns: minmax(0, 2fr) minmax(190px, 1fr) minmax(190px, 1fr)",
+  "grid-column: auto !important",
+  ".dashboard-status-donut",
+  "border-radius: 50% !important",
+  ".dashboard-status-hole",
+  "@media (max-width: 640px)"
+]) if (!dashboardCss.includes(token))
+  failures.push("Three-column analytics and circular status layout lost: "+token);
+if (dashboardCss.includes("@media (max-width: 1280px)"))
+  failures.push("Old 1280px two-panel breakpoint must not push Top Services below.");
+for (const token of ["SinglePeriodSummary", "salesTrend.length === 1", "completedTrend.length === 1"])
+  if (!analyticsSource.includes(token))
+    failures.push("Single-period analytics must not render a disconnected dot: "+token);
 const editorCover=readFileSync(join(root,"components/ProfileMediaHeader.jsx"),"utf8");
 const publicCover=readFileSync(join(root,"pages/PublicProfilePage.jsx"),"utf8");
 if (!editorCover.includes('className="ui-profile-cover-image"')) failures.push("ProfileMediaHeader cover is not using shared Image");
