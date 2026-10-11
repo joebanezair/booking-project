@@ -1,10 +1,10 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiDollarSign, FiMessageSquare, FiPackage, FiPlus, FiSearch, FiSettings, FiTrendingUp, FiUser, FiUsers } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiMessageSquare, FiPackage, FiPlus, FiSearch, FiSettings, FiUser, FiUsers } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import BusinessSetupChecklist from "../components/BusinessSetupChecklist.jsx";
-import { SalesTrendChart } from "../components/SalesCharts.jsx";
+import DashboardAnalytics from "../components/DashboardAnalytics.jsx";
 import { api } from "../api.js";
 import { Button } from "../components/ui/button.jsx";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.jsx";
@@ -39,6 +39,10 @@ export default function DashboardPage({ user, onLogout }) {
   const sections = isAdmin ? adminSections : businessSections;
   const [overview, setOverview] = useState(null);
   const [businessSales, setBusinessSales] = useState(null);
+  const [bookingSummary, setBookingSummary] = useState(null);
+  const [dashboardRange, setDashboardRange] = useState("month");
+  const [salesLoading, setSalesLoading] = useState(true);
+  const [statusLoading, setStatusLoading] = useState(true);
   const [setup, setSetup] = useState({ profile: null, business: null, services: null });
   const [overviewError, setOverviewError] = useState("");
   const [setupExpanded, setSetupExpanded] = useState(false);
@@ -48,17 +52,28 @@ export default function DashboardPage({ user, onLogout }) {
       api.admin.overview().then(setOverview).catch(error => setOverviewError(error.message));
       return;
     }
-    api.sales.analytics({
-      range: "month",
-      group: "weekly",
-      offset: new Date().getTimezoneOffset()
-    }).then(setBusinessSales).catch(error => setOverviewError(error.message));
     Promise.all([api.profile.get(), api.business.mine(), api.content.list()])
       .then(([profile, business, services]) => setSetup({ profile, business, services }))
       .catch(() => {});
   }, [isAdmin]);
 
-  const salesCurrency = businessSales?.primaryCurrency || "PHP";
+  useEffect(() => {
+    if (isAdmin) return;
+    let active = true;
+    const params = { range: dashboardRange, group: dashboardRange === "year" || dashboardRange === "all" ? "monthly" : dashboardRange === "month" ? "weekly" : "daily", offset: new Date().getTimezoneOffset() };
+    setSalesLoading(true);
+    setStatusLoading(true);
+    api.sales.analytics(params).then(data => {
+      if (active) { setBusinessSales(data); setOverviewError(""); }
+    }).catch(error => { if (active) { setBusinessSales(null); setOverviewError(error.message); } })
+      .finally(() => { if (active) setSalesLoading(false); });
+    api.bookings.statusSummary({ range: dashboardRange, offset: params.offset }).then(data => {
+      if (active) setBookingSummary(data);
+    }).catch(() => { if (active) setBookingSummary(null); })
+      .finally(() => { if (active) setStatusLoading(false); });
+    return () => { active = false; };
+  }, [dashboardRange, isAdmin]);
+
   const onboarding = !isAdmin ? [
     { label: "Business account created", description: "Your business account is ready.", done: true, to: "/dashboard/profile" },
     { label: "Complete your Business Page", description: "Add contact details and business information.", done: Boolean(setup.business?.description && setup.business?.location && setup.business?.phone), to: "/dashboard/profile/business" },
@@ -69,7 +84,7 @@ export default function DashboardPage({ user, onLogout }) {
     { label: "Share your booking link or QR", description: "Help customers book your services.", done: Boolean(localStorage.getItem("bookflow_booking_shared")), to: "/dashboard/profile" }
   ] : [];
 
-  return <AppLayout user={user} onLogout={onLogout}>
+  return <AppLayout user={user} onLogout={onLogout} dashboardRange={isAdmin ? null : dashboardRange} onDashboardRangeChange={setDashboardRange}>
     <header className="topbar">
       <div>
         <p className="eyebrow">{isAdmin ? "ADMIN DASHBOARD" : "BUSINESS DASHBOARD"}</p>
@@ -96,18 +111,13 @@ export default function DashboardPage({ user, onLogout }) {
         onToggle={() => setSetupExpanded(value => !value)}
       />}
 
-      {!isAdmin && <section className="business-dashboard-analytics">
-        <div className="stats-grid">
-          <Card as="article" className="stat-card analytics-stat"><span><FiDollarSign />This month</span><strong>{businessSales ? money(businessSales.summary.totalSales, salesCurrency) : "—"}</strong><small>Recorded completed-service sales</small></Card>
-          <Card as="article" className="stat-card analytics-stat"><span><FiCalendar />Completed</span><strong>{businessSales?.summary.completedServices ?? "—"}</strong><small>Services completed this month</small></Card>
-          <Card as="article" className="stat-card analytics-stat"><span><FiTrendingUp />Average sale</span><strong>{businessSales ? money(businessSales.summary.averageSale, salesCurrency) : "—"}</strong><small>Primary currency</small></Card>
-          <Card as="article" className="stat-card analytics-stat"><span><FiBriefcase />Services sold</span><strong>{businessSales?.summary.servicesSold ?? "—"}</strong><small>Distinct services this month</small></Card>
-        </div>
-        <section className="panel dashboard-sales-chart">
-          <div className="panel-title"><div><p className="eyebrow">THIS MONTH</p><h2>Sales trend</h2></div><Button asChild variant="outline"><Link  className="secondary button-link icon-link" to="/dashboard/sales">Full analytics<FiArrowRight /></Link></Button></div>
-          <SalesTrendChart data={businessSales?.trend || []} currency={salesCurrency} />
-        </section>
-      </section>}
+      {!isAdmin && <DashboardAnalytics
+        data={businessSales}
+        statusSummary={bookingSummary}
+        range={dashboardRange}
+        loading={salesLoading}
+        statusLoading={statusLoading}
+      />}
 
       <section className="dashboard-route-section">
         <div className="dashboard-section-heading">
