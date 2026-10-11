@@ -1,9 +1,7 @@
-import { Button } from "./ui/button.jsx";
-import { Input } from "./ui/input.jsx";
+import { SearchField } from "./ui/search-field.jsx";
 import { Select } from "./ui/select.jsx";
 import { Label } from "./ui/label.jsx";
-import { useRef } from "react";
-import { FiSearch, FiX } from "react-icons/fi";
+
 
 /** Search this business's already-loaded public services and products. */
 export default function ProfileCatalogSearch({
@@ -16,39 +14,15 @@ export default function ProfileCatalogSearch({
   matchingCount,
   totalCount
 }) {
-  const inputRef = useRef(null);
   const hasFilters = Boolean(value.trim() || classification !== "all" || minRating !== "0");
 
   return (
     <div className="profile-catalog-search" role="search" aria-label="Search this business's products and services">
       <div className="profile-catalog-search-field">
         <Label htmlFor="profile-catalog-keyword">Search</Label>
-        <div className="profile-catalog-search-input-wrap">
-          <FiSearch className="profile-catalog-search-icon" aria-hidden="true" />
-          <Input
-            id="profile-catalog-keyword"
-            ref={inputRef}
-            type="search"
-            className="ui-input profile-catalog-search-input"
-            placeholder="Search products or services..."
-            autoComplete="off"
-            value={value}
-            onChange={event => onChange(event.target.value)}
-          />
-          {value && (
-            <Button variant="plain"
-              type="button"
-              className="profile-catalog-search-clear"
-              aria-label="Clear search"
-              onClick={() => {
-                onChange("");
-                inputRef.current?.focus();
-              }}
-            >
-              <FiX aria-hidden="true" />
-            </Button>
-          )}
-        </div>
+        <SearchField id="profile-catalog-keyword" className="profile-catalog-shadcn-search"
+          placeholder="Search products or services..." aria-label="Search products or services"
+          value={value} onValueChange={onChange} />
       </div>
       <Label className="profile-catalog-search-filter">
         <span>Classification</span>
