@@ -1,0 +1,238 @@
+/*
+ * BookFlow compact shadcn-style design refresh.
+ * IMPORTANT: no color values are introduced here. Every foreground, surface,
+ * border, ring and shadow color resolves to the EXISTING BookFlow theme tokens.
+ * Import this last so legacy pages receive the shared design language without
+ * breaking their JSX structure, responsive layout or event handlers.
+ */
+:root {
+  --ui-control-height: 32px;
+  --ui-control-height-sm: 28px;
+  --ui-control-height-lg: 36px;
+  --ui-card-radius: 9px;
+  --ui-image-radius: 7px;
+  --ui-control-radius: 6px;
+  --ui-space: 12px;
+}
+
+/* Buttons: intentionally more compact than standard shadcn defaults (40px). */
+button:not(.media-hit-area):not(.linkedin-avatar-button),
+a.ui-button,
+.ui-button {
+  min-height: var(--ui-control-height);
+  padding: 6px 11px;
+  border-radius: var(--ui-control-radius);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0;
+  box-shadow: none;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+button:not(.media-hit-area):not(.linkedin-avatar-button):hover,
+a.ui-button:hover,
+.ui-button:hover {
+  transform: none;
+}
+button:disabled, .ui-button:disabled, [aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: .58;
+  box-shadow: none;
+}
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  text-decoration: none;
+  vertical-align: middle;
+  border: 1px solid transparent;
+}
+.ui-button-plain { box-shadow: none; }
+.ui-button-default { background: var(--primary); color: var(--primary-foreground); }
+.ui-button-secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.ui-button-outline { background: var(--card); color: var(--foreground); border-color: var(--border); }
+.ui-button-ghost { background: transparent; color: var(--foreground); }
+.ui-button-destructive { background: var(--destructive); color: var(--primary-foreground); }
+.ui-button-link { background: transparent; color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+.ui-button-sm { min-height: var(--ui-control-height-sm) !important; padding: 4px 9px !important; font-size: 11px; }
+.ui-button-lg { min-height: var(--ui-control-height-lg) !important; padding: 7px 13px !important; font-size: 13px; }
+.ui-button-icon { width: 32px; height: 32px; min-height: 32px !important; padding: 0 !important; }
+.ui-button-icon-sm { width: 28px; height: 28px; min-height: 28px !important; padding: 0 !important; }
+:where(button, a.ui-button) svg { flex-shrink: 0; }
+:where(.ui-button, .primary-button, .secondary, .danger, .icon-button, .icon-action, .button-link) svg { width: 15px; height: 15px; }
+:where(.primary-button, .secondary, .danger, .button-link, .icon-button, .filter-chip, .service-icon-link, .booking-history-export, .ui-button) {
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+:where(.primary-button, .secondary, .danger, .button-link, .filter-chip) {
+  min-height: var(--ui-control-height);
+  padding: 6px 11px;
+  border-radius: var(--ui-control-radius);
+}
+:where(.icon-button, .icon-action.ui-button, button.icon-action, .service-icon-link.ui-button) {
+  min-width: 30px;
+  min-height: 30px;
+  padding: 5px;
+}
+:where(button, input, select, textarea, a, [role="button"]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+:where(.ui-button, button):active:not(:disabled) { transform: none; }
+
+/* Cards: quiet shadcn-style strokes, balanced internal space and existing surfaces. */
+:where(.ui-card, .panel, .public-content-card, .product-shop-card, .search-product-card, .public-product-card, .user-result, .order-card, .booking-card, .verified-review-card, .forum-post, .stat-card) {
+  border: 1px solid var(--border);
+  border-radius: var(--ui-card-radius);
+  background-color: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--shadow-sm);
+}
+:where(.ui-card, .panel, .public-content-card, .product-shop-card, .search-product-card, .public-product-card, .user-result, .order-card, .booking-card, .verified-review-card, .forum-post, .stat-card):focus-within {
+  border-color: var(--ring);
+}
+:where(.public-content-card, .product-shop-card, .search-product-card, .public-product-card, .user-result, .order-card, .booking-card) {
+  overflow: hidden;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+:where(.public-content-card, .product-shop-card, .search-product-card, .public-product-card, .user-result, .booking-card):hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+}
+:where(.panel):not(.booking-modal):not(.auth-hero):not(.photo-preview-dialog) {
+  border-radius: var(--ui-card-radius);
+}
+.ui-card-header { display: grid; gap: 5px; padding: 15px 16px 0; }
+.ui-card-title { margin: 0; font-size: 15px; font-weight: 700; line-height: 1.35; letter-spacing: -.01em; }
+.ui-card-description { margin: 0; font-size: 12px; color: var(--muted-foreground); line-height: 1.5; }
+.ui-card-content { padding: 15px 16px; }
+.ui-card-footer { display: flex; align-items: center; gap: 8px; padding: 0 16px 15px; }
+:where(.panel-title, .section-heading) h2 { letter-spacing: -.015em; }
+:where(.ui-card, .panel, .public-product-card, .search-product-card) h3 { line-height: 1.4; }
+:where(.card, .panel, .ui-card) > :last-child { margin-bottom: 0; }
+
+/* Forms and field groups retain their native behavior, validation and value state. */
+:where(form):not(.row-actions) { row-gap: 12px; }
+:where(label, .ui-label) {
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+}
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="range"]):not([type="color"]), select, textarea, .ui-input, .ui-select, .ui-textarea) {
+  min-height: 34px;
+  border-radius: var(--ui-control-radius);
+  padding: 7px 10px;
+  border: 1px solid var(--input);
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 12px;
+  box-shadow: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+:where(.ui-textarea, textarea) { min-height: 78px; line-height: 1.55; resize: vertical; }
+:where(input, select, textarea, .ui-input, .ui-select, .ui-textarea):focus-visible {
+  border-color: var(--ring);
+  outline: 2px solid color-mix(in srgb, var(--ring) 42%, transparent);
+  outline-offset: 1px;
+  box-shadow: none;
+}
+:where(input, select, textarea)::placeholder { color: var(--muted-foreground); opacity: 1; }
+:where(input, select, textarea):disabled { cursor: not-allowed; opacity: .65; background: var(--muted-bg); }
+:where(input[type="checkbox"], input[type="radio"], .ui-input-control[type="checkbox"], .ui-input-control[type="radio"]) {
+  width: 15px;
+  height: 15px;
+  min-height: 15px;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--primary);
+  box-shadow: none;
+}
+:where(.ui-input-control[type="file"], input[type="file"]) {
+  font-size: 12px;
+  max-width: 100%;
+  min-height: 30px;
+  border-radius: var(--ui-control-radius);
+}
+:where(.ui-input-control[type="file"], input[type="file"])::file-selector-button {
+  border: 1px solid var(--border);
+  border-radius: var(--ui-control-radius);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  padding: 5px 9px;
+  margin-right: 8px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+:where(.toggle-row, .check-row) {
+  align-items: center;
+  gap: 8px;
+}
+.ui-separator { flex-shrink: 0; background: var(--border); }
+.ui-separator-horizontal { width: 100%; height: 1px; }
+.ui-separator-vertical { width: 1px; height: 100%; }
+.ui-badge { min-height: 19px; padding: 2px 7px; border-radius: 999px; font-size: 10px; font-weight: 600; }
+
+/* Images: consistent framing and crop, without altering cover/photo positions. */
+.ui-image {
+  max-width: 100%;
+  display: block;
+  border-radius: inherit;
+}
+:where(.search-product-media, .product-shop-image, .search-service-cover, .content-card-media, .public-product-media, .product-details-image, .public-gallery-stage, .product-image-thumb, .image-preview) {
+  overflow: hidden;
+  border-radius: var(--ui-image-radius);
+  background: var(--muted-bg);
+}
+:where(.search-product-media, .product-shop-image, .search-service-cover, .content-card-media, .public-product-media, .product-details-image, .public-gallery-stage, .product-image-thumb, .image-preview) img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+:where(.search-product-card, .public-product-card, .public-content-card) img {
+  transition: transform .2s ease;
+}
+:where(.search-product-card, .public-product-card, .public-content-card):hover img:not(.profile-avatar img) { transform: none; }
+:where(.profile-avatar, .business-card-avatar) { flex-shrink: 0; }
+/* Do not change the existing cover position, photo repositioning or opacity. */
+
+/* Modals and menus share the card geometry; overlay contrast remains unchanged. */
+:where(.booking-editor-panel.booking-modal, .manual-payment-modal, .photo-preview-dialog, .public-product-gallery, .profile-media-menu, .product-action-popover) {
+  border: 1px solid var(--border);
+  border-radius: var(--ui-card-radius) !important;
+  box-shadow: var(--shadow-md);
+}
+:where(.booking-modal .panel-title, .public-gallery-head) {
+  border-bottom-color: var(--border);
+}
+:where(.profile-media-menu, .product-action-popover) button {
+  width: 100%;
+  min-height: 30px;
+  justify-content: flex-start;
+  text-align: left;
+  border-radius: var(--ui-control-radius);
+}
+:where(.booking-modal-backdrop, .photo-preview-modal, .modal-backdrop) { backdrop-filter: blur(3px); }
+
+/* Finishing details, transparent accents, no palette modifications. */
+:where(.search-panel, .services-controls-card, .filters, .analytics-controls) {
+  gap: 10px;
+}
+:where(.user-results, .content-grid, .product-shop-grid, .booking-list, .order-grid) { row-gap: 12px; }
+:where(.row-actions, .filter-button-group, .product-toolbar, .booking-status-actions) { gap: 6px; }
+:where(.stat-card) { box-shadow: var(--shadow-sm); }
+:where(.empty-state) { border-radius: var(--ui-card-radius); }
+@media (max-width: 640px) {
+  :root { --ui-space: 10px; }
+  :where(.panel:not(.booking-modal), .ui-card) { max-width: 100%; }
+  :where(.ui-card-header) { padding: 12px 12px 0; }
+  :where(.ui-card-content) { padding: 12px; }
+  :where(.ui-card-footer) { padding: 0 12px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(button, a, .ui-card, .panel, .ui-image) { transition-duration: 0ms !important; }
+  :where(.booking-modal-backdrop, .photo-preview-modal, .modal-backdrop) { backdrop-filter: none; }
+}
