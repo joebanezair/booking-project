@@ -36,6 +36,17 @@ function MetricSparkline({ points, tone }) {
     aria-hidden="true"><path d={path} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
 
+function SinglePeriodSummary({ point, value, unit }) {
+  // One recorded point is not a trend: show the actual observation rather
+  // than placing a misleading disconnected dot in a line graph.
+  return <div className="dashboard-single-period" role="group"
+    aria-label={`${value} ${unit} in ${point.label}`}>
+    <strong>{value}</strong>
+    <span>{point.label}</span>
+    <small>One reporting period has data. A trend appears once another period records activity.</small>
+  </div>;
+}
+
 function groupingKey(date, range) {
   const d = new Date(date);
   if (!Number.isFinite(d.getTime())) return null;
@@ -146,8 +157,12 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
             : chartTab === "services" ?
               realServices.length ? <ServiceSalesChart data={realServices} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No service sales yet</strong><span>Top services will appear after a completed sale.</span></div>
             : chartTab === "completed" ?
-              completedTrend.length ? <SalesTrendChart data={completedTrend} currency="" formatValue={number => String(Math.round(number))} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed services in this period</strong><span>Completed services will appear here when recorded.</span></div>
-            : salesTrend.length ? <SalesTrendChart data={salesTrend} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed sales in this period</strong><span>Recorded sales will appear here after completing services or product orders.</span></div>}
+              completedTrend.length === 1
+                ? <SinglePeriodSummary point={completedTrend[0]} value={String(completedTrend[0].revenue)} unit="completed services" />
+                : completedTrend.length ? <SalesTrendChart data={completedTrend} currency="" formatValue={number => String(Math.round(number))} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed services in this period</strong><span>Completed services will appear here when recorded.</span></div>
+            : salesTrend.length === 1
+              ? <SinglePeriodSummary point={salesTrend[0]} value={currencyFormat(salesTrend[0].revenue, primaryCurrency)} unit="recorded sales" />
+              : salesTrend.length ? <SalesTrendChart data={salesTrend} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed sales in this period</strong><span>Recorded sales will appear here after completing services or product orders.</span></div>}
         </div>
         <div className="dashboard-v2-sales-footer"><Button asChild variant="link" size="sm"><Link to="/dashboard/sales">Full analytics <FiArrowRight aria-hidden="true" /></Link></Button></div>
       </Card>
