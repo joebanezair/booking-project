@@ -8,6 +8,44 @@ BookFlow is a full-stack MERN application for service businesses. The account mo
 
 There is no customer account role and no customer-to-business approval workflow.
 
+## Engineering implementation round 2 — October 11, 2026
+
+**Applied to code on `betta-vone`:** This increment adds practical backend/frontend hardening. It is **not** a completed deployment of every recommendation or a claim of 100K concurrent-user capacity.
+
+| Area | Changes committed | Limitations and operations still required |
+| --- | --- | --- |
+| Booking concurrency | `server/middleware/bookingMutationGuard.js` serializes public and dashboard booking writes through a shared MongoDB lease keyed by business account. Reopening a cancelled/completed booking into a schedulable status rechecks capacity. Overlap checks include post-service buffer time. | A lease is **not** a fully transactional reservation system; stalled writes extending beyond the 120-second lease, crashes and parallel third-party writers need staging race tests and stronger atomic capacity claims. |
+| Binary media | React API now uploads Base64-origin images/files as **binary `application/octet-stream`** when `GET /api/media/capabilities` reports a configured media DB. Profiles, business logos, services, products and chat attachments use this flow, and MongoDB main records hold URLs. | When GridFS is disabled, existing Base64/JSON behavior remains. UI previews may still be Base64 in browser memory. WebP/AVIF variants and full media cleanup jobs are not added yet. |
+| Private attachment authorization | Chat verifies the uploaded GridFS attachment belongs to the sending user before accepting a URL. Existing Base64 attachments stay compatible. | Secure GridFS infrastructure and staging security review remain necessary. |
+| Cursor pagination | Added opt-in `GET /api/bookings?limit=50&cursor=...` and `GET /api/admin/businesses?limit=50&before=...`, with bounded page sizes (1–100). | Existing UI requests continue returning legacy arrays for backward compatibility. Convert high-volume screens to explicit paginated fetching; other sales/customer views remain unbounded. |
+| Search and scheduling | Search review summaries now use a single page-scoped MongoDB aggregation; a compound booking overlap index was added. | Benchmark with real query plans and representative data. |
+| Multi-instance rate limits | `DISTRIBUTED_RATE_LIMIT=1` opts into MongoDB-backed atomic shared counters. Default behavior remains local in-process limits. | Shared counters make a database write per limited request: Redis/proxy-native limits are preferable for very high traffic. |
+| Runtime operations | Added `/api/live`, `/api/ready`, `MONGO_POOL_MAX` configuration, graceful shutdown handlers, and removal of Express `X-Powered-By`. | Production health/metrics collection, alerts, orchestration, rollback and HA still require deployment setup. |
+| RabbitMQ resilience | The self-hosted chat event worker now uses bounded re-publish attempts and a durable `bookflow.chat.events.v1.dead` queue. | The worker must be deployed; retry/dead-letter delivery requires broker fault-injection testing. Browser realtime remains Socket.IO; Redis adapter is **not installed**. |
+| Automated tests | Added cursor validation tests and private media URL tests alongside existing tests. | Unit tests alone do not establish successful multi-user load, image quality, race freedom or production readiness. |
+
+**Staging verification commands:**
+
+```bash
+git fetch origin && git checkout betta-vone && git pull origin betta-vone
+cd server && npm ci && node --test tests/*.test.js
+cd ../client && npm ci && npm run build
+```
+
+**Optional server environment (enable only after its infrastructure is configured):**
+
+```dotenv
+# MEDIA_MONGO_URI=mongodb://media-user:REPLACE@media-db:27017/bookflow_media?authSource=admin
+# MEDIA_PUBLIC_BASE_URL=https://api.your-domain.example
+# RABBITMQ_URL=amqp://bookflow:REPLACE@rabbitmq:5672
+# DISTRIBUTED_RATE_LIMIT=1
+# MONGO_POOL_MAX=50
+```
+
+**What still needs implementation or deployment:** multi-instance Socket.IO Redis adapter, responsive image variants, retention/orphan cleanup, further private/admin/sales pagination with matching UI navigation, rigorously transactional booking capacity claims, production-ready Redis caching and Nginx routing, durable monitoring/alerts, automated encrypted backups and restore drills, security reviews, and 100K-account/10K+-concurrent load testing. **No VPS services have been deployed automatically. No Cloudflare R2 is used.**
+
+---
+
 ## Betta V1 update status — October 11, 2026
 
 **Branch:** [`betta-vone`](https://github.com/joebanezair/booking-project/tree/betta-vone) (based on `shadcn-ui`; that source branch is kept separate).
@@ -20,7 +58,7 @@ There is no customer account role and no customer-to-business approval workflow.
 | MongoDB indexing | Implemented in code | Additional indexes for bookings, messages, businesses and products; inspect actual query plans under load. |
 | Separate media MongoDB | **Optional; requires configuration** | GridFS media store behind `MEDIA_MONGO_URI`; public URLs and signed private attachment links. Without configuration, legacy Base64 behavior remains. |
 | Existing media data | Migration script available, **not automatically migrated** | Backup both databases; run `--dry-run` before the real migration. |
-| Image upload and delivery | **Partial** | Browser forms still transport Base64; binary upload endpoint and Nginx cache example exist, but responsive WebP/AVIF thumbnail generation is not implemented. |
+| Image upload and delivery | **Partial** | Browser forms now transfer binary when GridFS is enabled; Base64 fallback remains without GridFS. Responsive WebP/AVIF thumbnail variants are not implemented. |
 | RabbitMQ for chat | **Optional worker implemented** | Self-hosted RabbitMQ event pipeline with persistent message metadata events; realtime message delivery still uses Socket.IO. Requires a broker and worker to be running. |
 | Redis | Infrastructure example only | Redis service is supplied, but Socket.IO Redis adapter and distributed API rate limiting are not yet wired up. |
 | API protection | Baseline implemented | Local, per-process rate limiting; add distributed limits before multiple API replicas. |
@@ -905,7 +943,7 @@ Image and attachment behavior:
 - Chat attachments: `/api/media/private/:id`, time-limited signed download URLs; allowed document/image MIME types, max 5 MB. Signed links expire after 15 minutes and are never cached publicly.
 - New GridFS files use native binary storage; MongoDB #1 stores the resulting reference URL rather than the original Base64 string.
 - For a future binary frontend, authenticated `POST /api/media/upload?visibility=public|private` accepts `application/octet-stream` with the actual type in the `X-File-Mime` header. Do not put bearer tokens in public HTML image URLs.
-- Existing frontend upload dialogs remain visually unchanged; they still use Base64 previews and JSON upload transport. Converting the client upload path to direct binary and generating WebP/AVIF thumbnails are **follow-up tasks**.
+- Existing frontend upload dialogs remain visually unchanged, but now send binary files when GridFS is configured; they retain Base64 previews in browser memory and Base64/JSON fallback without media MongoDB. Generating responsive WebP/AVIF thumbnails is a **follow-up task**.
 - GridFS is **not** an image CDN. Optional `infrastructure/nginx-media-cache.conf` caches public images only. The private route must never be publicly cached.
 
 #### Migrate existing Base64 media
@@ -956,12 +994,12 @@ VPS costs still apply; RabbitMQ Community Edition software itself does not requi
 
 ### 4. Remaining priority upgrades (not implemented yet)
 
-1. **Booking concurrency:** enforce atomic capacity claims under simultaneous reservations and prevent conflicting reschedules across replicas. Avoid advertising zero double-bookings until race tests pass.
-2. **Remaining pagination:** add cursor pagination to private booking lists, sales analytics, admin directory, messaging contact lists, and public profile collections. Conversation history already has a 50-message cursor and Load Older control.
-3. **Image delivery:** move browser uploads from JSON/Base64 to direct binary, create responsive WebP/AVIF variants, and measure Nginx cache hit ratio.
-4. **RabbitMQ operations:** add business-specific consumers for notifications/email as needed, a dead-letter/retry policy, operational dashboards, and multiple broker nodes when availability warrants.
+1. **Booking concurrency:** a shared MongoDB mutation lease now serializes normal app booking writes across replicas, and reopening schedulable bookings rechecks capacity. Add truly atomic capacity claims, lease-expiry protection, and race tests before advertising zero double-bookings.
+2. **Remaining pagination:** optional cursor/limit API pagination now covers private booking lists and the admin directory, but existing UI still loads legacy arrays. Migrate high-volume UI screens, and add pagination to sales, messaging contact lists, customer history, and public profile collections. Conversation history already uses a 50-message cursor and Load Older control.
+3. **Image delivery:** binary browser uploads now work when GridFS is enabled (otherwise Base64 is retained); next generate responsive WebP/AVIF variants, clean abandoned media, and measure Nginx cache hit ratio.
+4. **RabbitMQ operations:** the chat event worker now includes bounded retries and a durable dead-letter queue; add advanced retry/backoff policies, notification/email consumers, operational dashboards, and multiple broker nodes when availability warrants.
 5. **Horizontal deployment:** add multiple API instances, configure cross-instance Socket.IO messaging (such as its Redis adapter), and distributed rate limits.
-6. **Reliability:** extract all server-startup data migrations, implement backup/restore drills, structured logs, metrics, deployment rollback, and security tests.
+6. **Reliability:** basic readiness/liveness probes and graceful shutdown are now added; still extract remaining startup data migrations, implement backup/restore drills, structured logs, metrics, deployment rollback, and security tests.
 7. **Validation:** functional/regression tests and k6/Artillery tests at 100, 1K, 5K, 10K+ concurrent users; **100K concurrent users remain unverified**.
 
 Keep existing BookFlow behavior, designs, business profiles, messaging, bookings, products, POS, sales, reviews, and admin capabilities intact. Work only on `betta-vone` until each release candidate is tested.
@@ -1007,7 +1045,7 @@ These statuses are implementation assessments, **not guarantees of production re
 | 1 | Separate the primary application MongoDB and media MongoDB deployments | Partial — opt-in second connection and Compose example | Critical |
 | 2 | Store uploaded image/file bytes in dedicated MongoDB GridFS and store their reference URLs in application documents | Partial — supported when media MongoDB is enabled; Base64 fallback remains | Critical |
 | 3 | Migrate existing profile, business, service, product and attachment media out of Base64 fields | Pending execution — migration script supplied | Critical |
-| 4 | Replace frontend Base64/JSON uploads with binary uploads | Pending — binary API endpoint exists, frontend conversion remains | High |
+| 4 | Replace frontend Base64/JSON uploads with binary uploads | Partial — new binary upload path when GridFS is enabled; Base64 fallback preserved | High |
 | 5 | Generate responsive, optimized WebP/AVIF image variants | Pending | High |
 | 6 | Create and benchmark MongoDB indexes | Partial — indexes added; production-like query-plan analysis pending | Critical |
 | 7 | Optimize database queries, projections and aggregations | Partial — public discovery and some message queries improved | Critical |
@@ -1022,8 +1060,8 @@ These statuses are implementation assessments, **not guarantees of production re
 | 11 | Publish durable asynchronous chat events to RabbitMQ | Partial — opt-in worker/event outbox implemented; operational hardening remains | High |
 | 12 | Keep Socket.IO for low-latency browser chat delivery | Implemented (code) — existing realtime path retained | Critical |
 | 13 | Add the Socket.IO Redis adapter for multi-instance message delivery | Pending — Redis container alone does not enable the adapter | Critical |
-| 14 | Implement delivery acknowledgements, retries and stronger reliability guarantees appropriate to the delivery stage | Pending — broker publisher confirms are present, end-user delivery guarantees are not | High |
-| 15 | Add RabbitMQ dead-letter queues, backoff/retries and operational monitoring | Pending | High |
+| 14 | Implement delivery acknowledgements, retries and stronger reliability guarantees appropriate to the delivery stage | Partial — broker confirms and bounded worker retries exist; end-user delivery guarantees are not implemented | High |
+| 15 | Add RabbitMQ dead-letter queues, backoff/retries and operational monitoring | Partial — dead-letter queue and bounded retries exist; dashboards/fault testing pending | High |
 | 16 | Paginate message history and provide a Load older messages control | Implemented (code) — 50-message cursor pages | High |
 | 17 | Move heavy notifications/email and other non-realtime jobs into workers | Pending | Medium |
 
@@ -1035,10 +1073,10 @@ These statuses are implementation assessments, **not guarantees of production re
 | --- | --- | --- | --- |
 | 18 | Optimize business, product and service discovery searches | Partial — database-side paging/filtering; regex/search performance still needs benchmarking | Critical |
 | 19 | Add Redis caching with explicit TTLs and invalidation for frequently read data | Pending — infrastructure example only | High |
-| 20 | Apply shared/distributed API rate limits across instances | Pending — only per-process rate limits currently exist | Critical |
+| 20 | Apply shared/distributed API rate limits across instances | Partial — opt-in MongoDB shared atomic rate limiter; prefer Redis/proxy at scale | Critical |
 | 21 | Configure Nginx as an HTTPS reverse proxy, load balancer and public-media cache | Example only — media-cache sample provided | High |
 | 22 | Run multiple Node.js API instances behind a load balancer | Pending | Critical |
-| 23 | Protect booking capacity and rescheduling from cross-request and cross-instance races | Pending — atomic guarantees need implementation and tests | Critical |
+| 23 | Protect booking capacity and rescheduling from cross-request and cross-instance races | Partial — MongoDB lease guards normal writes; transactions/fencing and race tests pending | Critical |
 | 24 | Tune MongoDB pools, indexes and hot paths; eliminate remaining unbounded queries | Partial — some improvements exist; private/admin/sales paths remain | High |
 | 25 | Introduce dedicated search indexing when regular MongoDB substring search becomes a measured bottleneck | Pending/conditional | Medium |
 
@@ -1049,9 +1087,9 @@ These statuses are implementation assessments, **not guarantees of production re
 | 26 | Add structured logs, metrics, tracing as needed and actionable alerts | Pending | High |
 | 27 | Automate MongoDB/media backups and practice tested restores | Pending | Critical |
 | 28 | Restrict MongoDB/RabbitMQ/Redis to private networking and configure authentication/TLS as appropriate | Deployment required — localhost-bound examples do not secure a production deployment by themselves | Critical |
-| 29 | Expand regression testing for bookings, chat, uploads, authentication and authorization | Partial — some CI checks and media tests exist | Critical |
+| 29 | Expand regression testing for bookings, chat, uploads, authentication and authorization | Partial — media/cursor tests and CI checks exist; integration and race tests pending | Critical |
 | 30 | Expand CI/CD automated testing, security checks and deployment gates | Partial — build, syntax and media tests in CI | High |
-| 31 | Add production health checks, safe releases and rollback procedures | Partial — basic API/database health check exists; release process pending | High |
+| 31 | Add production health checks, safe releases and rollback procedures | Partial — health, readiness/liveness and graceful shutdown exist; release/rollback process pending | High |
 | 32 | Perform measured load tests at 100, 1K, 5K and 10K+ **concurrent virtual users**, where infrastructure permits | Pending — a ramp-to-100 k6 script exists, not proof of results | Critical |
 | 33 | Test realistic datasets containing 100K+ registered users, plus representative active-user traffic | Pending | Critical |
 | 34 | Design redundancy/HA for critical components; remove single-VPS points of failure when needed | Pending | High |
