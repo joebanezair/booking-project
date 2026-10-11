@@ -1,3 +1,4 @@
+import { Button } from "./ui/button.jsx";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
@@ -107,13 +108,13 @@ export default function AppLayout({ children, user, onLogout }) {
   return <main className="page-shell">
     <header className="mobile-app-header">
       <Link to="/dashboard" className="sidebar-brand"><span className="brand-mark small"><FiCalendar aria-hidden="true" /></span><strong>BookFlow</strong></Link>
-      <button type="button" className="mobile-menu-button" aria-label="Open navigation" aria-controls="mobile-dashboard-drawer" aria-expanded={mobileOpen} onClick={toggleMobileNavigation}><FiMenu aria-hidden="true" /></button>
+      <Button variant="plain" type="button" className="mobile-menu-button" aria-label="Open navigation" aria-controls="mobile-dashboard-drawer" aria-expanded={mobileOpen} onClick={toggleMobileNavigation}><FiMenu aria-hidden="true" /></Button>
     </header>
 
-    {isMobile && mobileOpen && <button type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={() => closeMobileNavigation(true)} />}
+    {isMobile && mobileOpen && <Button variant="plain" type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={() => closeMobileNavigation(true)} />}
     <aside id="mobile-dashboard-drawer" ref={drawerRef} className={"sidebar " + (mobileOpen ? "mobile-open" : "")} inert={isMobile && !mobileOpen} role={isMobile && mobileOpen ? "dialog" : undefined} aria-modal={isMobile && mobileOpen ? "true" : undefined} aria-label={isMobile && mobileOpen ? "Mobile navigation" : undefined}>
       <div className="sidebar-main">
-        <div className="mobile-drawer-heading"><strong>Menu</strong><button type="button" className="mobile-menu-button mobile-drawer-close" aria-label="Close navigation" onClick={() => closeMobileNavigation(true)}><FiX aria-hidden="true" /></button></div>
+        <div className="mobile-drawer-heading"><strong>Menu</strong><Button variant="plain" type="button" className="mobile-menu-button mobile-drawer-close" aria-label="Close navigation" onClick={() => closeMobileNavigation(true)}><FiX aria-hidden="true" /></Button></div>
         <Link to="/dashboard" className="sidebar-brand" onClick={() => closeMobileNavigation()}>
           <span className="brand-mark small"><FiCalendar aria-hidden="true" /></span>
           <strong>BookFlow</strong>
@@ -143,9 +144,9 @@ export default function AppLayout({ children, user, onLogout }) {
       {mobileShortcuts.map(({ to, label, icon: Icon, end }) => <NavLink key={to} to={to} end={end} onClick={() => closeMobileNavigation()}>
         <Icon aria-hidden="true" /><span>{to === "/dashboard" ? "Home" : label}</span>
       </NavLink>)}
-      <button type="button" className={"mobile-nav-more" + (mobileOpen ? " active" : "")} aria-label={unread ? "More navigation, " + unread + " unread notifications" : "More navigation"} aria-controls="mobile-dashboard-drawer" aria-expanded={mobileOpen} onClick={toggleMobileNavigation}>
+      <Button variant="plain" type="button" className={"mobile-nav-more" + (mobileOpen ? " active" : "")} aria-label={unread ? "More navigation, " + unread + " unread notifications" : "More navigation"} aria-controls="mobile-dashboard-drawer" aria-expanded={mobileOpen} onClick={toggleMobileNavigation}>
         <FiMenu aria-hidden="true" /><span>More</span>{unread > 0 && <b className="mobile-nav-badge">{unread > 99 ? "99+" : unread}</b>}
-      </button>
+      </Button>
     </nav>
   </main>;
 }
