@@ -52,7 +52,7 @@ const filterButtons = services.match(/className=\{\`stat-card service-stat-card/
 if (filterButtons.length !== 3) failures.push("Services filters must retain all three Total/Published/Drafts buttons.");
 if (!services.includes('aria-label="Filter services by publication status"'))
   failures.push("Services filter controls need an accessible group.");
-const servicesCss = geometry.slice(geometry.indexOf("/*\\n * Services management status filters".replace("\\\\n","\\n")));
+const servicesCss = geometry.slice(geometry.indexOf("Services management status filters"));
 const mobileBreakpoint = servicesCss.indexOf("@media (max-width: 640px)");
 if (!servicesCss.includes("#root .services-stats-grid.stats-grid") ||
     mobileBreakpoint < 0 ||
