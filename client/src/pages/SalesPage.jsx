@@ -1,3 +1,4 @@
+import { Card } from "../components/ui/card.jsx";
 import { Button } from "../components/ui/button.jsx";
 import { Input } from "../components/ui/input.jsx";
 import { Select } from "../components/ui/select.jsx";
@@ -122,10 +123,10 @@ export default function SalesPage({ user, onLogout }) {
     {error && <p className="error">{error}</p>}
     {loading && !data ? <section className="panel"><p>Loading sales analytics…</p></section> : <>
       <section className="stats-grid sales-stats-grid">
-        <article className="stat-card analytics-stat"><span><FiDollarSign />Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>Services {money(data?.serviceSalesTotal || 0, primaryCurrency)} · Products {money(data?.productSalesTotal || 0, primaryCurrency)}</small></article>
-        <article className="stat-card analytics-stat"><span><FiCalendar />Completed services</span><strong>{summary.completedServices || 0}</strong><small>Bookings recorded as sales</small></article>
-        <article className="stat-card analytics-stat"><span><FiTrendingUp />Average sale</span><strong>{money(summary.averageSale, primaryCurrency)}</strong><small>Average in primary currency</small></article>
-        <article className="stat-card analytics-stat"><span><FiPackage />Services sold</span><strong>{summary.servicesSold || 0}</strong><small>Distinct completed services</small></article>
+        <Card as="article" className="stat-card analytics-stat"><span><FiDollarSign />Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>Services {money(data?.serviceSalesTotal || 0, primaryCurrency)} · Products {money(data?.productSalesTotal || 0, primaryCurrency)}</small></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiCalendar />Completed services</span><strong>{summary.completedServices || 0}</strong><small>Bookings recorded as sales</small></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiTrendingUp />Average sale</span><strong>{money(summary.averageSale, primaryCurrency)}</strong><small>Average in primary currency</small></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiPackage />Services sold</span><strong>{summary.servicesSold || 0}</strong><small>Distinct completed services</small></Card>
       </section>
 
       {data?.totalsByCurrency?.length > 1 && <section className="panel currency-summary">
