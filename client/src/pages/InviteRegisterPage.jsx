@@ -1,3 +1,6 @@
+import { Button } from "../components/ui/button.jsx";
+import { Input } from "../components/ui/input.jsx";
+import { Label } from "../components/ui/label.jsx";
 import { useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { api } from "../api.js";
@@ -30,11 +33,11 @@ export default function InviteRegisterPage({ user, onAuthenticated }) {
     <h1>Create administrator account</h1>
     <p className="muted">This protected URL creates a platform administrator. Normal public registration always creates a business account.</p>
     <form onSubmit={submit}>
-      <label>Full name<input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required /></label>
-      <label>Email<input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required /></label>
-      <label>Password<input type="password" minLength="8" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required /></label>
+      <Label>Full name<Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required /></Label>
+      <Label>Email<Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required /></Label>
+      <Label>Password<Input type="password" minLength="8" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required /></Label>
       {error && <p className="error">{error}</p>}
-      <button className="primary-button">Create admin account</button>
+      <Button variant="plain" className="primary-button">Create admin account</Button>
     </form>
     <Link className="link-button auth-switch" to="/login">Already have an account? Sign in</Link>
   </section></main>;
