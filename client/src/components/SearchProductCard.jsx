@@ -1,3 +1,4 @@
+import { Image } from "./ui/image.jsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiPackage } from "react-icons/fi";
@@ -18,7 +19,7 @@ export default function SearchProductCard({ product }) {
     >
       <div className="search-product-media">
         {showImage ? (
-          <img
+          <Image
             src={imageSrc}
             alt={product.name}
             loading="lazy"
