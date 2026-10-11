@@ -83,6 +83,27 @@ button:disabled, .ui-button:disabled, [aria-disabled="true"] {
 }
 :where(.ui-button, button):active:not(:disabled) { transform: none; }
 
+/* Star rating controls remain square despite the global compact button sizing. */
+.rating-input > .ui-button,
+.rating-input > button {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px !important;
+  aspect-ratio: 1;
+  padding: 0 !important;
+  display: inline-grid;
+  place-items: center;
+  line-height: 1;
+}
+/* Preserve existing image aspect ratios, cover crops and card dimensions. */
+:where(.search-product-media, .product-shop-image, .public-product-media, .public-gallery-stage) > .ui-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+:where(.public-content-card > .ui-image, .admin-content-cover.ui-image) { object-fit: cover; }
+
 /* Cards: quiet shadcn-style strokes, balanced internal space and existing surfaces. */
 :where(.ui-card, .panel, .public-content-card, .product-shop-card, .search-product-card, .public-product-card, .user-result, .order-card, .booking-card, .verified-review-card, .forum-post, .stat-card) {
   border: 1px solid var(--border);
