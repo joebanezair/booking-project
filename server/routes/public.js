@@ -246,7 +246,7 @@ router.get("/search", async (req, res) => {
         accountStatus: 1, businessId: "$business._id"
       } }
     ];
-    const discoveryPipeline = (collection, match, searchFields) => [
+    const discoveryPipeline = (collection, match, searchFields, filterServiceRating = false) => [
       { $match: match },
       { $lookup: { from: "users", localField: "user", foreignField: "_id", as: "provider" } },
       { $unwind: "$provider" },
@@ -261,6 +261,24 @@ router.get("/search", async (req, res) => {
           { "business.name": regex }, { "business.category": regex }, { "business.location": regex }
         ] } }
       ] : []),
+      // Rating must be checked BEFORE skip/limit; otherwise later matching
+      // services disappear behind unrated records in the same page.
+      ...(filterServiceRating && minRating > 0 ? [
+        { $lookup: {
+          from: "ratings", let: { contentId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$content", "$contentId"] } } },
+            { $group: { _id: null, averageRating: { $avg: "$rating" }, ratingCount: { $sum: 1 } } }
+          ],
+          as: "serviceRating"
+        } },
+        { $addFields: {
+          averageRating: { $ifNull: [{ $arrayElemAt: ["$serviceRating.averageRating", 0] }, 0] },
+          ratingCount: { $ifNull: [{ $arrayElemAt: ["$serviceRating.ratingCount", 0] }, 0] }
+        } },
+        { $match: { averageRating: { $gte: minRating }, ratingCount: { $gt: 0 } } },
+        { $project: { serviceRating: 0 } }
+      ] : []),
       { $sort: { updatedAt: -1, _id: -1 } },
       { $skip: skip }, { $limit: limit + 1 },
       { $addFields: { user: {
@@ -274,10 +292,15 @@ router.get("/search", async (req, res) => {
       User.aggregate(usersPipeline),
       Content.aggregate(discoveryPipeline("contents", {
         published: true, visibility: { $ne: "private" }, ...(category ? { category } : {})
-      }, ["title", "description", "category"])),
+      }, ["title", "description", "category"], true)),
       Product.aggregate(discoveryPipeline("products", { published: true }, ["name", "description", "sku"]))
     ]);
-    const hasMore = userRows.length > limit || serviceRows.length > limit || productRows.length > limit;
+    const hasMoreByType = {
+      users: userRows.length > limit,
+      services: serviceRows.length > limit,
+      products: productRows.length > limit
+    };
+    const hasMore = Object.values(hasMoreByType).some(Boolean);
     // Aggregate verified reviews once for the page instead of N sequential
     // queries (one per displayed business).
     const visibleUsers = userRows.slice(0, limit);
@@ -300,7 +323,7 @@ router.get("/search", async (req, res) => {
       ...(ratings.get(String(service._id)) || { averageRating: 0, ratingCount: 0 })
     })).filter(service => service.averageRating >= minRating);
     const products = productRows.slice(0, limit);
-    res.json({ users, services: mapped, products, page, hasMore });
+    res.json({ users, services: mapped, products, page, hasMore, hasMoreByType });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to search businesses and services." });
