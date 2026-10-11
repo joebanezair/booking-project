@@ -46,12 +46,12 @@ export default function Messages({currentUser,initialUserId}){
   async function pickFile(e){const file=e.target.files?.[0];if(!file)return;if(file.size>5*1024*1024){setError("Files must be 5 MB or smaller.");return;}setAttachment({name:file.name,mimeType:file.type,size:file.size,dataUrl:await fileToDataUrl(file)});e.target.value="";}
   async function react(id,emoji){try{const r=await api.emojiReactions.toggle("message",id,emoji);setConversation(c=>c.map(m=>String(m._id)===String(id)?{...m,emojiReactions:r.reactions}:m));}catch(e){setError(e.message);}}
   async function userAction(action){try{await api.messages.action(selected._id,action);setSelected(s=>({...s,pinned:action==="pin"?true:action==="unpin"?false:s.pinned,blocked:action==="block"?true:action==="unblock"?false:s.blocked,restricted:action==="restrict"?true:action==="unrestrict"?false:s.restricted}));if(action==="block")setCanMessage(false);if(action==="unblock"&&selected.friend)setCanMessage(true);setMenu(false);loadUsers();}catch(e){setError(e.message);}}
-  async function removeConversation(){if(!confirm("Delete this conversation for you?"))return;await api.messages.deleteConversation(selected._id);setConversation([]);setMenu(false);loadUsers();}
-  async function removeMessage(id){await api.messages.deleteMessage(id);setConversation(c=>c.filter(m=>m._id!==id));}
-  async function unsend(id){await api.messages.unsend(id);setConversation(c=>c.map(m=>m._id===id?{...m,body:"",attachment:null,sharedProfile:null,unsentAt:new Date().toISOString()}:m));}
-  async function addFriend(id){await api.messages.addFriend(id);setResults(r=>r.map(u=>u._id===id?{...u,requestSent:true}:u));}
-  async function acceptFriend(id){await api.messages.acceptFriend(id);loadUsers();loadRequests();}
-  async function shareProfile(){if(!selected)return;const m=await api.messages.send(selected._id,{messageType:"profile",sharedProfile:currentUser.id,body:"Shared a business profile"});setConversation(c=>[...c,m]);}
+  async function removeConversation(){if(!confirm("Delete this conversation for you?"))return;try{await api.messages.deleteConversation(selected._id);setConversation([]);setMenu(false);loadUsers();}catch(e){setError(e.message);}}
+  async function removeMessage(id){try{await api.messages.deleteMessage(id);setConversation(c=>c.filter(m=>m._id!==id));}catch(e){setError(e.message);}}
+  async function unsend(id){try{await api.messages.unsend(id);setConversation(c=>c.map(m=>m._id===id?{...m,body:"",attachment:null,sharedProfile:null,unsentAt:new Date().toISOString()}:m));}catch(e){setError(e.message);}}
+  async function addFriend(id){try{await api.messages.addFriend(id);setResults(r=>r.map(u=>u._id===id?{...u,requestSent:true}:u));}catch(e){setError(e.message);}}
+  async function acceptFriend(id){try{await api.messages.acceptFriend(id);loadUsers();loadRequests();}catch(e){setError(e.message);}}
+  async function shareProfile(){if(!selected)return;try{const m=await api.messages.send(selected._id,{messageType:"profile",sharedProfile:currentUser.id,body:"Shared a business profile"});setConversation(c=>[...c,m]);}catch(e){setError(e.message);}}
 
   const visible=useMemo(()=>users.filter(u=>!query||u.name.toLowerCase().includes(query.toLowerCase())||(u.username||"").includes(query.toLowerCase())),[users,query]);
   return <section id="messages" className="panel messages-panel">
