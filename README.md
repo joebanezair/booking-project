@@ -8,6 +8,18 @@ BookFlow is a full-stack MERN application for service businesses. The account mo
 
 There is no customer account role and no customer-to-business approval workflow.
 
+## Dashboard header and adaptive sidebar — October 11, 2026
+
+On the **`betta-vone`** branch, the signed-in workspace header and sidebar were refined to match the latest approved behavior:
+
+- The dashboard header **does not display the date-range picker**. Sales and booking-status analytics use the **current month** by default. Other analytics controls on their dedicated pages remain unchanged.
+- The shared search field has a true **10px radius**; submitting still opens the existing public Search page with the typed query.
+- The top-right account menu now shows the **saved profile photograph** in a real circle (or a circular initial if no photo is uploaded). A **green Online chip and avatar dot** reflect the browser's `navigator.onLine` state, changing to gray Offline on browser offline events. This is a local network-connection indicator, **not server-side presence for other users**. Profile, Settings, and Sign out remain available in the dropdown.
+- The desktop sidebar starts as a **76px icon-only rail**, automatically expands to **235px** while hovered or when navigation receives keyboard focus, and collapses when neither is true. No glowing left-edge active marker. The More disclosure, notification count, route permissions, and account footer remain intact.
+- Mobile screens retain the existing labeled drawer and bottom shortcuts; reduced-motion preferences disable width transitions.
+- Implementation: `client/src/workspace-header-rail.css` (loaded last), `client/src/components/AppLayout.jsx`, and `client/src/pages/DashboardPage.jsx`. The source audit verifies these controls and prevents reintroducing the header date picker.
+- Review the drawer on desktop with a mouse and keyboard (Tab/Shift+Tab), verify the avatar in both themes, and test the mobile drawer after reloading.
+
 ## Full-page dashboard redesign — October 11, 2026
 
 The approved BookFlow business dashboard design is implemented on **`betta-vone`**, while keeping the existing booking, sales, profile, search and account workflows.
