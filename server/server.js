@@ -26,12 +26,13 @@ import Business from "./models/Business.js";
 import Booking from "./models/Booking.js";
 import { syncSaleForBooking } from "./lib/sales.js";
 import { calculateBookingEndsAt, makeBookingReference } from "./lib/scheduling.js";
-import { connectMediaStore } from "./lib/mediaStore.js";
+import { connectMediaStore, closeMediaStore, mediaEnabled } from "./lib/mediaStore.js";
 import mediaRoutes from "./routes/media.js";
-import { localRateLimit } from "./middleware/localRateLimit.js";
+import { sharedRateLimit } from "./middleware/sharedRateLimit.js";
 
 dotenv.config();
 const app = express();
+app.disable("x-powered-by");
 const PORT = process.env.PORT || 5000;
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -68,6 +69,11 @@ if (process.env.TRUST_PROXY === "1") app.set("trust proxy", 1);
 app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
 app.use(express.json({ limit: "20mb" }));
 
+app.get("/api/live", (_req, res) => res.json({ ok: true }));
+app.get("/api/ready", (_req, res) => {
+  const ok = mongoose.connection.readyState === 1 && (!process.env.MEDIA_MONGO_URI || mediaEnabled());
+  res.status(ok ? 200 : 503).json({ ok });
+});
 app.get("/api/health", (_req, res) => {
   const databaseConnected = mongoose.connection.readyState === 1;
   res.status(databaseConnected ? 200 : 503).json({
@@ -75,10 +81,10 @@ app.get("/api/health", (_req, res) => {
     message: databaseConnected ? "Booking API is running" : "Main database is unavailable"
   });
 });
-app.use("/api/auth/login", localRateLimit({ max: 20 }));
-app.use("/api/auth/register", localRateLimit({ max: 10 }));
-app.use("/api/public/search", localRateLimit({ max: 120 }));
-app.use("/api/public/book", localRateLimit({ max: 60 }));
+app.use("/api/auth/login", sharedRateLimit({ max: 20 }));
+app.use("/api/auth/register", sharedRateLimit({ max: 10 }));
+app.use("/api/public/search", sharedRateLimit({ max: 120 }));
+app.use("/api/public/book", sharedRateLimit({ max: 60 }));
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/messages", messageRoutes);
@@ -243,7 +249,10 @@ async function start() {
     if (process.env.ADMIN_REGISTRATION_KEY && process.env.ADMIN_REGISTRATION_KEY.length < 32) throw new Error("ADMIN_REGISTRATION_KEY must be at least 32 characters in production.");
   }
 
-  await mongoose.connect(process.env.MONGO_URI);
+  const requestedPool = Number(process.env.MONGO_POOL_MAX || 50);
+  const maxPoolSize = Number.isInteger(requestedPool) && requestedPool >= 5 && requestedPool <= 200
+    ? requestedPool : 50;
+  await mongoose.connect(process.env.MONGO_URI, { maxPoolSize });
   if (process.env.MEDIA_MONGO_URI) {
     await connectMediaStore();
     console.log("Separate GridFS media database connected.");
@@ -269,6 +278,27 @@ async function start() {
 
   httpServer.listen(PORT, () => console.log(`API and WebSocket server listening on http://localhost:${PORT}`));
 }
+
+let shuttingDown = false;
+async function stop(signal) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log("Shutting down BookFlow gracefully:", signal);
+  const deadline = setTimeout(() => process.exit(1), 15_000);
+  deadline.unref();
+  try {
+    await new Promise(resolve => io.close(resolve));
+    if (httpServer.listening) await new Promise(resolve => httpServer.close(resolve));
+    await Promise.allSettled([closeMediaStore(), mongoose.disconnect()]);
+    clearTimeout(deadline);
+    process.exit(0);
+  } catch (error) {
+    console.error("Shutdown failed", error);
+    process.exit(1);
+  }
+}
+process.once("SIGINT", () => { void stop("SIGINT"); });
+process.once("SIGTERM", () => { void stop("SIGTERM"); });
 
 start().catch(error => {
   console.error(error);
