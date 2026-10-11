@@ -43,6 +43,37 @@ Read [the detailed button audit and manual QA checklist](docs/button-audit.md).
 
 **Use this guide for the latest [`betta-vone` branch](https://github.com/joebanezair/booking-project/tree/betta-vone).** You can run the application with only Node.js and the **main MongoDB** database. RabbitMQ, Redis, a second GridFS MongoDB, and Nginx are **optional** and are **not needed** for basic signup, browsing, booking, messaging, or development. Running these containers does not automatically turn on the related application features.
 
+### Codespaces automatic environment fix (recommended)
+
+When `server/.env` is missing, contains sample secrets, or your second MongoDB has not been configured, run this **from your existing checkout's root**:
+
+```bash
+git fetch origin && git checkout betta-vone && git pull origin betta-vone
+node scripts/setup-codespaces.mjs
+```
+
+The script uses Node.js and Docker, reuses/starts **`booking-mongodb`** on `127.0.0.1:27017`, creates or starts the optional **`booking-media-mongodb`** on `127.0.0.1:27018`, generates separate secure JWT/admin/media signing secrets when placeholders are present, and writes only to the local Git-ignored `server/.env` (file mode `0600`). It will **not delete database containers or volumes**, overwrite existing real credentials, enable RabbitMQ automatically, or configure a Redis/Socket.IO adapter.
+
+To use only the primary MongoDB: `node scripts/setup-codespaces.mjs --without-media`. You can safely rerun the script after a restart; it reuses existing containers/passwords and does not reset volumes. For more detail, see [two-MongoDB Codespaces setup](#5a-two-mongodb-containers-in-github-codespaces-primary--media-gridfs).
+
+**Start the backend and frontend in separate terminals** after setup:
+
+```bash
+# Terminal 2 (from repository root)
+cd server && npm ci && npm run dev
+
+# Terminal 3 (open a NEW terminal at repository root)
+cd client && npm ci && npm run dev -- --host 0.0.0.0
+```
+
+Verify the actual services (without displaying secrets):
+
+```bash
+node scripts/setup-codespaces.mjs --check
+```
+
+You should see `/api/ready` respond with `{"ok":true}` and `/api/media/capabilities` with `{"binaryUploads":true}` when the media database and backend are running. Port `5173` is the frontend you open in Codespaces. Keep MongoDB ports private.
+
 ### 0. Requirements
 
 - Git; Node.js **22** (with npm); Docker Engine/Desktop (with Docker Compose) **or** an accessible MongoDB instance.
@@ -197,6 +228,8 @@ This optional Codespaces setup matches the existing **`booking-mongodb` containe
 | --- | --- | --- | --- |
 | Main MongoDB | `booking-mongodb` | `127.0.0.1:27017` | Users, bookings, businesses, products, messages, sales and application records |
 | Media MongoDB | `booking-media-mongodb` | `127.0.0.1:27018` | GridFS files (profile/cover photos, images and attachments) |
+
+**Recommended:** use the [automatic Codespaces environment fix](#codespaces-automatic-environment-fix-recommended) instead of pasting database passwords into `.env` yourself. The manual steps below are available for troubleshooting or custom setups.
 
 **A. Check your existing primary database first:**
 
@@ -369,6 +402,8 @@ For a local smoke test with the server running, open the app and try registratio
 | `ERR_CONNECTION_REFUSED` for `localhost:5000` or `/api` | Start `cd server && npm run dev` and check `http://localhost:5000/api/ready`. For Codespaces, use same-origin `/api` through Vite rather than a browser-facing localhost URL. |
 | `MongooseServerSelectionError`, MongoDB connection refused | Run `docker ps`, `docker start booking-mongodb`, and `docker logs booking-mongodb`; confirm `MONGO_URI` uses port 27017 and the intended database. |
 | `JWT_SECRET must be at least 32 characters` | Set a fresh secret in `server/.env` and restart the backend. |
+| `MONGO_URI is missing` or sample passwords in `server/.env` | Run `node scripts/setup-codespaces.mjs` from the repository root, then restart the backend. Do not commit `.env`. |
+| `MongoServerError: Authentication failed` on the second media database | Do not recreate the media volume. Restore the original media credentials or run `node scripts/setup-codespaces.mjs` to check the local container's saved init credentials. |
 | `EADDRINUSE` on 5000/5173/27017 | Another process/container already owns the port. Stop the duplicate service; keep `client/vite.config.js` and `server/.env` ports aligned. |
 | Chat is disconnected / Socket.IO errors | Confirm backend 5000 is running and Vite proxies `/socket.io`. Leave `VITE_SOCKET_URL` unset for development. |
 | Media endpoint returns 503 | You opted into `MEDIA_MONGO_URI` but the media server is unavailable/misconfigured. Check media MongoDB and credentials; otherwise leave it unset for legacy local uploads. |
