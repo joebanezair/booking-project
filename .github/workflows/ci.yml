@@ -24,6 +24,11 @@ jobs:
             client/package-lock.json
             server/package-lock.json
 
+      - name: Check and test Codespaces setup script
+        run: |
+          node --check scripts/setup-codespaces.mjs
+          node --test scripts/setup-codespaces.test.mjs
+
       - name: Install client dependencies
         working-directory: client
         run: npm ci
