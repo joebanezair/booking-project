@@ -6,6 +6,7 @@ import requireAuth from "../middleware/auth.js";
 import { notify } from "../lib/notifications.js";
 import { reactionMap } from "../lib/emojiReactions.js";
 import { mediaEnabled, saveDataUri, attachmentForClient, ownedPrivateMediaInput } from "../lib/mediaStore.js";
+import { readPageSize } from "../lib/pagination.js";
 
 const router = Router();
 router.use(requireAuth);
@@ -47,9 +48,25 @@ router.get("/users", async (req, res) => {
     const ids = current.role === "admin" ? null : current.friends;
     const filter = { _id: { $ne: req.user.id }, role: { $in: ["business", "admin"] }, accountStatus: { $ne: "disabled" } };
     if (ids) filter.$or = [{ _id: { $in: ids } }, { role: "admin" }];
-    const users = await User.find(filter).select(publicUserFields).lean();
+    const paged = req.query.limit !== undefined || req.query.before !== undefined;
+    const limit = paged ? readPageSize(req.query.limit || "50") : null;
+    if (paged && !limit) return res.status(400).json({ message: "Limit must be between 1 and 100." });
+    if (req.query.before && !mongoose.isValidObjectId(req.query.before))
+      return res.status(400).json({ message: "Invalid contact cursor." });
+    if (paged && req.query.before) filter._id = { $lt: new mongoose.Types.ObjectId(req.query.before) };
+    const query = User.find(filter).select(publicUserFields);
+    const users = await (paged ? query.sort({ _id: -1 }).limit(limit + 1).lean() : query.lean());
+    const hasMore = paged && users.length > limit;
+    if (hasMore) users.pop();
+    const myId = new mongoose.Types.ObjectId(req.user.id);
+    const otherIds = users.map(user => user._id);
+    // Do not aggregate every historical conversation when retrieving one page.
+    const messageMatch = paged
+      ? { $or: [{ sender: myId, recipient: { $in: otherIds } }, { sender: { $in: otherIds }, recipient: myId }],
+          deletedFor: { $ne: myId } }
+      : { $or: [{ sender: myId }, { recipient: myId }], deletedFor: { $ne: myId } };
     const messages = await Message.aggregate([
-      { $match: { $or: [{ sender: new mongoose.Types.ObjectId(req.user.id) }, { recipient: new mongoose.Types.ObjectId(req.user.id) }], deletedFor: { $ne: new mongoose.Types.ObjectId(req.user.id) } } },
+      { $match: messageMatch },
       { $sort: { createdAt: -1, _id: -1 } },
       { $project: {
         other: { $cond: [{ $eq: ["$sender", new mongoose.Types.ObjectId(req.user.id)] }, "$recipient", "$sender"] },
@@ -65,12 +82,13 @@ router.get("/users", async (req, res) => {
       }];
     }));
     const unread = await Message.aggregate([
-      { $match: { recipient: new mongoose.Types.ObjectId(req.user.id), readAt: null, unsentAt: null } },
+      { $match: { recipient: myId, readAt: null, unsentAt: null, ...(paged ? { sender: { $in: otherIds } } : {}) } },
       { $group: { _id: "$sender", count: { $sum: 1 } } }
     ]);
     const unreadMap = new Map(unread.map(x => [String(x._id), x.count]));
-    res.json(users.map(u => ({ ...u, ...relationship(current, u._id), ...(meta.get(String(u._id)) || {}), unreadCount: unreadMap.get(String(u._id)) || 0 }))
-      .sort((a,b) => Number(b.pinned)-Number(a.pinned) || new Date(b.lastMessageAt || 0)-new Date(a.lastMessageAt || 0) || a.name.localeCompare(b.name)));
+    const items = users.map(u => ({ ...u, ...relationship(current, u._id), ...(meta.get(String(u._id)) || {}), unreadCount: unreadMap.get(String(u._id)) || 0 }))
+      .sort((a,b) => Number(b.pinned)-Number(a.pinned) || new Date(b.lastMessageAt || 0)-new Date(a.lastMessageAt || 0) || a.name.localeCompare(b.name));
+    res.json(paged ? { items, hasMore, nextCursor: hasMore ? String(users[users.length - 1]._id) : null } : items);
   } catch (error) { console.error(error); res.status(500).json({ message: "Unable to load conversations." }); }
 });
 
