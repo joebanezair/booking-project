@@ -59,6 +59,25 @@ if (!servicesCss.includes("#root .services-stats-grid.stats-grid") ||
     !servicesCss.slice(0, mobileBreakpoint).includes("flex-direction: row !important") ||
     !servicesCss.slice(mobileBreakpoint).includes("flex-direction: column !important"))
   failures.push("Services stats must use compact desktop row and mobile column rules.");
+// Inventory cards must be single-surface, with a borderless selection target
+// and a separate action control; list view must still be present.
+const inventory = readFileSync(join(root,"pages/ProductsPage.jsx"),"utf8");
+const inventoryStyles = readFileSync(join(root,"inventory-card-refresh.css"),"utf8");
+const uiEntry = readFileSync(join(root,"main.jsx"),"utf8");
+if (!inventory.includes('product-shop-card product-inventory-tile') ||
+    !inventory.includes('className="product-card-primary"') ||
+    !inventory.includes("product-card-actions product-card-menu"))
+  failures.push("Product inventory must retain one tile, selection button and edit/delete menu.");
+if (!inventory.includes('product-shop-list') ||
+    !inventoryStyles.includes(".product-shop-grid.product-shop-list") ||
+    !inventoryStyles.includes("product-shop-grid:not(.product-shop-list)"))
+  failures.push("Product inventory must retain distinct grid and list layouts.");
+if (!inventoryStyles.includes("border: 0 !important;") ||
+    !inventoryStyles.includes("padding: 0 !important;") ||
+    !inventoryStyles.includes("border: 1px solid var(--border) !important;"))
+  failures.push("Product cards need exactly one visible border; the inner selection must be borderless.");
+if (!uiEntry.includes('import "./inventory-card-refresh.css";'))
+  failures.push("Product inventory refinement stylesheet must load after the legacy styles.");
 const editorCover=readFileSync(join(root,"components/ProfileMediaHeader.jsx"),"utf8");
 const publicCover=readFileSync(join(root,"pages/PublicProfilePage.jsx"),"utf8");
 if (!editorCover.includes('className="ui-profile-cover-image"')) failures.push("ProfileMediaHeader cover is not using shared Image");
