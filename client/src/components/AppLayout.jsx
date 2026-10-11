@@ -4,6 +4,7 @@ import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, 
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
+import ProfileAvatar from "./ProfileAvatar.jsx";
 
 const navigation = [
   { to: "/dashboard", label: "Dashboard", icon: FiHome, end: true },
@@ -32,10 +33,12 @@ function isNestedRoute(pathname, base) {
 const mobileQuery = "(max-width: 800px)";
 const drawerFocusSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export default function AppLayout({ children, user, onLogout, dashboardRange = null, onDashboardRangeChange }) {
+export default function AppLayout({ children, user, onLogout }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [globalSearch, setGlobalSearch] = useState("");
+  const [profile, setProfile] = useState(null);
+  const [isOnline, setIsOnline] = useState(() => typeof navigator !== "undefined" ? navigator.onLine : true);
   const profileMenuRef = useRef(null);
   const [unread, setUnread] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -43,6 +46,22 @@ export default function AppLayout({ children, user, onLogout, dashboardRange = n
   const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.matchMedia(mobileQuery).matches);
   const drawerRef = useRef(null);
   const menuTriggerRef = useRef(null);
+
+  useEffect(() => {
+    let mounted = true;
+    api.profile.get().then(result => { if (mounted) setProfile(result); }).catch(() => {});
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    const updateConnection = () => setIsOnline(navigator.onLine);
+    window.addEventListener("online", updateConnection);
+    window.addEventListener("offline", updateConnection);
+    return () => {
+      window.removeEventListener("online", updateConnection);
+      window.removeEventListener("offline", updateConnection);
+    };
+  }, []);
 
   useEffect(() => {
     api.notifications.list().then(data => setUnread(data.unread)).catch(() => {});
@@ -196,7 +215,7 @@ export default function AppLayout({ children, user, onLogout, dashboardRange = n
       <div className="sidebar-footer">
         {user?.role === "business" && user?.accountStatus === "paused" && <p className="sidebar-status-note">Business paused</p>}
         <div className="sidebar-footer-person">
-          <span className="sidebar-footer-avatar" aria-hidden="true">{(user?.name || "U").trim().slice(0, 1).toUpperCase()}</span>
+          <span className="sidebar-footer-avatar" aria-hidden="true"><ProfileAvatar profile={profile || user} size="sm" /></span>
           <div className="sidebar-footer-account">
             <strong>{user?.role === "admin" ? "Administrator" : "Business"}</strong>
             <small className="sidebar-email">{user?.email}</small>
@@ -217,26 +236,22 @@ export default function AppLayout({ children, user, onLogout, dashboardRange = n
         <Button variant="ghost" type="submit" className="workspace-search-submit" aria-label="Submit search"><FiArrowRight aria-hidden="true"/></Button>
       </form>
       <div className="workspace-topbar-actions">
-        {dashboardRange != null && <label className="workspace-date-select">
-          <FiCalendar aria-hidden="true"/>
-          <span className="sr-only">Analytics date range</span>
-          <select value={dashboardRange} aria-label="Dashboard analytics period" onChange={event => onDashboardRangeChange?.(event.target.value)}>
-            <option value="today">Today</option>
-            <option value="7d">Last 7 days</option>
-            <option value="month">This month</option>
-            <option value="year">This year</option>
-            <option value="all">All time</option>
-          </select>
-          <FiChevronDown aria-hidden="true"/>
-        </label>}
         <details className="workspace-account-menu" ref={profileMenuRef}>
           <summary aria-label="Account menu">
-            <span className="workspace-user-avatar">{(user?.name || "U").trim().slice(0, 1).toUpperCase()}</span>
-            <span className="workspace-user-text"><strong>{user?.name || "Account"}</strong><small>{user?.role === "admin" ? "Administrator" : "Business owner"}</small></span>
+            <span className="workspace-user-avatar-wrap">
+              <ProfileAvatar profile={profile || user} size="sm"/>
+              <span className={isOnline ? "workspace-presence-dot" : "workspace-presence-dot offline"} aria-hidden="true" />
+            </span>
+            <span className="workspace-user-text">
+              <strong>{profile?.name || user?.name || "Account"}</strong>
+              <span className={isOnline ? "workspace-online-chip" : "workspace-online-chip offline"}>
+                <span className="workspace-chip-dot" aria-hidden="true" />{isOnline ? "Online" : "Offline"}
+              </span>
+            </span>
             <FiChevronDown aria-hidden="true"/>
           </summary>
           <div className="workspace-account-popover">
-            <div className="workspace-account-identity"><strong>{user?.name}</strong><span>{user?.email}</span></div>
+            <div className="workspace-account-identity"><strong>{profile?.name || user?.name}</strong><span>{user?.email}</span><span className={isOnline ? "workspace-account-connection" : "workspace-account-connection offline"}>{isOnline ? "Connected to network" : "Network offline"}</span></div>
             {user?.role === "business" && <Link to="/dashboard/profile" onClick={() => { profileMenuRef.current.open = false; }}><FiUser aria-hidden="true"/>My profile</Link>}
             <Link to="/dashboard/settings" onClick={() => { profileMenuRef.current.open = false; }}><FiSettings aria-hidden="true"/>Settings</Link>
             <Button variant="ghost" type="button" onClick={() => { profileMenuRef.current.open = false; onLogout?.(); }}><FiLogOut aria-hidden="true"/>Sign out</Button>
