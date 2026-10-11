@@ -15,9 +15,9 @@ There is no customer account role and no customer-to-business approval workflow.
 | Area | Changes committed | Limitations and operations still required |
 | --- | --- | --- |
 | Booking concurrency | `server/middleware/bookingMutationGuard.js` serializes public and dashboard booking writes through a shared MongoDB lease keyed by business account. Reopening a cancelled/completed booking into a schedulable status rechecks capacity. Overlap checks include post-service buffer time. | A lease is **not** a fully transactional reservation system; stalled writes extending beyond the 120-second lease, crashes and parallel third-party writers need staging race tests and stronger atomic capacity claims. |
-| Binary media | React API now uploads Base64-origin images/files as **binary `application/octet-stream`** when `GET /api/media/capabilities` reports a configured media DB. Profiles, business logos, services, products and chat attachments use this flow, and MongoDB main records hold URLs. | When GridFS is disabled, existing Base64/JSON behavior remains. UI previews may still be Base64 in browser memory. WebP/AVIF variants and full media cleanup jobs are not added yet. |
+| Binary media | React API now uploads Base64-origin images/files as **binary `application/octet-stream`** when `GET /api/media/capabilities` reports a configured media DB. Profiles, business logos, services, products and chat attachments use this flow; supported browsers can downscale public raster images to a maximum 1600-pixel edge and upload WebP when smaller. Main MongoDB stores URLs. | Without GridFS, Base64/JSON behavior remains. UI previews may still be Base64 in browser memory. Multiple responsive variants, server-side resizing and orphan cleanup are not yet implemented. |
 | Private attachment authorization | Chat verifies the uploaded GridFS attachment belongs to the sending user before accepting a URL. Existing Base64 attachments stay compatible. | Secure GridFS infrastructure and staging security review remain necessary. |
-| Cursor pagination | Added opt-in `GET /api/bookings?limit=50&cursor=...` and `GET /api/admin/businesses?limit=50&before=...`, with bounded page sizes (1–100). | Existing UI requests continue returning legacy arrays for backward compatibility. Convert high-volume screens to explicit paginated fetching; other sales/customer views remain unbounded. |
+| Cursor pagination | Added opt-in `GET /api/bookings?limit=50&cursor=...`, `GET /api/admin/businesses?limit=50&before=...`, and `GET /api/messages/users?limit=50&before=...`, with bounded page sizes (1–100). Contact list aggregation is scoped to the returned page. | Existing UI requests continue returning legacy arrays for backward compatibility. Convert high-volume screens to explicit paginated fetching; other sales/customer views remain unbounded. |
 | Search and scheduling | Search review summaries now use a single page-scoped MongoDB aggregation; a compound booking overlap index was added. | Benchmark with real query plans and representative data. |
 | Multi-instance rate limits | `DISTRIBUTED_RATE_LIMIT=1` opts into MongoDB-backed atomic shared counters. Default behavior remains local in-process limits. | Shared counters make a database write per limited request: Redis/proxy-native limits are preferable for very high traffic. |
 | Runtime operations | Added `/api/live`, `/api/ready`, `MONGO_POOL_MAX` configuration, graceful shutdown handlers, and removal of Express `X-Powered-By`. | Production health/metrics collection, alerts, orchestration, rollback and HA still require deployment setup. |
@@ -42,7 +42,27 @@ cd ../client && npm ci && npm run build
 # MONGO_POOL_MAX=50
 ```
 
-**What still needs implementation or deployment:** multi-instance Socket.IO Redis adapter, responsive image variants, retention/orphan cleanup, further private/admin/sales pagination with matching UI navigation, rigorously transactional booking capacity claims, production-ready Redis caching and Nginx routing, durable monitoring/alerts, automated encrypted backups and restore drills, security reviews, and 100K-account/10K+-concurrent load testing. **No VPS services have been deployed automatically. No Cloudflare R2 is used.**
+**What still needs implementation or deployment:** multi-instance Socket.IO Redis adapter, responsive image variants, retention/orphan cleanup, further sales/customer pagination and matching UI navigation, rigorously transactional booking capacity claims, production-ready Redis caching and Nginx routing, durable monitoring/alerts, automated encrypted backups and restore drills, security reviews, and 100K-account/10K+-concurrent load testing. **No VPS services have been deployed automatically. No Cloudflare R2 is used.**
+
+---
+
+### Additional staging and VPS templates
+
+- `tests/load/booking-concurrency.js`: **mutating**, opt-in k6 test that sends ten simultaneous booking attempts into a deliberately empty, capacity-one staging slot and expects exactly one accepted booking. Requires `CONFIRM_STAGING_ONLY=1` and explicit staging parameters. Do not run this against production.
+- `infrastructure/nginx-app.conf.example`: HTTPS reverse-proxy/websocket/load-balancing location examples; certificates, rate-limit zones, upstreams, headers, Redis adapter and private networking still need real deployment configuration.
+- `GET /api/messages/users?limit=50&before=...`: optional bounded, page-scoped contact API. The current dashboard retains its legacy array response until a full frontend pagination UI is built.
+- Browser-side public image upload optimization keeps the original bytes when WebP conversion is unsupported, bigger than the original, or not applicable; the browser still shows the existing image preview.
+
+```bash
+# From repository root; run only against a controlled empty staging slot:
+k6 run -e CONFIRM_STAGING_ONLY=1 \
+  -e BASE_URL=https://staging-api.example.com \
+  -e BUSINESS_USER_ID=REPLACE -e CONTENT_ID=REPLACE \
+  -e BOOKING_DATE=2027-01-11T08:00:00.000Z \
+  tests/load/booking-concurrency.js
+```
+
+A passing ten-request race test is **not** sufficient proof of strict booking atomicity or 100K-user readiness.
 
 ---
 
@@ -1046,10 +1066,10 @@ These statuses are implementation assessments, **not guarantees of production re
 | 2 | Store uploaded image/file bytes in dedicated MongoDB GridFS and store their reference URLs in application documents | Partial — supported when media MongoDB is enabled; Base64 fallback remains | Critical |
 | 3 | Migrate existing profile, business, service, product and attachment media out of Base64 fields | Pending execution — migration script supplied | Critical |
 | 4 | Replace frontend Base64/JSON uploads with binary uploads | Partial — new binary upload path when GridFS is enabled; Base64 fallback preserved | High |
-| 5 | Generate responsive, optimized WebP/AVIF image variants | Pending | High |
+| 5 | Generate responsive, optimized WebP/AVIF image variants | Partial — optional browser-side image downscaling/WebP before binary upload; true responsive variants remain pending | High |
 | 6 | Create and benchmark MongoDB indexes | Partial — indexes added; production-like query-plan analysis pending | Critical |
 | 7 | Optimize database queries, projections and aggregations | Partial — public discovery and some message queries improved | Critical |
-| 8 | Implement cursor/limit pagination throughout public and authenticated endpoints | Partial — discovery paging and 50-message conversation pages exist | Critical |
+| 8 | Implement cursor/limit pagination throughout public and authenticated endpoints | Partial — discovery, conversation pages, and opt-in booking/admin/contact endpoints exist; legacy UI and more routes remain | Critical |
 | 9 | Extract expensive legacy data migrations from API startup into controlled jobs | Partial — guarded startup backfills exist; separate migration runner pending | High |
 
 ### B. Real-time chat and messaging (10–17)
@@ -1062,7 +1082,7 @@ These statuses are implementation assessments, **not guarantees of production re
 | 13 | Add the Socket.IO Redis adapter for multi-instance message delivery | Pending — Redis container alone does not enable the adapter | Critical |
 | 14 | Implement delivery acknowledgements, retries and stronger reliability guarantees appropriate to the delivery stage | Partial — broker confirms and bounded worker retries exist; end-user delivery guarantees are not implemented | High |
 | 15 | Add RabbitMQ dead-letter queues, backoff/retries and operational monitoring | Partial — dead-letter queue and bounded retries exist; dashboards/fault testing pending | High |
-| 16 | Paginate message history and provide a Load older messages control | Implemented (code) — 50-message cursor pages | High |
+| 16 | Paginate message history and provide a Load older messages control | Implemented (code) — 50-message cursor pages; contact pagination is opt-in | High |
 | 17 | Move heavy notifications/email and other non-realtime jobs into workers | Pending | Medium |
 
 **Important:** RabbitMQ is for durable asynchronous events and background work; it **does not replace Socket.IO** or prove that a recipient's browser displayed a message. RabbitMQ Community Edition software does not need a paid subscription, but VPS, storage, networking and operations have costs.
@@ -1077,7 +1097,7 @@ These statuses are implementation assessments, **not guarantees of production re
 | 21 | Configure Nginx as an HTTPS reverse proxy, load balancer and public-media cache | Example only — media-cache sample provided | High |
 | 22 | Run multiple Node.js API instances behind a load balancer | Pending | Critical |
 | 23 | Protect booking capacity and rescheduling from cross-request and cross-instance races | Partial — MongoDB lease guards normal writes; transactions/fencing and race tests pending | Critical |
-| 24 | Tune MongoDB pools, indexes and hot paths; eliminate remaining unbounded queries | Partial — some improvements exist; private/admin/sales paths remain | High |
+| 24 | Tune MongoDB pools, indexes and hot paths; eliminate remaining unbounded queries | Partial — configurable MongoDB pool, batch search reviews and paged opt-in private/admin/chat routes; sales and legacy UI remain | High |
 | 25 | Introduce dedicated search indexing when regular MongoDB substring search becomes a measured bottleneck | Pending/conditional | Medium |
 
 ### D. Reliability, security and validation (26–34)
