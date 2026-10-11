@@ -517,3 +517,41 @@ html body .ui-content-gallery .gallery-thumbs .ui-image { border-radius: 8px; }
   html body .public-page .profile-catalog-search-field { grid-column: auto; }
   html body :is(.ui-button, .ui-card, .panel, .ui-search-field) { max-width: 100%; }
 }
+
+
+/* Rating buttons, dropdown actions, and order actions retain their intended
+ * dimensions despite content-fit defaults and old page-specific overrides. */
+html body .rating-input > button.ui-button {
+  display: inline-grid;
+  place-items: center;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  flex: 0 0 28px !important;
+  padding: 0 !important;
+  border-radius: 10px !important;
+}
+html body .profile-media-menu > button.ui-button {
+  display: flex;
+  width: 100% !important;
+  flex: 0 0 auto;
+  min-width: 0;
+  justify-content: flex-start;
+  padding: 7px 10px !important;
+  text-align: left;
+  border-radius: 10px !important;
+}
+html body :is(.profile-media-menu, .product-action-popover) {
+  border-radius: 10px !important;
+}
+html body .linkedin-cover {
+  border-radius: 10px 10px 0 0;
+}
+html body .ui-content-gallery > .gallery-hero {
+  border-radius: 10px !important;
+}
+html body .order-actions > button.ui-button {
+  width: fit-content !important;
+  flex: 0 0 auto;
+}
