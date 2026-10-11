@@ -213,7 +213,7 @@ export default function AppLayout({ children, user, onLogout, dashboardRange = n
         }}>
         <FiSearch aria-hidden="true" />
         <input type="search" value={globalSearch} onChange={event => setGlobalSearch(event.target.value)}
-          placeholder="Search services, bookings, customers..." aria-label="Search BookFlow" />
+          placeholder="Search businesses, services, products..." aria-label="Search BookFlow" />
         <Button variant="ghost" type="submit" className="workspace-search-submit" aria-label="Submit search"><FiArrowRight aria-hidden="true"/></Button>
       </form>
       <div className="workspace-topbar-actions">
