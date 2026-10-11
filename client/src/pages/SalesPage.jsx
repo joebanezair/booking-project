@@ -1,3 +1,7 @@
+import { Button } from "../components/ui/button.jsx";
+import { Input } from "../components/ui/input.jsx";
+import { Select } from "../components/ui/select.jsx";
+import { Label } from "../components/ui/label.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiCalendar, FiDollarSign, FiDownload, FiPackage, FiPrinter, FiTrendingUp, FiX } from "react-icons/fi";
@@ -90,27 +94,27 @@ export default function SalesPage({ user, onLogout }) {
         <h1>Sales & analytics</h1>
         <p className="muted">Review service, POS, and completed online-product sales. Product inventory and cashier checkout are managed from Products.</p>
       </div>
-      <button className="primary-button icon-link" disabled={!unifiedTransactions.length} onClick={() => exportSalesSpreadsheet(data, rangeLabel)}>
+      <Button variant="plain" className="primary-button icon-link" disabled={!unifiedTransactions.length} onClick={() => exportSalesSpreadsheet(data, rangeLabel)}>
         <FiDownload />Export spreadsheet
-      </button>
+      </Button>
     </header>
 
 
-    <section className="panel pos-history-panel"><div className="panel-title"><div><p className="eyebrow">ONLINE ORDERS</p><h2>Public product orders</h2></div><span className="muted">{orders.length} records</span></div>{!orders.length?<p className="muted">No public product orders yet.</p>:<div className="sales-table-wrap"><table className="sales-table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>{orders.map(order=><tr key={order._id}><td>{order.orderNumber}</td><td><strong>{order.customerName}</strong><small>{order.customerPhone}</small></td><td>{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</td><td>{money(order.total,order.currency)}</td><td><select value={order.status} disabled={order.status==="completed"} onChange={e=>changeOrderStatus(order,e.target.value)}><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></td></tr>)}</tbody></table></div>}</section>
+    <section className="panel pos-history-panel"><div className="panel-title"><div><p className="eyebrow">ONLINE ORDERS</p><h2>Public product orders</h2></div><span className="muted">{orders.length} records</span></div>{!orders.length?<p className="muted">No public product orders yet.</p>:<div className="sales-table-wrap"><table className="sales-table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>{orders.map(order=><tr key={order._id}><td>{order.orderNumber}</td><td><strong>{order.customerName}</strong><small>{order.customerPhone}</small></td><td>{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</td><td>{money(order.total,order.currency)}</td><td><Select value={order.status} disabled={order.status==="completed"} onChange={e=>changeOrderStatus(order,e.target.value)}><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></Select></td></tr>)}</tbody></table></div>}</section>
 
     <section className="panel analytics-controls">
       <div className="filter-button-group" aria-label="Sales period">
-        {ranges.map(([value, label]) => <button key={value} className={range === value ? "filter-chip active" : "filter-chip"} onClick={() => selectRange(value)}>{label}</button>)}
+        {ranges.map(([value, label]) => <Button variant="plain" key={value} className={range === value ? "filter-chip active" : "filter-chip"} onClick={() => selectRange(value)}>{label}</Button>)}
       </div>
       {range === "custom" && <div className="custom-date-range">
-        <label>Start<input type="date" value={custom.start} onChange={e => setCustom({ ...custom, start: e.target.value })} /></label>
-        <label>End<input type="date" value={custom.end} onChange={e => setCustom({ ...custom, end: e.target.value })} /></label>
-        <button className="secondary" disabled={!custom.start || !custom.end} onClick={() => load("custom", group, custom)}>Apply</button>
+        <Label>Start<Input type="date" value={custom.start} onChange={e => setCustom({ ...custom, start: e.target.value })} /></Label>
+        <Label>End<Input type="date" value={custom.end} onChange={e => setCustom({ ...custom, end: e.target.value })} /></Label>
+        <Button variant="plain" className="secondary" disabled={!custom.start || !custom.end} onClick={() => load("custom", group, custom)}>Apply</Button>
       </div>}
       <div className="analytics-grouping">
         <span>Group chart by</span>
         <div className="filter-button-group">
-          {groups.map(([value, label]) => <button key={value} className={group === value ? "filter-chip active" : "filter-chip"} onClick={() => setGroup(value)}>{label}</button>)}
+          {groups.map(([value, label]) => <Button variant="plain" key={value} className={group === value ? "filter-chip active" : "filter-chip"} onClick={() => setGroup(value)}>{label}</Button>)}
         </div>
       </div>
     </section>
@@ -167,7 +171,7 @@ export default function SalesPage({ user, onLogout }) {
       </section>
       {receipt&&createPortal(<div className="receipt-modal-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setReceipt(null);}}>
         <section className="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receipt-title">
-          <div className="receipt-modal-actions no-print"><button className="secondary icon-link" onClick={()=>window.print()}><FiPrinter/>Print</button><button className="secondary icon-action" aria-label="Close receipt" onClick={()=>setReceipt(null)}><FiX/></button></div>
+          <div className="receipt-modal-actions no-print"><Button variant="plain" className="secondary icon-link" onClick={()=>window.print()}><FiPrinter/>Print</Button><Button variant="plain" className="secondary icon-action" aria-label="Close receipt" onClick={()=>setReceipt(null)}><FiX/></Button></div>
           <div className="receipt-paper">
             <p className="eyebrow">BOOKFLOW RECEIPT</p><h2 id="receipt-title">Sales receipt</h2>
             <div className="receipt-rule"/>
