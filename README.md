@@ -8,6 +8,21 @@ BookFlow is a full-stack MERN application for service businesses. The account mo
 
 There is no customer account role and no customer-to-business approval workflow.
 
+## Sidebar navigation redesign — October 11, 2026
+
+The `betta-vone` dashboard sidebar is reorganized to avoid the tall, permanently visible scrollbar shown on smaller desktop windows, while retaining every page.
+
+- **Workspace:** Dashboard, Services, Bookings, Sales, Products; administrators additionally see Businesses, using existing role rules.
+- **Activity:** Messages and Notifications, including the unread notification badge.
+- **More dropdown:** Profile (business accounts), Forum, Settings, and Search. Click or press Enter/Space to expand; use Escape to close the existing mobile drawer. The dropdown opens automatically for deep-linked routes within More, and can be manually collapsed.
+- **Reduced vertical space:** Compact 36px desktop link rows, 40px mobile drawer links, smaller icons and 10px corners. Existing blue active-page indicator remains.
+- **Clean scrolling:** The navigation remains scrollable via wheel, keyboard, and touch when a screen is short, but the heavy browser scrollbar is visually hidden. The account footer stays separate.
+- **Existing behavior retained:** Desktop icon rail expands on hover/focus; mobile drawer and bottom shortcuts still work; all original URLs and permissions are unchanged.
+- **Files:** `client/src/components/AppLayout.jsx`, `client/src/sidebar-redesign.css`, and the final CSS import in `client/src/main.jsx`.
+- **Check:** `node client/scripts/audit-ui.mjs` guards all 12 registered routes, the More disclosure and retained scrolling.
+
+For final visual QA, test 375px and 768px mobile drawers, 1024px desktop sidebar, short browser-height scrolling, badge display, active links, keyboard navigation, and both light and dark themes.
+
 ## Compact product modal and sidebar refinement — October 11, 2026
 
 On `betta-vone`, the product inventory **Add product** form and desktop/mobile sidebar have been refreshed without deleting any fields, product actions, or routes.
