@@ -1,0 +1,270 @@
+/*
+ * Product inventory — one-card visual system.
+ * Scope all rules to product-inventory-tile so checkout, galleries,
+ * public product cards, and service cards retain their existing design.
+ * Loaded after component-polish.css to settle legacy !important clashes.
+ */
+#root .product-shop-grid .product-inventory-tile.ui-card {
+  position: relative !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  cursor: default;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+#root .product-shop-grid .product-inventory-tile.ui-card:hover,
+#root .product-shop-grid .product-inventory-tile.ui-card:focus-within {
+  transform: none !important;
+  border-color: var(--ring) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ring) 15%, transparent) !important;
+  z-index: 5;
+}
+
+/* The selectable content is a borderless Button, not a second card. */
+#root .product-shop-grid .product-inventory-tile > button.product-card-primary.ui-button {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  outline-offset: -3px;
+  background: transparent !important;
+  color: var(--card-foreground) !important;
+  box-shadow: none !important;
+  text-align: left !important;
+  white-space: normal !important;
+  overflow: visible !important;
+}
+#root .product-shop-grid .product-inventory-tile > button.product-card-primary.ui-button:hover {
+  background: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+#root .product-shop-grid .product-inventory-tile > button.product-card-primary.ui-button:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: -3px;
+}
+
+/* Grid: image, name, SKU, price, stock all share the same unframed body. */
+#root .product-shop-grid:not(.product-shop-list) .product-inventory-tile > button.product-card-primary.ui-button {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  flex: 1 1 auto !important;
+  gap: 9px !important;
+  padding: 10px 10px 12px !important;
+}
+#root .product-shop-grid .product-inventory-tile .product-shop-image {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  width: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  background: var(--muted);
+}
+#root .product-shop-grid:not(.product-shop-list) .product-inventory-tile .product-shop-image {
+  height: auto !important;
+  aspect-ratio: 4 / 3;
+}
+#root .product-shop-grid .product-inventory-tile .product-shop-image > :is(img, .ui-image-fallback) {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  object-fit: contain !important;
+  background: transparent;
+}
+#root .product-shop-grid .product-inventory-tile .product-shop-image > svg {
+  width: 24px;
+  height: 24px;
+  color: var(--muted-foreground);
+}
+#root .product-shop-grid .product-inventory-tile .product-shop-info {
+  display: grid !important;
+  align-content: start !important;
+  justify-items: start !important;
+  gap: 4px !important;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0 !important;
+  padding: 0 !important;
+  color: var(--card-foreground) !important;
+}
+#root .product-shop-grid .product-inventory-tile .product-shop-info > strong {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+#root .product-shop-grid .product-inventory-tile .product-shop-info > span {
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+#root .product-shop-grid .product-inventory-tile .product-shop-info > small {
+  display: block;
+  max-width: 100%;
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}
+#root .product-shop-grid:not(.product-shop-list) .product-inventory-tile .product-shop-info > small:last-child {
+  padding-right: 31px;
+}
+
+/* Grid: actions share the stock line instead of creating a blank second row. */
+#root .product-shop-grid:not(.product-shop-list) .product-inventory-tile > .product-card-menu {
+  position: absolute !important;
+  right: 7px !important;
+  bottom: 7px !important;
+  left: auto !important;
+  top: auto !important;
+  align-self: auto !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 3;
+}
+#root .product-shop-grid .product-inventory-tile .product-card-menu > button.product-more-button.ui-button {
+  display: inline-grid !important;
+  place-items: center !important;
+  flex: 0 0 28px !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#root .product-shop-grid .product-inventory-tile .product-card-menu > button.product-more-button.ui-button:hover,
+#root .product-shop-grid .product-inventory-tile .product-card-menu > button.product-more-button.ui-button[aria-expanded="true"] {
+  background: var(--secondary) !important;
+}
+#root .product-shop-grid .product-inventory-tile .product-action-popover {
+  position: absolute !important;
+  top: auto !important;
+  right: 0 !important;
+  bottom: calc(100% + 5px) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 5px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: var(--shadow-md) !important;
+  overflow: visible !important;
+  z-index: 30;
+}
+#root .product-shop-grid .product-inventory-tile .product-action-popover > button.ui-button {
+  flex: 0 0 28px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+}
+
+/* List view remains a single-card row with a compact thumbnail and menu. */
+#root .product-shop-grid.product-shop-list .product-inventory-tile.ui-card {
+  flex-direction: row !important;
+  align-items: center !important;
+}
+#root .product-shop-grid.product-shop-list .product-inventory-tile > button.product-card-primary.ui-button {
+  display: grid !important;
+  grid-template-columns: 84px minmax(0, 1fr) !important;
+  grid-template-rows: auto !important;
+  align-items: center !important;
+  justify-items: stretch !important;
+  flex: 1 1 auto !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+  width: auto !important;
+  padding: 10px !important;
+}
+#root .product-shop-grid.product-shop-list .product-inventory-tile .product-shop-image {
+  width: 84px !important;
+  height: 74px !important;
+  aspect-ratio: auto !important;
+}
+#root .product-shop-grid.product-shop-list .product-inventory-tile .product-shop-info {
+  align-content: center !important;
+  gap: 3px !important;
+}
+#root .product-shop-grid.product-shop-list .product-inventory-tile > .product-card-menu {
+  position: relative !important;
+  right: auto !important;
+  bottom: auto !important;
+  top: auto !important;
+  align-self: center !important;
+  flex: 0 0 auto !important;
+  margin: 0 9px 0 0 !important;
+}
+
+/* Stock status dims only product selection, never the edit/delete controls. */
+#root .product-shop-grid .product-inventory-tile.out-of-stock {
+  opacity: 1 !important;
+}
+#root .product-shop-grid .product-inventory-tile.out-of-stock > button.product-card-primary.ui-button:disabled {
+  opacity: .58;
+  cursor: not-allowed;
+}
+
+@media (max-width: 560px) {
+  #root .product-shop-grid.product-shop-list .product-inventory-tile > button.product-card-primary.ui-button {
+    grid-template-columns: 66px minmax(0, 1fr) !important;
+    gap: 9px !important;
+    padding: 9px !important;
+  }
+  #root .product-shop-grid.product-shop-list .product-inventory-tile .product-shop-image {
+    width: 66px !important;
+    height: 66px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #root .product-shop-grid .product-inventory-tile.ui-card {
+    transition: none !important;
+  }
+}
