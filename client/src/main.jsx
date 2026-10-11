@@ -13,6 +13,7 @@ import "./shadcn-refresh.css";
 import "./component-polish.css";
 import "./inventory-card-refresh.css";
 import "./business-onboarding-refresh.css";
+import "./workspace-polish.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
