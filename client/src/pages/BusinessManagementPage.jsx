@@ -1,3 +1,4 @@
+import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiBriefcase, FiCalendar, FiEye, FiKey, FiPause, FiPlay, FiSlash, FiStar } from "react-icons/fi";
@@ -62,10 +63,10 @@ export default function BusinessManagementPage({ user, onLogout }) {
         <span className="metric-cell"><FiCalendar />{item.bookingCount}</span>
         <span className="metric-cell"><FiStar />{item.reviewSummary?.averageRating || 0} ({item.reviewSummary?.count || 0})</span>
         <div className="row-actions">
-          <Link className="secondary button-link small-link" to={`/dashboard/businesses/${item._id}`}><FiEye />View</Link>\n          <button className="secondary" onClick={() => resetPassword(item._id, item.business?.name || item.name)}><FiKey />Reset password</button>
-          {item.accountStatus !== "paused" && item.accountStatus !== "disabled" && <button className="secondary" onClick={() => setStatus(item._id, "paused")}><FiPause />Pause</button>}
-          {item.accountStatus !== "active" && <button className="secondary" onClick={() => setStatus(item._id, "active")}><FiPlay />Reactivate</button>}
-          {item.accountStatus !== "disabled" && <button className="danger" onClick={() => setStatus(item._id, "disabled")}><FiSlash />Disable</button>}
+          <Link className="secondary button-link small-link" to={`/dashboard/businesses/${item._id}`}><FiEye />View</Link>\n          <Button variant="plain" className="secondary" onClick={() => resetPassword(item._id, item.business?.name || item.name)}><FiKey />Reset password</Button>
+          {item.accountStatus !== "paused" && item.accountStatus !== "disabled" && <Button variant="plain" className="secondary" onClick={() => setStatus(item._id, "paused")}><FiPause />Pause</Button>}
+          {item.accountStatus !== "active" && <Button variant="plain" className="secondary" onClick={() => setStatus(item._id, "active")}><FiPlay />Reactivate</Button>}
+          {item.accountStatus !== "disabled" && <Button variant="plain" className="danger" onClick={() => setStatus(item._id, "disabled")}><FiSlash />Disable</Button>}
         </div>
       </article>)}
     </section>
