@@ -5,7 +5,7 @@ import User from "../models/User.js";
 import requireAuth from "../middleware/auth.js";
 import { notify } from "../lib/notifications.js";
 import { reactionMap } from "../lib/emojiReactions.js";
-import { mediaEnabled, saveDataUri, attachmentForClient } from "../lib/mediaStore.js";
+import { mediaEnabled, saveDataUri, attachmentForClient, ownedPrivateMediaInput } from "../lib/mediaStore.js";
 
 const router = Router();
 router.use(requireAuth);
@@ -165,7 +165,10 @@ router.post("/:userId", async (req,res) => {
     if(req.body.attachment){
       const a=req.body.attachment;
       if(Number(a.size)>5*1024*1024) return res.status(413).json({message:"Files must be 5 MB or smaller."});
-      if(!/^data:(image\/|application\/pdf|text\/|application\/(msword|vnd\.openxmlformats-officedocument|vnd\.ms-excel|vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet))/.test(a.dataUrl||"")) return res.status(400).json({message:"Unsupported file type."});
+      const legacyBase64 = /^data:(image\\/|application\\/pdf|text\\/|application\\/(msword|vnd\\.openxmlformats-officedocument|vnd\\.ms-excel|vnd\\.openxmlformats-officedocument\\.spreadsheetml\\.sheet))/.test(a.dataUrl || "");
+      // A guessed GridFS identifier must never let one user attach another user's file.
+      const ownedBinary = !legacyBase64 && await ownedPrivateMediaInput(a.dataUrl, req.user.id);
+      if (!legacyBase64 && !ownedBinary) return res.status(400).json({message:"Unsupported or unauthorized file attachment."});
       attachment={name:String(a.name||"file").slice(0,180),mimeType:a.mimeType,size:Number(a.size)||0,dataUrl:mediaEnabled()?await saveDataUri(a.dataUrl,{visibility:"private",ownerId:req.user.id,name:a.name}):a.dataUrl};
     }
     const message=await Message.create({sender:req.user.id,recipient:req.params.userId,body,messageType,attachment,sharedProfile:req.body.sharedProfile||null,queuePending:Boolean(process.env.RABBITMQ_URL)});
