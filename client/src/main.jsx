@@ -11,6 +11,7 @@ import "./search-service-cards.css";
 import "./search-business-compact.css";
 import "./shadcn-refresh.css";
 import "./component-polish.css";
+import "./inventory-card-refresh.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
