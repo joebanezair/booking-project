@@ -131,6 +131,34 @@ if(!dashboardSource.includes('const [setupExpanded, setSetupExpanded] = useState
   failures.push("Business setup checklist must be collapsed initially.");
 if(!appEntry.includes('import "./workspace-polish.css";'))
   failures.push("Workspace styles must load after existing styles.");
+// Sidebar redesign: all routes remain in navigation with a More disclosure;
+// hide scrollbar chrome without disabling wheel/keyboard/touch scrolling.
+const sidebarRefinements = readFileSync(join(root,"sidebar-redesign.css"),"utf8");
+const expectedRoutes = [
+  "/dashboard", "/dashboard/services", "/dashboard/bookings",
+  "/dashboard/sales", "/dashboard/products", "/dashboard/businesses",
+  "/dashboard/messages", "/dashboard/profile", "/dashboard/notifications",
+  "/forum", "/dashboard/settings", "/search"
+];
+for (const route of expectedRoutes)
+  if (!sidebarSource.includes('to: "'+route+'"'))
+    failures.push("Sidebar route removed: "+route);
+for (const groupName of ["workspaceNavigation", "activityNavigation", "moreNavigation"])
+  if (!sidebarSource.includes(groupName+".map(renderSidebarLink)"))
+    failures.push("Sidebar group is missing: "+groupName);
+for (const required of [
+  'aria-controls="sidebar-more-links"', 'aria-expanded={moreOpen}',
+  'setMoreOpen(value => !value)', 'sidebar-nav-toggle', 'sidebar-more-links',
+  'moreRoutePaths.some', 'aria-label="Dashboard navigation"'
+]) if (!sidebarSource.includes(required))
+  failures.push("Sidebar dropdown accessibility/state missing: "+required);
+if (!sidebarRefinements.includes("overflow-y: auto !important") ||
+    !sidebarRefinements.includes("scrollbar-width: none !important") ||
+    !sidebarRefinements.includes("::-webkit-scrollbar") ||
+    !sidebarRefinements.includes("@media (max-width: 800px)"))
+  failures.push("Sidebar must scroll on short screens with visually hidden scrollbar.");
+if (!appEntry.includes('import "./sidebar-redesign.css";'))
+  failures.push("Sidebar redesign must be loaded last in client/main.jsx.");
 const editorCover=readFileSync(join(root,"components/ProfileMediaHeader.jsx"),"utf8");
 const publicCover=readFileSync(join(root,"pages/PublicProfilePage.jsx"),"utf8");
 if (!editorCover.includes('className="ui-profile-cover-image"')) failures.push("ProfileMediaHeader cover is not using shared Image");
