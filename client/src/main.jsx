@@ -9,6 +9,7 @@ import "./public-profile-product-compact.css";
 import "./profile-catalog-search.css";
 import "./search-service-cards.css";
 import "./search-business-compact.css";
+import "./shadcn-refresh.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
