@@ -32,10 +32,9 @@ export default function ProfileMediaHeader({
     if (file) handler?.(file);
   }
 
-  const coverStyle = profile?.coverImage ? { backgroundImage: "url(" + profile.coverImage + ")" } : undefined;
-
   return <section className="linkedin-profile-media">
-    <div className={"linkedin-cover" + (profile?.coverImage ? " has-image" : "")} style={coverStyle}>
+    <div className={"linkedin-cover" + (profile?.coverImage ? " has-image" : "")}>
+      {profile?.coverImage && <Image className="ui-profile-cover-image" src={profile.coverImage} alt="" decoding="async" />}
       {!profile?.coverImage && <span className="linkedin-cover-placeholder">Add a cover photo</span>}
       <Button variant="plain"
         type="button"
