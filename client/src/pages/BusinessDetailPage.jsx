@@ -45,7 +45,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
   const primarySales = data?.salesSummary?.totalsByCurrency?.[0];
 
   return <AppLayout user={user} onLogout={onLogout}>
-    <header className="topbar"><div><p className="eyebrow">BUSINESS DETAILS</p><h1>{data?.business?.name || "Business"}</h1></div><Link className="secondary button-link icon-link" to="/dashboard/businesses"><FiArrowLeft />Back to businesses</Link></header>
+    <header className="topbar"><div><p className="eyebrow">BUSINESS DETAILS</p><h1>{data?.business?.name || "Business"}</h1></div><Button asChild variant="outline"><Link  className="secondary button-link icon-link" to="/dashboard/businesses"><FiArrowLeft />Back to businesses</Link></Button></header>
     {error ? <p className="error">{error}</p> : !data ? <p>Loading...</p> : <>
       <section className="panel admin-business-hero">
         <ProfileAvatar profile={{ name: data.business.name, profileImage: data.business.logo }} size="lg" />
