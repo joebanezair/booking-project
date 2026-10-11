@@ -76,7 +76,7 @@ export default function DashboardPage({ user, onLogout }) {
         <h1>Welcome back, {user.name.split(" ")[0]}</h1>
         <p className="muted">{isAdmin ? "Manage businesses and monitor platform activity." : user.accountStatus === "paused" ? "Your account is paused. Existing data remains available while new publishing and bookings are disabled." : "Manage services, bookings, recorded sales, messages, reviews, and your public profile."}</p>
       </div>
-      {!isAdmin && user.accountStatus === "active" && <Link className="primary-button button-link icon-link" to="/dashboard/services/new"><FiPlus aria-hidden="true" />Post a service</Link>}
+      {!isAdmin && user.accountStatus === "active" && <Button asChild variant="default"><Link  className="primary-button button-link icon-link" to="/dashboard/services/new"><FiPlus aria-hidden="true" />Post a service</Link></Button>}
     </header>
 
     <div className="dashboard-content-rail">
@@ -107,7 +107,7 @@ export default function DashboardPage({ user, onLogout }) {
           <Card as="article" className="stat-card analytics-stat"><span><FiBriefcase />Services sold</span><strong>{businessSales?.summary.servicesSold ?? "—"}</strong><small>Distinct services this month</small></Card>
         </div>
         <section className="panel dashboard-sales-chart">
-          <div className="panel-title"><div><p className="eyebrow">THIS MONTH</p><h2>Sales trend</h2></div><Link className="secondary button-link icon-link" to="/dashboard/sales">Full analytics<FiArrowRight /></Link></div>
+          <div className="panel-title"><div><p className="eyebrow">THIS MONTH</p><h2>Sales trend</h2></div><Button asChild variant="outline"><Link  className="secondary button-link icon-link" to="/dashboard/sales">Full analytics<FiArrowRight /></Link></Button></div>
           <SalesTrendChart data={businessSales?.trend || []} currency={salesCurrency} />
         </section>
       </section>}
