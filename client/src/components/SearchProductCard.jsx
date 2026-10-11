@@ -1,3 +1,4 @@
+import { Card } from "./ui/card.jsx";
 import { Image } from "./ui/image.jsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -13,7 +14,7 @@ export default function SearchProductCard({ product }) {
   const showImage = Boolean(imageSrc && failedImage !== imageSrc);
 
   return (
-    <Link
+    <Card as={Link}
       to={`/profile/${product.user?.username}?product=${product._id}`}
       className="panel search-product-card"
     >
@@ -51,6 +52,6 @@ export default function SearchProductCard({ product }) {
           {product.user?.name || "Business"} · {product.stock || 0} in stock
         </small>
       </div>
-    </Link>
+    </Card>
   );
 }
