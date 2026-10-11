@@ -4,6 +4,7 @@ import { Input } from "./ui/input.jsx";
 import { Select } from "./ui/select.jsx";
 import { Textarea } from "./ui/textarea.jsx";
 import { Label } from "./ui/label.jsx";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiCalendar, FiCheckCircle, FiClock, FiEdit2, FiEye, FiGlobe, FiList, FiDownload, FiPlay, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTrash2, FiUserX, FiUsers, FiX } from "react-icons/fi";
@@ -35,6 +36,10 @@ export default function BookingManager({user}){
   const [historyFrom,setHistoryFrom]=useState("");
   const [historyTo,setHistoryTo]=useState("");
   const [historySearch,setHistorySearch]=useState("");
+  const [rescheduleTarget,setRescheduleTarget]=useState(null);
+  const [rescheduleDate,setRescheduleDate]=useState("");
+  const [rescheduleReason,setRescheduleReason]=useState("");
+  const [rescheduleBusy,setRescheduleBusy]=useState(false);
 
   async function refreshCustomers(){try{setCustomers(await api.bookings.customers());}catch{}}
 
@@ -103,10 +108,26 @@ export default function BookingManager({user}){
     }catch(e){setError(e.message);}
   }
 
-  async function reschedule(booking){
-    const next=prompt("Enter the new date and time:",localInput(booking.bookingDate));if(!next)return;
-    const reason=prompt("Reason for rescheduling (optional):","")||"";
-    try{const updated=await api.bookings.reschedule(booking._id,new Date(next).toISOString(),reason);setItems(current=>current.map(item=>item._id===booking._id?updated:item));setError("");}catch(e){setError(e.message);}
+  function reschedule(booking) {
+    setRescheduleTarget(booking);
+    setRescheduleDate(localInput(booking.bookingDate));
+    setRescheduleReason("");
+    setError("");
+  }
+
+  async function submitReschedule(event) {
+    event.preventDefault();
+    if (!rescheduleTarget || !rescheduleDate || rescheduleBusy) return;
+    setRescheduleBusy(true);
+    try {
+      const parsed = new Date(rescheduleDate);
+      if (!Number.isFinite(parsed.getTime())) throw new Error("Choose a valid date and time.");
+      const updated = await api.bookings.reschedule(rescheduleTarget._id,parsed.toISOString(),rescheduleReason);
+      setItems(current=>current.map(item=>item._id===rescheduleTarget._id?updated:item));
+      setRescheduleTarget(null);
+      setError("");
+    } catch(e) { setError(e.message); }
+    finally { setRescheduleBusy(false); }
   }
 
   async function remove(id){
@@ -145,6 +166,23 @@ export default function BookingManager({user}){
   const canCreate=user.accountStatus==="active";
 
   return <section id="bookings">
+    <Dialog open={Boolean(rescheduleTarget)} title="Reschedule booking"
+      dismissible={!rescheduleBusy}
+      onOpenChange={open=>{if(!open&&!rescheduleBusy)setRescheduleTarget(null);}}>
+      <DialogContent>
+        <DialogHeader><DialogTitle>Reschedule booking</DialogTitle>
+          <DialogDescription>Change the appointment time for {rescheduleTarget?.guestName || "this guest"}. Existing availability rules will still apply.</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={submitReschedule}>
+          <Label>New date and time<Input type="datetime-local" required value={rescheduleDate} onChange={e=>setRescheduleDate(e.target.value)} /></Label>
+          <Label>Reason (optional)<Textarea rows={3} maxLength={1000} value={rescheduleReason} onChange={e=>setRescheduleReason(e.target.value)} /></Label>
+          {error&&<p className="error" role="alert">{error}</p>}
+          <DialogFooter><Button type="button" variant="outline" disabled={rescheduleBusy} onClick={()=>setRescheduleTarget(null)}>Cancel</Button>
+            <Button type="submit" disabled={rescheduleBusy}>{rescheduleBusy?"Saving...":"Save new time"}</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
     <div className="stats-grid booking-stats-grid"><Card as="article" className="stat-card"><span>Total bookings</span><strong>{stats.total}</strong></Card><Card as="article" className="stat-card"><span>Pending</span><strong>{stats.pending}</strong></Card><Card as="article" className="stat-card"><span>Confirmed</span><strong>{stats.confirmed}</strong></Card><Card as="article" className="stat-card"><span>In progress</span><strong>{stats.inProgress}</strong></Card><Card as="article" className="stat-card"><span>Completed</span><strong>{stats.completed}</strong></Card></div>
     {error&&<p className="error">{error}</p>}
 
