@@ -1,0 +1,889 @@
+/*
+ * BookFlow full-page business dashboard — approved October 2026 design.
+ * Scoped to the dashboard analytics and shared workspace chrome.
+ * Original role permissions, routes, data and dark theme are preserved.
+ */
+#root .page-shell {
+  --dashboard-blue: #4675f6;
+  --dashboard-green: #18b76a;
+  --dashboard-orange: #f28d39;
+  --dashboard-purple: #8c58e6;
+  --dashboard-track: color-mix(in srgb, var(--border) 65%, var(--secondary));
+  min-width: 0;
+}
+
+/* Full navigation drawer: keep it expanded on desktop, not hover-to-expand.
+ * Remove the previous decorative glowing/blue LEFT marker entirely. */
+@media (min-width: 801px) {
+  html body #root .page-shell {
+    display: grid !important;
+    grid-template-columns: 235px minmax(0,1fr) !important;
+    grid-template-rows: 66px minmax(0, 1fr);
+    transition: none !important;
+  }
+  html body #root .page-shell:has(.sidebar:hover),
+  html body #root .page-shell:has(.sidebar:focus-within) {
+    grid-template-columns: 235px minmax(0,1fr) !important;
+  }
+  html body #root .page-shell > aside.sidebar {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    position: sticky !important;
+    top: 0;
+    height: 100dvh !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    padding: 20px 14px 18px !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+  }
+  html body #root .page-shell > aside.sidebar:hover,
+  html body #root .page-shell > aside.sidebar:focus-within {
+    padding: 20px 14px 18px !important;
+    box-shadow: none !important;
+  }
+  html body #root .page-shell > aside.sidebar .sidebar-brand,
+  html body #root .page-shell > aside.sidebar:hover .sidebar-brand {
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    padding: 0 6px 10px !important;
+  }
+  html body #root .page-shell > aside.sidebar .sidebar-brand strong,
+  html body #root .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link > span,
+  html body #root .page-shell > aside.sidebar .sidebar-nav button.sidebar-nav-toggle > span,
+  html body #root .page-shell > aside.sidebar .sidebar-footer .sidebar-email {
+    width: auto !important;
+    max-width: 100% !important;
+    opacity: 1 !important;
+    margin-left: 0 !important;
+    transform: none !important;
+  }
+  html body #root .page-shell > aside.sidebar .sidebar-nav .sidebar-section-label {
+    display: block !important;
+    height: auto !important;
+    opacity: 1 !important;
+    padding: 0 10px !important;
+    margin: 8px 0 5px !important;
+    overflow: visible !important;
+  }
+  html body #root .page-shell > aside.sidebar .sidebar-nav .sidebar-more-links {
+    padding-left: 7px !important;
+  }
+  html body #root .page-shell > aside.sidebar .sidebar-nav .sidebar-nav-chevron {
+    display: block !important;
+  }
+  html body #root .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button) {
+    display: flex !important;
+    justify-content: flex-start !important;
+    gap: 11px !important;
+    padding: 8px 12px !important;
+  }
+  html body #root .page-shell > .workspace-topbar {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  html body #root .page-shell > .content-shell {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+html body #root .page-shell > aside.sidebar {
+  background: #111b2f !important;
+  color: #e8edf6;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav {
+  gap: 9px !important;
+  scrollbar-width: none !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link,
+html body #root .page-shell > aside.sidebar .sidebar-nav button.sidebar-nav-toggle.ui-button {
+  min-height: 39px !important;
+  height: 39px !important;
+  border-radius: 10px !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  font-weight: 540 !important;
+  background: transparent !important;
+  color: #a7b4cb;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active {
+  background: #223456 !important;
+  color: #f8faff !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  font-weight: 650 !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active::before {
+  display: none !important;
+  content: none !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active svg {
+  color: #cbd8ff !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link,button.sidebar-nav-toggle.ui-button):focus-visible {
+  outline: 2px solid #93a6ff !important;
+  outline-offset: 1px;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav .sidebar-section-label {
+  color: #879bbd !important;
+  font-size: 10px !important;
+  letter-spacing: .1em !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-footer {
+  padding: 13px 4px 0 !important;
+  border-top: 1px solid rgba(224,232,255,.14);
+}
+#root .sidebar-footer-person {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+#root .sidebar-footer-avatar {
+  display: grid;
+  flex: 0 0 35px;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #446fe5;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+}
+#root .sidebar-footer-account {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+#root .sidebar-footer-account strong {
+  color: #e4ecff;
+  font-size: 11px;
+  font-weight: 650;
+}
+html body #root .sidebar-footer-account .sidebar-email {
+  display: block;
+  width: 100%;
+  max-width: 100% !important;
+  margin: 0 !important;
+  opacity: 1;
+  font-size: 10px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Search / date / account topbar, shared by signed-in workspace pages. */
+html body #root .page-shell > .workspace-topbar {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  box-sizing: border-box;
+  z-index: 12;
+  width: 100%;
+  min-width: 0;
+  min-height: 66px;
+  padding: 10px 25px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+}
+html body #root .workspace-global-search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  flex: 1 1 350px;
+  max-width: 590px;
+  height: 38px;
+  padding: 0 7px 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+html body #root .workspace-global-search:focus-within {
+  border-color: var(--ring);
+  outline: 2px solid color-mix(in srgb, var(--ring) 18%, transparent);
+}
+#root .workspace-global-search > svg {
+  width: 18px;
+  height: 18px;
+  color: var(--muted-foreground);
+  flex: 0 0 18px;
+}
+html body #root .workspace-global-search > input {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  min-height: 34px;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+  color: var(--foreground);
+  font-size: 12px;
+}
+html body #root .workspace-global-search > input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+html body #root .workspace-global-search .workspace-search-submit {
+  flex: 0 0 28px !important;
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: var(--primary);
+  background: var(--secondary);
+  border-radius: 8px !important;
+}
+html body #root .workspace-topbar-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+html body #root .workspace-date-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 37px;
+  min-height: 37px;
+  padding: 0 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+html body #root .workspace-date-select > svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: var(--muted-foreground);
+}
+html body #root .workspace-date-select > select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0 !important;
+  min-width: 90px;
+  width: auto !important;
+  height: 35px !important;
+  min-height: 35px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  outline: none;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: var(--foreground);
+  font-size: 12px;
+  cursor: pointer;
+}
+html body #root .workspace-date-select:focus-within {
+  border-color: var(--ring);
+  outline: 2px solid color-mix(in srgb, var(--ring) 20%, transparent);
+}
+#root .workspace-account-menu {
+  position: relative;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+#root .workspace-account-menu > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  min-height: 37px;
+}
+#root .workspace-account-menu > summary::-webkit-details-marker { display: none; }
+#root .workspace-account-menu > summary > svg {
+  width: 15px;
+  height: 15px;
+  color: var(--muted-foreground);
+}
+#root .workspace-account-menu > summary:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+#root .workspace-user-avatar {
+  flex: 0 0 35px;
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #5076ec;
+  color: white;
+  font-size: 14px;
+  font-weight: 650;
+}
+#root .workspace-user-text {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  max-width: 146px;
+}
+#root .workspace-user-text strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 650;
+}
+#root .workspace-user-text small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+#root .workspace-account-popover {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 11px);
+  display: grid;
+  min-width: 218px;
+  padding: 6px;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  box-shadow: 0 12px 30px rgb(0 0 0 / .14);
+  z-index: 50;
+}
+#root .workspace-account-identity {
+  display: grid;
+  gap: 3px;
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3px;
+}
+#root .workspace-account-identity strong,
+#root .workspace-account-identity span {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#root .workspace-account-identity strong { font-size: 12px; }
+#root .workspace-account-identity span { font-size: 11px; color: var(--muted-foreground); }
+html body #root .workspace-account-popover :is(a,button.ui-button) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  width: 100% !important;
+  min-height: 35px !important;
+  padding: 8px 10px !important;
+  color: var(--foreground);
+  background: transparent;
+  border: 0 !important;
+  border-radius: 8px !important;
+  font-size: 12px;
+  text-align: left;
+  text-decoration: none;
+}
+html body #root .workspace-account-popover :is(a,button.ui-button):hover {
+  background: var(--secondary);
+}
+#root .workspace-account-popover svg { width: 15px; height: 15px; }
+
+/* Dashboard itself: spaced like the screenshot, with no second navigation bar
+ * and no fake trends or fabricated comparison percentages. */
+html body #root .page-shell:has(.dashboard-content-rail) > .content-shell {
+  min-width: 0;
+  padding: 24px 25px 40px !important;
+  background: var(--background);
+}
+#root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar,
+#root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail {
+  width: min(100%, 1440px);
+  max-width: 1440px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+#root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 18px;
+  margin-bottom: 19px !important;
+}
+#root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar h1 {
+  font-size: clamp(23px,2.3vw,31px);
+  font-weight: 730;
+  letter-spacing: -.035em;
+  margin: 3px 0 7px;
+}
+#root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar .muted {
+  font-size: 12px;
+  line-height: 1.5;
+}
+#root .page-shell:has(.dashboard-content-rail) .topbar > .ui-button {
+  flex: 0 0 auto !important;
+  min-height: 36px !important;
+  font-size: 12px;
+}
+#root .dashboard-content-rail {
+  display: grid;
+  gap: 0;
+}
+#root .dashboard-content-rail > .onboarding-relaunch {
+  margin-bottom: 15px !important;
+}
+#root .dashboard-content-rail > .business-dashboard-analytics {
+  margin: 0 0 18px !important;
+  width: 100%;
+  max-width: none !important;
+}
+/* Four equal cards. Former 3+1 wrap was caused by legacy grid overrides. */
+html body #root .dashboard-v2-analytics .dashboard-v2-stats {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  margin: 0 0 13px !important;
+  min-width: 0;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-stat {
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  align-content: start;
+  position: relative;
+  min-width: 0;
+  min-height: 142px;
+  padding: 17px 17px 15px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  color: var(--card-foreground);
+  box-shadow: none !important;
+  overflow: hidden;
+}
+#root .dashboard-v2-stat-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+#root .dashboard-v2-stat-icon {
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: color-mix(in srgb, currentColor 11%, var(--card));
+}
+#root .dashboard-v2-stat-icon svg { width: 20px; height: 20px; }
+#root .dashboard-v2-stat.tone-blue .dashboard-v2-stat-icon { color: var(--dashboard-blue); }
+#root .dashboard-v2-stat.tone-green .dashboard-v2-stat-icon { color: var(--dashboard-green); }
+#root .dashboard-v2-stat.tone-orange .dashboard-v2-stat-icon { color: var(--dashboard-orange); }
+#root .dashboard-v2-stat.tone-purple .dashboard-v2-stat-icon { color: var(--dashboard-purple); }
+#root .dashboard-v2-stat-label {
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 660;
+  color: var(--muted-foreground);
+}
+#root .dashboard-v2-stat-number {
+  margin-top: 10px;
+  color: var(--foreground);
+  font-size: clamp(23px, 2vw, 28px);
+  line-height: 1.1;
+  font-weight: 750;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+}
+#root .dashboard-v2-stat > small {
+  display: block;
+  margin-top: 13px;
+  padding-right: 25px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.5;
+}
+#root .dashboard-v2-stat .dashboard-metric-sparkline {
+  position: absolute;
+  width: 110px;
+  height: 34px;
+  right: 13px;
+  bottom: 31px;
+  pointer-events: none;
+}
+#root .dashboard-metric-sparkline.tone-blue { color: var(--dashboard-blue); }
+#root .dashboard-metric-sparkline.tone-green { color: var(--dashboard-green); }
+#root .dashboard-metric-sparkline.tone-orange { color: var(--dashboard-orange); }
+#root .dashboard-metric-sparkline.tone-purple { color: var(--dashboard-purple); }
+
+/* Sales Overview 56%, Service Status 22%, Top Services 22%. */
+html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0,2.2fr) minmax(225px, .95fr) minmax(210px,.9fr) !important;
+  gap: 12px !important;
+  align-items: stretch;
+  min-width: 0;
+}
+html body #root .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales, .dashboard-v2-status, .dashboard-v2-top-services) {
+  min-width: 0;
+  min-height: 260px;
+  margin: 0;
+  padding: 17px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: none !important;
+}
+#root .dashboard-v2-analysis-grid h3 {
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -.015em;
+  margin: 0 0 3px;
+  color: var(--foreground);
+}
+#root .dashboard-v2-muted {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.5;
+}
+#root .dashboard-v2-sales {
+  display: flex;
+  flex-direction: column;
+}
+#root .dashboard-v2-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+#root .dashboard-v2-sales-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 1px;
+  flex: 0 0 auto;
+  background: var(--secondary);
+  padding: 3px;
+  border-radius: 10px;
+}
+html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-height: 29px !important;
+  height: 29px !important;
+  padding: 5px 9px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: var(--muted-foreground) !important;
+  font-size: 11px;
+  font-weight: 600;
+}
+html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab.selected {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  box-shadow: none !important;
+}
+#root .dashboard-v2-chart-area {
+  display: grid;
+  align-content: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 175px;
+  margin: 15px 0 0;
+}
+#root .dashboard-v2-chart-area > .chart-shell {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+#root .dashboard-v2-chart-area svg.sales-line-chart {
+  display: block;
+  width: 100%;
+  height: auto !important;
+  min-width: 0 !important;
+  max-height: 210px !important;
+}
+#root .dashboard-v2-empty {
+  min-height: 170px;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 7px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.5;
+}
+#root .dashboard-v2-empty svg {
+  width: 38px;
+  height: 38px;
+  padding: 10px;
+  box-sizing: content-box;
+  border-radius: 50%;
+  background: var(--secondary);
+  color: var(--muted-foreground);
+}
+#root .dashboard-v2-empty strong { color: var(--foreground); font-size: 12px; }
+#root .dashboard-v2-empty span { max-width: 250px; }
+#root .dashboard-v2-sales-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+html body #root .dashboard-v2-sales-footer .ui-button {
+  min-height: 26px !important;
+  padding: 4px 0 !important;
+  font-size: 11px;
+}
+
+/* Real booking-status breakdown, not decorative sample data. */
+#root .dashboard-status-content {
+  display: grid;
+  align-content: center;
+  gap: 17px;
+  padding-top: 19px;
+}
+#root .dashboard-status-donut {
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  width: clamp(105px, 13vw, 150px);
+  height: clamp(105px, 13vw, 150px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+#root .dashboard-status-hole {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 4px;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background: var(--card);
+}
+#root .dashboard-status-hole strong {
+  font-size: 24px;
+  font-weight: 750;
+  line-height: 1;
+  color: var(--foreground);
+}
+#root .dashboard-status-hole span { font-size: 11px; color: var(--muted-foreground); }
+#root .dashboard-status-legend { display: grid; gap: 7px; }
+#root .dashboard-status-row {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 9px minmax(0,1fr) auto 25px;
+  gap: 7px;
+  font-size: 10px;
+}
+#root .dashboard-status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+#root .dashboard-status-name { color: var(--foreground); overflow-wrap: anywhere; }
+#root .dashboard-status-row strong { font-size: 11px; }
+#root .dashboard-status-row small { color: var(--muted-foreground); text-align: right; font-size: 10px; }
+
+/* Real services list with a useful empty state. */
+#root .dashboard-v2-top-services { display: flex; flex-direction: column; }
+#root .dashboard-v2-top-empty {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  flex: 1 1 auto;
+  min-height: 175px;
+  gap: 9px;
+  text-align: center;
+}
+#root .dashboard-v2-top-empty > svg {
+  width: 34px;
+  height: 34px;
+  padding: 16px;
+  box-sizing: content-box;
+  border-radius: 50%;
+  background: var(--secondary);
+  color: var(--muted-foreground);
+}
+#root .dashboard-v2-top-empty strong { font-size: 12px; color: var(--foreground); }
+#root .dashboard-v2-top-empty p {
+  margin: 0;
+  max-width: 200px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+#root .dashboard-v2-top-list {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+}
+#root .dashboard-v2-top-list li {
+  display: flex;
+  gap: 9px;
+  align-items: start;
+  min-width: 0;
+}
+#root .dashboard-v2-top-list li > span {
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+  height: 24px;
+  border-radius: 7px;
+  background: var(--secondary);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 11px;
+}
+#root .dashboard-v2-top-list li > div { display: grid; min-width: 0; gap: 4px; }
+#root .dashboard-v2-top-list strong { font-size: 11px; overflow-wrap: anywhere; }
+#root .dashboard-v2-top-list small { color: var(--muted-foreground); font-size: 10px; overflow-wrap: anywhere; }
+
+/* Quick access: screenshot-style tight, aligned three-column tools.
+ * Preserve ALL 7 links (including Search, which extends to a third row). */
+html body #root .dashboard-content-rail > .dashboard-route-section {
+  margin-top: 4px !important;
+  margin-bottom: 0 !important;
+  width: 100%;
+  max-width: none !important;
+}
+#root .dashboard-route-section .dashboard-section-heading { margin-bottom: 12px !important; }
+#root .dashboard-route-section .dashboard-section-heading h2 { font-size: 20px !important; }
+html body #root .dashboard-route-section .dashboard-route-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  gap: 11px !important;
+  width: 100%;
+}
+html body #root .dashboard-route-section .dashboard-shadcn-card {
+  min-width: 0;
+  min-height: 112px !important;
+  padding: 13px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  background: var(--card);
+}
+#root .dashboard-route-section .dashboard-shadcn-card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  gap: 11px;
+  min-width: 0;
+  padding: 0 !important;
+}
+#root .dashboard-route-section .dashboard-shadcn-card-header .route-card-icon {
+  display: grid;
+  flex: 0 0 38px;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  background: color-mix(in srgb, var(--primary) 9%, var(--card));
+  color: var(--primary);
+  border-radius: 10px !important;
+}
+#root .dashboard-route-section .dashboard-shadcn-card-header .route-card-icon svg { width: 18px; height: 18px; }
+#root .dashboard-route-section .dashboard-shadcn-card-header > div { min-width: 0; }
+#root .dashboard-route-section .ui-card-title { font-size: 12px; font-weight: 700; margin: 0 0 6px; }
+#root .dashboard-route-section .ui-card-description {
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+#root .dashboard-route-section .dashboard-shadcn-card-content {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 !important;
+  margin-top: 9px;
+}
+html body #root .dashboard-route-section .dashboard-shadcn-card-content .ui-button {
+  min-height: 24px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--primary) !important;
+  padding: 4px 0 !important;
+  font-size: 11px;
+  border-radius: 0 !important;
+}
+#root .dashboard-route-section .dashboard-shadcn-card-content .ui-button svg { width: 14px; height: 14px; }
+
+/* Compact onboarding, light panel and a clear but quiet completion indicator. */
+#root .dashboard-content-rail > .onboarding-panel.onboarding-relaunch {
+  box-shadow: none !important;
+}
+#root .onboarding-relaunch .onboarding-launch-art { opacity: .8; }
+#root .onboarding-relaunch .onboarding-launch-eyebrow { color: var(--primary); }
+
+@media (max-width: 1280px) {
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid {
+    grid-template-columns: minmax(0, 1.6fr) minmax(205px, 1fr) !important;
+  }
+  #root .dashboard-v2-top-services { grid-column: 1 / -1; min-height: 165px !important; }
+  #root .dashboard-v2-top-empty { min-height: 100px; }
+}
+@media (max-width: 1120px) {
+  html body #root .dashboard-v2-analytics .dashboard-v2-stats { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+}
+@media (max-width: 800px) {
+  html body #root .page-shell {
+    display: block !important;
+    min-width: 0;
+  }
+  html body #root .page-shell > .workspace-topbar {
+    position: relative;
+    min-height: 56px;
+    padding: 9px 14px;
+    gap: 10px;
+  }
+  html body #root .page-shell > .workspace-topbar .workspace-user-text { display: none; }
+  #root .workspace-topbar-actions { gap: 9px; }
+  #root .workspace-global-search { flex: 1 1 auto; max-width: none; }
+  #root .workspace-date-select { padding: 0 8px; }
+  #root .workspace-date-select select { min-width: 82px !important; font-size: 11px; }
+  #root .workspace-user-avatar { width: 31px; height: 31px; flex-basis: 31px; }
+  html body #root .page-shell:has(.dashboard-content-rail) > .content-shell { padding: 18px 14px 94px !important; }
+  #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar { align-items: flex-start; }
+  html body #root .dashboard-route-section .dashboard-route-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+  html body #root .page-shell > aside.sidebar .sidebar-main { overflow: hidden; }
+  html body #root .page-shell > aside.sidebar .sidebar-nav { gap: 8px !important; }
+}
+@media (max-width: 640px) {
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid { grid-template-columns: minmax(0,1fr) !important; }
+  #root .dashboard-v2-top-services { grid-column: auto; }
+  #root .dashboard-v2-status, #root .dashboard-v2-top-services { min-height: 215px !important; }
+  #root .dashboard-status-content { grid-template-columns: 145px minmax(0,1fr); align-items: center; }
+  #root .dashboard-v2-panel-head { flex-wrap: wrap; }
+}
+@media (max-width: 520px) {
+  html body #root .dashboard-v2-analytics .dashboard-v2-stats { grid-template-columns: minmax(0,1fr) !important; }
+  html body #root .dashboard-route-section .dashboard-route-grid { grid-template-columns: minmax(0,1fr) !important; }
+  html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar { flex-direction: column !important; }
+  #root .dashboard-v2-chart-area { min-height: 150px; }
+  html body #root .page-shell > .workspace-topbar { flex-wrap: wrap; }
+  html body #root .workspace-global-search { flex: 1 1 100%; order: 2; }
+  html body #root .workspace-topbar-actions { flex: 1 1 auto; justify-content: space-between; }
+  #root .dashboard-status-content { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #root .dashboard-metric-sparkline, #root .workspace-topbar *,
+  #root .dashboard-chart-tab { transition: none !important; }
+}
