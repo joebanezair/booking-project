@@ -989,7 +989,7 @@ Conversation retrieval now returns the most recent 50 messages and `hasMoreMessa
 
 ## Complete scalability recommendations (34 items)
 
-**Target:** Design and validate BookFlow for **100,000+ registered accounts**, without assuming 100,000 simultaneous users. **Branch:** \`betta-vone\`. **Deployment preference:** Self-hosted VPS infrastructure (MongoDB, MongoDB GridFS, RabbitMQ Community Edition, Redis, Nginx), **not Cloudflare R2**.
+**Target:** Design and validate BookFlow for **100,000+ registered accounts**, without assuming 100,000 simultaneous users. **Branch:** `betta-vone`. **Deployment preference:** Self-hosted VPS infrastructure (MongoDB, MongoDB GridFS, RabbitMQ Community Edition, Redis, Nginx), **not Cloudflare R2**.
 
 **Status legend:**
 
@@ -1058,9 +1058,9 @@ These statuses are implementation assessments, **not guarantees of production re
 
 ### Recommended target architecture
 
-This diagram is a **future-state target**, not a claim that every service is connected or deployed on \`betta-vone\`.
+This diagram is a **future-state target**, not a claim that every service is connected or deployed on `betta-vone`.
 
-\`\`\`mermaid
+```mermaid
 flowchart TB
     Users["Web and mobile users"]
     Proxy["Nginx: HTTPS, public media cache, rate limits, load balancing"]
@@ -1080,7 +1080,7 @@ flowchart TB
     API1 -. "optional message events" .-> Broker[("RabbitMQ")]
     Broker --> Worker["Background workers<br/>events, notifications, jobs"]
     Worker --> MainDB
-\`\`\`
+```
 
 The media database holds binary GridFS content, while application documents hold media reference URLs. Protect private chat attachments with expiring signed links and avoid public caching. The current frontend still sends Base64 data inside JSON; direct binary upload and responsive image sizes are planned improvements. When scaling Socket.IO beyond one API instance, wire up the Redis adapter and verify cross-instance events and reconnection behavior. Neither Redis nor RabbitMQ alone solves horizontal scaling.
 
@@ -1109,8 +1109,8 @@ Use the supplied read-only k6 discovery script as a **baseline**; then extend te
 
 ### Branch update command
 
-\`\`\`bash
+```bash
 git fetch origin && git checkout betta-vone && git pull origin betta-vone
-\`\`\`
+```
 
-Keep the \`shadcn-ui\` branch unchanged during this work, and preserve all existing business profiles, services, products, POS, sales, messaging, bookings, reviews, admin functions and responsive UI.
+Keep the `shadcn-ui` branch unchanged during this work, and preserve all existing business profiles, services, products, POS, sales, messaging, bookings, reviews, admin functions and responsive UI.
