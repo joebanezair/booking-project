@@ -1,0 +1,232 @@
+/*
+ * BookFlow shared shadcn-style controls, search layout and dialog polish.
+ * Loaded after styles.css and shadcn-refresh.css; existing theme colors remain
+ * exclusively defined by the BookFlow theme variables.
+ */
+.ui-search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0 8px 0 11px;
+  box-sizing: border-box;
+  border: 1px solid var(--input);
+  border-radius: var(--ui-control-radius);
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.ui-search-field:focus-within {
+  border-color: var(--ring);
+  outline: 2px solid color-mix(in srgb, var(--ring) 30%, transparent);
+  outline-offset: 1px;
+}
+.ui-search-field > .ui-search-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  color: var(--muted-foreground);
+}
+html body .ui-search-field input.ui-search-input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  font-size: 12px;
+}
+html body .ui-search-field input.ui-search-input:focus-visible {
+  box-shadow: none !important;
+  outline: none !important;
+}
+html body .ui-search-field button.ui-search-clear {
+  flex: 0 0 28px;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px;
+  min-height: 28px !important;
+  padding: 0 !important;
+  margin: 0;
+  border: 0 !important;
+  background: transparent;
+  color: var(--muted-foreground);
+  transform: none !important;
+}
+.ui-search-clear svg { width: 15px; height: 15px; }
+.ui-search-clear:hover { color: var(--foreground); }
+.ui-search-input::-webkit-search-cancel-button { display: none; }
+
+html body .services-controls-card .ui-search-field.services-search,
+html body .services-controls-card .services-search-wrap .ui-search-field {
+  width: 100% !important;
+  max-width: 100%;
+  min-height: 36px !important;
+  height: 36px !important;
+  margin: 0 !important;
+  padding: 0 8px 0 11px !important;
+  border: 1px solid var(--input) !important;
+  border-radius: var(--ui-control-radius) !important;
+  background: var(--card) !important;
+}
+html body .product-ui-search,
+html body .customers-ui-search,
+html body .cart-ui-search {
+  margin: 10px 0 14px;
+  min-height: 36px;
+}
+html body .cart-ui-search { margin: 0 0 10px; }
+
+.public-page .ui-discovery-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(140px, 220px) minmax(136px, 170px);
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 16px;
+}
+.public-page .ui-discovery-filters > * {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+html body .public-page .ui-discovery-filters .ui-discovery-category,
+html body .public-page .ui-discovery-filters .ui-discovery-rating {
+  width: 100% !important;
+  min-width: 0;
+  min-height: 36px;
+  height: 36px;
+  font-size: 12px;
+}
+.public-page .profile-catalog-search .ui-search-field {
+  min-height: 36px;
+}
+html body .public-page .profile-catalog-search .ui-search-field input.ui-search-input {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+html body .public-page .profile-catalog-search-filter select.ui-select {
+  height: 36px;
+  min-height: 36px;
+  padding: 6px 9px;
+  font-size: 12px;
+}
+
+.ui-dialog {
+  position: fixed;
+  inset: 0;
+  width: min(500px, calc(100vw - 32px));
+  max-width: min(500px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--ui-card-radius);
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--shadow-md);
+}
+.ui-dialog::backdrop {
+  background: color-mix(in srgb, var(--foreground) 58%, transparent);
+  backdrop-filter: blur(3px);
+}
+.ui-dialog-content { display: grid; gap: 12px; padding: 18px; }
+.ui-dialog-header { display: grid; gap: 5px; }
+.ui-dialog-title { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3; }
+.ui-dialog-description { margin: 0; font-size: 12px; line-height: 1.5; color: var(--muted-foreground); }
+.ui-dialog-footer { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 8px; }
+.ui-dialog-content form { display: grid; gap: 12px; min-width: 0; }
+.ui-dialog-content label { display: grid; gap: 5px; min-width: 0; }
+.ui-dialog-content :where(input, select, textarea) { width: 100%; min-width: 0; }
+.ui-dialog .error { margin: 0; }
+
+/* Native button-sized click target instead of nesting action buttons in a
+ * role=button product card. Grid and list presentation remain available. */
+html body .product-shop-grid .product-shop-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  overflow: visible;
+}
+html body .product-shop-grid .product-shop-card:focus-within { z-index: 26; }
+html body .product-shop-grid .product-card-primary {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: stretch;
+  justify-items: stretch;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  padding: 12px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  white-space: normal;
+  box-shadow: none;
+}
+html body .product-shop-grid .product-card-primary:disabled { cursor: not-allowed; }
+html body .product-shop-grid .product-card-primary > .product-shop-image { width: 100%; }
+html body .product-shop-grid .product-card-primary > .product-shop-info { min-width: 0; }
+html body .product-shop-grid .product-card-menu {
+  align-self: end;
+  margin: 0 10px 8px;
+  position: relative;
+}
+html body .product-shop-grid .product-action-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  bottom: auto;
+  right: 0;
+  width: max-content;
+  z-index: 50;
+  overflow: visible !important;
+}
+html body .product-shop-list .product-shop-card { flex-direction: row; align-items: center; }
+html body .product-shop-list .product-card-primary {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  grid-template-rows: auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+}
+html body .product-shop-list .product-card-menu { align-self: center; margin: 0 10px 0 0; }
+
+/* Let title/metadata shrink instead of spilling into the card edge. */
+:where(.ui-card, .panel, .user-result, .public-content-card) :where(h2, h3, p, small) {
+  overflow-wrap: anywhere;
+}
+:where(.ui-search-field, .ui-discovery-filters, .product-card-primary) { max-width: 100%; }
+@media (max-width: 840px) {
+  .public-page .ui-discovery-filters { grid-template-columns: minmax(0, 1fr) minmax(135px, 180px); }
+  .public-page .ui-discovery-query { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .public-page .ui-discovery-filters { grid-template-columns: minmax(0, 1fr); }
+  .public-page .ui-discovery-query { grid-column: auto; }
+  html body .product-shop-list .product-card-primary { grid-template-columns: 72px minmax(0, 1fr); }
+  .ui-dialog-content { padding: 14px; }
+  .ui-dialog-footer > button { flex: 1 1 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-search-field { transition: none; }
+  .ui-dialog::backdrop { backdrop-filter: none; }
+}
