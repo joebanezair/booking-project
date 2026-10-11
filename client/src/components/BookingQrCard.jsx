@@ -1,3 +1,4 @@
+import { Button } from "./ui/button.jsx";
 import { useMemo, useState } from "react";
 import { FiCopy, FiDownload } from "react-icons/fi";
 
@@ -67,7 +68,7 @@ export default function BookingQrCard({bookingUrl,businessName="Business"}){
     localStorage.setItem("bookflow_booking_shared","1");const blob=new Blob([svg],{type:"image/svg+xml"}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=(businessName||"bookflow").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+"-booking-qr.svg";link.click();URL.revokeObjectURL(url);
   }
   return <section className="panel booking-qr-card">
-    <div><p className="eyebrow">QR BOOKING</p><h2>Share your booking page</h2><p className="muted">This QR code is generated directly in BookFlow. Print it or add it to your storefront, flyers, or social posts.</p><p className="booking-qr-url">{bookingUrl}</p><div className="row-actions"><button type="button" className="secondary" onClick={copy}><FiCopy/>{copied?"Copied":"Copy link"}</button><button type="button" className="primary-button compact-button" onClick={download} disabled={!result.matrix}><FiDownload/>Download QR</button></div>{result.error&&<p className="error">{result.error}</p>}</div>
+    <div><p className="eyebrow">QR BOOKING</p><h2>Share your booking page</h2><p className="muted">This QR code is generated directly in BookFlow. Print it or add it to your storefront, flyers, or social posts.</p><p className="booking-qr-url">{bookingUrl}</p><div className="row-actions"><Button variant="plain" type="button" className="secondary" onClick={copy}><FiCopy/>{copied?"Copied":"Copy link"}</Button><Button variant="plain" type="button" className="primary-button compact-button" onClick={download} disabled={!result.matrix}><FiDownload/>Download QR</Button></div>{result.error&&<p className="error">{result.error}</p>}</div>
     {result.matrix&&<svg className="booking-qr-svg" viewBox={`0 0 ${total} ${total}`} aria-label="Booking page QR code" role="img" shapeRendering="crispEdges"><rect width={total} height={total} fill="white"/>{result.matrix.map((row,y)=>row.map((dark,x)=>dark?<rect key={x+"-"+y} x={x+quiet} y={y+quiet} width="1" height="1" fill="black"/>:null))}</svg>}
   </section>;
 }
