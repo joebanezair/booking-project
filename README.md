@@ -8,6 +8,56 @@ BookFlow is a full-stack MERN application for service businesses. The account mo
 
 There is no customer account role and no customer-to-business approval workflow.
 
+## Betta V1 update status — October 11, 2026
+
+**Branch:** [`betta-vone`](https://github.com/joebanezair/booking-project/tree/betta-vone) (based on `shadcn-ui`; that source branch is kept separate).
+
+**Release status:** The initial scalability changes are committed to GitHub. This is a **code update, not a completed production rollout or proof of 100,000 concurrent users**. Production infrastructure, historical media migration, and scale testing still require explicit operator action.
+
+| Area | Current status | What changed / what is still needed |
+| --- | --- | --- |
+| Public search and browse | Implemented in code | Database-side filtering and bounded pages instead of loading every matching business into application memory; benchmark indexes and large datasets. |
+| MongoDB indexing | Implemented in code | Additional indexes for bookings, messages, businesses and products; inspect actual query plans under load. |
+| Separate media MongoDB | **Optional; requires configuration** | GridFS media store behind `MEDIA_MONGO_URI`; public URLs and signed private attachment links. Without configuration, legacy Base64 behavior remains. |
+| Existing media data | Migration script available, **not automatically migrated** | Backup both databases; run `--dry-run` before the real migration. |
+| Image upload and delivery | **Partial** | Browser forms still transport Base64; binary upload endpoint and Nginx cache example exist, but responsive WebP/AVIF thumbnail generation is not implemented. |
+| RabbitMQ for chat | **Optional worker implemented** | Self-hosted RabbitMQ event pipeline with persistent message metadata events; realtime message delivery still uses Socket.IO. Requires a broker and worker to be running. |
+| Redis | Infrastructure example only | Redis service is supplied, but Socket.IO Redis adapter and distributed API rate limiting are not yet wired up. |
+| API protection | Baseline implemented | Local, per-process rate limiting; add distributed limits before multiple API replicas. |
+| Message history | Implemented in code | 50-message cursor pages, `hasMoreMessages`, and a frontend **Load older messages** control. |
+| CI and load testing | Initial coverage | CI includes `betta-vone` and verifies client build, backend syntax and media tests; a k6 ramp-to-100-virtual-users script is included but a passing scale benchmark is not established. |
+| Production scale / high availability | **Not verified** | Booking race-condition hardening, full API pagination, horizontal scaling, cross-instance websockets, backups and 100K-user validation remain open. |
+
+### Pull the updated branch
+
+From your existing repository checkout:
+
+```bash
+git fetch origin && git checkout betta-vone && git pull origin betta-vone
+```
+
+To start the application locally (with a running MongoDB server and valid `server/.env`):
+
+```bash
+# Terminal 1
+cd server && npm install && npm run dev
+
+# Terminal 2 (from repository root)
+cd client && npm install && npm run dev
+```
+
+The **separate media database, RabbitMQ and Redis are opt-in**. For a self-hosted VPS setup, follow [Separate MongoDB GridFS media storage](#1-separate-mongodb-gridfs-media-storage) and [Self-host RabbitMQ and Redis](#2-self-host-rabbitmq-and-redis-on-your-vps). Example infrastructure is in `infrastructure/compose.services.yml`. **Cloudflare R2 is not part of this implementation.** RabbitMQ Community Edition is self-hostable without a software subscription, although VPS, storage, administration and bandwidth can cost money.
+
+### Validation before production
+
+1. Create and securely back up both MongoDB databases before migrating legacy Base64 media; test the migration in staging first.
+2. Configure and verify the opt-in media database and RabbitMQ worker, then exercise profile images, business/service/product images, private message attachments and chat.
+3. Run the client build, backend checks and media tests in CI; run [k6 public discovery testing](#6-public-discovery-load-test-baseline) against a staging deployment.
+4. Validate booking conflicts under concurrent requests, API pagination and Socket.IO messaging across multiple server instances before increasing production traffic.
+5. Configure TLS, private broker/database networking, monitoring, automated backups and restore drills.
+
+For the full architecture, environment variables, scripts, limitations and remaining roadmap, read [Betta V1 — Self-hosted scalability upgrade](#betta-v1--self-hosted-scalability-upgrade-betta-vone) below.
+
 ## Account lifecycle
 
 Public registration at /register always creates:
@@ -541,6 +591,8 @@ Frontend: React 19, React Router, Vite, React Icons, Socket.IO Client.
 
 Backend: Node.js, Express, MongoDB, Mongoose, JWT, bcrypt, Socket.IO.
 
+Optional Betta V1 self-hosted services: separate MongoDB GridFS for media, RabbitMQ Community Edition for chat events, Redis infrastructure, and Nginx media caching.
+
 ## Development setup
 
 ### Server
@@ -739,7 +791,7 @@ When VITE_API_URL is omitted, the client uses /api.
 
 ## Automated verification
 
-GitHub Actions runs a client production build and backend JavaScript syntax checks on pull requests and pushes to main/feature branches.
+GitHub Actions runs a client production build, backend JavaScript syntax checks (including `.mjs`), and media authorization tests on pull requests and pushes to `main`, `feature/**`, and `betta-vone`.
 
 ## Security notes
 
