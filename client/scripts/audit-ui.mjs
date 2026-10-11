@@ -100,6 +100,11 @@ if (!onboardingComponent.includes('role="progressbar"') ||
     !onboardingComponent.includes("aria-expanded={expanded}") ||
     !onboardingComponent.includes('id="business-onboarding-steps"'))
   failures.push("Business checklist needs accessible progress and working collapse semantics.");
+// The setup checklist is only relevant while there are unfinished tasks.
+if (!dashboard.includes("onboarding.every(step => step.done)") ||
+    !dashboard.includes("setupLoaded && !setupComplete && <BusinessSetupChecklist") ||
+    !dashboard.includes("setSetupLoaded(true)"))
+  failures.push("100% complete business setup must disappear without a loading-state flash.");
 if (!onboardingCss.includes("repeat(3, minmax(0, 1fr))") ||
     !onboardingCss.includes("repeat(2, minmax(0, 1fr))") ||
     !onboardingCss.includes("grid-template-columns: minmax(0, 1fr) !important") ||
