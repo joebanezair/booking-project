@@ -8,6 +8,29 @@ BookFlow is a full-stack MERN application for service businesses. The account mo
 
 There is no customer account role and no customer-to-business approval workflow.
 
+## Compact shadcn-style UI refresh — October 11, 2026
+
+**Implemented on `betta-vone` without changing BookFlow's existing light/dark colors or its business functionality.**
+
+- **Reusable shadcn-style primitives:** `client/src/components/ui/button.jsx`, `card.jsx`, `input.jsx`, `select.jsx`, `textarea.jsx`, `label.jsx`, `image.jsx`, `separator.jsx`, plus existing `badge.jsx`. These are **local shadcn-style React components**, not a claim that the upstream shadcn CLI, Tailwind or Radix registry has been installed.
+- **Compact buttons:** Default **32px**, small **28px**, large **36px**, and 32px icon variants. Native-backed form and action buttons share compact spacing and readable font sizes, intentionally smaller than standard shadcn buttons. Existing primary, secondary, danger, and outline theme colors are preserved.
+- **Cards and images:** Service, business, product, POS, booking, customer, forum, order, sales and dashboard card surfaces have matching neutral borders, restrained shadows, and rounded corners. Existing uploaded images, gallery actions, proportions, profile/photo cropping and cover opacity remain unchanged. Cards use the shared `Card` primitive where safe.
+- **Forms:** Text inputs, dropdowns, text areas, labels, checkboxes and file inputs now share form primitives or compatible styling, while retaining required attributes, validation, state changes and submissions.
+- **Dialog/menu appearance:** Existing booking/product/order/profile modal structures are preserved; shared styling unifies their borders, corners, spacing and focus treatments without replacing working behavior.
+- **Same colors:** `client/src/shadcn-refresh.css` introduces only dimensions/spacing and references the **existing `--background`, `--card`, `--foreground`, `--primary`, `--secondary`, `--border`, `--ring`** and shadow variables defined in `client/src/styles.css`. It is imported last by `client/src/main.jsx`. No new color palette is applied.
+- **Responsive and keyboard support:** Existing mobile layouts and navigation remain intact; focus-visible and reduced-motion styles are included.
+
+**Run the redesigned frontend:**
+
+```bash
+git fetch origin && git checkout betta-vone && git pull origin betta-vone
+cd client
+npm ci
+npm run dev -- --host 0.0.0.0
+```
+
+You must still run MongoDB and the backend in a separate terminal following [Run the project — Betta V1](#run-the-project--betta-v1). **A passing frontend build or CI check is not equivalent to a full visual/interaction audit**: verify images, modal focus, dark mode, mobile breakpoints, checkouts and permissions in a live browser before a production release.
+
 ## Button and interaction audit (Betta V1)
 
 The React source has been scanned for button/link composition, click and form-submit handlers, accessible control names, failure feedback and accidental repeated submissions. The audit covers **49 JSX source files** and approximately **191 authored button component sites** (many render repeatedly at runtime). Targeted fixes were committed to `betta-vone` for service navigation links, shadcn-style `Button asChild`, cart and image control labels, forum replies, messages, public-profile errors, and duplicate POS/public-order submission.
