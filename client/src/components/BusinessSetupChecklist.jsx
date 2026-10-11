@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import {
-  FiArrowRight, FiBriefcase, FiCamera, FiCheck, FiChevronDown, FiCircle,
+  FiArrowRight, FiBriefcase, FiCamera, FiChevronDown, FiCircle,
   FiClock, FiFileText, FiLink, FiSend, FiSettings
 } from "react-icons/fi";
 import { Button } from "./ui/button.jsx";
@@ -66,8 +66,7 @@ export default function BusinessSetupChecklist({ items, expanded, onToggle }) {
         const Icon = stepIcons[index] || FiCircle;
         return <Button key={item.label} asChild variant="ghost">
           <Link className={item.done ? "onboarding-item onboarding-launch-item done" : "onboarding-item onboarding-launch-item"}
-            to={item.to}>
-            <span className="onboarding-item-check" aria-hidden="true">{item.done ? <FiCheck /> : <FiCircle />}</span>
+            to={item.to} aria-label={`${item.label}. ${item.done ? "Completed" : "Not completed"}. ${item.description}`}>
             <span className="onboarding-item-icon" aria-hidden="true"><Icon /></span>
             <span className="onboarding-item-copy">
               <strong>{item.label}</strong>
