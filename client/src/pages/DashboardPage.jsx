@@ -44,6 +44,7 @@ export default function DashboardPage({ user, onLogout }) {
   const [salesLoading, setSalesLoading] = useState(true);
   const [statusLoading, setStatusLoading] = useState(true);
   const [setup, setSetup] = useState({ profile: null, business: null, services: null });
+  const [setupLoaded, setSetupLoaded] = useState(false);
   const [overviewError, setOverviewError] = useState("");
   const [setupExpanded, setSetupExpanded] = useState(false);
 
@@ -52,9 +53,14 @@ export default function DashboardPage({ user, onLogout }) {
       api.admin.overview().then(setOverview).catch(error => setOverviewError(error.message));
       return;
     }
+    let current = true;
     Promise.all([api.profile.get(), api.business.mine(), api.content.list()])
-      .then(([profile, business, services]) => setSetup({ profile, business, services }))
-      .catch(() => {});
+      .then(([profile, business, services]) => {
+        if (current) setSetup({ profile, business, services });
+      })
+      .catch(() => {})
+      .finally(() => { if (current) setSetupLoaded(true); });
+    return () => { current = false; };
   }, [isAdmin]);
 
   useEffect(() => {
@@ -84,6 +90,11 @@ export default function DashboardPage({ user, onLogout }) {
     { label: "Share your booking link or QR", description: "Help customers book your services.", done: Boolean(localStorage.getItem("bookflow_booking_shared")), to: "/dashboard/profile" }
   ] : [];
 
+  // Once all seven real onboarding checks pass, the setup card no longer
+  // belongs on the dashboard. Wait for the data to load to avoid briefly
+  // flashing an incomplete checklist for a fully configured business.
+  const setupComplete = onboarding.length > 0 && onboarding.every(step => step.done);
+
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
       <div>
@@ -105,7 +116,7 @@ export default function DashboardPage({ user, onLogout }) {
         <Card as="article" className="stat-card"><span>Verified reviews</span><strong>{overview?.reviews.verified ?? "—"}</strong><small>Completed-booking reviews</small></Card>
       </section>}
 
-      {!isAdmin && <BusinessSetupChecklist
+      {!isAdmin && setupLoaded && !setupComplete && <BusinessSetupChecklist
         items={onboarding}
         expanded={setupExpanded}
         onToggle={() => setSetupExpanded(value => !value)}
