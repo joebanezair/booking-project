@@ -1,3 +1,4 @@
+import { Card } from "../components/ui/card.jsx";
 import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -58,10 +59,10 @@ export default function BusinessDetailPage({ user, onLogout }) {
       </section>
 
       <section className="stats-grid">
-        <article className="stat-card"><span>Services</span><strong>{data.services.length}</strong></article>
-        <article className="stat-card"><span>Recent bookings shown</span><strong>{data.recentBookings.length}</strong></article>
-        <article className="stat-card"><span>Recorded sales</span><strong>{data.salesSummary?.recorded || 0}</strong><small>{primarySales ? money(primarySales.total, primarySales.currency) : "No completed sales"}</small></article>
-        <article className="stat-card"><span>Verified review rating</span><strong>{data.reviewSummary.averageRating || 0} <FiStar /></strong></article>
+        <Card as="article" className="stat-card"><span>Services</span><strong>{data.services.length}</strong></Card>
+        <Card as="article" className="stat-card"><span>Recent bookings shown</span><strong>{data.recentBookings.length}</strong></Card>
+        <Card as="article" className="stat-card"><span>Recorded sales</span><strong>{data.salesSummary?.recorded || 0}</strong><small>{primarySales ? money(primarySales.total, primarySales.currency) : "No completed sales"}</small></Card>
+        <Card as="article" className="stat-card"><span>Verified review rating</span><strong>{data.reviewSummary.averageRating || 0} <FiStar /></strong></Card>
       </section>
 
       {data.salesSummary?.totalsByCurrency?.length > 1 && <section className="panel admin-business-sales-summary">
