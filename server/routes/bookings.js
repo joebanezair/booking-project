@@ -11,6 +11,7 @@ import { requireActiveBusiness, requireBusiness } from "../middleware/requireRol
 import { syncSaleForBooking } from "../lib/sales.js";
 import { calculateBookingEndsAt, makeBookingReference, validateBookingWindow } from "../lib/scheduling.js";
 import { bookingMutationGuard } from "../middleware/bookingMutationGuard.js";
+import { encodeBookingCursor, decodeBookingCursor, readPageSize } from "../lib/pagination.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
@@ -175,6 +176,29 @@ router.get("/", async (req, res) => {
       ];
     }
 
+    // Legacy list stays array-shaped for existing screens. New clients can use
+    // ?limit=50&cursor=<opaque> for indexed, stable keyset pagination.
+    if (req.query.limit !== undefined || req.query.cursor !== undefined) {
+      const limit = readPageSize(req.query.limit || "50");
+      if (!limit) return res.status(400).json({ message: "Limit must be between 1 and 100." });
+      if (req.query.cursor) {
+        const cursor = decodeBookingCursor(req.query.cursor);
+        if (!cursor) return res.status(400).json({ message: "Invalid booking cursor." });
+        filter.$and = [{ $or: [
+          { bookingDate: { $gt: cursor.bookingDate } },
+          { bookingDate: cursor.bookingDate, _id: { $gt: cursor.id } }
+        ] }];
+      }
+      const rows = await Booking.find(filter)
+        .populate("content", "title visibility published price currency durationMinutes bufferMinutes capacity")
+        .sort({ bookingDate: 1, _id: 1 }).limit(limit + 1).lean();
+      const hasMore = rows.length > limit;
+      const items = rows.slice(0, limit);
+      return res.json({
+        items, hasMore,
+        nextCursor: hasMore ? encodeBookingCursor(items[items.length - 1]) : null
+      });
+    }
     const bookings = await Booking.find(filter)
       .populate("content", "title visibility published price currency durationMinutes bufferMinutes capacity")
       .sort({ bookingDate: 1 });
