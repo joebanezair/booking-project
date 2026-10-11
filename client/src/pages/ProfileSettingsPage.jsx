@@ -1,3 +1,8 @@
+import { Button } from "../components/ui/button.jsx";
+import { Input } from "../components/ui/input.jsx";
+import { Textarea } from "../components/ui/textarea.jsx";
+import { Label } from "../components/ui/label.jsx";
+import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
@@ -127,7 +132,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
         onReposition={showReposition}
       />
 
-      {form.profileImage && repositionOpen && <div className="photo-position-modal" role="dialog" aria-modal="true" aria-label="Reposition profile photo" onClick={() => setRepositionOpen(false)}><section className="profile-photo-editor linked-media-reposition" id="profile-photo-position" onClick={e => e.stopPropagation()}><div className="profile-position-title"><div><p className="eyebrow">EDIT IMAGE</p><h2>Reposition profile photo</h2></div><button type="button" className="secondary" onClick={() => setRepositionOpen(false)}>Done</button></div>
+      {form.profileImage && repositionOpen && <div className="photo-position-modal" role="dialog" aria-modal="true" aria-label="Reposition profile photo" onClick={() => setRepositionOpen(false)}><section className="profile-photo-editor linked-media-reposition" id="profile-photo-position" onClick={e => e.stopPropagation()}><div className="profile-position-title"><div><p className="eyebrow">EDIT IMAGE</p><h2>Reposition profile photo</h2></div><Button variant="plain" type="button" className="secondary" onClick={() => setRepositionOpen(false)}>Done</Button></div>
         <div className="profile-editor-head">
           <div className="profile-photo-drag-wrap">
             <p className="eyebrow">PROFILE PHOTO POSITION</p>
@@ -142,7 +147,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
               onPointerCancel={stopPhotoDrag}
               onKeyDown={nudgePhoto}
             >
-              <img
+              <Image
                 className="profile-photo-drag-image"
                 draggable="false"
                 src={form.profileImage}
@@ -157,19 +162,19 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
       </section></div>}
 
       <div className="two-col">
-        <label>Name<input value={form.name || ""} onChange={e => setForm({ ...form, name: e.target.value })} required /></label>
-        <label>Username<input value={form.username || ""} onChange={e => setForm({ ...form, username: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })} required /></label>
+        <Label>Name<Input value={form.name || ""} onChange={e => setForm({ ...form, name: e.target.value })} required /></Label>
+        <Label>Username<Input value={form.username || ""} onChange={e => setForm({ ...form, username: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })} required /></Label>
       </div>
-      <label>Bio<textarea rows="5" maxLength="1000" value={form.bio || ""} onChange={e => setForm({ ...form, bio: e.target.value })} /></label>
+      <Label>Bio<Textarea rows="5" maxLength="1000" value={form.bio || ""} onChange={e => setForm({ ...form, bio: e.target.value })} /></Label>
       <div className="two-col">
-        <label>Headline<input value={form.headline || ""} onChange={e => setForm({ ...form, headline: e.target.value })} /></label>
-        <label>Location<input value={form.location || ""} onChange={e => setForm({ ...form, location: e.target.value })} /></label>
+        <Label>Headline<Input value={form.headline || ""} onChange={e => setForm({ ...form, headline: e.target.value })} /></Label>
+        <Label>Location<Input value={form.location || ""} onChange={e => setForm({ ...form, location: e.target.value })} /></Label>
       </div>
-      <label>Website<input type="url" placeholder="https://..." value={form.website || ""} onChange={e => setForm({ ...form, website: e.target.value })} /></label>
+      <Label>Website<Input type="url" placeholder="https://..." value={form.website || ""} onChange={e => setForm({ ...form, website: e.target.value })} /></Label>
 
       {error && <p className="error">{error}</p>}
       {message && <p className="success">{message}</p>}
-      <button className="primary-button">Save profile</button>
+      <Button variant="plain" className="primary-button">Save profile</Button>
     </form>}
   </AppLayout>;
 }
