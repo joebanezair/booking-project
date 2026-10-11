@@ -1,0 +1,425 @@
+/*
+ * Profile dashboard redesign — scoped to /dashboard/profile.
+ * Loaded after the app-wide shadcn-style styles so changes do not leak
+ * into public profiles, the photo editor, or other dashboard pages.
+ */
+#root .profile-page-redesign {
+  width: min(100%, 1200px);
+  min-width: 0;
+  margin-inline: auto;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+#root .profile-page-redesign .profile-page-topbar {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0 0 4px !important;
+  padding: 0 !important;
+  align-items: flex-start !important;
+}
+#root .profile-page-redesign .profile-page-topbar h1 {
+  margin: 3px 0 6px;
+  font-size: clamp(22px, 2.3vw, 28px);
+  line-height: 1.22;
+  letter-spacing: -.025em;
+}
+#root .profile-page-redesign .profile-page-topbar .muted {
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+#root .profile-page-redesign .profile-page-topbar > .ui-button {
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+#root .profile-page-redesign .profile-overview-card {
+  width: 100%;
+  max-width: none !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+#root .profile-page-redesign .linkedin-profile-media {
+  position: relative;
+  margin: 0 !important;
+  padding-bottom: 104px !important;
+  min-width: 0;
+}
+#root .profile-page-redesign .linkedin-cover {
+  height: 194px !important;
+  border-radius: 10px 10px 0 0 !important;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--primary) 11%, var(--card)),
+    color-mix(in srgb, var(--primary) 21%, var(--card))) !important;
+}
+#root .profile-page-redesign .linkedin-cover-placeholder {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 550;
+  letter-spacing: 0;
+}
+#root .profile-page-redesign .linkedin-cover > .ui-profile-cover-image {
+  border-radius: 10px 10px 0 0 !important;
+}
+#root .profile-page-redesign .cover-edit-button {
+  top: 14px !important;
+  right: 14px !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  box-shadow: 0 2px 9px rgb(0 0 0 / .07) !important;
+}
+#root .profile-page-redesign .cover-edit-button svg {
+  width: 17px;
+  height: 17px;
+}
+#root .profile-page-redesign .cover-media-menu {
+  top: 57px;
+  right: 14px;
+}
+#root .profile-page-redesign .linkedin-avatar-wrap {
+  left: 24px !important;
+  bottom: -91px !important;
+  width: 182px !important;
+  height: 182px !important;
+}
+#root .profile-page-redesign .linkedin-avatar-button {
+  width: 182px !important;
+  height: 182px !important;
+  min-width: 182px !important;
+  min-height: 182px !important;
+  border: 5px solid var(--card) !important;
+  background: var(--card) !important;
+  box-shadow: 0 4px 15px rgb(0 0 0 / .13) !important;
+}
+#root .profile-page-redesign .linkedin-avatar-button .profile-avatar.avatar {
+  font-size: 52px;
+}
+#root .profile-page-redesign .avatar-camera-badge {
+  width: 37px !important;
+  height: 37px !important;
+  right: 7px !important;
+  bottom: 10px !important;
+  border-color: var(--card) !important;
+  color: var(--foreground) !important;
+  background: var(--secondary) !important;
+}
+#root .profile-page-redesign .profile-photo-menu {
+  left: min(160px, calc(100vw - 260px));
+  bottom: -14px;
+}
+#root .profile-page-redesign .profile-overview-body {
+  min-width: 0;
+  padding: 0 24px 22px !important;
+}
+#root .profile-page-redesign .profile-overview-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  min-width: 0;
+}
+#root .profile-page-redesign .profile-overview-heading > div {
+  min-width: 0;
+}
+#root .profile-page-redesign .profile-overview-heading h2 {
+  margin: 0 0 5px;
+  color: var(--foreground);
+  font-size: clamp(19px, 2vw, 23px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+#root .profile-page-redesign .profile-headline {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+#root .profile-page-redesign .profile-overview-meta {
+  gap: 8px 14px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+#root .profile-page-redesign .profile-overview-heading .ui-button {
+  width: fit-content !important;
+  min-width: 0;
+  flex-shrink: 0;
+  white-space: normal;
+  text-align: center;
+}
+#root .profile-page-redesign .profile-overview-bio {
+  max-width: 70ch;
+  margin: 14px 0 6px;
+  color: var(--muted-foreground);
+  font-size: 12.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+#root .profile-page-redesign .profile-website-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+#root .profile-page-redesign .profile-hub-grid {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0 !important;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+#root .profile-page-redesign .profile-hub-card {
+  display: block;
+  min-width: 0;
+  min-height: 128px;
+  margin: 0;
+  padding: 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+  transition: border-color .16s ease, box-shadow .16s ease;
+}
+#root .profile-page-redesign .profile-hub-card:hover,
+#root .profile-page-redesign .profile-hub-card:focus-within {
+  border-color: var(--ring) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ring) 16%, transparent) !important;
+}
+#root .profile-page-redesign .profile-hub-action {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 20px;
+  grid-template-rows: 38px auto;
+  gap: 10px 12px;
+  align-items: center;
+  align-content: start;
+  width: 100%;
+  min-height: 128px;
+  height: 100%;
+  padding: 17px 18px;
+  color: var(--foreground);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+#root .profile-page-redesign .profile-hub-action:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -3px;
+}
+#root .profile-page-redesign .profile-hub-icon {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--secondary);
+  color: var(--primary);
+}
+#root .profile-page-redesign .profile-hub-icon svg {
+  width: 19px;
+  height: 19px;
+}
+#root .profile-page-redesign .profile-hub-arrow {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  width: 17px;
+  height: 17px;
+  color: var(--muted-foreground);
+}
+#root .profile-page-redesign .profile-hub-copy {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+#root .profile-page-redesign .profile-hub-copy strong {
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+#root .profile-page-redesign .profile-hub-copy small {
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+#root .profile-page-redesign .booking-qr-card {
+  width: 100%;
+  max-width: none !important;
+  min-width: 0;
+  margin: 0 0 10px !important;
+  padding: 22px 24px !important;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px;
+  align-items: center;
+  gap: 22px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+#root .profile-page-redesign .booking-qr-details { min-width: 0; }
+#root .profile-page-redesign .booking-qr-eyebrow {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  margin: 0 0 7px;
+}
+#root .profile-page-redesign .booking-qr-eyebrow svg { width: 14px; height: 14px; }
+#root .profile-page-redesign .booking-qr-card h2 {
+  margin: 0 0 6px;
+  color: var(--foreground);
+  font-size: 17px;
+  letter-spacing: -.02em;
+}
+#root .profile-page-redesign .booking-qr-card .muted {
+  max-width: 64ch;
+  margin: 0 0 12px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.55;
+}
+#root .profile-page-redesign .booking-qr-url {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0 0 10px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--secondary);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.5;
+}
+#root .profile-page-redesign .booking-qr-url svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+}
+#root .profile-page-redesign .booking-qr-url span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#root .profile-page-redesign .booking-qr-actions {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#root .profile-page-redesign .booking-qr-actions > .ui-button {
+  width: fit-content !important;
+  min-width: 0;
+  min-height: 34px;
+  flex: 0 0 auto !important;
+  padding: 7px 11px;
+  font-size: 12px;
+}
+#root .profile-page-redesign .booking-qr-svg {
+  width: 160px !important;
+  height: 160px !important;
+  min-width: 0;
+  max-width: 100%;
+  justify-self: end;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 8px !important;
+  background: white;
+}
+#root .profile-page-redesign .profile-feedback {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+@media (max-width: 800px) {
+  #root .profile-page-redesign .linkedin-cover { height: 180px !important; }
+  #root .profile-page-redesign .linkedin-profile-media { padding-bottom: 88px !important; }
+  #root .profile-page-redesign .linkedin-avatar-wrap {
+    width: 150px !important;
+    height: 150px !important;
+    bottom: -75px !important;
+  }
+  #root .profile-page-redesign .linkedin-avatar-button {
+    width: 150px !important;
+    height: 150px !important;
+    min-width: 150px !important;
+    min-height: 150px !important;
+  }
+  #root .profile-page-redesign .profile-photo-menu { left: 125px; }
+  #root .profile-page-redesign .profile-overview-body { padding-inline: 20px !important; }
+}
+@media (max-width: 600px) {
+  #root .profile-page-redesign .profile-hub-grid { grid-template-columns: minmax(0, 1fr); }
+  #root .profile-page-redesign .profile-hub-card,
+  #root .profile-page-redesign .profile-hub-action { min-height: 115px; }
+  #root .profile-page-redesign .booking-qr-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px !important;
+    padding: 18px !important;
+  }
+  #root .profile-page-redesign .booking-qr-svg { justify-self: start; }
+}
+@media (max-width: 520px) {
+  #root .profile-page-redesign .profile-page-topbar {
+    flex-wrap: wrap;
+    gap: 12px !important;
+  }
+  #root .profile-page-redesign .profile-page-topbar > .ui-button { margin-top: 0; }
+  #root .profile-page-redesign .linkedin-cover { height: 158px !important; }
+  #root .profile-page-redesign .linkedin-profile-media { padding-bottom: 78px !important; }
+  #root .profile-page-redesign .linkedin-avatar-wrap {
+    left: 16px !important;
+    width: 130px !important;
+    height: 130px !important;
+    bottom: -65px !important;
+  }
+  #root .profile-page-redesign .linkedin-avatar-button {
+    width: 130px !important;
+    height: 130px !important;
+    min-width: 130px !important;
+    min-height: 130px !important;
+    border-width: 4px !important;
+  }
+  #root .profile-page-redesign .linkedin-avatar-button .profile-avatar.avatar { font-size: 40px; }
+  #root .profile-page-redesign .avatar-camera-badge {
+    width: 31px !important;
+    height: 31px !important;
+    right: 3px !important;
+    bottom: 6px !important;
+  }
+  #root .profile-page-redesign .profile-photo-menu {
+    left: min(98px, calc(100vw - 250px));
+    bottom: -120px;
+  }
+  #root .profile-page-redesign .profile-overview-body { padding: 0 16px 18px !important; }
+  #root .profile-page-redesign .profile-overview-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  #root .profile-page-redesign .profile-overview-heading .ui-button { width: fit-content !important; }
+  #root .profile-page-redesign .profile-hub-action { padding: 15px; }
+  #root .profile-page-redesign .booking-qr-card { padding: 15px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #root .profile-page-redesign .profile-hub-card { transition: none; }
+}
