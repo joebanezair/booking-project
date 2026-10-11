@@ -119,7 +119,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
       <div><p className="eyebrow">PROFILE · EDIT PROFILE</p><h1>Edit Profile</h1><p className="muted">Update your profile information and profile media.</p></div>
-      <Link className="secondary button-link icon-link" to="/dashboard/profile"><FiArrowLeft aria-hidden="true" />Back to Profile</Link>
+      <Button asChild variant="outline"><Link  className="secondary button-link icon-link" to="/dashboard/profile"><FiArrowLeft aria-hidden="true" />Back to Profile</Link></Button>
     </header>
 
     {!form ? <p>{error || "Loading..."}</p> : <form className="panel standalone-form profile-edit-form" onSubmit={save}>
