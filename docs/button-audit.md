@@ -2,7 +2,7 @@
 
 **Branch:** `betta-vone`  
 **Date:** 2026-10-11  
-**Scope:** The React JSX source of `client/src/App.jsx`, page components, shared UI components, and related button/link handlers. **48 JSX source files** were statically scanned, including files with no buttons. Approximately **191 authored `<button>` / `<Button>` occurrences** were inspected before fixes. Because many are within `.map()` loops and conditional rendering, this is **not** a count of buttons shown at runtime.
+**Scope:** The React JSX source of `client/src/App.jsx`, page components, shared UI components, and related button/link handlers. **49 JSX source files** were statically scanned, including files with no buttons. Approximately **191 authored `<button>` / `<Button>` occurrences** were inspected before fixes. Because many are within `.map()` loops and conditional rendering, this is **not** a count of buttons shown at runtime.
 
 **Method:** Reviewed JSX button/link markup, submit-vs-click wiring, event handlers, navigation composition, accessible names, guards for unavailable controls, and state changes/error handling. This was a **source-code audit only**: no interactive browser session, backend database, real-user clicks, keyboard-device run, or production test was executed. Wired handlers **do not establish that corresponding API requests succeed**.
 
