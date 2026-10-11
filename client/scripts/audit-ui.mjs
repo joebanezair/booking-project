@@ -113,8 +113,8 @@ const sidebarSource = readFileSync(join(root,"components/AppLayout.jsx"),"utf8")
 const workspaceCss = readFileSync(join(root,"workspace-polish.css"),"utf8");
 const dashboardSource = readFileSync(join(root,"pages/DashboardPage.jsx"),"utf8");
 for(const required of [
-  'className="product-create-dialog"', 'className="product-create-form"',
-  'className="product-create-publish"', 'className="product-upload-dropzone"',
+  'className="product-create-dialog"', 'className="product-edit-form product-create-form"',
+  'className="product-create-publish"', 'product-upload-dropzone',
   'aria-label="Choose product images"', 'onSubmit={addProduct}',
   'readProductImages(', 'Save changes', 'Confirm checkout'
 ]) if(!posSource.includes(required)) failures.push("Product create/edit/POS control missing: "+required);
