@@ -12,6 +12,7 @@ import "./search-business-compact.css";
 import "./shadcn-refresh.css";
 import "./component-polish.css";
 import "./inventory-card-refresh.css";
+import "./business-onboarding-refresh.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
