@@ -555,3 +555,89 @@ html body .order-actions > button.ui-button {
   width: fit-content !important;
   flex: 0 0 auto;
 }
+
+
+/*
+ * Services management status filters
+ * Desktop: compact vertical column (not 100%-wide stacked bars).
+ * Mobile: one horizontal row; gracefully scrolls at very narrow widths.
+ * This deliberately overrides old .stats-grid and .stat-card !important rules
+ * without affecting dashboard, booking or sales statistics.
+ */
+#root .services-stats-grid.stats-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  gap: 8px !important;
+  margin: 0 0 14px !important;
+  padding: 0 !important;
+}
+#root .services-stats-grid.stats-grid > button.service-stat-card.ui-button {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-self: flex-start !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 7px 11px !important;
+  gap: 8px !important;
+  border-radius: 10px !important;
+  white-space: nowrap;
+}
+#root .services-stats-grid > button.service-stat-card > svg {
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px !important;
+}
+#root .services-stats-grid > button.service-stat-card > div {
+  display: flex !important;
+  flex-direction: row !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+}
+#root .services-stats-grid > button.service-stat-card :is(span, strong) {
+  display: inline !important;
+  margin: 0 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap;
+}
+/* Keep the existing active/neutral color rules and aria-pressed behavior. */
+@media (max-width: 640px) {
+  #root .services-stats-grid.stats-grid {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 6px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 2px !important;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 6px 8px !important;
+    gap: 6px !important;
+    flex: 0 0 auto !important;
+    align-self: center !important;
+  }
+  #root .services-stats-grid > button.service-stat-card > div {
+    gap: 4px !important;
+  }
+}
