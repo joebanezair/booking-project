@@ -383,3 +383,9 @@
   #root .onboarding-relaunch .onboarding-chevron,
   #root .onboarding-relaunch .onboarding-launch-item.ui-button { transition: none !important; }
 }
+
+/* Legacy onboarding selectors lower trailing SVG opacity: keep step icons crisp. */
+#root .onboarding-relaunch .onboarding-launch-item .onboarding-item-icon svg,
+#root .onboarding-relaunch .onboarding-launch-item .onboarding-item-check svg {
+  opacity: 1 !important;
+}
