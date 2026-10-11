@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckCircle, FiChevronDown, FiCircle, FiDollarSign, FiMessageSquare, FiPackage, FiPlus, FiSearch, FiSettings, FiTrendingUp, FiUser, FiUsers } from "react-icons/fi";
@@ -90,10 +91,10 @@ export default function DashboardPage({ user, onLogout }) {
       </section>}
 
       {!isAdmin && <section className="panel onboarding-panel">
-        <button className="onboarding-collapse-trigger" type="button" onClick={() => setSetupExpanded(value => !value)} aria-expanded={setupExpanded}>
+        <Button variant="plain" className="onboarding-collapse-trigger" type="button" onClick={() => setSetupExpanded(value => !value)} aria-expanded={setupExpanded}>
           <div><p className="eyebrow">GET READY TO LAUNCH</p><h2>Business setup checklist</h2><p className="muted">{onboardingDone} of {onboarding.length} completed</p></div>
           <span className="onboarding-heading-actions"><strong className="onboarding-progress-label">{Math.round((onboardingDone / Math.max(onboarding.length, 1)) * 100)}%</strong><FiChevronDown className={setupExpanded ? "onboarding-chevron open" : "onboarding-chevron"} aria-hidden="true" /></span>
-        </button>
+        </Button>
         <div className="onboarding-progress"><span style={{ width: ((onboardingDone / Math.max(onboarding.length, 1)) * 100) + "%" }} /></div>
         {setupExpanded && <div className="onboarding-list">{onboarding.map(item => <Link className={item.done ? "onboarding-item done" : "onboarding-item"} to={item.to} key={item.label}>{item.done ? <FiCheckCircle /> : <FiCircle />}<span>{item.label}</span><FiArrowRight /></Link>)}</div>}
       </section>}
