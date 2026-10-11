@@ -116,7 +116,7 @@ export default function PublicProfilePage({ user }) {
     {error && <p className="error" role="alert">{error}</p>}
 
     <section className={`public-profile-hero ${profile.coverImage ? "has-cover" : ""}`}>
-      {profile.coverImage && <div className="public-cover" style={{ backgroundImage: `url(${profile.coverImage})` }} />}
+      {profile.coverImage && <div className="public-cover"><Image className="ui-profile-cover-image" src={profile.coverImage} alt="" decoding="async" /></div>}
       <div className="public-profile-info">
         <ProfileAvatar profile={profile} size="xl" />
         <div className="public-profile-copy">
