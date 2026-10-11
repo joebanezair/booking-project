@@ -6,6 +6,12 @@ import { mediaBucket, saveBuffer, validPrivateSignature } from "../lib/mediaStor
 
 const router = Router();
 
+// The client uploads binary only when the separate GridFS deployment is available.
+router.get("/capabilities", (_req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  res.json({ binaryUploads: Boolean(mediaBucket()) });
+});
+
 // Optional binary endpoint for future clients; legacy JSON forms remain compatible.
 router.post("/upload", requireAuth, express.raw({ type: "application/octet-stream", limit: "5mb" }), async (req, res) => {
   try {
