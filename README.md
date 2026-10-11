@@ -8,6 +8,18 @@ BookFlow is a full-stack MERN application for service businesses. The account mo
 
 There is no customer account role and no customer-to-business approval workflow.
 
+## Compact product modal and sidebar refinement — October 11, 2026
+
+On `betta-vone`, the product inventory **Add product** form and desktop/mobile sidebar have been refreshed without deleting any fields, product actions, or routes.
+
+- **Add product dialog:** Uses the existing local shadcn-style `Dialog`, `Button`, `Input`, `Select`, `Textarea`, `Label`, and `Image` primitives; compact heading, aligned two-column SKU/currency and price/stock fields, independent form-body scrolling, and a persistent action footer.
+- **Images and publishing:** The 8-image limit and remove-preview controls remain; the image uploader is a styled, keyboard-focusable file input instead of the default oversized picker. The Publish toggle is a genuine 17px checkbox with a visible label and description, replacing oversized checkbox styling.
+- **Submission:** A busy state prevents accidental duplicate Create product requests. The existing product create, edit, delete, stock, image and checkout API workflows are preserved.
+- **Navigation:** Every dashboard route, role filter, unread notification badge, mobile drawer/bottom navigation, and desktop hover expansion remains. The sidebar now has a subtle Workspace label, 40px aligned link rows, 10px rounded active item, clearer icon colors, quieter hover treatment and compact typography.
+- **Business checklist:** Collapsed by default as requested; padding, header, progress and expanded step cards were reduced approximately 20% without changing any completion conditions or links.
+- **Files:** `client/src/pages/ProductsPage.jsx`, `client/src/components/AppLayout.jsx`, `client/src/pages/DashboardPage.jsx`, `client/src/workspace-polish.css`, and `client/src/main.jsx`.
+- **Verification:** CI runs `node client/scripts/audit-ui.mjs` and `npm run build`. Visual browser testing at 375/768/1440px with both light and dark themes is still required.
+
 ## Business setup checklist redesign — October 11, 2026
 
 On `betta-vone`, the business dashboard setup checklist now follows the approved **Get Ready to Launch** design. Only the **business dashboard** changes; administrator stats, existing analytics and booking flows are unaffected.
