@@ -1,3 +1,5 @@
+import { Button } from "../components/ui/button.jsx";
+import { Input } from "../components/ui/input.jsx";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FiArrowLeft, FiCalendar, FiCheckCircle, FiCopy, FiDollarSign, FiMail, FiMapPin, FiPhone, FiPlay, FiRotateCcw, FiSlash, FiStar, FiTag, FiUser, FiUserX } from "react-icons/fi";
@@ -72,17 +74,17 @@ export default function BookingDetailPage({ user, onLogout }) {
   function actionButtons() {
     if (!booking) return null;
     if (booking.status === "pending") return <>
-      <button className="primary-button compact-button" onClick={() => changeStatus("confirmed")}><FiCheckCircle />Confirm booking</button>
-      <button className="danger" onClick={() => changeStatus("cancelled")}><FiSlash />Cancel</button>
+      <Button variant="plain" className="primary-button compact-button" onClick={() => changeStatus("confirmed")}><FiCheckCircle />Confirm booking</Button>
+      <Button variant="plain" className="danger" onClick={() => changeStatus("cancelled")}><FiSlash />Cancel</Button>
     </>;
     if (booking.status === "confirmed") return <>
-      <button className="primary-button compact-button" onClick={() => changeStatus("in_progress")}><FiPlay />Start service</button>
-      <button className="secondary" onClick={() => changeStatus("no_show")}><FiUserX />No show</button>
-      <button className="danger" onClick={() => changeStatus("cancelled")}><FiSlash />Cancel</button>
+      <Button variant="plain" className="primary-button compact-button" onClick={() => changeStatus("in_progress")}><FiPlay />Start service</Button>
+      <Button variant="plain" className="secondary" onClick={() => changeStatus("no_show")}><FiUserX />No show</Button>
+      <Button variant="plain" className="danger" onClick={() => changeStatus("cancelled")}><FiSlash />Cancel</Button>
     </>;
-    if (booking.status === "in_progress") return <button className="primary-button compact-button" onClick={() => changeStatus("completed")}><FiCheckCircle />Mark service completed</button>;
-    if (booking.status === "completed") return <button className="secondary" onClick={() => changeStatus("in_progress")}><FiRotateCcw />Reopen booking</button>;
-    return <button className="secondary" onClick={() => changeStatus("pending")}><FiRotateCcw />Reopen as pending</button>;
+    if (booking.status === "in_progress") return <Button variant="plain" className="primary-button compact-button" onClick={() => changeStatus("completed")}><FiCheckCircle />Mark service completed</Button>;
+    if (booking.status === "completed") return <Button variant="plain" className="secondary" onClick={() => changeStatus("in_progress")}><FiRotateCcw />Reopen booking</Button>;
+    return <Button variant="plain" className="secondary" onClick={() => changeStatus("pending")}><FiRotateCcw />Reopen as pending</Button>;
   }
 
   return <AppLayout user={user} onLogout={onLogout}>
@@ -130,7 +132,7 @@ export default function BookingDetailPage({ user, onLogout }) {
         {booking.status === "completed" && <div className="booking-review-invite">
           <p className="eyebrow">VERIFIED REVIEW</p>
           {booking.reviewInvite?.verified ? <p className="success"><FiStar /> The guest has submitted a verified review for this booking.</p> :
-            reviewUrl ? <><p>Share this one-time review link with the guest. It only works while this booking remains completed.</p><div className="review-link-row"><input value={reviewUrl} readOnly /><button className="secondary" onClick={copyReviewLink}><FiCopy />{copied ? "Copied" : "Copy link"}</button></div></> :
+            reviewUrl ? <><p>Share this one-time review link with the guest. It only works while this booking remains completed.</p><div className="review-link-row"><Input value={reviewUrl} readOnly /><Button variant="plain" className="secondary" onClick={copyReviewLink}><FiCopy />{copied ? "Copied" : "Copy link"}</Button></div></> :
             <p className="muted">The review link is being prepared.</p>}
         </div>}
 
