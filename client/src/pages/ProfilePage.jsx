@@ -1,3 +1,4 @@
+import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiBriefcase, FiEdit3, FiExternalLink, FiMapPin } from "react-icons/fi";
@@ -60,7 +61,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
       <div><p className="eyebrow">PROFILE</p><h1>Your profile</h1><p className="muted">Manage how your account appears across BookFlow.</p></div>
-      <Link className="primary-button button-link icon-link" to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit profile</Link>
+      <Button asChild variant="default"><Link  className="primary-button button-link icon-link" to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit profile</Link></Button>
     </header>
 
     {!profile ? <p>{error || "Loading..."}</p> : <>
@@ -85,7 +86,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
                 {profile.location && <span><FiMapPin aria-hidden="true" />{profile.location}</span>}
               </div>
             </div>
-            {publicPath && <Link className="secondary button-link icon-link" to={publicPath} target="_blank"><FiExternalLink aria-hidden="true" />View public profile</Link>}
+            {publicPath && <Button asChild variant="outline"><Link  className="secondary button-link icon-link" to={publicPath} target="_blank"><FiExternalLink aria-hidden="true" />View public profile</Link></Button>}
           </div>
           {profile.bio && <p className="profile-overview-bio">{profile.bio}</p>}
           {profile.website && <a className="profile-website-link" href={profile.website} target="_blank" rel="noreferrer">{profile.website}</a>}
