@@ -1,3 +1,8 @@
+import { Button } from "../components/ui/button.jsx";
+import { Input } from "../components/ui/input.jsx";
+import { Select } from "../components/ui/select.jsx";
+import { Textarea } from "../components/ui/textarea.jsx";
+import { Label } from "../components/ui/label.jsx";
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
@@ -89,33 +94,33 @@ export default function PublicBookingPage({user}){
 
       <form onSubmit={submit}>
         <div className="two-col">
-          <label>Your name<input value={form.guestName} onChange={e=>setForm({...form,guestName:e.target.value})} required autoComplete="name"/></label>
-          <label>Email<input type="email" value={form.guestEmail} onChange={e=>setForm({...form,guestEmail:e.target.value})} required autoComplete="email"/></label>
+          <Label>Your name<Input value={form.guestName} onChange={e=>setForm({...form,guestName:e.target.value})} required autoComplete="name"/></Label>
+          <Label>Email<Input type="email" value={form.guestEmail} onChange={e=>setForm({...form,guestEmail:e.target.value})} required autoComplete="email"/></Label>
         </div>
-        <label>Phone number<input type="tel" value={form.guestPhone} onChange={e=>setForm({...form,guestPhone:e.target.value})} placeholder="+63 912 345 6789" required autoComplete="tel"/></label>
-        <label>Location / service address<input value={form.locationLabel} onChange={e=>setForm({...form,locationLabel:e.target.value})} placeholder="Address, barangay, city, or area" autoComplete="street-address" maxLength="200"/></label>
-        <div className="row-actions"><button className="secondary" type="button" onClick={detectLocation} disabled={locating}>{locating?"Detecting location...":"Use my current location"}</button>{form.locationLatitude!==null&&form.locationLongitude!==null&&<button className="secondary" type="button" onClick={()=>{setForm(current=>({...current,locationLatitude:null,locationLongitude:null,locationAccuracy:null}));setLocationStatus("Saved coordinates removed. Your typed location is still kept.");}}>Remove detected location</button>}</div>
+        <Label>Phone number<Input type="tel" value={form.guestPhone} onChange={e=>setForm({...form,guestPhone:e.target.value})} placeholder="+63 912 345 6789" required autoComplete="tel"/></Label>
+        <Label>Location / service address<Input value={form.locationLabel} onChange={e=>setForm({...form,locationLabel:e.target.value})} placeholder="Address, barangay, city, or area" autoComplete="street-address" maxLength="200"/></Label>
+        <div className="row-actions"><Button variant="plain" className="secondary" type="button" onClick={detectLocation} disabled={locating}>{locating?"Detecting location...":"Use my current location"}</Button>{form.locationLatitude!==null&&form.locationLongitude!==null&&<Button variant="plain" className="secondary" type="button" onClick={()=>{setForm(current=>({...current,locationLatitude:null,locationLongitude:null,locationAccuracy:null}));setLocationStatus("Saved coordinates removed. Your typed location is still kept.");}}>Remove detected location</Button>}</div>
         <p className="muted">Location sharing is optional and only happens after you press the button and approve your browser's permission request.</p>
         {locationStatus&&<p className="muted">{locationStatus}</p>}
 
-        {!requestedContentId&&<label>Service<select value={selectedIndex>=0?String(selectedIndex):"0"} onChange={e=>chooseService(e.target.value)}>{page.services.map((service,index)=><option value={index} key={service.id||service.title+"-"+index}>{service.title} — {money(service.price,service.currency)} · {durationLabel(service.durationMinutes)}</option>)}</select></label>}
+        {!requestedContentId&&<Label>Service<Select value={selectedIndex>=0?String(selectedIndex):"0"} onChange={e=>chooseService(e.target.value)}>{page.services.map((service,index)=><option value={index} key={service.id||service.title+"-"+index}>{service.title} — {money(service.price,service.currency)} · {durationLabel(service.durationMinutes)}</option>)}</Select></Label>}
 
         <div className="booking-slot-picker">
-          <label>Choose date<input type="date" min={today} value={slotDate} onChange={e=>setSlotDate(e.target.value)} required/></label>
-          {slotDate&&<div><strong>Available times</strong>{slotsLoading?<p className="muted">Checking availability…</p>:slots.length===0?<p className="warning-note">No available slots on this date. Choose another day.</p>:<div className="available-slot-grid">{slots.map(slot=><button type="button" key={slot.value} className={form.bookingDate===slot.value?"slot-button active":"slot-button"} onClick={()=>setForm({...form,bookingDate:slot.value})}>{slot.label}</button>)}</div>}</div>}
+          <Label>Choose date<Input type="date" min={today} value={slotDate} onChange={e=>setSlotDate(e.target.value)} required/></Label>
+          {slotDate&&<div><strong>Available times</strong>{slotsLoading?<p className="muted">Checking availability…</p>:slots.length===0?<p className="warning-note">No available slots on this date. Choose another day.</p>:<div className="available-slot-grid">{slots.map(slot=><Button variant="plain" type="button" key={slot.value} className={form.bookingDate===slot.value?"slot-button active":"slot-button"} onClick={()=>setForm({...form,bookingDate:slot.value})}>{slot.label}</Button>)}</div>}</div>}
         </div>
 
-        {(selectedService?.bookingQuestions||[]).length>0&&<fieldset className="public-booking-questions"><legend>Booking details</legend>{selectedService.bookingQuestions.map(question=><label key={question.id}>{question.label}{question.required&&" *"}
-          {question.type==="textarea"?<textarea rows="3" value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}/>:
-           question.type==="select"?<select value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}><option value="">Choose…</option>{(question.options||[]).map(option=><option key={option}>{option}</option>)}</select>:
-           question.type==="checkbox"?<span className="toggle-row"><input type="checkbox" checked={Boolean(form.customAnswers[question.id])} onChange={e=>answer(question,e.target.checked)}/><span>Yes</span></span>:
-           <input value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}/>}
-        </label>)}</fieldset>}
+        {(selectedService?.bookingQuestions||[]).length>0&&<fieldset className="public-booking-questions"><legend>Booking details</legend>{selectedService.bookingQuestions.map(question=><Label key={question.id}>{question.label}{question.required&&" *"}
+          {question.type==="textarea"?<Textarea rows="3" value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}/>:
+           question.type==="select"?<Select value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}><option value="">Choose…</option>{(question.options||[]).map(option=><option key={option}>{option}</option>)}</Select>:
+           question.type==="checkbox"?<span className="toggle-row"><Input type="checkbox" checked={Boolean(form.customAnswers[question.id])} onChange={e=>answer(question,e.target.checked)}/><span>Yes</span></span>:
+           <Input value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}/>}
+        </Label>)}</fieldset>}
 
-        <label>Notes<textarea rows="4" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></label>
+        <Label>Notes<Textarea rows="4" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></Label>
         {error&&<p className="error">{error}</p>}
         {message&&<div className="success"><strong>{message}</strong>{reference&&<span className="booking-reference-success">Reference: {reference}</span>}</div>}
-        <button className="primary-button" disabled={!form.bookingDate}>Request booking</button>
+        <Button variant="plain" className="primary-button" disabled={!form.bookingDate}>Request booking</Button>
       </form>
     </>}
   </section></main>;
