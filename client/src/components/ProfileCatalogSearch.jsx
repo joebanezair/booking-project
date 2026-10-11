@@ -1,3 +1,7 @@
+import { Button } from "./ui/button.jsx";
+import { Input } from "./ui/input.jsx";
+import { Select } from "./ui/select.jsx";
+import { Label } from "./ui/label.jsx";
 import { useRef } from "react";
 import { FiSearch, FiX } from "react-icons/fi";
 
@@ -18,10 +22,10 @@ export default function ProfileCatalogSearch({
   return (
     <div className="profile-catalog-search" role="search" aria-label="Search this business's products and services">
       <div className="profile-catalog-search-field">
-        <label htmlFor="profile-catalog-keyword">Search</label>
+        <Label htmlFor="profile-catalog-keyword">Search</Label>
         <div className="profile-catalog-search-input-wrap">
           <FiSearch className="profile-catalog-search-icon" aria-hidden="true" />
-          <input
+          <Input
             id="profile-catalog-keyword"
             ref={inputRef}
             type="search"
@@ -32,7 +36,7 @@ export default function ProfileCatalogSearch({
             onChange={event => onChange(event.target.value)}
           />
           {value && (
-            <button
+            <Button variant="plain"
               type="button"
               className="profile-catalog-search-clear"
               aria-label="Clear search"
@@ -42,13 +46,13 @@ export default function ProfileCatalogSearch({
               }}
             >
               <FiX aria-hidden="true" />
-            </button>
+            </Button>
           )}
         </div>
       </div>
-      <label className="profile-catalog-search-filter">
+      <Label className="profile-catalog-search-filter">
         <span>Classification</span>
-        <select
+        <Select
           className="ui-input"
           value={classification}
           onChange={event => onClassificationChange(event.target.value)}
@@ -56,11 +60,11 @@ export default function ProfileCatalogSearch({
           <option value="all">All offerings</option>
           <option value="services">Services</option>
           <option value="products">Products</option>
-        </select>
-      </label>
-      <label className="profile-catalog-search-filter">
+        </Select>
+      </Label>
+      <Label className="profile-catalog-search-filter">
         <span>Service rating</span>
-        <select
+        <Select
           className="ui-input"
           value={minRating}
           onChange={event => onRatingChange(event.target.value)}
@@ -71,8 +75,8 @@ export default function ProfileCatalogSearch({
           <option value="3">3+ stars</option>
           <option value="4">4+ stars</option>
           <option value="5">5 stars</option>
-        </select>
-      </label>
+        </Select>
+      </Label>
       <p id="profile-service-rating-help" className="profile-catalog-search-help muted">
         {classification === "products"
           ? "Products do not have individual ratings."
