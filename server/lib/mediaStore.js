@@ -17,6 +17,27 @@ export function publicMediaInput(v) { return typeof v === "string" && (
   (Boolean(base()) && new RegExp("^" + base().replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "/api/media/public/[a-f0-9]{24}$", "i").test(v))
 ); }
 
+// Only URLs issued by this deployment are valid private attachment references.
+export function privateMediaInput(value) {
+  if (typeof value !== "string") return false;
+  const match = value.match(/\/api\/media\/private\/([a-f0-9]{24})$/i);
+  if (!match) return false;
+  const path = match[0];
+  return value === path || (Boolean(base()) && value === base() + path);
+}
+
+export async function ownedPrivateMediaInput(value, ownerId) {
+  if (!bucket || !privateMediaInput(value)) return false;
+  const id = value.match(/([a-f0-9]{24})$/i)?.[1];
+  if (!id) return false;
+  const file = await bucket.find({
+    _id: new mongoose.Types.ObjectId(id),
+    "metadata.visibility": "private",
+    "metadata.ownerId": String(ownerId)
+  }).next();
+  return Boolean(file);
+}
+
 export async function connectMediaStore() {
   if (!process.env.MEDIA_MONGO_URI) return false;
   mediaConnection = mongoose.createConnection(process.env.MEDIA_MONGO_URI, { maxPoolSize: 20 });
