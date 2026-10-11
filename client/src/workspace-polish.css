@@ -526,7 +526,7 @@ html body .page-shell > aside.sidebar .sidebar-email {
 #root .onboarding-relaunch .onboarding-launch-item.ui-button {
   min-height: 78px !important;
   padding: 11px 10px !important;
-  grid-template-columns: 20px 34px minmax(0, 1fr) 14px !important;
+  grid-template-columns: 34px minmax(0, 1fr) 14px !important;
   gap: 8px !important;
 }
 #root .onboarding-relaunch .onboarding-item-icon { width: 34px; height: 34px; }
