@@ -8,6 +8,36 @@ BookFlow is a full-stack MERN application for service businesses. The account mo
 
 There is no customer account role and no customer-to-business approval workflow.
 
+## Shadcn-style component modernization — October 11, 2026
+
+**Branch:** `betta-vone` only. BookFlow's original theme variables, dark/light colors, existing features, routes, media data, and service/product/booking actions are preserved. The UI uses **local shadcn-style React primitives**, not an installed upstream shadcn/Radix/Tailwind component registry; migrating to Radix-based primitives remains a separate task.
+
+### Upgraded components
+
+| Scope | Update |
+| --- | --- |
+| Shared search | Added `client/src/components/ui/search-field.jsx` (compact search icon/input/clear action, focus return and accessible labels); applied to public discovery, services, product inventory, POS cart, customers, public business profile and chat user search. |
+| Layout CSS | Added `client/src/component-polish.css` **after** `shadcn-refresh.css` to scope responsive search/filter columns, unified control heights, product cards, dialogs, focus states and media layout without altering palette tokens. |
+| Shared dialogs | Added `client/src/components/ui/dialog.jsx` with native modal `<dialog>`, keyboard Escape, focus containment, background inertness and backdrop click handling. Added `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription` and `DialogFooter`. |
+| Management actions | Business password reset/status confirmation, service deletion, product delete/checkout confirmation, manual payment and booking reschedule now use compact in-app modal confirmations instead of browser prompts or unsafe custom overlays. |
+| Product inventory | Inventory cards now expose one native selectable product button and separate edit/delete buttons rather than nesting interactive controls inside a `role="button"` card. Grid and list modes remain. |
+| Gallery and media | `ContentGallery` now has selectable image thumbnails without dropping any photos. Shared `Image` displays a themed fallback on image-load errors. Existing cover position and profile-photo editing logic remain. |
+| Search correctness | Rating criteria are applied before service pagination (no hidden matches due to post-page filtering). The discovery endpoint now returns `hasMoreByType` so Load more corresponds to the active category, with an accessible loaded-results status. |
+| Messaging | Search requests ignore stale asynchronous results; sending messages uses an in-flight lock and pending state to prevent accidental duplicate sends. |
+| Notifications | Mark-as-read failures show errors and missing links no longer navigate to `#`. |
+
+**Developer run (Codespaces):**
+
+```bash
+git fetch origin && git checkout betta-vone && git pull origin betta-vone
+# Keep the existing MongoDB containers and backend from the setup instructions running.
+cd client && npm ci && npm run dev -- --host 0.0.0.0
+```
+
+**Validation:** GitHub Actions `CI` runs `npm ci` and `npm run build` for React, syntax checks for backend JS, and existing backend unit tests. **This does not replace a browser-based visual and interaction regression**. Before production, test search at 375/768/1440px, grid/list layouts, images and upload previews, modal keyboard focus/Escape, checkouts, chat sending, both themes and account roles.
+
+**Follow-up work:** Many older route-specific CSS rules remain in the large `styles.css`; those should be consolidated incrementally after screenshot/breakpoint review. Additional existing custom popovers, booking editor/product create-edit dialogs, and more complex rich text/menus are not yet migrated to Radix/shadcn registry components. Search rating aggregation also needs large-dataset benchmarking and optimized indexes/materialized summaries for 100K-scale deployments.
+
 ## Compact shadcn-style UI refresh — October 11, 2026
 
 **Implemented on `betta-vone` without changing BookFlow's existing light/dark colors or its business functionality.**
