@@ -1,6 +1,6 @@
 import { Button } from "./ui/button.jsx";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX, FiChevronDown, FiMoreHorizontal } from "react-icons/fi";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX, FiChevronDown, FiMoreHorizontal, FiLogOut, FiArrowRight } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
@@ -32,8 +32,11 @@ function isNestedRoute(pathname, base) {
 const mobileQuery = "(max-width: 800px)";
 const drawerFocusSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export default function AppLayout({ children, user, onLogout }) {
+export default function AppLayout({ children, user, onLogout, dashboardRange = null, onDashboardRangeChange }) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [globalSearch, setGlobalSearch] = useState("");
+  const profileMenuRef = useRef(null);
   const [unread, setUnread] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(() => moreRoutePaths.some(path => isNestedRoute(pathname, path)));
@@ -59,6 +62,25 @@ export default function AppLayout({ children, user, onLogout }) {
   }, []);
 
   useEffect(() => { setMobileOpen(false); }, [pathname]);
+  useEffect(() => {
+    const closeOnOutside = event => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target))
+        profileMenuRef.current.open = false;
+    };
+    const closeOnEscape = event => {
+      if (event.key === "Escape" && profileMenuRef.current) profileMenuRef.current.open = false;
+    };
+    document.addEventListener("pointerdown", closeOnOutside);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutside);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
+  useEffect(() => {
+    if (profileMenuRef.current) profileMenuRef.current.open = false;
+  }, [pathname]);
+
   useEffect(() => { if (moreRoutePaths.some(path => isNestedRoute(pathname, path))) setMoreOpen(true); }, [pathname]);
   useEffect(() => { if (!isMobile) setMobileOpen(false); }, [isMobile]);
 
@@ -176,6 +198,46 @@ export default function AppLayout({ children, user, onLogout }) {
         <small className="sidebar-email">{user?.role === "admin" ? "Admin" : "Business"} · {user?.email}</small>
       </div>
     </aside>
+
+    <header className="workspace-topbar" aria-label="Workspace tools">
+      <form className="workspace-global-search" role="search"
+        onSubmit={event => {
+          event.preventDefault();
+          navigate("/search" + (globalSearch.trim() ? "?q=" + encodeURIComponent(globalSearch.trim()) : ""));
+        }}>
+        <FiSearch aria-hidden="true" />
+        <input type="search" value={globalSearch} onChange={event => setGlobalSearch(event.target.value)}
+          placeholder="Search services, bookings, customers..." aria-label="Search BookFlow" />
+        <button type="submit" className="workspace-search-submit" aria-label="Submit search"><FiArrowRight aria-hidden="true"/></button>
+      </form>
+      <div className="workspace-topbar-actions">
+        {dashboardRange != null && <label className="workspace-date-select">
+          <FiCalendar aria-hidden="true"/>
+          <span className="sr-only">Analytics date range</span>
+          <select value={dashboardRange} aria-label="Dashboard analytics period" onChange={event => onDashboardRangeChange?.(event.target.value)}>
+            <option value="today">Today</option>
+            <option value="7d">Last 7 days</option>
+            <option value="month">This month</option>
+            <option value="year">This year</option>
+            <option value="all">All time</option>
+          </select>
+          <FiChevronDown aria-hidden="true"/>
+        </label>}
+        <details className="workspace-account-menu" ref={profileMenuRef}>
+          <summary aria-label="Account menu">
+            <span className="workspace-user-avatar">{(user?.name || "U").trim().slice(0, 1).toUpperCase()}</span>
+            <span className="workspace-user-text"><strong>{user?.name || "Account"}</strong><small>{user?.role === "admin" ? "Administrator" : "Business owner"}</small></span>
+            <FiChevronDown aria-hidden="true"/>
+          </summary>
+          <div className="workspace-account-popover">
+            <div className="workspace-account-identity"><strong>{user?.name}</strong><span>{user?.email}</span></div>
+            {user?.role === "business" && <Link to="/dashboard/profile" onClick={() => { profileMenuRef.current.open = false; }}><FiUser aria-hidden="true"/>My profile</Link>}
+            <Link to="/dashboard/settings" onClick={() => { profileMenuRef.current.open = false; }}><FiSettings aria-hidden="true"/>Settings</Link>
+            <Button variant="ghost" type="button" onClick={() => { profileMenuRef.current.open = false; onLogout?.(); }}><FiLogOut aria-hidden="true"/>Sign out</Button>
+          </div>
+        </details>
+      </div>
+    </header>
 
     <section className="content-shell">
       {user?.role === "business" && user?.accountStatus === "paused" && <div className="account-status-banner">Your business is temporarily paused. Existing data stays available, but publishing services and new guest bookings are disabled.</div>}
