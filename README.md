@@ -983,3 +983,134 @@ The script ramps to 100 virtual users, checks API error rates and p95 duration f
 ### 7. Chat history pagination
 
 Conversation retrieval now returns the most recent 50 messages and `hasMoreMessages`, retaining the existing `messages` response field. The frontend's **Load older messages** control requests previous pages using the earliest loaded message ID as its cursor. The messaging sidebar's latest-message aggregation also uses database grouping rather than transferring full histories to Node.js. Existing message and reaction controls remain available.
+
+
+---
+
+## Complete scalability recommendations (34 items)
+
+**Target:** Design and validate BookFlow for **100,000+ registered accounts**, without assuming 100,000 simultaneous users. **Branch:** \`betta-vone\`. **Deployment preference:** Self-hosted VPS infrastructure (MongoDB, MongoDB GridFS, RabbitMQ Community Edition, Redis, Nginx), **not Cloudflare R2**.
+
+**Status legend:**
+
+- **Implemented (code):** present in the branch; still needs deployment and/or production validation.
+- **Partial:** initial code or configuration exists, but related work remains.
+- **Example only:** sample infrastructure provided; not deployed by the repository.
+- **Pending:** a recommended next step, **not yet implemented or verified**.
+
+These statuses are implementation assessments, **not guarantees of production readiness**. For how to operate the features currently included, see [Betta V1 — Self-hosted scalability upgrade](#betta-v1--self-hosted-scalability-upgrade-betta-vone).
+
+### A. Database and media storage (1–9)
+
+| # | Recommendation | Current status | Priority |
+| --- | --- | --- | --- |
+| 1 | Separate the primary application MongoDB and media MongoDB deployments | Partial — opt-in second connection and Compose example | Critical |
+| 2 | Store uploaded image/file bytes in dedicated MongoDB GridFS and store their reference URLs in application documents | Partial — supported when media MongoDB is enabled; Base64 fallback remains | Critical |
+| 3 | Migrate existing profile, business, service, product and attachment media out of Base64 fields | Pending execution — migration script supplied | Critical |
+| 4 | Replace frontend Base64/JSON uploads with binary uploads | Pending — binary API endpoint exists, frontend conversion remains | High |
+| 5 | Generate responsive, optimized WebP/AVIF image variants | Pending | High |
+| 6 | Create and benchmark MongoDB indexes | Partial — indexes added; production-like query-plan analysis pending | Critical |
+| 7 | Optimize database queries, projections and aggregations | Partial — public discovery and some message queries improved | Critical |
+| 8 | Implement cursor/limit pagination throughout public and authenticated endpoints | Partial — discovery paging and 50-message conversation pages exist | Critical |
+| 9 | Extract expensive legacy data migrations from API startup into controlled jobs | Partial — guarded startup backfills exist; separate migration runner pending | High |
+
+### B. Real-time chat and messaging (10–17)
+
+| # | Recommendation | Current status | Priority |
+| --- | --- | --- | --- |
+| 10 | Self-host RabbitMQ Community Edition on a VPS | Example only — Compose service supplied; requires deployment | High |
+| 11 | Publish durable asynchronous chat events to RabbitMQ | Partial — opt-in worker/event outbox implemented; operational hardening remains | High |
+| 12 | Keep Socket.IO for low-latency browser chat delivery | Implemented (code) — existing realtime path retained | Critical |
+| 13 | Add the Socket.IO Redis adapter for multi-instance message delivery | Pending — Redis container alone does not enable the adapter | Critical |
+| 14 | Implement delivery acknowledgements, retries and stronger reliability guarantees appropriate to the delivery stage | Pending — broker publisher confirms are present, end-user delivery guarantees are not | High |
+| 15 | Add RabbitMQ dead-letter queues, backoff/retries and operational monitoring | Pending | High |
+| 16 | Paginate message history and provide a Load older messages control | Implemented (code) — 50-message cursor pages | High |
+| 17 | Move heavy notifications/email and other non-realtime jobs into workers | Pending | Medium |
+
+**Important:** RabbitMQ is for durable asynchronous events and background work; it **does not replace Socket.IO** or prove that a recipient's browser displayed a message. RabbitMQ Community Edition software does not need a paid subscription, but VPS, storage, networking and operations have costs.
+
+### C. API, search and horizontal scaling (18–25)
+
+| # | Recommendation | Current status | Priority |
+| --- | --- | --- | --- |
+| 18 | Optimize business, product and service discovery searches | Partial — database-side paging/filtering; regex/search performance still needs benchmarking | Critical |
+| 19 | Add Redis caching with explicit TTLs and invalidation for frequently read data | Pending — infrastructure example only | High |
+| 20 | Apply shared/distributed API rate limits across instances | Pending — only per-process rate limits currently exist | Critical |
+| 21 | Configure Nginx as an HTTPS reverse proxy, load balancer and public-media cache | Example only — media-cache sample provided | High |
+| 22 | Run multiple Node.js API instances behind a load balancer | Pending | Critical |
+| 23 | Protect booking capacity and rescheduling from cross-request and cross-instance races | Pending — atomic guarantees need implementation and tests | Critical |
+| 24 | Tune MongoDB pools, indexes and hot paths; eliminate remaining unbounded queries | Partial — some improvements exist; private/admin/sales paths remain | High |
+| 25 | Introduce dedicated search indexing when regular MongoDB substring search becomes a measured bottleneck | Pending/conditional | Medium |
+
+### D. Reliability, security and validation (26–34)
+
+| # | Recommendation | Current status | Priority |
+| --- | --- | --- | --- |
+| 26 | Add structured logs, metrics, tracing as needed and actionable alerts | Pending | High |
+| 27 | Automate MongoDB/media backups and practice tested restores | Pending | Critical |
+| 28 | Restrict MongoDB/RabbitMQ/Redis to private networking and configure authentication/TLS as appropriate | Deployment required — localhost-bound examples do not secure a production deployment by themselves | Critical |
+| 29 | Expand regression testing for bookings, chat, uploads, authentication and authorization | Partial — some CI checks and media tests exist | Critical |
+| 30 | Expand CI/CD automated testing, security checks and deployment gates | Partial — build, syntax and media tests in CI | High |
+| 31 | Add production health checks, safe releases and rollback procedures | Partial — basic API/database health check exists; release process pending | High |
+| 32 | Perform measured load tests at 100, 1K, 5K and 10K+ **concurrent virtual users**, where infrastructure permits | Pending — a ramp-to-100 k6 script exists, not proof of results | Critical |
+| 33 | Test realistic datasets containing 100K+ registered users, plus representative active-user traffic | Pending | Critical |
+| 34 | Design redundancy/HA for critical components; remove single-VPS points of failure when needed | Pending | High |
+
+### Recommended target architecture
+
+This diagram is a **future-state target**, not a claim that every service is connected or deployed on \`betta-vone\`.
+
+\`\`\`mermaid
+flowchart TB
+    Users["Web and mobile users"]
+    Proxy["Nginx: HTTPS, public media cache, rate limits, load balancing"]
+    Users --> Proxy
+    Proxy --> API1["Node.js API instance 1<br/>Express + Socket.IO"]
+    Proxy --> API2["Node.js API instance 2<br/>Express + Socket.IO"]
+    Proxy --> APIN["Node.js API instance 3+<br/>Express + Socket.IO"]
+    API1 --> MainDB[("Main MongoDB<br/>users, products, bookings")]
+    API2 --> MainDB
+    APIN --> MainDB
+    API1 --> MediaDB[("Media MongoDB GridFS<br/>images, attachments")]
+    API2 --> MediaDB
+    APIN --> MediaDB
+    API1 -. "planned cache / Socket.IO adapter" .-> Redis[("Redis")]
+    API2 -. "planned cache / Socket.IO adapter" .-> Redis
+    APIN -. "planned cache / Socket.IO adapter" .-> Redis
+    API1 -. "optional message events" .-> Broker[("RabbitMQ")]
+    Broker --> Worker["Background workers<br/>events, notifications, jobs"]
+    Worker --> MainDB
+\`\`\`
+
+The media database holds binary GridFS content, while application documents hold media reference URLs. Protect private chat attachments with expiring signed links and avoid public caching. The current frontend still sends Base64 data inside JSON; direct binary upload and responsive image sizes are planned improvements. When scaling Socket.IO beyond one API instance, wire up the Redis adapter and verify cross-instance events and reconnection behavior. Neither Redis nor RabbitMQ alone solves horizontal scaling.
+
+### Recommended implementation order
+
+1. **Phase 1 — Database and media:** Configure separate media MongoDB, back up and migrate existing Base64 media, implement binary upload and responsive variants, benchmark indexes, and finish key pagination/query changes.
+2. **Phase 2 — Chat and distributed infrastructure:** Deploy RabbitMQ/Redis on a secured VPS, enable the Socket.IO Redis adapter, harden broker retries/dead-letter handling, and introduce appropriate background workers.
+3. **Phase 3 — Horizontal scaling:** Add Nginx reverse proxy/load balancing and multiple API instances, distributed rate limits, selective Redis cache, and race-safe booking capacity updates.
+4. **Phase 4 — Production validation:** Benchmark representative read/write/WebSocket loads, test backups and restores, add logging/alerts, verify deployment rollback, and perform security/regression tests.
+
+**Suggested next engineering priority:** Finish media migration, expensive query pagination, and atomic booking concurrency protection **before** relying on more application servers to increase capacity.
+
+### What "100K users" means (and does not mean)
+
+| Measurement | What to validate |
+| --- | --- |
+| **100,000+ registered users** | Account and business dataset size; database indexes, disk capacity and query-plan performance. |
+| **Concurrent online users** | A separately measured quantity; registration count does not indicate concurrent traffic. |
+| **Concurrent chat connections** | Cross-instance Socket.IO behavior, reconnects, messaging throughput and broker/Redis health. |
+| **API response time** | p95/p99 latency, throughput and error rates for browse, search, booking, auth, profiles and messaging. |
+| **Images and attachments** | Transfer sizes, thumbnail formats, GridFS throughput, Nginx cache hit rate and private-link authorization. |
+| **Booking correctness** | Concurrency/race tests demonstrating no double-booking for configured capacity. |
+| **Recovery** | Automated backup coverage, measured recovery procedures, alerting and failover plans. |
+
+Use the supplied read-only k6 discovery script as a **baseline**; then extend tests to authenticated traffic, uploads, reservations and realtime messaging in a controlled staging environment. Avoid claiming support for **100K concurrent users** or guaranteed zero booking conflicts until repeatable results substantiate those claims.
+
+### Branch update command
+
+\`\`\`bash
+git fetch origin && git checkout betta-vone && git pull origin betta-vone
+\`\`\`
+
+Keep the \`shadcn-ui\` branch unchanged during this work, and preserve all existing business profiles, services, products, POS, sales, messaging, bookings, reviews, admin functions and responsive UI.
