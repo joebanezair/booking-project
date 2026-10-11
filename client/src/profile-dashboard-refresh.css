@@ -98,9 +98,42 @@
   height: 182px !important;
   min-width: 182px !important;
   min-height: 182px !important;
-  border: 5px solid var(--card) !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  border: 2px solid var(--card) !important;
+  border-radius: 50% !important;
+  /* Only the image is clipped: don't cut off the camera action. */
+  clip-path: none !important;
+  overflow: visible !important;
   background: var(--card) !important;
   box-shadow: 0 4px 15px rgb(0 0 0 / .13) !important;
+}
+/* Neutralize the shared xl avatar border and compact button padding so
+ * the actual photo fills the available circular area edge to edge. */
+#root .profile-page-redesign .linkedin-avatar-button > .profile-avatar {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+  object-fit: cover !important;
+  overflow: hidden;
+}
+#root .profile-page-redesign .linkedin-avatar-button:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 3px !important;
 }
 #root .profile-page-redesign .linkedin-avatar-button .profile-avatar.avatar {
   font-size: 52px;
