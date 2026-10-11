@@ -10,77 +10,77 @@ There is no customer account role and no customer-to-business approval workflow.
 
 ## Run the project — Betta V1
 
-**Use this guide for the latest [\`betta-vone\` branch](https://github.com/joebanezair/booking-project/tree/betta-vone).** You can run the application with only Node.js and the **main MongoDB** database. RabbitMQ, Redis, a second GridFS MongoDB, and Nginx are **optional** and are **not needed** for basic signup, browsing, booking, messaging, or development. Running these containers does not automatically turn on the related application features.
+**Use this guide for the latest [`betta-vone` branch](https://github.com/joebanezair/booking-project/tree/betta-vone).** You can run the application with only Node.js and the **main MongoDB** database. RabbitMQ, Redis, a second GridFS MongoDB, and Nginx are **optional** and are **not needed** for basic signup, browsing, booking, messaging, or development. Running these containers does not automatically turn on the related application features.
 
 ### 0. Requirements
 
 - Git; Node.js **22** (with npm); Docker Engine/Desktop (with Docker Compose) **or** an accessible MongoDB instance.
-- A terminal such as Bash, Git Bash, WSL or a GitHub Codespace. Code blocks below use **Bash**. For PowerShell, use \`Copy-Item server\.env.example server\.env\` instead of \`cp\`.
+- A terminal such as Bash, Git Bash, WSL or a GitHub Codespace. Code blocks below use **Bash**. For PowerShell, use `Copy-Item server\.env.example server\.env` instead of `cp`.
 - Ports **27017** (MongoDB), **5000** (Express API and Socket.IO backend), and **5173** (Vite React frontend) available. The Docker examples bind database/broker ports to loopback.
 
 Check prerequisites:
 
-\`\`\`bash
+```bash
 git --version
 node --version
 npm --version
 docker --version
 docker compose version
-\`\`\`
+```
 
 ### 1. Download / update the correct branch
 
 **New checkout:**
 
-\`\`\`bash
+```bash
 git clone --branch betta-vone https://github.com/joebanezair/booking-project.git
 cd booking-project
-\`\`\`
+```
 
 **Existing checkout** (run from anywhere inside that repository, including Codespaces):
 
-\`\`\`bash
+```bash
 cd "$(git rev-parse --show-toplevel)"
 git fetch origin && git checkout betta-vone && git pull origin betta-vone
-\`\`\`
+```
 
-**Do not use \`shadcn-ui\` for this run guide.** All the scalability work here is on \`betta-vone\`.
+**Do not use `shadcn-ui` for this run guide.** All the scalability work here is on `betta-vone`.
 
 ### 2. Start main MongoDB (Terminal 1)
 
 For a **new** local/Codespaces Docker setup, from any directory:
 
-\`\`\`bash
+```bash
 docker run -d \
   --name booking-mongodb \
   -p 127.0.0.1:27017:27017 \
   -v booking-mongodb-data:/data/db \
   mongo:7
-\`\`\`
+```
 
 If the container already exists, **start it instead of trying to create it again**:
 
-\`\`\`bash
+```bash
 docker start booking-mongodb
 docker ps
 docker logs --tail 30 booking-mongodb
-\`\`\`
+```
 
-The \`booking-mongodb-data\` named Docker volume keeps your data between container restarts. **Do not delete the volume to troubleshoot a connection error**. If you already have MongoDB on \`127.0.0.1:27017\`, skip Docker and point \`MONGO_URI\` to that server.
+The `booking-mongodb-data` named Docker volume keeps your data between container restarts. **Do not delete the volume to troubleshoot a connection error**. If you already have MongoDB on `127.0.0.1:27017`, skip Docker and point `MONGO_URI` to that server.
 
 ### 3. Configure the API (Terminal 2)
 
 From the repository root:
 
-\`\`\`bash
+```bash
 cp server/.env.example server/.env
 cd server
 npm ci
-\`\`\`
+```
 
-Edit \`server/.env\`. At minimum it should contain values corresponding to these local defaults:
+Edit `server/.env`. At minimum it should contain values corresponding to these local defaults:
 
-\`\`\`dotenv
+```dotenv
 NODE_ENV=development
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/booking_app
@@ -88,52 +88,52 @@ CLIENT_URL=http://localhost:5173
 JWT_SECRET=REPLACE_WITH_A_RANDOM_SECRET_AT_LEAST_32_CHARACTERS
 ADMIN_REGISTRATION_KEY=REPLACE_WITH_A_DIFFERENT_RANDOM_SECRET_32_CHARS_OR_LONGER
 ADMIN_EMAILS=
-\`\`\`
+```
 
-Generate secrets (run twice; copy **different** outputs into \`JWT_SECRET\` and \`ADMIN_REGISTRATION_KEY\`):
+Generate secrets (run twice; copy **different** outputs into `JWT_SECRET` and `ADMIN_REGISTRATION_KEY`):
 
-\`\`\`bash
+```bash
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
-\`\`\`
+```
 
-Do not commit \`.env\` or expose your secrets. \`ADMIN_EMAILS\` is optional: set it only to the email address you deliberately want to be an admin, because matching accounts are promoted on server startup. Keep \`MEDIA_MONGO_URI\`, \`RABBITMQ_URL\`, \`DISTRIBUTED_RATE_LIMIT\`, and \`RUN_LEGACY_MIGRATIONS\` **unset** for the simplest local run.
+Do not commit `.env` or expose your secrets. `ADMIN_EMAILS` is optional: set it only to the email address you deliberately want to be an admin, because matching accounts are promoted on server startup. Keep `MEDIA_MONGO_URI`, `RABBITMQ_URL`, `DISTRIBUTED_RATE_LIMIT`, and `RUN_LEGACY_MIGRATIONS` **unset** for the simplest local run.
 
 Start the backend:
 
-\`\`\`bash
+```bash
 npm run dev
-\`\`\`
+```
 
-Expected output includes \`API and WebSocket server listening on http://localhost:5000\`. Verify it in a second terminal:
+Expected output includes `API and WebSocket server listening on http://localhost:5000`. Verify it in a second terminal:
 
-\`\`\`bash
+```bash
 curl http://localhost:5000/api/health
 curl http://localhost:5000/api/ready
-\`\`\`
+```
 
-Both should report \`ok: true\` when the configured databases are connected. \`/api/live\` is only a process-liveness check, not a database-readiness check. Leave the backend terminal running.
+Both should report `ok: true` when the configured databases are connected. `/api/live` is only a process-liveness check, not a database-readiness check. Leave the backend terminal running.
 
 ### 4. Start the React frontend (Terminal 3)
 
 Open another terminal at the repository root:
 
-\`\`\`bash
+```bash
 cd client
 npm ci
 npm run dev
-\`\`\`
+```
 
-Open **http://localhost:5173**. Create an account on \`/register\`, then test your dashboard, business profile, services, bookings and messages. No seed script is necessary for ordinary registration.
+Open **http://localhost:5173**. Create an account on `/register`, then test your dashboard, business profile, services, bookings and messages. No seed script is necessary for ordinary registration.
 
-The Vite dev server already proxies **\`/api\` and \`/socket.io\`** to \`http://127.0.0.1:5000\`. No client \`.env\` is required. If you create one, keep \`VITE_API_URL=/api\` and **leave \`VITE_SOCKET_URL\` unset** so browser requests and chat pass through the proxy. Never point browser requests at \`localhost:5000\` from an external Codespaces browser.
+The Vite dev server already proxies **`/api` and `/socket.io`** to `http://127.0.0.1:5000`. No client `.env` is required. If you create one, keep `VITE_API_URL=/api` and **leave `VITE_SOCKET_URL` unset** so browser requests and chat pass through the proxy. Never point browser requests at `localhost:5000` from an external Codespaces browser.
 
-**Everyday restart** after setup: \`docker start booking-mongodb\` (if needed), then \`cd server && npm run dev\` in one terminal and \`cd client && npm run dev\` in another.
+**Everyday restart** after setup: `docker start booking-mongodb` (if needed), then `cd server && npm run dev` in one terminal and `cd client && npm run dev` in another.
 
 ### 5. GitHub Codespaces
 
 Open the existing Codespace for the project, then use the **existing checkout** commands from step 1. From the repository root:
 
-\`\`\`bash
+```bash
 # Terminal 1 (only if MongoDB container is not present yet, use step 2 above)
 docker start booking-mongodb
 
@@ -146,25 +146,25 @@ npm run dev
 cd client
 npm ci
 npm run dev -- --host 0.0.0.0
-\`\`\`
+```
 
-If \`docker start booking-mongodb\` says the container does not exist, use the \`docker run\` command in step 2 instead. Copy and configure \`server/.env\` in step 3 before starting the backend.
+If `docker start booking-mongodb` says the container does not exist, use the `docker run` command in step 2 instead. Copy and configure `server/.env` in step 3 before starting the backend.
 
-Open the **Ports** tab and open the forwarded **5173** port to use the website. Keep backend port **5000** private where possible. \`--host 0.0.0.0\` allows Vite's frontend port to be forwarded; the dev proxy sends API/Socket.IO traffic to the backend within the Codespace. You do **not** need an external \`VITE_API_URL\` or \`VITE_SOCKET_URL\` for this setup.
+Open the **Ports** tab and open the forwarded **5173** port to use the website. Keep backend port **5000** private where possible. `--host 0.0.0.0` allows Vite's frontend port to be forwarded; the dev proxy sends API/Socket.IO traffic to the backend within the Codespace. You do **not** need an external `VITE_API_URL` or `VITE_SOCKET_URL` for this setup.
 
 **One-line frontend restart** (after database/backend are running, from anywhere inside the repository):
 
-\`\`\`bash
+```bash
 cd "$(git rev-parse --show-toplevel)" && git fetch origin && git checkout betta-vone && git pull origin betta-vone && cd client && npm run dev -- --host 0.0.0.0
-\`\`\`
+```
 
 ### 6. Optional: run separate media MongoDB, RabbitMQ and Redis locally
 
-This section is **optional**. It uses \`infrastructure/compose.services.yml\` and creates self-hosted services without Cloudflare R2. Do **not** enable \`MEDIA_MONGO_URI\` or \`RABBITMQ_URL\` in the backend until the corresponding service is reachable.
+This section is **optional**. It uses `infrastructure/compose.services.yml` and creates self-hosted services without Cloudflare R2. Do **not** enable `MEDIA_MONGO_URI` or `RABBITMQ_URL` in the backend until the corresponding service is reachable.
 
-Create \`infrastructure/.env\` with **strong, distinct passwords**:
+Create `infrastructure/.env` with **strong, distinct passwords**:
 
-\`\`\`dotenv
+```dotenv
 MEDIA_MONGO_USER=bookflowmedia
 MEDIA_MONGO_PASSWORD=REPLACE_MEDIA_PASSWORD
 RABBITMQ_USER=bookflow
@@ -175,57 +175,57 @@ REDIS_PASSWORD=REPLACE_REDIS_PASSWORD
 # the chat-broker container without proper container network configuration.
 MONGO_URI=mongodb://127.0.0.1:27017/booking_app
 RABBITMQ_URL=amqp://bookflow:REPLACE_RABBITMQ_PASSWORD@127.0.0.1:5672
-\`\`\`
+```
 
 From the repository root:
 
-\`\`\`bash
+```bash
 docker compose --env-file infrastructure/.env -f infrastructure/compose.services.yml up -d media-mongo rabbitmq redis
 docker compose --env-file infrastructure/.env -f infrastructure/compose.services.yml ps
-\`\`\`
+```
 
 The optional services expose **127.0.0.1:27018** for media MongoDB, **127.0.0.1:5672** for RabbitMQ, **127.0.0.1:15672** for RabbitMQ's management UI, and **127.0.0.1:6379** for Redis. Use <http://localhost:15672> locally for RabbitMQ management, signing in with your configured broker username/password. These are **self-hosted service examples**, not automatically provisioned cloud infrastructure or a production HA topology.
 
-To enable the separate media store, add to **\`server/.env\`** (substitute and URL-encode any special password characters):
+To enable the separate media store, add to **`server/.env`** (substitute and URL-encode any special password characters):
 
-\`\`\`dotenv
+```dotenv
 MEDIA_MONGO_URI=mongodb://bookflowmedia:REPLACE_MEDIA_PASSWORD@127.0.0.1:27018/bookflow_media?authSource=admin
 MEDIA_SIGNING_SECRET=ANOTHER_RANDOM_SECRET_AT_LEAST_32_CHARACTERS
 # Optional only when serving the API at another origin:
 # MEDIA_PUBLIC_BASE_URL=https://api.example.com
-\`\`\`
+```
 
-Restart \`npm run dev\` in \`server\`. The frontend will then automatically use binary GridFS uploads when \`/api/media/capabilities\` reports availability. Existing files are **not** migrated automatically. Back up both databases and see [Migrate existing Base64 media](#migrate-existing-base64-media) for the migration procedure.
+Restart `npm run dev` in `server`. The frontend will then automatically use binary GridFS uploads when `/api/media/capabilities` reports availability. Existing files are **not** migrated automatically. Back up both databases and see [Migrate existing Base64 media](#migrate-existing-base64-media) for the migration procedure.
 
 To turn on RabbitMQ **chat events** in local development:
 
-1. Install worker dependencies: \`cd server/workers/chat-broker && npm install\`.
-2. From that worker folder, set \`MONGO_URI\` to the main database and \`RABBITMQ_URL\` to your localhost broker, then run \`npm start\`. On Bash, you can do this in one command:
-   \`\`\`bash
+1. Install worker dependencies: `cd server/workers/chat-broker && npm install`.
+2. From that worker folder, set `MONGO_URI` to the main database and `RABBITMQ_URL` to your localhost broker, then run `npm start`. On Bash, you can do this in one command:
+   ```bash
    MONGO_URI=mongodb://127.0.0.1:27017/booking_app \
    RABBITMQ_URL=amqp://bookflow:REPLACE_RABBITMQ_PASSWORD@127.0.0.1:5672 \
    npm start
-   \`\`\`
-3. Add the same \`RABBITMQ_URL\` to \`server/.env\` and restart the API. **Only enable this after the worker is running.**
+   ```
+3. Add the same `RABBITMQ_URL` to `server/.env` and restart the API. **Only enable this after the worker is running.**
 
-This host-based worker approach is intentional: when using \`docker compose --profile chat\`, a worker running **inside a container** cannot reach the host database at \`127.0.0.1\` or the broker at host loopback. Configure container-reachable DNS/network URLs (for example, Compose service \`rabbitmq:5672\` and a reachable main MongoDB hostname) before using the profile. RabbitMQ processes background events; **Socket.IO remains the live chat transport**. Redis is presently an infrastructure option, not a configured Socket.IO adapter or general application cache.
+This host-based worker approach is intentional: when using `docker compose --profile chat`, a worker running **inside a container** cannot reach the host database at `127.0.0.1` or the broker at host loopback. Configure container-reachable DNS/network URLs (for example, Compose service `rabbitmq:5672` and a reachable main MongoDB hostname) before using the profile. RabbitMQ processes background events; **Socket.IO remains the live chat transport**. Redis is presently an infrastructure option, not a configured Socket.IO adapter or general application cache.
 
 Stop the optional services (without deleting named data volumes):
 
-\`\`\`bash
+```bash
 docker compose --env-file infrastructure/.env -f infrastructure/compose.services.yml down
-\`\`\`
+```
 
 ### 7. Run checks and build
 
 From the project root, with dependencies installed:
 
-\`\`\`bash
+```bash
 cd server
 node --test tests/*.test.js
 cd ../client
 npm run build
-\`\`\`
+```
 
 For a local smoke test with the server running, open the app and try registration, login, business/service creation, booking creation, and messaging. The k6 discovery and booking-concurrency scripts are intended for a **controlled staging environment**; the booking race test **creates real booking records** and must not run against production.
 
@@ -233,16 +233,16 @@ For a local smoke test with the server running, open the app and try registratio
 
 | Symptom | Check / fix |
 | --- | --- |
-| \`ERR_CONNECTION_REFUSED\` for \`localhost:5000\` or \`/api\` | Start \`cd server && npm run dev\` and check \`http://localhost:5000/api/ready\`. For Codespaces, use same-origin \`/api\` through Vite rather than a browser-facing localhost URL. |
-| \`MongooseServerSelectionError\`, MongoDB connection refused | Run \`docker ps\`, \`docker start booking-mongodb\`, and \`docker logs booking-mongodb\`; confirm \`MONGO_URI\` uses port 27017 and the intended database. |
-| \`JWT_SECRET must be at least 32 characters\` | Set a fresh secret in \`server/.env\` and restart the backend. |
-| \`EADDRINUSE\` on 5000/5173/27017 | Another process/container already owns the port. Stop the duplicate service; keep \`client/vite.config.js\` and \`server/.env\` ports aligned. |
-| Chat is disconnected / Socket.IO errors | Confirm backend 5000 is running and Vite proxies \`/socket.io\`. Leave \`VITE_SOCKET_URL\` unset for development. |
-| Media endpoint returns 503 | You opted into \`MEDIA_MONGO_URI\` but the media server is unavailable/misconfigured. Check media MongoDB and credentials; otherwise leave it unset for legacy local uploads. |
-| RabbitMQ worker cannot connect | Check broker \`docker compose ps\`, credentials, and the **network location of the worker**. \`127.0.0.1\` inside a container refers to the container itself. |
-| Existing Docker container reports \`RWLayer ... unexpectedlynil\` | See [Docker container recovery below](#fix-a-corrupted-mongodb-docker-container). Preserve the named MongoDB volume and make a backup before container recovery. |
+| `ERR_CONNECTION_REFUSED` for `localhost:5000` or `/api` | Start `cd server && npm run dev` and check `http://localhost:5000/api/ready`. For Codespaces, use same-origin `/api` through Vite rather than a browser-facing localhost URL. |
+| `MongooseServerSelectionError`, MongoDB connection refused | Run `docker ps`, `docker start booking-mongodb`, and `docker logs booking-mongodb`; confirm `MONGO_URI` uses port 27017 and the intended database. |
+| `JWT_SECRET must be at least 32 characters` | Set a fresh secret in `server/.env` and restart the backend. |
+| `EADDRINUSE` on 5000/5173/27017 | Another process/container already owns the port. Stop the duplicate service; keep `client/vite.config.js` and `server/.env` ports aligned. |
+| Chat is disconnected / Socket.IO errors | Confirm backend 5000 is running and Vite proxies `/socket.io`. Leave `VITE_SOCKET_URL` unset for development. |
+| Media endpoint returns 503 | You opted into `MEDIA_MONGO_URI` but the media server is unavailable/misconfigured. Check media MongoDB and credentials; otherwise leave it unset for legacy local uploads. |
+| RabbitMQ worker cannot connect | Check broker `docker compose ps`, credentials, and the **network location of the worker**. `127.0.0.1` inside a container refers to the container itself. |
+| Existing Docker container reports `RWLayer ... unexpectedlynil` | See [Docker container recovery below](#fix-a-corrupted-mongodb-docker-container). Preserve the named MongoDB volume and make a backup before container recovery. |
 
-**Avoid using \`docker compose down -v\`, \`docker volume rm\`, or database drop/reset commands unless you deliberately intend to erase data and have a verified backup.** A Docker container restart does not normally require deleting application data.
+**Avoid using `docker compose down -v`, `docker volume rm`, or database drop/reset commands unless you deliberately intend to erase data and have a verified backup.** A Docker container restart does not normally require deleting application data.
 
 ## Engineering implementation round 2 — October 11, 2026
 
