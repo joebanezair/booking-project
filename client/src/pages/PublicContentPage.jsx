@@ -1,3 +1,4 @@
+import { Card } from "../components/ui/card.jsx";
 import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -95,7 +96,7 @@ export default function PublicContentPage({ user }) {
 
   return <main className="public-page">
     <header className="public-top"><Link className="brand-row" to="/search"><span className="brand-mark small">B</span><strong>BookFlow</strong></Link></header>
-    <article className="content-detail">
+    <Card as="article" className="content-detail">
       <ContentGallery coverImage={item.coverImage} images={item.images} title={item.title} />
       <div className="content-detail-body">
         <span className="category-pill">{item.category}</span>
@@ -118,6 +119,6 @@ export default function PublicContentPage({ user }) {
 
         <CommentSection comments={item.comments || []} currentUser={user} ownerId={item.owner.id} onAdd={addComment} onEdit={editComment} onDelete={deleteComment} onReact={reactToComment} onSignIn={() => navigate("/login")} />
       </div>
-    </article>
+    </Card>
   </main>;
 }
