@@ -3,7 +3,7 @@ import { FiImage } from "react-icons/fi";
 
 /** Shadcn-style media primitive with a layout-preserving unavailable-image state. */
 export const Image = forwardRef(function Image({
-  className = "", alt = "", decoding = "async", loading = "lazy",
+  className = "", alt = "", decoding = "async", loading,
   src, onError, ...props
 }, ref) {
   const [failed,setFailed] = useState(false);
