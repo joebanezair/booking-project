@@ -8,6 +8,14 @@ BookFlow is a full-stack MERN application for service businesses. The account mo
 
 There is no customer account role and no customer-to-business approval workflow.
 
+## Button and interaction audit (Betta V1)
+
+The React source has been scanned for button/link composition, click and form-submit handlers, accessible control names, failure feedback and accidental repeated submissions. The audit covers **49 JSX source files** and approximately **191 authored button component sites** (many render repeatedly at runtime). Targeted fixes were committed to `betta-vone` for service navigation links, shadcn-style `Button asChild`, cart and image control labels, forum replies, messages, public-profile errors, and duplicate POS/public-order submission.
+
+Read [the detailed button audit and manual QA checklist](docs/button-audit.md).
+
+**Scope:** This is a **static code audit**, not proof that every rendered button works. Login, data persistence, modal focus/keyboard access, server validation, permission states and interactions under network errors still require a browser-based end-to-end test run.
+
 ## Run the project — Betta V1
 
 **Use this guide for the latest [`betta-vone` branch](https://github.com/joebanezair/booking-project/tree/betta-vone).** You can run the application with only Node.js and the **main MongoDB** database. RabbitMQ, Redis, a second GridFS MongoDB, and Nginx are **optional** and are **not needed** for basic signup, browsing, booking, messaging, or development. Running these containers does not automatically turn on the related application features.
