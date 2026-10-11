@@ -165,8 +165,8 @@ const analyticsSource = readFileSync(join(root,"components/DashboardAnalytics.js
 const fullDashboardCss = readFileSync(join(root,"dashboard-fullpage.css"),"utf8");
 const searchPageSource = readFileSync(join(root,"pages/SearchPage.jsx"),"utf8");
 for (const required of [
-  "<DashboardAnalytics", "statusSummary={bookingSummary}", "dashboardRange={isAdmin ? null : dashboardRange}",
-  "onDashboardRangeChange={setDashboardRange}", "api.bookings.statusSummary", "api.sales.analytics"
+  "<DashboardAnalytics", "statusSummary={bookingSummary}", 'const dashboardRange = "month";',
+  "api.bookings.statusSummary", "api.sales.analytics"
 ]) if (!dashboardSource.includes(required))
   failures.push("Live dashboard integration missing: " + required);
 for (const required of [
@@ -176,7 +176,7 @@ for (const required of [
   failures.push("Real dashboard analytics feature missing: " + required);
 for (const required of [
   'className="workspace-global-search"', 'className="workspace-account-menu"',
-  'onLogout?.()', 'aria-label="Dashboard analytics period"', 'aria-label="Search BookFlow"'
+  'onLogout?.()', 'aria-label="Search BookFlow"', 'workspace-user-avatar-wrap', 'workspace-online-chip'
 ]) if (!sidebarSource.includes(required))
   failures.push("Functional workspace topbar missing: " + required);
 if (!searchPageSource.includes('searchParams.get("q")') ||
@@ -185,6 +185,27 @@ if (!searchPageSource.includes('searchParams.get("q")') ||
     !fullDashboardCss.includes("dashboard-v2-analysis-grid") ||
     !appEntry.includes('import "./dashboard-fullpage.css";'))
   failures.push("Full-page responsive UI, search wiring or glow-free drawer missing.");
+// The shared toolbar intentionally omits a date picker; the desktop sidebar
+// collapses to icons when not hovered or focused. Keep a real circular avatar
+// with an online/offline chip and a true 10px search field.
+const railCss = readFileSync(join(root,"workspace-header-rail.css"),"utf8");
+if (sidebarSource.includes('workspace-date-select') ||
+    sidebarSource.includes('aria-label="Dashboard analytics period"') ||
+    sidebarSource.includes('onDashboardRangeChange'))
+  failures.push("The removed header date picker must not return.");
+for(const marker of [
+  'api.profile.get()', 'ProfileAvatar', 'navigator.onLine', 'window.addEventListener("offline"',
+  'workspace-presence-dot', 'workspace-online-chip'
+]) if (!sidebarSource.includes(marker)) failures.push("Live profile/connection status missing: "+marker);
+for(const marker of [
+  'grid-template-columns: 76px minmax(0, 1fr)',
+  'grid-template-columns: 235px minmax(0, 1fr)',
+  ':has(> aside.sidebar:hover)', ':has(> aside.sidebar:focus-within)',
+  'aside.sidebar:not(:hover):not(:focus-within)',
+  'border-radius: 10px !important', 'border-radius: 50% !important'
+]) if(!railCss.includes(marker)) failures.push("Adaptive sidebar, search or avatar styling missing: "+marker);
+if(!appEntry.includes('import "./workspace-header-rail.css";'))
+  failures.push("Adaptive rail stylesheet must be loaded last.");
 // The approved desktop analysis is a single compact THREE-CARD row, with
 // circular donut geometry and truthful handling of single-period results.
 const dashboardCss = readFileSync(join(root,"dashboard-fullpage.css"),"utf8");
