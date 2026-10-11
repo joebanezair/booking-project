@@ -1,3 +1,4 @@
+import { Card } from "../components/ui/card.jsx";
 import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -56,7 +57,7 @@ export default function BusinessManagementPage({ user, onLogout }) {
     {error && <p className="error">{error}</p>}
     <section className="panel business-directory">
       <div className="business-table-head"><span>Business</span><span>Status</span><span>Services</span><span>Bookings</span><span>Reviews</span><span>Actions</span></div>
-      {items.length === 0 ? <p className="muted">No business accounts found.</p> : items.map(item => <article className="business-table-row" key={item._id}>
+      {items.length === 0 ? <p className="muted">No business accounts found.</p> : items.map(item => <Card as="article" className="business-table-row" key={item._id}>
         <div className="business-cell-main"><ProfileAvatar profile={{ name: item.business?.name || item.name, profileImage: item.business?.logo || item.profileImage }} /><div><strong>{item.business?.name || item.name}</strong><small>{item.email}</small><small>{item.business?.category || "General"}</small></div></div>
         <span className={`status ${item.accountStatus}`}>{item.accountStatus}</span>
         <span className="metric-cell"><FiBriefcase />{item.serviceCount}</span>
@@ -68,7 +69,7 @@ export default function BusinessManagementPage({ user, onLogout }) {
           {item.accountStatus !== "active" && <Button variant="plain" className="secondary" onClick={() => setStatus(item._id, "active")}><FiPlay />Reactivate</Button>}
           {item.accountStatus !== "disabled" && <Button variant="plain" className="danger" onClick={() => setStatus(item._id, "disabled")}><FiSlash />Disable</Button>}
         </div>
-      </article>)}
+      </Card>)}
     </section>
   </AppLayout>;
 }
