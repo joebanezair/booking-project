@@ -8,6 +8,8 @@ const mongoUri = process.env.MONGO_URI;
 const rabbitUri = process.env.RABBITMQ_URL;
 if (!mongoUri || !rabbitUri) throw new Error("MONGO_URI and RABBITMQ_URL are required");
 const queueName = "bookflow.chat.events.v1";
+const deadLetterQueue = queueName + ".dead";
+const maxAttempts = 5;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const mongo = new MongoClient(mongoUri, { maxPoolSize: 5 });
 await mongo.connect();
@@ -23,6 +25,8 @@ while (!stopping) {
     conn = await amqp.connect(rabbitUri);
     const channel = await conn.createConfirmChannel();
     await channel.assertQueue(queueName, { durable: true });
+    // Keep queue declaration compatible with existing production queue arguments.
+    await channel.assertQueue(deadLetterQueue, { durable: true });
     await channel.prefetch(20);
     await channel.consume(queueName, async delivery => {
       if (!delivery) return;
@@ -38,7 +42,29 @@ while (!stopping) {
         channel.ack(delivery);
       } catch (error) {
         console.error("RabbitMQ consumer error", error);
-        channel.nack(delivery, false, true);
+        try {
+          const previous = Number(delivery.properties.headers?.["x-bookflow-attempt"] || 0);
+          const attempts = Math.max(0, Math.min(maxAttempts, previous)) + 1;
+          // Bounded retries with a separate inspectable dead-letter queue.
+          // Publisher confirms must precede ack to avoid losing an event.
+          if (attempts <= maxAttempts) await sleep(Math.min(10_000, 300 * 2 ** attempts));
+          const destination = attempts > maxAttempts ? deadLetterQueue : queueName;
+          await new Promise((resolve, reject) => channel.sendToQueue(
+            destination, delivery.content,
+            {
+              persistent: true,
+              contentType: "application/json",
+              messageId: delivery.properties.messageId,
+              headers: { "x-bookflow-attempt": attempts }
+            },
+            issue => issue ? reject(issue) : resolve()
+          ));
+          if (attempts > maxAttempts) console.error("Chat event placed in dead-letter queue", delivery.properties.messageId);
+          channel.ack(delivery);
+        } catch (retryError) {
+          console.error("Unable to republish chat event", retryError);
+          channel.nack(delivery, false, true);
+        }
       }
     }, { noAck: false });
 
