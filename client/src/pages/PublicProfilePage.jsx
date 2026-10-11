@@ -1,3 +1,4 @@
+import { Card } from "../components/ui/card.jsx";
 import { Input } from "../components/ui/input.jsx";
 import { Textarea } from "../components/ui/textarea.jsx";
 import { Label } from "../components/ui/label.jsx";
@@ -183,7 +184,7 @@ export default function PublicProfilePage({ user }) {
       <div className="section-heading"><div><p className="eyebrow">PRODUCTS</p><h2>Shop {profile.name}&apos;s products</h2></div></div>
       {products.length === 0 ? <div className="panel empty-state"><p className="muted">No public products yet.</p></div> :
         visibleProducts.length === 0 ? <div className="panel empty-state" role="status"><p className="muted">No products match your search.</p></div> :
-        <div className="content-grid">{visibleProducts.map(product => {const images=(product.images?.length?product.images:(product.image?[product.image]:[]));return <article className="panel public-product-card" key={product._id}><Button variant="plain" type="button" className="public-product-media" disabled={!images.length} aria-label={images.length>1?`View ${images.length} images for ${product.name}`:`View image for ${product.name}`} onClick={()=>{if(images.length){setProductGallery({...product,images});setGalleryIndex(0);}}}>{images.length?<><Image src={images[0]} alt={product.name}/>{images.length>1&&<span className="image-count-badge">1 / {images.length}</span>}</>:<span className="product-image-placeholder"><FiShoppingBag/></span>}</Button><div className="public-product-body"><h3>{product.name}</h3>{product.description && <p className="muted">{product.description}</p>}<strong>{product.currency} {Number(product.price || 0).toLocaleString()}</strong><small>{product.stock > 0 ? product.stock + " in stock" : "Out of stock"}</small></div><Button className="public-order-button" disabled={product.stock<1||paused} onClick={()=>{setOrderProduct(product);setOrderForm({...orderForm,quantity:1});}}><FiShoppingBag/>Order product</Button></article>})}</div>}
+        <div className="content-grid">{visibleProducts.map(product => {const images=(product.images?.length?product.images:(product.image?[product.image]:[]));return <Card as="article" className="panel public-product-card" key={product._id}><Button variant="plain" type="button" className="public-product-media" disabled={!images.length} aria-label={images.length>1?`View ${images.length} images for ${product.name}`:`View image for ${product.name}`} onClick={()=>{if(images.length){setProductGallery({...product,images});setGalleryIndex(0);}}}>{images.length?<><Image src={images[0]} alt={product.name}/>{images.length>1&&<span className="image-count-badge">1 / {images.length}</span>}</>:<span className="product-image-placeholder"><FiShoppingBag/></span>}</Button><div className="public-product-body"><h3>{product.name}</h3>{product.description && <p className="muted">{product.description}</p>}<strong>{product.currency} {Number(product.price || 0).toLocaleString()}</strong><small>{product.stock > 0 ? product.stock + " in stock" : "Out of stock"}</small></div><Button className="public-order-button" disabled={product.stock<1||paused} onClick={()=>{setOrderProduct(product);setOrderForm({...orderForm,quantity:1});}}><FiShoppingBag/>Order product</Button></Card>})}</div>}
 
     </section>
 
@@ -196,7 +197,7 @@ export default function PublicProfilePage({ user }) {
     <section className="public-content-section verified-reviews-section">
       <div className="section-heading"><div><p className="eyebrow">VERIFIED REVIEWS</p><h2>Reviews from completed BookFlow bookings</h2></div></div>
       {reviews.length === 0 ? <div className="panel empty-state"><p className="muted">No verified reviews yet.</p></div> :
-        <div className="verified-review-list">{reviews.map(review => <article className="panel verified-review-card" key={review._id}><RatingSummary averageRating={review.rating} ratingCount={1} />{review.comment && <p>{review.comment}</p>}<small>Verified booking · {new Date(review.submittedAt).toLocaleDateString()}</small></article>)}</div>}
+        <div className="verified-review-list">{reviews.map(review => <Card as="article" className="panel verified-review-card" key={review._id}><RatingSummary averageRating={review.rating} ratingCount={1} />{review.comment && <p>{review.comment}</p>}<small>Verified booking · {new Date(review.submittedAt).toLocaleDateString()}</small></Card>)}</div>}
     </section>
   </main>;
 }
