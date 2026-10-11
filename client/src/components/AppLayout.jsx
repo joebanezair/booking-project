@@ -39,7 +39,7 @@ export default function AppLayout({ children, user, onLogout, dashboardRange = n
   const profileMenuRef = useRef(null);
   const [unread, setUnread] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(() => moreRoutePaths.some(path => isNestedRoute(pathname, path)));
+  const [moreOpen, setMoreOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.matchMedia(mobileQuery).matches);
   const drawerRef = useRef(null);
   const menuTriggerRef = useRef(null);
@@ -195,7 +195,13 @@ export default function AppLayout({ children, user, onLogout, dashboardRange = n
 
       <div className="sidebar-footer">
         {user?.role === "business" && user?.accountStatus === "paused" && <p className="sidebar-status-note">Business paused</p>}
-        <small className="sidebar-email">{user?.role === "admin" ? "Admin" : "Business"} · {user?.email}</small>
+        <div className="sidebar-footer-person">
+          <span className="sidebar-footer-avatar" aria-hidden="true">{(user?.name || "U").trim().slice(0, 1).toUpperCase()}</span>
+          <div className="sidebar-footer-account">
+            <strong>{user?.role === "admin" ? "Administrator" : "Business"}</strong>
+            <small className="sidebar-email">{user?.email}</small>
+          </div>
+        </div>
       </div>
     </aside>
 
