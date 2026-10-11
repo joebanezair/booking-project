@@ -1,3 +1,4 @@
+import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api } from "../api.js";
@@ -103,8 +104,8 @@ export default function PublicContentPage({ user }) {
         <p className="content-description">{item.description}</p>
 
         <div className="reaction-bar">
-          <button className={reactions.currentReaction === "like" ? "reaction active" : "reaction"} disabled={isOwner} onClick={() => react("like")}>👍 Like <strong>{reactions.likes || 0}</strong></button>
-          <button className={reactions.currentReaction === "dislike" ? "reaction active" : "reaction"} disabled={isOwner} onClick={() => react("dislike")}>👎 Dislike <strong>{reactions.dislikes || 0}</strong></button>
+          <Button variant="plain" className={reactions.currentReaction === "like" ? "reaction active" : "reaction"} disabled={isOwner} onClick={() => react("like")}>👍 Like <strong>{reactions.likes || 0}</strong></Button>
+          <Button variant="plain" className={reactions.currentReaction === "dislike" ? "reaction active" : "reaction"} disabled={isOwner} onClick={() => react("dislike")}>👎 Dislike <strong>{reactions.dislikes || 0}</strong></Button>
         </div>
 
         {item.allowBookings && (paused
@@ -113,7 +114,7 @@ export default function PublicContentPage({ user }) {
 
         <div className="owner-strip"><ProfileAvatar profile={item.owner} /><div><strong>{item.owner.name}</strong>{item.owner.headline && <small>{item.owner.headline}</small>}</div><Link className="secondary button-link" to={`/profile/${item.owner.username}`}>View profile</Link></div>
 
-        {item.allowRatings && <section className="rating-section"><p className="eyebrow">SERVICE RATINGS</p><RatingSummary {...item.ratingSummary} />{!isOwner && (user ? <div className="your-rating"><span>Your rating</span><RatingInput value={item.currentUserRating || 0} onChange={rate} />{item.currentUserRating && <button className="link-button" onClick={removeRating}>Remove rating</button>}</div> : <button className="link-button" onClick={() => navigate("/login")}>Business accounts can sign in to rate this service</button>)}</section>}
+        {item.allowRatings && <section className="rating-section"><p className="eyebrow">SERVICE RATINGS</p><RatingSummary {...item.ratingSummary} />{!isOwner && (user ? <div className="your-rating"><span>Your rating</span><RatingInput value={item.currentUserRating || 0} onChange={rate} />{item.currentUserRating && <Button variant="plain" className="link-button" onClick={removeRating}>Remove rating</Button>}</div> : <Button variant="plain" className="link-button" onClick={() => navigate("/login")}>Business accounts can sign in to rate this service</Button>)}</section>}
 
         <CommentSection comments={item.comments || []} currentUser={user} ownerId={item.owner.id} onAdd={addComment} onEdit={editComment} onDelete={deleteComment} onReact={reactToComment} onSignIn={() => navigate("/login")} />
       </div>
