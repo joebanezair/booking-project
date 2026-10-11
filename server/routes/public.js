@@ -14,6 +14,7 @@ import optionalAuth from "../middleware/optionalAuth.js";
 import { reactionMap } from "../lib/emojiReactions.js";
 import { isActiveProvider, isProviderOwner, providerOwnerIds } from "../lib/providers.js";
 import { calculateBookingEndsAt, getAvailableSlots, makeBookingReference, validateBookingWindow } from "../lib/scheduling.js";
+import { bookingMutationGuard } from "../middleware/bookingMutationGuard.js";
 
 const router = Router();
 
@@ -388,7 +389,7 @@ router.get("/book/:userId/slots", async (req, res) => {
   }
 });
 
-router.post("/book/:userId", async (req, res) => {
+router.post("/book/:userId", bookingMutationGuard(req => req.params.userId), async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Booking page not found." });
 
