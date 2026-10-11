@@ -1,3 +1,6 @@
+import { Button } from "../components/ui/button.jsx";
+import { Textarea } from "../components/ui/textarea.jsx";
+import { Label } from "../components/ui/label.jsx";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../api.js";
@@ -42,11 +45,11 @@ export default function ReviewPage() {
       <p className="muted">This review link is tied to your completed booking for <strong>{data.booking.service}</strong> on {new Date(data.booking.bookingDate).toLocaleDateString()}.</p>
       {data.submitted ? <div className="verified-review-confirmation"><p className="success">A verified review has already been submitted for this booking.</p><RatingSummary averageRating={data.rating} ratingCount={1} />{data.comment && <p>{data.comment}</p>}</div> :
         <form onSubmit={submit}>
-          <label>Your rating<RatingInput value={rating} onChange={setRating} /></label>
-          <label>Review<textarea rows="6" maxLength="1500" value={comment} onChange={e => setComment(e.target.value)} placeholder="Share your experience with this business." /></label>
+          <Label>Your rating<RatingInput value={rating} onChange={setRating} /></Label>
+          <Label>Review<Textarea rows="6" maxLength="1500" value={comment} onChange={e => setComment(e.target.value)} placeholder="Share your experience with this business." /></Label>
           {error && <p className="error">{error}</p>}
           {message && <p className="success">{message}</p>}
-          <button className="primary-button" disabled={!rating}>Submit verified review</button>
+          <Button variant="plain" className="primary-button" disabled={!rating}>Submit verified review</Button>
         </form>}
     </>}
   </section></main>;
