@@ -325,3 +325,195 @@ html body .ui-content-gallery .gallery-thumbs button.ui-gallery-thumbnail.active
   object-fit: contain;
   border-radius: var(--ui-image-radius);
 }
+
+
+/*
+ * Unified geometry pass. Legacy global CSS uses --ui-radius:5px and sometimes
+ * !important; scope the new 10px design to interactive UI and cards, while
+ * retaining circular avatars, star tracks and full-bleed cover cropping.
+ */
+:root {
+  --ui-radius: 10px;
+  --ui-card-radius: 10px;
+  --ui-control-radius: 10px;
+  --ui-image-radius: 10px;
+  --ui-layout-gap: 12px;
+}
+html body :is(button.ui-button, a.ui-button):not(.linkedin-avatar-button):not(.media-hit-area),
+html body :is(.ui-card, .panel, .stat-card, .public-content-card, .public-product-card, .search-product-card, .user-result, .order-card, .booking-card, .admin-content-card),
+html body :is(input.ui-input, select.ui-select, textarea.ui-textarea, .ui-search-field, .ui-dialog) {
+  border-radius: 10px !important;
+}
+/* Ordinary buttons shrink to their visible label, icon and padding. Buttons
+ * intentionally acting as full-width rows/cards/targets stay full-width. */
+html body button.ui-button:not(.ui-button-full):not(.signout-button):not(.auth-submit):not(.checkout-button):not(.user-row):not(.stat-card):not(.product-card-primary):not(.media-hit-area):not(.linkedin-avatar-button):not(.public-product-media):not(.cart-items-toggle):not(.public-order-button):not(.product-details-cart-button):not(.onboarding-collapse-trigger),
+html body a.ui-button:not(.ui-button-full):not(.public-order-button) {
+  width: fit-content;
+  max-width: 100%;
+  flex: 0 0 auto;
+}
+html body .ui-button.ui-button-full { width: 100%; justify-content: center; }
+html body .ui-button:not(.ui-button-full):not(.media-hit-area):not(.linkedin-avatar-button) {
+  min-width: 0;
+  box-sizing: border-box;
+  gap: 6px;
+}
+html body :is(.primary-button, .secondary, .danger, .button-link).ui-button {
+  white-space: normal;
+  text-align: center;
+  overflow-wrap: anywhere;
+  align-self: flex-start;
+}
+html body .topbar > .ui-button,
+html body .profile-overview-heading .ui-button,
+html body .panel-title > .ui-button {
+  width: fit-content !important;
+  align-self: flex-start;
+}
+/* Preserve genuine full-width workflows rather than shrinking checkout/auth. */
+html body .ui-button:is(.signout-button, .auth-submit, .checkout-button, .user-row, .stat-card, .product-card-primary, .media-hit-area, .public-product-media, .cart-items-toggle, .product-details-cart-button, .onboarding-collapse-trigger),
+html body .ui-button.ui-button-full {
+  width: 100% !important;
+}
+html body .ui-button.public-order-button { width: fit-content !important; max-width: calc(100% - 20px); margin-inline: auto; }
+/* Icon-only buttons are square; icon + text actions are content-sized. */
+html body .ui-button:is(.icon-action, .icon-button, .service-icon-link):not(.product-add-icon):not(.public-product-media):not(.media-hit-area) {
+  width: 32px !important;
+  min-width: 32px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
+  flex: 0 0 32px;
+}
+html body .ui-button:is(.ui-button-icon, .ui-button-icon-sm) {
+  aspect-ratio: 1;
+}
+html body .ui-button.ui-button-icon-sm {
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  flex-basis: 28px;
+}
+html body .ui-button.ui-button-icon {
+  width: 32px !important;
+  min-width: 32px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  flex-basis: 32px;
+}
+/* An icon action which contains a visible label must NEVER be squeezed to an
+ * icon-only square (e.g. the product add and "remove rating" actions). */
+html body .ui-button:is(.product-add-icon, .remove-business-rating, .booking-history-export, .service-create-link, .public-book-session-button) {
+  width: fit-content !important;
+  height: auto !important;
+  min-width: 0 !important;
+  flex: 0 0 auto;
+  padding: 6px 11px !important;
+}
+html body :is(.row-actions, .product-toolbar, .services-view-toolbar, .profile-rating-actions, .order-actions, .profile-title-row, .public-profile-actions, .panel-title) {
+  min-width: 0;
+  column-gap: 8px;
+  row-gap: 8px;
+}
+html body :is(.row-actions, .product-toolbar, .service-view-toggle, .product-view-toggle, .profile-rating-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+html body :is(.content-grid, .product-shop-grid, .user-results, .booking-list, .order-grid, .crm-grid) {
+  min-width: 0;
+  gap: var(--ui-layout-gap);
+}
+html body :is(.ui-card, .panel, .public-content-card, .public-product-card, .search-product-card, .user-result, .admin-content-card) {
+  box-sizing: border-box;
+  min-width: 0;
+}
+html body .public-page .profile-catalog-search {
+  grid-template-columns: minmax(0, 1fr) minmax(128px, 180px) minmax(128px, 180px);
+  align-items: end;
+  column-gap: 10px;
+  row-gap: 10px;
+}
+html body .public-page .profile-catalog-search-field,
+html body .public-page .profile-catalog-search-filter {
+  min-width: 0;
+}
+html body .public-page .profile-catalog-search .ui-search-field,
+html body .public-page .profile-catalog-search-filter select {
+  min-height: 36px !important;
+  height: 36px !important;
+  width: 100%;
+}
+html body .public-page .ui-discovery-filters {
+  align-items: stretch;
+  column-gap: 10px;
+  row-gap: 10px;
+}
+html body .ui-dialog,
+html body .ui-dialog-content {
+  max-width: calc(100vw - 24px);
+  box-sizing: border-box;
+}
+/* Profile covers use the shared Image element, not CSS background-image blobs.
+ * Keep the previously approved cover/photo overlap and crop positions. */
+.linkedin-cover {
+  isolation: isolate;
+}
+.linkedin-cover > .ui-profile-cover-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px 10px 0 0 !important;
+  z-index: 0;
+}
+.public-profile-hero > .public-cover {
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.public-profile-hero .public-cover > .ui-profile-cover-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px 10px 0 0 !important;
+}
+.linkedin-cover > :is(.cover-edit-button, .cover-hit-area, .cover-media-menu, .linkedin-avatar-wrap) {
+  position: absolute;
+}
+/* A separate surface owns the rounded corners; internal full-bleed image media
+ * stays flush and is not warped by the generic 10px image rule. */
+html body .ui-image:not(.profile-avatar):not(.gallery-hero):not(.ui-profile-cover-image) {
+  max-width: 100%;
+  border-radius: 10px;
+}
+html body .ui-image.profile-avatar,
+html body .profile-avatar.ui-image-fallback {
+  border-radius: 50% !important;
+}
+html body :is(.search-product-media, .product-shop-image, .public-product-media, .search-service-cover, .gallery-hero, .public-gallery-stage) .ui-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+html body .ui-content-gallery .gallery-thumbs .ui-image { border-radius: 8px; }
+@media (max-width: 760px) {
+  html body .public-page .profile-catalog-search {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  html body .public-page .profile-catalog-search-field { grid-column: 1 / -1; }
+  html body :is(.topbar, .panel-title, .profile-overview-heading, .public-profile-actions) { flex-wrap: wrap; }
+}
+@media (max-width: 420px) {
+  html body .public-page .profile-catalog-search { grid-template-columns: minmax(0, 1fr); }
+  html body .public-page .profile-catalog-search-field { grid-column: auto; }
+  html body :is(.ui-button, .ui-card, .panel, .ui-search-field) { max-width: 100%; }
+}
