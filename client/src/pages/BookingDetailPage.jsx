@@ -90,7 +90,7 @@ export default function BookingDetailPage({ user, onLogout }) {
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
       <div><p className="eyebrow">BOOKING DETAILS</p><h1>{booking?.guestName || "Booking"}</h1></div>
-      <Link className="secondary button-link icon-link" to="/dashboard/bookings"><FiArrowLeft />Back to bookings</Link>
+      <Button asChild variant="outline"><Link  className="secondary button-link icon-link" to="/dashboard/bookings"><FiArrowLeft />Back to bookings</Link></Button>
     </header>
 
     {error && <p className="error">{error}</p>}
@@ -115,7 +115,7 @@ export default function BookingDetailPage({ user, onLogout }) {
           <h2>{booking.content?.title || booking.service}</h2>
           {booking.content?.description && <p>{booking.content.description}</p>}
           <PriceDisplay price={booking.servicePrice ?? booking.content?.price ?? 0} currency={booking.currency || booking.content?.currency || "PHP"} />
-          {booking.content?.published && booking.content?.visibility !== "private" && <Link className="primary-button button-link" to={`/services/${booking.content._id}`}>View public service</Link>}
+          {booking.content?.published && booking.content?.visibility !== "private" && <Button asChild variant="default"><Link  className="primary-button button-link" to={`/services/${booking.content._id}`}>View public service</Link></Button>}
         </div>
 
         {booking.saleRecord && <div className={`booking-sale-record ${booking.saleRecord.status}`}>
@@ -126,7 +126,7 @@ export default function BookingDetailPage({ user, onLogout }) {
             <div><span>Completed</span><strong>{new Date(booking.saleRecord.completedAt).toLocaleString()}</strong></div>
           </div>
           {booking.saleRecord.status === "voided" && <p className="muted">Voided {booking.saleRecord.voidedAt ? new Date(booking.saleRecord.voidedAt).toLocaleString() : ""}{booking.saleRecord.voidReason ? ` · ${booking.saleRecord.voidReason}` : ""}</p>}
-          {booking.saleRecord.status === "recorded" && <Link className="secondary button-link" to="/dashboard/sales">View Sales & Analytics</Link>}
+          {booking.saleRecord.status === "recorded" && <Button asChild variant="outline"><Link  className="secondary button-link" to="/dashboard/sales">View Sales & Analytics</Link></Button>}
         </div>}
 
         {booking.status === "completed" && <div className="booking-review-invite">
