@@ -238,6 +238,44 @@ button:disabled, .ui-button:disabled, [aria-disabled="true"] {
 }
 :where(.booking-modal-backdrop, .photo-preview-modal, .modal-backdrop) { backdrop-filter: blur(3px); }
 
+/* Stronger selectors supersede older page CSS dimensions, without altering theme values. */
+.ui-card,
+.panel,
+.public-content-card,
+.product-shop-card,
+.search-product-card,
+.public-product-card,
+.user-result,
+.order-card,
+.booking-card,
+.verified-review-card,
+.forum-post {
+  border-radius: var(--ui-card-radius);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.ui-card,
+.panel {
+  background-color: var(--card);
+  color: var(--card-foreground);
+}
+input.ui-input,
+select.ui-select,
+textarea.ui-textarea,
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="range"]):not([type="color"]) {
+  min-height: 34px;
+  border-radius: var(--ui-control-radius);
+  padding: 7px 10px;
+}
+textarea.ui-textarea { min-height: 78px; }
+.ui-label { gap: 5px; font-weight: 600; }
+.public-page .public-profile-products .public-product-card > .public-order-button {
+  height: var(--ui-control-height) !important;
+  min-height: var(--ui-control-height) !important;
+  padding-block: 5px !important;
+}
+:where(.ui-card, .panel) > .ui-card-header + .ui-card-content { padding-top: 12px; }
+
 /* Finishing details, transparent accents, no palette modifications. */
 :where(.search-panel, .services-controls-card, .filters, .analytics-controls) {
   gap: 10px;
