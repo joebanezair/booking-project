@@ -9,9 +9,9 @@
   --ui-control-height: 32px;
   --ui-control-height-sm: 28px;
   --ui-control-height-lg: 36px;
-  --ui-card-radius: 9px;
-  --ui-image-radius: 7px;
-  --ui-control-radius: 6px;
+  --ui-card-radius: 10px;
+  --ui-image-radius: 10px;
+  --ui-control-radius: 10px;
   --ui-space: 12px;
 }
 
