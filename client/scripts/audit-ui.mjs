@@ -46,17 +46,19 @@ for(const token of ["--ui-card-radius: 10px", "--ui-control-radius: 10px", "--ui
   if (!refresh.includes(token)) failures.push("shadcn-refresh.css: missing "+token);
 }
 if (!geometry.includes("width: fit-content")) failures.push("component-polish.css: missing content-fit sizing");
-// Service status filters have a dedicated desktop-column/mobile-row layout.
+// Service status filters have a dedicated desktop-row/mobile-column layout.
 const services = readFileSync(join(root,"pages/ContentManagementPage.jsx"),"utf8");
 const filterButtons = services.match(/className=\{\`stat-card service-stat-card/g) || [];
 if (filterButtons.length !== 3) failures.push("Services filters must retain all three Total/Published/Drafts buttons.");
 if (!services.includes('aria-label="Filter services by publication status"'))
   failures.push("Services filter controls need an accessible group.");
-if (!geometry.includes("#root .services-stats-grid.stats-grid") ||
-    !geometry.includes("flex-direction: column !important") ||
-    !geometry.includes("@media (max-width: 640px)") ||
-    !geometry.includes("flex-direction: row !important"))
-  failures.push("Services stats must use compact desktop column and mobile row rules.");
+const servicesCss = geometry.slice(geometry.indexOf("/*\\n * Services management status filters".replace("\\\\n","\\n")));
+const mobileBreakpoint = servicesCss.indexOf("@media (max-width: 640px)");
+if (!servicesCss.includes("#root .services-stats-grid.stats-grid") ||
+    mobileBreakpoint < 0 ||
+    !servicesCss.slice(0, mobileBreakpoint).includes("flex-direction: row !important") ||
+    !servicesCss.slice(mobileBreakpoint).includes("flex-direction: column !important"))
+  failures.push("Services stats must use compact desktop row and mobile column rules.");
 const editorCover=readFileSync(join(root,"components/ProfileMediaHeader.jsx"),"utf8");
 const publicCover=readFileSync(join(root,"pages/PublicProfilePage.jsx"),"utf8");
 if (!editorCover.includes('className="ui-profile-cover-image"')) failures.push("ProfileMediaHeader cover is not using shared Image");
