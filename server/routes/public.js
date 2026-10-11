@@ -278,11 +278,21 @@ router.get("/search", async (req, res) => {
       Product.aggregate(discoveryPipeline("products", { published: true }, ["name", "description", "sku"]))
     ]);
     const hasMore = userRows.length > limit || serviceRows.length > limit || productRows.length > limit;
-    const users = await Promise.all(userRows.slice(0, limit).map(async user => {
-      const summary = await verifiedReviewSummary(user.businessId);
+    // Aggregate verified reviews once for the page instead of N sequential
+    // queries (one per displayed business).
+    const visibleUsers = userRows.slice(0, limit);
+    const reviewIds = visibleUsers.map(user => user.businessId).filter(Boolean);
+    const reviewRows = reviewIds.length ? await Review.aggregate([
+      { $match: { business: { $in: reviewIds }, verified: true } },
+      { $group: { _id: "$business", averageRating: { $avg: "$rating" }, ratingCount: { $sum: 1 } } }
+    ]) : [];
+    const reviewMap = new Map(reviewRows.map(row => [String(row._id), {
+      averageRating: Number(row.averageRating.toFixed(1)), ratingCount: row.ratingCount
+    }]));
+    const users = visibleUsers.map(user => {
       const { businessId, ...profile } = user;
-      return { ...profile, ...summary };
-    }));
+      return { ...profile, ...(reviewMap.get(String(businessId)) || { averageRating: 0, ratingCount: 0 }) };
+    });
     const services = serviceRows.slice(0, limit);
     const ratings = await ratingSummary(services.map(item => item._id));
     const mapped = services.map(service => ({
