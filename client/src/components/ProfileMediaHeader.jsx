@@ -1,3 +1,6 @@
+import { Button } from "./ui/button.jsx";
+import { Input } from "./ui/input.jsx";
+import { Image } from "./ui/image.jsx";
 import { useRef, useState } from "react";
 import { FiCamera, FiEye, FiMove, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 import ProfileAvatar from "./ProfileAvatar.jsx";
@@ -32,14 +35,14 @@ export default function ProfileMediaHeader({
   return <section className="linkedin-profile-media">
     <div className={"linkedin-cover" + (profile?.coverImage ? " has-image" : "")} style={coverStyle}>
       {!profile?.coverImage && <span className="linkedin-cover-placeholder">Add a cover photo</span>}
-      <button
+      <Button variant="plain"
         type="button"
         className="media-hit-area cover-hit-area"
         aria-label="Edit cover photo"
         onClick={() => !disabled && setMenu(menu === "cover" ? "" : "cover")}
         disabled={disabled}
       />
-      <button
+      <Button variant="plain"
         type="button"
         className="media-edit-button cover-edit-button"
         aria-label="Cover photo options"
@@ -47,16 +50,16 @@ export default function ProfileMediaHeader({
         disabled={disabled}
       >
         <FiCamera aria-hidden="true" />
-      </button>
+      </Button>
 
       {menu === "cover" && <div className="profile-media-menu cover-media-menu" role="menu">
-        <button type="button" onClick={() => pick(coverInput)}><FiUpload aria-hidden="true" />Change cover photo</button>
-        {profile?.coverImage && <button type="button" className="menu-danger" onClick={() => { setMenu(""); onRemoveCover?.(); }}><FiTrash2 aria-hidden="true" />Remove cover photo</button>}
-        <button type="button" onClick={() => setMenu("")}><FiX aria-hidden="true" />Cancel</button>
+        <Button variant="plain" type="button" onClick={() => pick(coverInput)}><FiUpload aria-hidden="true" />Change cover photo</Button>
+        {profile?.coverImage && <Button variant="plain" type="button" className="menu-danger" onClick={() => { setMenu(""); onRemoveCover?.(); }}><FiTrash2 aria-hidden="true" />Remove cover photo</Button>}
+        <Button variant="plain" type="button" onClick={() => setMenu("")}><FiX aria-hidden="true" />Cancel</Button>
       </div>}
 
       <div className="linkedin-avatar-wrap">
-        <button
+        <Button variant="plain"
           type="button"
           className="linkedin-avatar-button"
           aria-label="Profile photo options"
@@ -65,25 +68,25 @@ export default function ProfileMediaHeader({
         >
           <ProfileAvatar profile={profile} size="xl" />
           <span className="avatar-camera-badge"><FiCamera aria-hidden="true" /></span>
-        </button>
+        </Button>
 
         {menu === "profile" && <div className="profile-media-menu profile-photo-menu" role="menu">
-          {profile?.profileImage && <button type="button" onClick={() => { setMenu(""); setPreviewOpen(true); }}><FiEye aria-hidden="true" />View photo</button>}
-          <button type="button" onClick={() => pick(profileInput)}><FiUpload aria-hidden="true" />Change profile photo</button>
-          {profile?.profileImage && onReposition && <button type="button" onClick={() => { setMenu(""); onReposition(); }}><FiMove aria-hidden="true" />Reposition profile photo</button>}
-          {profile?.profileImage && <button type="button" className="menu-danger" onClick={() => { setMenu(""); onRemoveProfile?.(); }}><FiTrash2 aria-hidden="true" />Delete profile photo</button>}
-          <button type="button" onClick={() => setMenu("")}><FiX aria-hidden="true" />Cancel</button>
+          {profile?.profileImage && <Button variant="plain" type="button" onClick={() => { setMenu(""); setPreviewOpen(true); }}><FiEye aria-hidden="true" />View photo</Button>}
+          <Button variant="plain" type="button" onClick={() => pick(profileInput)}><FiUpload aria-hidden="true" />Change profile photo</Button>
+          {profile?.profileImage && onReposition && <Button variant="plain" type="button" onClick={() => { setMenu(""); onReposition(); }}><FiMove aria-hidden="true" />Reposition profile photo</Button>}
+          {profile?.profileImage && <Button variant="plain" type="button" className="menu-danger" onClick={() => { setMenu(""); onRemoveProfile?.(); }}><FiTrash2 aria-hidden="true" />Delete profile photo</Button>}
+          <Button variant="plain" type="button" onClick={() => setMenu("")}><FiX aria-hidden="true" />Cancel</Button>
         </div>}
       </div>
     </div>
 
-    <input ref={coverInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={event => selected(onCoverFile, event)} />
-    <input ref={profileInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={event => selected(onProfileFile, event)} />
+    <Input ref={coverInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={event => selected(onCoverFile, event)} />
+    <Input ref={profileInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={event => selected(onProfileFile, event)} />
 
     {previewOpen && profile?.profileImage && <div className="photo-preview-modal" role="dialog" aria-modal="true" aria-label="Profile photo preview" onClick={() => setPreviewOpen(false)}>
       <div className="photo-preview-dialog" onClick={event => event.stopPropagation()}>
-        <button type="button" className="photo-preview-close" aria-label="Close photo preview" onClick={() => setPreviewOpen(false)}><FiX /></button>
-        <img
+        <Button variant="plain" type="button" className="photo-preview-close" aria-label="Close photo preview" onClick={() => setPreviewOpen(false)}><FiX /></Button>
+        <Image
           src={profile.profileImage}
           alt={profile.name || "Profile"}
           style={{ objectPosition: String(profile.profileImagePositionX ?? 50) + "% " + String(profile.profileImagePositionY ?? 50) + "%" }}
