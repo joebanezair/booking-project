@@ -78,6 +78,35 @@ if (!inventoryStyles.includes("border: 0 !important;") ||
   failures.push("Product cards need exactly one visible border; the inner selection must be borderless.");
 if (!uiEntry.includes('import "./inventory-card-refresh.css";'))
   failures.push("Product inventory refinement stylesheet must load after the legacy styles.");
+// The business onboarding refresh preserves seven actionable setup links,
+// accessible progress and disclosure semantics, and 3/2/1-column layouts.
+const onboardingComponent = readFileSync(join(root,"components/BusinessSetupChecklist.jsx"),"utf8");
+const dashboard = readFileSync(join(root,"pages/DashboardPage.jsx"),"utf8");
+const onboardingCss = readFileSync(join(root,"business-onboarding-refresh.css"),"utf8");
+const appEntry = readFileSync(join(root,"main.jsx"),"utf8");
+const onboardingSteps = [
+  "Business account created", "Complete your Business Page", "Add profile and cover photos",
+  "Set your working availability", "Create your first service",
+  "Publish a bookable service", "Share your booking link or QR"
+];
+for (const step of onboardingSteps)
+  if (!dashboard.includes(step)) failures.push("Business onboarding task missing: " + step);
+if (!dashboard.includes("<BusinessSetupChecklist") ||
+    !onboardingComponent.includes("items.map(") ||
+    !onboardingComponent.includes("to={item.to}"))
+  failures.push("Business checklist must preserve all action links.");
+if (!onboardingComponent.includes('role="progressbar"') ||
+    !onboardingComponent.includes("aria-valuenow={completed}") ||
+    !onboardingComponent.includes("aria-expanded={expanded}") ||
+    !onboardingComponent.includes('id="business-onboarding-steps"'))
+  failures.push("Business checklist needs accessible progress and working collapse semantics.");
+if (!onboardingCss.includes("repeat(3, minmax(0, 1fr))") ||
+    !onboardingCss.includes("repeat(2, minmax(0, 1fr))") ||
+    !onboardingCss.includes("grid-template-columns: minmax(0, 1fr) !important") ||
+    !onboardingCss.includes(".onboarding-launch-list[hidden]"))
+  failures.push("Business checklist needs responsive 3/2/1-column layout and hidden state.");
+if (!appEntry.includes('import "./business-onboarding-refresh.css";'))
+  failures.push("Business checklist styles must load after legacy dashboard CSS.");
 const editorCover=readFileSync(join(root,"components/ProfileMediaHeader.jsx"),"utf8");
 const publicCover=readFileSync(join(root,"pages/PublicProfilePage.jsx"),"utf8");
 if (!editorCover.includes('className="ui-profile-cover-image"')) failures.push("ProfileMediaHeader cover is not using shared Image");
