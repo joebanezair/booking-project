@@ -1,0 +1,259 @@
+/*
+ * Sidebar v2: condensed navigation + accessible More dropdown.
+ * Scoped to the dashboard sidebar. Preserve desktop hover rail, keyboard
+ * focus, mobile drawer, destinations, active routes, and notification badge.
+ * This file loads last to disambiguate legacy sidebar CSS.
+ */
+html body .page-shell > aside.sidebar {
+  box-sizing: border-box;
+  min-height: 0;
+}
+html body .page-shell > aside.sidebar .sidebar-main {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  overflow: hidden;
+  gap: 0 !important;
+}
+html body .page-shell > aside.sidebar .sidebar-brand {
+  flex: 0 0 auto;
+  min-height: 44px !important;
+  margin: 0 0 9px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  min-width: 0;
+  width: 100%;
+  gap: 8px !important;
+  padding: 0 0 8px !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none;
+  overscroll-behavior: contain;
+}
+/* Keep wheel, touch, and keyboard scrolling available while removing the
+ * heavy Windows scrollbar. Do not use overflow:hidden on the navigation. */
+html body .page-shell > aside.sidebar .sidebar-nav::-webkit-scrollbar,
+html body .page-shell > aside.sidebar .sidebar-nav-group::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav-group {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  gap: 2px;
+  min-width: 0;
+}
+html body .page-shell > aside.sidebar .sidebar-nav .sidebar-section-label {
+  display: block;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  margin: 0 0 3px !important;
+  padding: 0 11px !important;
+  font-size: 9px !important;
+  line-height: 16px;
+  letter-spacing: .11em;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link,
+html body .page-shell > aside.sidebar .sidebar-nav button.sidebar-nav-toggle.ui-button {
+  position: relative;
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 7px 11px !important;
+  gap: 10px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #9ba7bd;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.2;
+  text-align: left;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color .15s ease, background-color .15s ease;
+}
+html body .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button) > svg:first-child {
+  display: block;
+  flex: 0 0 17px !important;
+  width: 17px !important;
+  height: 17px !important;
+  min-width: 17px !important;
+  color: currentColor;
+}
+html body .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button) > span {
+  display: block;
+  min-width: 0;
+  font-size: 12px !important;
+  line-height: 1.25;
+}
+html body .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button):hover,
+html body .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button):focus-visible {
+  color: #f2f5ff !important;
+  background: rgba(135,159,216,.09) !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active {
+  color: #fff !important;
+  background: rgba(101,128,224,.16) !important;
+  font-weight: 650 !important;
+  box-shadow: inset 3px 0 0 #5d7cff !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active > svg {
+  color: #a8baff !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav button.sidebar-nav-toggle.current-section {
+  color: #f2f5ff !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav button.sidebar-nav-toggle > .sidebar-nav-chevron {
+  width: 15px !important;
+  height: 15px !important;
+  flex: 0 0 15px !important;
+  margin-left: auto;
+  color: #8190aa;
+  transform: rotate(0);
+  transition: transform .15s ease;
+}
+html body .page-shell > aside.sidebar .sidebar-nav button.sidebar-nav-toggle[aria-expanded="true"] > .sidebar-nav-chevron {
+  transform: rotate(180deg);
+}
+html body .page-shell > aside.sidebar .sidebar-nav .sidebar-more-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 3px 0 0 10px;
+  min-width: 0;
+}
+html body .page-shell > aside.sidebar .sidebar-nav .sidebar-more-links > a.sidebar-nav-link {
+  height: 34px !important;
+  min-height: 34px !important;
+  font-size: 12px !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav .nav-badge {
+  flex-shrink: 0;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  margin-left: auto;
+  font-size: 10px !important;
+  border-radius: 999px !important;
+}
+/* The footer remains visible and separated from the independently scrollable
+ * links; low-height screens can still scroll navigation in full. */
+html body .page-shell > aside.sidebar .sidebar-footer {
+  flex: 0 0 auto !important;
+  min-height: 0;
+  margin-top: 0 !important;
+  padding-top: 9px !important;
+  background: #111a2d;
+}
+
+/* Desktop's existing 78px collapsed rail expands on hover/focus. In its
+ * collapsed state, center icons and hide labels without losing tooltip titles. */
+@media (min-width: 801px) {
+  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) .sidebar-nav .sidebar-section-label {
+    opacity: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button) {
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: 7px !important;
+  }
+  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) .sidebar-nav button.sidebar-nav-toggle > span,
+  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) .sidebar-nav button.sidebar-nav-toggle > .sidebar-nav-chevron {
+    display: none !important;
+  }
+  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) .sidebar-nav .sidebar-more-links {
+    padding-left: 0;
+  }
+  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) .sidebar-nav .sidebar-more-links a.sidebar-nav-link {
+    justify-content: center !important;
+    padding: 7px !important;
+  }
+  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) .sidebar-nav .nav-badge {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    margin: 0;
+    min-width: 16px;
+    height: 16px;
+    font-size: 9px !important;
+  }
+  html body .page-shell > aside.sidebar:hover .sidebar-nav .sidebar-section-label,
+  html body .page-shell > aside.sidebar:focus-within .sidebar-nav .sidebar-section-label {
+    opacity: 1 !important;
+    height: auto !important;
+    margin: 0 0 3px !important;
+    padding: 0 11px !important;
+  }
+  html body .page-shell > aside.sidebar:hover .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button),
+  html body .page-shell > aside.sidebar:focus-within .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button) {
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    padding: 7px 11px !important;
+  }
+  html body .page-shell > aside.sidebar:hover .sidebar-nav .sidebar-more-links,
+  html body .page-shell > aside.sidebar:focus-within .sidebar-nav .sidebar-more-links {
+    padding-left: 10px;
+  }
+}
+
+/* Mobile: the navigation is the existing slide-out drawer. Keep a usable
+ * 40px target, with the same grouping and disclosure as desktop. */
+@media (max-width: 800px) {
+  html body .page-shell > aside.sidebar {
+    overflow: hidden !important;
+  }
+  html body .page-shell > aside.sidebar .sidebar-main {
+    min-height: 0;
+  }
+  html body .page-shell > aside.sidebar .sidebar-nav {
+    gap: 9px !important;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  html body .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button) {
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 8px 12px !important;
+  }
+  html body .page-shell > aside.sidebar .sidebar-nav .sidebar-more-links > a.sidebar-nav-link {
+    height: 40px !important;
+    min-height: 40px !important;
+  }
+  html body .page-shell > aside.sidebar .sidebar-nav .sidebar-section-label {
+    opacity: 1 !important;
+    height: auto !important;
+    margin: 0 0 3px !important;
+    padding: 0 12px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button),
+  html body .page-shell > aside.sidebar .sidebar-nav .sidebar-nav-chevron {
+    transition: none !important;
+  }
+}
