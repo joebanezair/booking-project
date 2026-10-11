@@ -12,6 +12,23 @@ There is no customer account role and no customer-to-business approval workflow.
 
 **Branch:** `betta-vone` only. BookFlow's original theme variables, dark/light colors, existing features, routes, media data, and service/product/booking actions are preserved. The UI uses **local shadcn-style React primitives**, not an installed upstream shadcn/Radix/Tailwind component registry; migrating to Radix-based primitives remains a separate task.
 
+### UI consistency sweep — October 11, 2026
+
+- **All authored native buttons:** Repository UI audit confirms there are no raw `<button>` elements outside `client/src/components/ui/button.jsx`. The button primitive supports `variant`, `size`, `asChild`, `fullWidth`, `data-variant`, and `data-size`. Previously hardcoded button-styled navigation links (booking, dashboard, profiles, discovery, forum, service creation/edit and public booking CTA) now use `<Button asChild><Link ... /></Button>`.
+- **Button fit:** Normal actions take only the room needed by their label/icon. Square icon buttons stay square (28px/32px), while deliberate full-width interactions (login, checkout, sidebar user rows, product-card selection, full-bleed image editing) remain full width. Long button labels wrap rather than extending past cards.
+- **Exactly 10px radius:** Shared button, input/select/textarea, search-field, card, modal and image corners use 10px geometry through `--ui-control-radius`, `--ui-card-radius`, `--ui-image-radius` and scoped rules in `component-polish.css`. **Circular avatars remain circular**. Cover images retain their approved placement and top-corner rounding; full-bleed controls and modal backdrop are not treated as normal cards.
+- **Profile/media consistency:** `ProfileMediaHeader` and `PublicProfilePage` cover photos now use the existing `components/ui/image.jsx` primitive rather than CSS `background-image`. Its error fallback also supports products, content thumbnails and profile avatars. There is **no official Image component in the upstream shadcn/ui registry**; the project intentionally implements a compatible local image primitive.
+- **Spacing and alignment:** Buttons, search filters, profile catalog controls, action rows, product toolbars, rating controls, cards and dialogs use shared 8/10/12px gaps, min-width guards and mobile wrapping to reduce overlaps without losing actions, the grid/list toggle, ratings or media cropping.
+- **Future-proofing:** New `client/scripts/audit-ui.mjs` runs in GitHub Actions for every push/PR; it fails if JSX reintroduces raw buttons/images or bypasses `Button asChild` for button-looking links, or if the geometry tokens and shared profile cover images go missing.
+
+From the repository root, run:
+
+```bash
+node client/scripts/audit-ui.mjs
+```
+
+This is a **source and CI check**, not a promise of pixel-perfect rendering. Before release, inspect 320px, 375px, 768px, 1024px and 1440px viewports in both themes and interact with modal focus, profile image actions, buttons, POS checkout, search, chat and public bookings. The large historical stylesheet still has conflicting legacy `!important` rules that should be retired page by page after visual QA.
+
 ### Upgraded components
 
 | Scope | Update |
