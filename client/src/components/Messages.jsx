@@ -1,4 +1,5 @@
 import { Button } from "./ui/button.jsx";
+import { SearchField } from "./ui/search-field.jsx";
 import { Input } from "./ui/input.jsx";
 import { Image } from "./ui/image.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -20,7 +21,7 @@ export default function Messages({currentUser,initialUserId}){
   useEffect(()=>{loadUsers();loadRequests();const socket=getRealtimeSocket();if(!socket)return;const receive=m=>{loadUsers();if(String(m.sender)!==String(selectedRef.current?._id))return;setConversation(c=>c.some(x=>x._id===m._id)?c:[...c,{...m,emojiReactions:m.emojiReactions||[]}]);};const reaction=e=>setConversation(c=>c.map(m=>String(m._id)===String(e.targetId)?{...m,emojiReactions:applyRealtimeReaction(m.emojiReactions,e,currentUser.id)}:m));const unsent=e=>setConversation(c=>c.map(m=>String(m._id)===String(e.messageId)?{...m,body:"",attachment:null,sharedProfile:null,unsentAt:new Date().toISOString()}:m));socket.on("message:new",receive);socket.on("message:reaction",reaction);socket.on("message:unsent",unsent);socket.on("connect_error",()=>{});return()=>{socket.off("message:new",receive);socket.off("message:reaction",reaction);socket.off("message:unsent",unsent);};},[currentUser.id]);
   useEffect(()=>{selectedRef.current=selected;},[selected]);
   useEffect(()=>{if(initialUserId&&String(initialUserId)!==String(currentUser.id))openById(initialUserId);},[initialUserId,currentUser.id]);
-  useEffect(()=>{if(!query.trim()){setResults([]);return;}const t=setTimeout(()=>api.messages.searchUsers(query).then(setResults).catch(e=>setError(e.message)),250);return()=>clearTimeout(t);},[query]);
+  useEffect(()=>{let cancelled=false;if(!query.trim()){setResults([]);return;}const t=setTimeout(()=>api.messages.searchUsers(query).then(result=>{if(!cancelled)setResults(result);}).catch(e=>{if(!cancelled)setError(e.message);}),250);return()=>{cancelled=true;clearTimeout(t);};},[query]);
   useEffect(()=>{
     if (!listRef.current) return;
     if (scrollSnapshotRef.current) {
@@ -61,7 +62,7 @@ export default function Messages({currentUser,initialUserId}){
     {error&&<p className="error message-error">{error}</p>}
     <div className="messages-layout">
       <aside className="messenger-sidebar">
-        <div className="message-search"><Input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search friends or people..." /></div>
+        <div className="message-search"><SearchField value={query} onValueChange={setQuery} placeholder="Search friends or people..." aria-label="Search friends or people" /></div>
         {requests.length>0&&<div className="friend-requests"><strong>Friend requests</strong>{requests.map(r=><div className="friend-request" key={r._id}><span>{r.from?.name}</span><Button variant="plain" onClick={()=>acceptFriend(r.from?._id)}>Accept</Button></div>)}</div>}
         <div className="user-list">{visible.map(u=><Button variant="plain" className={`user-row ${selected?._id===u._id?"active":""} ${u.unreadCount?"unread":""}`} key={u._id} onClick={()=>openById(u._id)}><span className="avatar">{u.profileImage?<Image src={u.profileImage} alt="" />:u.name[0]}</span><span className="user-row-copy"><span className="user-row-title"><strong>{u.pinned?"📌 ":""}{u.name}</strong>{u.unreadCount>0&&<b>{u.unreadCount}</b>}</span><small>{u.preview||u.email}</small></span></Button>)}</div>
         {query&&results.filter(r=>!users.some(u=>u._id===r._id)).length>0&&<div className="people-results"><strong>People</strong>{results.filter(r=>!users.some(u=>u._id===r._id)).map(u=><div className="people-result" key={u._id}><span>{u.name}<small>{u.username?"@"+u.username:u.email}</small></span>{u.friend?<Button variant="plain" onClick={()=>openById(u._id)}>Message</Button>:<Button variant="plain" disabled={u.requestSent} onClick={()=>addFriend(u._id)}>{u.requestSent?"Sent":"Add friend"}</Button>}</div>)}</div>}
