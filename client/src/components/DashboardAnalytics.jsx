@@ -111,7 +111,7 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
   const completedTrend = useMemo(() => completionTrend(data?.records, range, primaryCurrency), [data, range, primaryCurrency]);
   const salesTrend = data?.trend || [];
   const metrics = [
-    { key: "sales", label: "This period", value: summary ? currencyFormat(summary.totalSales, primaryCurrency) : "—", description: "Recorded completed-service sales", icon: FiDollarSign, tone: "blue", series: salesTrend.map(item => item.revenue) },
+    { key: "sales", label: "This period", value: summary ? currencyFormat(summary.totalSales, primaryCurrency) : "—", description: "Recorded service and product sales", icon: FiDollarSign, tone: "blue", series: salesTrend.map(item => item.revenue) },
     { key: "completed", label: "Completed", value: summary?.completedServices ?? "—", description: "Services completed this period", icon: FiCalendar, tone: "green", series: completedTrend.map(item => item.revenue) },
     { key: "average", label: "Average sale", value: summary ? currencyFormat(summary.averageSale, primaryCurrency) : "—", description: "Primary currency", icon: FiTrendingUp, tone: "orange", series: [] },
     { key: "services", label: "Services sold", value: summary?.servicesSold ?? "—", description: "Distinct services this period", icon: FiBriefcase, tone: "purple", series: [] }
@@ -133,7 +133,7 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
       <Card as="section" className="dashboard-v2-sales" aria-labelledby="dashboard-sales-heading">
         <div className="dashboard-v2-panel-head">
           <div><h3 id="dashboard-sales-heading">Sales Overview</h3>
-            <p className="dashboard-v2-muted">Completed-service activity · {title.toLowerCase()}</p></div>
+            <p className="dashboard-v2-muted">Recorded sales activity · {title.toLowerCase()}</p></div>
           <div className="dashboard-v2-sales-controls" role="group" aria-label="Sales chart view">
             {[["sales","Sales"],["completed","Completed"],["services","Services"]].map(([key, label]) =>
               <Button key={key} type="button" variant="ghost" size="sm"
@@ -147,7 +147,7 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
               realServices.length ? <ServiceSalesChart data={realServices} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No service sales yet</strong><span>Top services will appear after a completed sale.</span></div>
             : chartTab === "completed" ?
               completedTrend.length ? <SalesTrendChart data={completedTrend} currency="" formatValue={number => String(Math.round(number))} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed services in this period</strong><span>Completed services will appear here when recorded.</span></div>
-            : salesTrend.length ? <SalesTrendChart data={salesTrend} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed sales in this period</strong><span>Sales data will appear here after you complete services and record sales.</span></div>}
+            : salesTrend.length ? <SalesTrendChart data={salesTrend} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed sales in this period</strong><span>Recorded sales will appear here after completing services or product orders.</span></div>}
         </div>
         <div className="dashboard-v2-sales-footer"><Button asChild variant="link" size="sm"><Link to="/dashboard/sales">Full analytics <FiArrowRight aria-hidden="true" /></Link></Button></div>
       </Card>
@@ -157,7 +157,7 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
         <p className="dashboard-v2-muted">Most sold services · {title.toLowerCase()}</p>
         {realServices.length ? <ol className="dashboard-v2-top-list">{realServices.slice(0,5).map((item, index) =>
           <li key={item.service}><span>{index+1}</span><div><strong>{item.service}</strong><small>{item.sales} completed · {currencyFormat(item.revenue,primaryCurrency)}</small></div></li>)}</ol>
-        : <div className="dashboard-v2-top-empty"><FiBarChart2 aria-hidden="true"/><strong>No service data yet</strong><p>Services you sell this period will appear here.</p></div>}
+        : <div className="dashboard-v2-top-empty"><FiBarChart2 aria-hidden="true"/><strong>No service data yet</strong><p>Completed service sales will appear here.</p></div>}
       </Card>
     </div>
   </section>;
