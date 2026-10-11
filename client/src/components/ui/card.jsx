@@ -1,5 +1,13 @@
-export function Card({className="",...props}){return <div className={["ui-card",className].filter(Boolean).join(" ")} {...props}/>;}
-export function CardHeader({className="",...props}){return <div className={["ui-card-header",className].filter(Boolean).join(" ")} {...props}/>;}
-export function CardTitle({className="",...props}){return <h3 className={["ui-card-title",className].filter(Boolean).join(" ")} {...props}/>;}
-export function CardDescription({className="",...props}){return <p className={["ui-card-description",className].filter(Boolean).join(" ")} {...props}/>;}
-export function CardContent({className="",...props}){return <div className={["ui-card-content",className].filter(Boolean).join(" ")} {...props}/>;}
+import { forwardRef } from "react";
+
+function part(tag, slot, base) {
+  return forwardRef(function CardPart({ as: Tag = tag, className = "", ...props }, ref) {
+    return <Tag ref={ref} data-slot={slot} className={[base, className].filter(Boolean).join(" ")} {...props} />;
+  });
+}
+export const Card = part("div", "card", "ui-card");
+export const CardHeader = part("div", "card-header", "ui-card-header");
+export const CardTitle = part("h3", "card-title", "ui-card-title");
+export const CardDescription = part("p", "card-description", "ui-card-description");
+export const CardContent = part("div", "card-content", "ui-card-content");
+export const CardFooter = part("div", "card-footer", "ui-card-footer");
