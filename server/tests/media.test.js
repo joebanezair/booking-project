@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  publicMediaInput, signedPrivateReference, validPrivateSignature
+  publicMediaInput, privateMediaInput, signedPrivateReference, validPrivateSignature
 } from "../lib/mediaStore.js";
 
 process.env.JWT_SECRET = "test-only-secret-that-is-more-than-thirty-two-characters";
@@ -24,4 +24,11 @@ test("Private media signatures expire and cannot be altered", () => {
   assert.equal(validPrivateSignature("507f1f77bcf86cd799439012", expires, sig), false);
   assert.equal(validPrivateSignature(id, 1, sig), false);
   assert.equal(validPrivateSignature(id, expires, "0".repeat(64)), false);
+});
+
+test("Only this deployment's private media reference URLs are accepted", () => {
+  assert.equal(privateMediaInput(`/api/media/private/${id}`), true);
+  assert.equal(privateMediaInput(`https://api.example.test/api/media/private/${id}`), true);
+  assert.equal(privateMediaInput(`https://untrusted.test/api/media/private/${id}`), false);
+  assert.equal(privateMediaInput(`https://api.example.test/api/media/public/${id}`), false);
 });
