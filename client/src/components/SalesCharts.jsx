@@ -6,7 +6,8 @@ function money(value, currency) {
   }
 }
 
-export function SalesTrendChart({ data = [], currency = "PHP" }) {
+export function SalesTrendChart({ data = [], currency = "PHP", formatValue }) {
+  const format = formatValue || (value => money(value, currency));
   if (!data.length) return <div className="analytics-empty">No completed sales in this period.</div>;
 
   const width = 760;
@@ -28,12 +29,12 @@ export function SalesTrendChart({ data = [], currency = "PHP" }) {
         const y = padding.top + chartH - step * chartH;
         return <g key={step}>
           <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} className="chart-grid-line" />
-          <text x={padding.left - 8} y={y + 4} textAnchor="end" className="chart-axis-label">{money(max * step, currency)}</text>
+          <text x={padding.left - 8} y={y + 4} textAnchor="end" className="chart-axis-label">{format(max * step)}</text>
         </g>;
       })}
       <path d={path} fill="none" className="chart-line" />
       {points.map((point, index) => <g key={point.key}>
-        <circle cx={point.x} cy={point.y} r="4.5" className="chart-point"><title>{point.label}: {money(point.revenue, currency)}</title></circle>
+        <circle cx={point.x} cy={point.y} r="4.5" className="chart-point"><title>{point.label}: {format(point.revenue)}</title></circle>
         {(data.length <= 8 || index % Math.ceil(data.length / 8) === 0 || index === data.length - 1) &&
           <text x={point.x} y={height - 18} textAnchor="middle" className="chart-x-label">{point.label}</text>}
       </g>)}
