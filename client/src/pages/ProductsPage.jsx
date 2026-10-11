@@ -8,7 +8,7 @@ import { Textarea } from "../components/ui/textarea.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiX } from "react-icons/fi";
+import { FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
 
@@ -20,6 +20,7 @@ export default function ProductsPage({user,onLogout}){
   const [products,setProducts]=useState([]);
   const [form,setForm]=useState(blank);
   const [creating,setCreating]=useState(false);
+  const [creatingBusy,setCreatingBusy]=useState(false);
   const [editing,setEditing]=useState(null);
   const [selected,setSelected]=useState(null);
   const [quantity,setQuantity]=useState(1);
@@ -41,7 +42,20 @@ export default function ProductsPage({user,onLogout}){
   async function refresh(){setProducts(await api.sales.products());}
   useEffect(()=>{refresh().catch(e=>setError(e.message));},[]);
 
-  async function addProduct(e){e.preventDefault();try{const item=await api.sales.createProduct(form);setProducts(v=>[item,...v]);setForm(blank);setCreating(false);setMessage("Product created.");setError("");}catch(e){setError(e.message);}}
+  async function addProduct(e){
+    e.preventDefault();
+    if(creatingBusy)return;
+    setCreatingBusy(true);
+    setError("");
+    try{
+      const item=await api.sales.createProduct(form);
+      setProducts(v=>[item,...v]);
+      setForm(blank);
+      setCreating(false);
+      setMessage("Product created.");
+    }catch(e){setError(e.message);}
+    finally{setCreatingBusy(false);}
+  }
   async function saveProduct(e){e.preventDefault();try{const item=await api.sales.updateProduct(editing._id,editing);setProducts(v=>v.map(x=>x._id===item._id?item:x));setEditing(null);setMessage("Product updated.");setError("");}catch(e){setError(e.message);}}
   async function removeProduct(item){try{await api.sales.removeProduct(item._id);setProducts(v=>v.filter(x=>x._id!==item._id));setCart(v=>{const next={...v};delete next[item._id];return next;});setDeleteTarget(null);setMessage("Product deleted.");}catch(e){setError(e.message);}}
 
@@ -63,7 +77,7 @@ export default function ProductsPage({user,onLogout}){
 
     <div className="products-page-grid">
       <section className="panel">
-        <div className="panel-title"><div><p className="eyebrow product-catalog-label">CATALOG</p><h2 className="product-inventory-title">Product inventory</h2></div><div className="row-actions product-toolbar"><Button variant="plain" type="button" className="icon-action product-add-icon" aria-label="Add product" data-tooltip="Add product" onClick={()=>{setForm(blank);setCreating(true);}}><FiPlus/><span className="product-add-label"><span className="product-add-short">Add</span><span className="product-add-full"> Product</span></span></Button><div className="product-view-toggle" role="group" aria-label="Product view"><Button variant="plain" type="button" className={"icon-action "+(productView==="grid"?"active":"")} aria-label="Grid view" data-tooltip="Grid view" aria-pressed={productView==="grid"} onClick={()=>setProductView("grid")}><FiGrid/></Button><Button variant="plain" type="button" className={"icon-action "+(productView==="list"?"active":"")} aria-label="List view" data-tooltip="List view" aria-pressed={productView==="list"} onClick={()=>setProductView("list")}><FiList/></Button></div><span className="count product-count-icon" aria-label={`${products.length} products`} data-tooltip={`${products.length} products`}><FiShoppingBag/><strong>{products.length}</strong></span></div></div>
+        <div className="panel-title"><div><p className="eyebrow product-catalog-label">CATALOG</p><h2 className="product-inventory-title">Product inventory</h2></div><div className="row-actions product-toolbar"><Button variant="plain" type="button" className="icon-action product-add-icon" aria-label="Add product" data-tooltip="Add product" onClick={()=>{setForm(blank);setError("");setCreating(true);}}><FiPlus/><span className="product-add-label"><span className="product-add-short">Add</span><span className="product-add-full"> Product</span></span></Button><div className="product-view-toggle" role="group" aria-label="Product view"><Button variant="plain" type="button" className={"icon-action "+(productView==="grid"?"active":"")} aria-label="Grid view" data-tooltip="Grid view" aria-pressed={productView==="grid"} onClick={()=>setProductView("grid")}><FiGrid/></Button><Button variant="plain" type="button" className={"icon-action "+(productView==="list"?"active":"")} aria-label="List view" data-tooltip="List view" aria-pressed={productView==="list"} onClick={()=>setProductView("list")}><FiList/></Button></div><span className="count product-count-icon" aria-label={`${products.length} products`} data-tooltip={`${products.length} products`}><FiShoppingBag/><strong>{products.length}</strong></span></div></div>
         <SearchField className="product-ui-search" value={search} onValueChange={setSearch} placeholder="Search products..." aria-label="Search products" />{filteredProducts.length===0&&search?<p className="muted search-empty">No products match “{search}”.</p>:<div className={"product-shop-grid "+(productView==="list"?"product-shop-list":"")}>{filteredProducts.map(item=><Card as="article" key={item._id} className={"product-shop-card product-inventory-tile "+(item.stock<=0?"out-of-stock":"")}><Button type="button" variant="plain" className="product-card-primary" disabled={item.stock<=0} aria-label={`Select ${item.name} for checkout`} onClick={()=>openProduct(item)}>
           <div className="product-shop-image">{(item.images?.[0]||item.image)?<Image src={item.images?.[0]||item.image} alt={item.name}/>:<FiPackage/>}</div><div className="product-shop-info"><strong>{item.name}</strong><small>{item.sku||"No SKU"}</small><span>{money(item.price,item.currency)}</span><small>{item.stock>0?`${item.stock} in stock`:"Out of stock"}</small></div>
           </Button><div className="product-card-actions product-card-menu"><Button variant="plain" className="icon-action product-more-button" type="button" aria-label={`Actions for ${item.name}`} data-tooltip="Product actions" aria-expanded={productMenu===item._id} onClick={()=>setProductMenu(v=>v===item._id?null:item._id)}><FiMoreHorizontal/></Button>{productMenu===item._id&&<div className="product-action-popover"><Button variant="plain" className="icon-action" type="button" aria-label="Edit product" data-tooltip="Edit product" onClick={()=>{setEditing({...item});setProductMenu(null);}}><FiEdit2/></Button><Button variant="plain" className="icon-action product-delete-button" type="button" aria-label="Delete product" data-tooltip="Delete product" onClick={()=>{setDeleteTarget(item);setProductMenu(null);}}><FiTrash2/></Button></div>}</div>
@@ -82,9 +96,93 @@ export default function ProductsPage({user,onLogout}){
     </div>
 
     {deleteTarget&&<Dialog open={Boolean(deleteTarget)} title="Delete product" onOpenChange={open=>{if(!open)setDeleteTarget(null);}}><DialogContent className="ui-product-confirm"><div className="panel-title"><div><p className="eyebrow">DELETE PRODUCT</p><h2 id="delete-product-title">Delete {deleteTarget.name}?</h2></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close delete confirmation" data-tooltip="Close" onClick={()=>setDeleteTarget(null)}><FiX/></Button></div><p className="muted">This product will be permanently removed from your inventory. This action cannot be undone.</p><div className="delete-product-actions"><Button variant="plain" type="button" className="secondary" onClick={()=>setDeleteTarget(null)}>Cancel</Button><Button variant="plain" type="button" className="danger" onClick={()=>removeProduct(deleteTarget)}><FiTrash2/>Delete product</Button></div></DialogContent></Dialog>}
-      {confirmCheckout&&<Dialog open={confirmCheckout} title="Confirm checkout" dismissible={!checkoutBusy} onOpenChange={open=>{if(!open&&!checkoutBusy)setConfirmCheckout(false);}}><DialogContent className="ui-product-confirm"><div className="panel-title"><div><p className="eyebrow">FINAL CHECK</p><h2>Confirm checkout</h2></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close checkout confirmation" onClick={()=>setConfirmCheckout(false)}><FiX/></Button></div><p className="muted">Review this sale before completing the transaction.</p><div className="checkout-confirm-summary"><div><span>Customer</span><strong>{customerName.trim()||"Walk-in"}</strong></div><div><span>Payment</span><strong>{paymentMethod.charAt(0).toUpperCase()+paymentMethod.slice(1)}</strong></div><div><span>Items</span><strong>{cartLines.reduce((s,x)=>s+x.quantity,0)}</strong></div></div><div className="checkout-confirm-items">{cartLines.map(item=><div key={item._id}><span>{item.name} × {item.quantity}</span><strong>{money(item.price*item.quantity,item.currency)}</strong></div>)}</div><div className="pos-total"><span>Total</span><strong>{money(cartTotal,currency)}</strong></div><div className="checkout-confirm-actions"><Button variant="plain" type="button" className="secondary" onClick={()=>setConfirmCheckout(false)}>Cancel</Button>{error&&<p className="error" role="alert">{error}</p>}<Button variant="plain" type="button" className="primary-button" disabled={checkoutBusy} onClick={checkout}>{checkoutBusy?"Processing checkout…":"Confirm checkout"}</Button></div></DialogContent></Dialog>}
+      {confirmCheckout&&<Dialog open={confirmCheckout} title="Confirm checkout" dismissible={!checkoutBusy} onOpenChange={open=>{if(!open&&!checkoutBusy)setConfirmCheckout(false);}}><DialogContent className="ui-product-confirm"><div className="panel-title"><div><p className="eyebrow">FINAL CHECK</p><h2>Confirm checkout</h2></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close checkout confirmation" onClick={()=>setConfirmCheckout(false)}><FiX/></Button></div><p className="muted">Review this sale before completing the transaction.</p><div className="checkout-confirm-summary"><div><span>Customer</span><strong>{customerName.trim()||"Walk-in"}</strong></div><div><span>Payment</span><strong>{paymentMethod.charAt(0).toUpperCase()+paymentMethod.slice(1)}</strong></div><div><span>Items</span><strong>{cartLines.reduce((s,x)=>s+x.quantity,0)}</strong></div></div><div className="checkout-confirm-items">{cartLines.map(item=><div key={item._id}><span>{item.name} × {item.quantity}</span><strong>{money(item.price*item.quantity,item.currency)}</strong></div>)}</div><div className="pos-total"><span>Total</span><strong>{money(cartTotal,currency)}</strong></div><div className="checkout-confirm-actions"><Button variant="plain" type="button" className="secondary" onClick={()=>setConfirmCheckout(false)}>Cancel</Button>{error&&<p className="error    {creating && <Dialog open={creating} title="Add new product" dismissible={!creatingBusy}
+      className="product-create-dialog"
+      onOpenChange={open => { if (!open && !creatingBusy) setCreating(false); }}>
+      <DialogContent className="product-create-dialog-content">
+        <div className="product-create-header">
+          <div>
+            <p className="eyebrow">NEW PRODUCT</p>
+            <h2>Add product</h2>
+            <p className="product-create-subtitle">Add your item details, pricing, and images.</p>
+          </div>
+          <Button variant="ghost" size="icon-sm" type="button" aria-label="Close new product"
+            disabled={creatingBusy} onClick={()=>setCreating(false)}><FiX aria-hidden="true"/></Button>
+        </div>
+        <form className="product-edit-form product-create-form" onSubmit={addProduct} id="product-create-form">
+          <div className="product-form-body">
+            <Label className="product-field-full">Product name
+              <Input autoFocus required maxLength={180} placeholder="e.g. Universal AC Contactor"
+                value={form.name} onChange={e=>setForm(v=>({...v,name:e.target.value}))}/>
+            </Label>
+            <div className="product-form-grid">
+              <Label>SKU <span className="product-field-hint">(optional)</span>
+                <Input placeholder="e.g. JBA-HVAC-016" value={form.sku} onChange={e=>setForm(v=>({...v,sku:e.target.value}))}/>
+              </Label>
+              <Label>Currency
+                <Select value={form.currency} onChange={e=>setForm(v=>({...v,currency:e.target.value}))}>
+                  <option value="PHP">PHP</option><option value="USD">USD</option>
+                  <option value="GBP">GBP</option><option value="SGD">SGD</option><option value="CAD">CAD</option>
+                </Select>
+              </Label>
+            </div>
+            <Label className="product-field-full">Description
+              <Textarea rows={3} placeholder="Add details customers should know about this product"
+                value={form.description} onChange={e=>setForm(v=>({...v,description:e.target.value}))}/>
+            </Label>
+            <div className="product-form-upload">
+              <div className="product-upload-title">
+                <strong>Product images</strong>
+                <span>{form.images.length} / 8 images</span>
+              </div>
+              <Label className={"product-upload-dropzone"+(form.images.length>=8?" is-full":"")}>
+                <FiUploadCloud aria-hidden="true"/>
+                <span><strong>Choose product images</strong>
+                  <small>PNG, JPG, or WebP. Up to 8 images.</small></span>
+                <Input type="file" accept="image/*" multiple disabled={form.images.length>=8}
+                  aria-label="Choose product images"
+                  onChange={e=>{
+                    readProductImages(e.target.files,form.images,images=>setForm(v=>({...v,images:[...v.images,...images.slice(form.images.length)].slice(0,8)})));
+                    e.target.value="";
+                  }}/>
+              </Label>
+              {form.images.length>0 && <div className="product-image-editor product-create-previews" aria-label="Selected images">
+                {form.images.map((src,index)=><div key={index} className="product-image-thumb">
+                  <Image src={src} alt={`Product image ${index+1}`}/>
+                  <Button variant="ghost" size="icon-sm" type="button" aria-label={`Remove image ${index+1}`}
+                    onClick={()=>setForm(v=>({...v,images:v.images.filter((_,i)=>i!==index)}))}><FiX aria-hidden="true"/></Button>
+                </div>)}
+              </div>}
+            </div>
+            <div className="product-form-grid">
+              <Label>Price
+                <Input type="number" inputMode="decimal" min="0" step="0.01" required placeholder="0.00"
+                  value={form.price} onChange={e=>setForm(v=>({...v,price:e.target.value}))}/>
+              </Label>
+              <Label>Initial stock
+                <Input type="number" inputMode="numeric" min="0" step="1" required placeholder="0"
+                  value={form.stock} onChange={e=>setForm(v=>({...v,stock:e.target.value}))}/>
+              </Label>
+            </div>
+            <Label className="product-create-publish">
+              <Input type="checkbox" checked={form.published}
+                onChange={e=>setForm(v=>({...v,published:e.target.checked}))}/>
+              <span className="product-publish-copy"><strong>Publish on public profile</strong>
+                <small>Make this product visible to customers.</small></span>
+            </Label>
+          </div>
+          {error && <p className="error product-create-error" role="alert">{error}</p>}
+          <div className="product-create-actions">
+            <Button variant="outline" type="button" disabled={creatingBusy} onClick={()=>setCreating(false)}>Cancel</Button>
+            <Button variant="default" type="submit" disabled={creatingBusy}>
+              <FiPlus aria-hidden="true"/>{creatingBusy?"Creating...":"Create product"}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>}
 
-    {creating&&<div className="booking-modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setCreating(false);}}><section className="panel booking-modal product-create-modal" role="dialog" aria-modal="true" aria-label="Add new product"><div className="panel-title"><div><p className="eyebrow">NEW PRODUCT</p><h2>Add product</h2></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close" data-tooltip="Close" onClick={()=>setCreating(false)}><FiX/></Button></div><form className="product-edit-form" onSubmit={addProduct}><Label>Name<Input autoFocus required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></Label><div className="two-col"><Label>SKU<Input value={form.sku} onChange={e=>setForm({...form,sku:e.target.value})}/></Label><Label>Currency<Select value={form.currency} onChange={e=>setForm({...form,currency:e.target.value})}><option value="PHP">PHP</option><option value="USD">USD</option><option value="GBP">GBP</option><option value="SGD">SGD</option><option value="CAD">CAD</option></Select></Label></div><Label>Description<Textarea rows="4" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Product description"/></Label><Label>Product images <span className="muted">({form.images.length}/8)</span><Input type="file" accept="image/*" multiple disabled={form.images.length>=8} onChange={e=>{readProductImages(e.target.files,form.images,images=>setForm({...form,images}));e.target.value="";}}/></Label>{form.images.length>0&&<div className="product-image-editor">{form.images.map((src,index)=><div key={index} className="product-image-thumb"><Image src={src} alt={`Product ${index+1}`}/><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Remove image" data-tooltip="Remove image" onClick={()=>setForm({...form,images:form.images.filter((_,i)=>i!==index)})}><FiX/></Button></div>)}</div>}<div className="two-col"><Label>Price<Input required type="number" min="0" step="0.01" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/></Label><Label>Initial stock<Input required type="number" min="0" step="1" value={form.stock} onChange={e=>setForm({...form,stock:e.target.value})}/></Label></div><Label className="check-row"><Input type="checkbox" checked={form.published} onChange={e=>setForm({...form,published:e.target.checked})}/>Publish on public profile</Label><div className="row-actions"><Button variant="plain" className="primary-button"><FiPlus/>Create product</Button><Button variant="plain" type="button" className="secondary" onClick={()=>setCreating(false)}>Cancel</Button></div></form></section></div>}
+w-actions"><Button variant="plain" className="primary-button"><FiPlus/>Create product</Button><Button variant="plain" type="button" className="secondary" onClick={()=>setCreating(false)}>Cancel</Button></div></form></section></div>}
 
     {selected&&<div className="booking-modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setSelected(null);}}><section className="panel booking-modal product-quantity-modal product-details-modal" role="dialog" aria-modal="true" aria-label={"Product details for "+selected.name}><div className="panel-title product-details-header"><div><p className="eyebrow">PRODUCT DETAILS</p></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close product" data-tooltip="Close" onClick={()=>setSelected(null)}><FiX/></Button></div><div className="product-details-layout"><div className="product-details-image">{(selected.images?.[0]||selected.image)?<Image src={selected.images?.[0]||selected.image} alt={selected.name}/>:<FiPackage/>}</div><div className="product-details-content"><h2>{selected.name}</h2><strong className="product-details-price">{money(selected.price,selected.currency)}</strong><span className="muted">{selected.stock} available</span><Label>Quantity<Input autoFocus type="number" min="1" max={selected.stock} value={quantity} onChange={e=>setQuantity(Math.min(selected.stock,Math.max(1,Number(e.target.value||1))))}/></Label><Button variant="plain" type="button" className="primary-button product-details-cart-button" onClick={addToCart}><FiShoppingCart/>Add to cart</Button><div className="product-details-description"><strong>Product Description</strong><p>{selected.description||"No description provided."}</p></div><div className="product-details-meta"><div><span>SKU</span><strong>{selected.sku||"No SKU"}</strong></div><div><span>Stock</span><strong>{selected.stock}</strong></div></div></div></div></section></div>}
 
