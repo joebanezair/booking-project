@@ -153,6 +153,42 @@ async function applyStatus(booking, nextStatus) {
   return { booking, sale, review };
 }
 
+// Aggregate dashboard status counts in MongoDB instead of downloading all
+// bookings. Date windows use the business browser's timezone offset, matching
+// the existing /sales/analytics endpoint. Restricted to the signed-in owner.
+router.get("/status-summary", async (req, res) => {
+  try {
+    const range = ["today", "7d", "month", "year", "all"].includes(req.query.range) ? req.query.range : "month";
+    const offset = Number(req.query.offset || 0);
+    if (!Number.isFinite(offset) || Math.abs(offset) > 840)
+      return res.status(400).json({ message: "Invalid timezone offset." });
+    const localNow = new Date(Date.now() - offset * 60000);
+    const year = localNow.getUTCFullYear();
+    const month = localNow.getUTCMonth();
+    const day = localNow.getUTCDate();
+    const boundary = (y,m,d) => new Date(Date.UTC(y,m,d) + offset * 60000);
+    let start = null, end = null;
+    if (range === "today") { start = boundary(year,month,day); end = boundary(year,month,day+1); }
+    else if (range === "7d") { start = boundary(year,month,day-6); end = boundary(year,month,day+1); }
+    else if (range === "month") { start = boundary(year,month,1); end = boundary(year,month+1,1); }
+    else if (range === "year") { start = boundary(year,0,1); end = boundary(year+1,0,1); }
+    const match = { user: new mongoose.Types.ObjectId(req.user.id) };
+    if (start && end) match.bookingDate = { $gte: start, $lt: end };
+    const groups = await Booking.aggregate([
+      { $match: match },
+      { $group: { _id: "$status", count: { $sum: 1 } } }
+    ]);
+    const statuses = Object.fromEntries(groups.map(row => [row._id, row.count]));
+    const completed = statuses.completed || 0;
+    const upcoming = (statuses.pending || 0) + (statuses.confirmed || 0) + (statuses.in_progress || 0);
+    const cancelled = (statuses.cancelled || 0) + (statuses.no_show || 0);
+    return res.json({ range, completed, upcoming, cancelled, total: completed + upcoming + cancelled });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Unable to load booking status summary." });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     const filter = { user: req.user.id };
