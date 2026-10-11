@@ -33,6 +33,9 @@ jobs:
         working-directory: client
         run: npm ci
 
+      - name: Audit shared UI primitives and button sizing
+        run: node client/scripts/audit-ui.mjs
+
       - name: Build client
         working-directory: client
         run: npm run build
