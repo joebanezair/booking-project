@@ -297,3 +297,31 @@ html body .ui-content-gallery .gallery-thumbs button.ui-gallery-thumbnail.active
 }
 /* Avoid long labels pushing action buttons outside narrow cards. */
 .ui-search-results-status { margin: 0 0 10px; font-size: 12px; }
+
+
+/* Photo preview stays inside the browser's accessible modal top layer. */
+.ui-dialog.ui-photo-preview-dialog {
+  width: min(660px, calc(100vw - 32px));
+  max-width: min(660px, calc(100vw - 32px));
+}
+.ui-photo-preview-content {
+  position: relative;
+  padding: 14px;
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+}
+.ui-photo-preview-content .ui-photo-preview-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+}
+.ui-photo-preview-content > .ui-image {
+  max-height: min(70dvh, 620px);
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--ui-image-radius);
+}
