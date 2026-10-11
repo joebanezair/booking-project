@@ -45,7 +45,11 @@ function workingDay(business, day) {
 }
 
 function bookingEnd(booking) {
-  if (booking.bookingEndsAt) return new Date(booking.bookingEndsAt);
+  // bookingEndsAt marks service completion, not the end of the required cleanup
+  // buffer. Count both during conflict checks and available-slot generation.
+  if (booking.bookingEndsAt) {
+    return new Date(new Date(booking.bookingEndsAt).getTime() + Math.max(0, Number(booking.bufferMinutes || 0)) * 60000);
+  }
   const minutes = Number(booking.serviceDurationMinutes || 60) + Number(booking.bufferMinutes || 0);
   return new Date(new Date(booking.bookingDate).getTime() + minutes * 60000);
 }
