@@ -83,11 +83,11 @@ export default function DashboardPage({ user, onLogout }) {
       {overviewError && <p className="error">{overviewError}</p>}
 
       {isAdmin && <section className="stats-grid admin-platform-stats">
-        <article className="stat-card"><span>Businesses</span><strong>{overview?.businesses.total ?? "—"}</strong><small>{overview ? `${overview.businesses.active} active · ${overview.businesses.paused} paused · ${overview.businesses.disabled} disabled` : "Loading activity…"}</small></article>
-        <article className="stat-card"><span>Services</span><strong>{overview?.services.total ?? "—"}</strong><small>{overview ? `${overview.services.published} published` : "Loading activity…"}</small></article>
-        <article className="stat-card"><span>Bookings</span><strong>{overview?.bookings.total ?? "—"}</strong><small>{overview ? `${overview.bookings.pending} pending · ${overview.bookings.completed} completed` : "Loading activity…"}</small></article>
-        <article className="stat-card"><span>Recorded sales</span><strong>{overview?.sales?.recorded ?? "—"}</strong><small>{overview?.sales?.totalsByCurrency?.length ? overview.sales.totalsByCurrency.map(item => `${item.currency} ${Number(item.total || 0).toLocaleString()}`).join(" · ") : "Completed booking value"}</small></article>
-        <article className="stat-card"><span>Verified reviews</span><strong>{overview?.reviews.verified ?? "—"}</strong><small>Completed-booking reviews</small></article>
+        <Card as="article" className="stat-card"><span>Businesses</span><strong>{overview?.businesses.total ?? "—"}</strong><small>{overview ? `${overview.businesses.active} active · ${overview.businesses.paused} paused · ${overview.businesses.disabled} disabled` : "Loading activity…"}</small></Card>
+        <Card as="article" className="stat-card"><span>Services</span><strong>{overview?.services.total ?? "—"}</strong><small>{overview ? `${overview.services.published} published` : "Loading activity…"}</small></Card>
+        <Card as="article" className="stat-card"><span>Bookings</span><strong>{overview?.bookings.total ?? "—"}</strong><small>{overview ? `${overview.bookings.pending} pending · ${overview.bookings.completed} completed` : "Loading activity…"}</small></Card>
+        <Card as="article" className="stat-card"><span>Recorded sales</span><strong>{overview?.sales?.recorded ?? "—"}</strong><small>{overview?.sales?.totalsByCurrency?.length ? overview.sales.totalsByCurrency.map(item => `${item.currency} ${Number(item.total || 0).toLocaleString()}`).join(" · ") : "Completed booking value"}</small></Card>
+        <Card as="article" className="stat-card"><span>Verified reviews</span><strong>{overview?.reviews.verified ?? "—"}</strong><small>Completed-booking reviews</small></Card>
       </section>}
 
       {!isAdmin && <section className="panel onboarding-panel">
@@ -101,10 +101,10 @@ export default function DashboardPage({ user, onLogout }) {
 
       {!isAdmin && <section className="business-dashboard-analytics">
         <div className="stats-grid">
-          <article className="stat-card analytics-stat"><span><FiDollarSign />This month</span><strong>{businessSales ? money(businessSales.summary.totalSales, salesCurrency) : "—"}</strong><small>Recorded completed-service sales</small></article>
-          <article className="stat-card analytics-stat"><span><FiCalendar />Completed</span><strong>{businessSales?.summary.completedServices ?? "—"}</strong><small>Services completed this month</small></article>
-          <article className="stat-card analytics-stat"><span><FiTrendingUp />Average sale</span><strong>{businessSales ? money(businessSales.summary.averageSale, salesCurrency) : "—"}</strong><small>Primary currency</small></article>
-          <article className="stat-card analytics-stat"><span><FiBriefcase />Services sold</span><strong>{businessSales?.summary.servicesSold ?? "—"}</strong><small>Distinct services this month</small></article>
+          <Card as="article" className="stat-card analytics-stat"><span><FiDollarSign />This month</span><strong>{businessSales ? money(businessSales.summary.totalSales, salesCurrency) : "—"}</strong><small>Recorded completed-service sales</small></Card>
+          <Card as="article" className="stat-card analytics-stat"><span><FiCalendar />Completed</span><strong>{businessSales?.summary.completedServices ?? "—"}</strong><small>Services completed this month</small></Card>
+          <Card as="article" className="stat-card analytics-stat"><span><FiTrendingUp />Average sale</span><strong>{businessSales ? money(businessSales.summary.averageSale, salesCurrency) : "—"}</strong><small>Primary currency</small></Card>
+          <Card as="article" className="stat-card analytics-stat"><span><FiBriefcase />Services sold</span><strong>{businessSales?.summary.servicesSold ?? "—"}</strong><small>Distinct services this month</small></Card>
         </div>
         <section className="panel dashboard-sales-chart">
           <div className="panel-title"><div><p className="eyebrow">THIS MONTH</p><h2>Sales trend</h2></div><Link className="secondary button-link icon-link" to="/dashboard/sales">Full analytics<FiArrowRight /></Link></div>
