@@ -1,3 +1,6 @@
+import { Button } from "./ui/button.jsx";
+import { Input } from "./ui/input.jsx";
+import { Textarea } from "./ui/textarea.jsx";
 import { Label } from "./ui/label.jsx";
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
@@ -50,16 +53,16 @@ export default function BusinessProfileSection({user,onUserUpdate}){
     <div className="panel-title"><div><p className="eyebrow">BUSINESS DETAILS</p><h2>{form.name||"Business profile"}</h2></div><span className={`status ${user.accountStatus||"active"}`}>{user.accountStatus||"active"}</span></div>
     {user.accountStatus==="paused"&&<p className="warning-note">Your business is paused. You can edit your profile and manage existing bookings, but you cannot publish services or receive new bookings until an admin reactivates it.</p>}
     <form onSubmit={save}>
-      <div className="two-col"><Label>Business name<input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></label><Label>Category<input value={form.category} onChange={e=>setForm({...form,category:e.target.value})} placeholder="General"/></label></div>
-      <Label>Description<textarea rows="5" maxLength="2000" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/></label>
-      <div className="two-col"><Label>Location<input value={form.location} onChange={e=>setForm({...form,location:e.target.value})}/></label><Label>Contact phone<input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label></div>
-      <div className="two-col"><Label>Business email<input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} required/></label><Label>Website<input type="url" placeholder="https://..." value={form.website} onChange={e=>setForm({...form,website:e.target.value})}/></label></div>
+      <div className="two-col"><Label>Business name<Input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></Label><Label>Category<Input value={form.category} onChange={e=>setForm({...form,category:e.target.value})} placeholder="General"/></Label></div>
+      <Label>Description<Textarea rows="5" maxLength="2000" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/></Label>
+      <div className="two-col"><Label>Location<Input value={form.location} onChange={e=>setForm({...form,location:e.target.value})}/></Label><Label>Contact phone<Input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></Label></div>
+      <div className="two-col"><Label>Business email<Input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} required/></Label><Label>Website<Input type="url" placeholder="https://..." value={form.website} onChange={e=>setForm({...form,website:e.target.value})}/></Label></div>
 
       <p className="muted">Booking schedule, timezone, slot interval, notice period, and blackout dates are managed from <strong>Bookings → Availability</strong>.</p>
 
-      <div className="image-actions"><label className="upload-button">Choose business logo<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>chooseLogo(e.target.files?.[0])}/></label>{form.logo&&<button type="button" className="danger" onClick={()=>setForm({...form,logo:""})}>Remove logo</button>}</div>
+      <div className="image-actions"><Label className="upload-button">Choose business logo<Input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>chooseLogo(e.target.files?.[0])}/></Label>{form.logo&&<Button variant="plain" type="button" className="danger" onClick={()=>setForm({...form,logo:""})}>Remove logo</Button>}</div>
       {error&&<p className="error">{error}</p>}{message&&<p className="success">{message}</p>}
-      <button className="primary-button">Save business details</button>
+      <Button variant="plain" className="primary-button">Save business details</Button>
     </form>
   </section>;
 }
