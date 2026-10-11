@@ -1,6 +1,6 @@
 import { Button } from "./ui/button.jsx";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX } from "react-icons/fi";
+import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX, FiChevronDown, FiMoreHorizontal } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
@@ -20,6 +20,15 @@ const navigation = [
   { to: "/search", label: "Search", icon: FiSearch }
 ];
 
+// Keep every route; secondary destinations live in an accessible disclosure.
+const workspaceLabels = new Set(["Dashboard", "Services", "Bookings", "Sales", "Products", "Businesses"]);
+const activityLabels = new Set(["Messages", "Notifications"]);
+const moreLabels = new Set(["Profile", "Forum", "Settings", "Search"]);
+const moreRoutePaths = ["/dashboard/profile", "/forum", "/dashboard/settings", "/search"];
+function isNestedRoute(pathname, base) {
+  return pathname === base || pathname.startsWith(base + "/");
+}
+
 const mobileQuery = "(max-width: 800px)";
 const drawerFocusSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -27,6 +36,7 @@ export default function AppLayout({ children, user, onLogout }) {
   const { pathname } = useLocation();
   const [unread, setUnread] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(() => moreRoutePaths.some(path => isNestedRoute(pathname, path)));
   const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.matchMedia(mobileQuery).matches);
   const drawerRef = useRef(null);
   const menuTriggerRef = useRef(null);
@@ -49,6 +59,7 @@ export default function AppLayout({ children, user, onLogout }) {
   }, []);
 
   useEffect(() => { setMobileOpen(false); }, [pathname]);
+  useEffect(() => { if (moreRoutePaths.some(path => isNestedRoute(pathname, path))) setMoreOpen(true); }, [pathname]);
   useEffect(() => { if (!isMobile) setMobileOpen(false); }, [isMobile]);
 
   const visibleNavigation = navigation.filter(item => {
@@ -56,6 +67,20 @@ export default function AppLayout({ children, user, onLogout }) {
     if (item.businessOnly) return user?.role === "business";
     return true;
   });
+
+  const workspaceNavigation = visibleNavigation.filter(item => workspaceLabels.has(item.label));
+  const activityNavigation = visibleNavigation.filter(item => activityLabels.has(item.label));
+  const moreNavigation = visibleNavigation.filter(item => moreLabels.has(item.label));
+  const moreActive = moreNavigation.some(item => isNestedRoute(pathname, item.to));
+
+  function renderSidebarLink({ to, label, icon: Icon, end }) {
+    return <NavLink className="sidebar-nav-link" to={to} end={end} key={to} title={label}
+      onClick={() => closeMobileNavigation()}>
+      <Icon aria-hidden="true" />
+      <span>{label}</span>
+      {label === "Notifications" && unread > 0 && <b className="nav-badge">{unread > 99 ? "99+" : unread}</b>}
+    </NavLink>;
+  }
 
   const mobilePaths = user?.role === "admin"
     ? ["/dashboard", "/dashboard/businesses", "/dashboard/messages", "/search"]
@@ -120,13 +145,29 @@ export default function AppLayout({ children, user, onLogout }) {
           <strong>BookFlow</strong>
         </Link>
 
-        <span className="sidebar-section-label" aria-hidden="true">WORKSPACE</span>
         <nav className="sidebar-nav" aria-label="Dashboard navigation">
-          {visibleNavigation.map(({ to, label, icon: Icon, end }) => <NavLink className="sidebar-nav-link" to={to} end={end} key={to} title={label} onClick={() => closeMobileNavigation()}>
-            <Icon aria-hidden="true" />
-            <span>{label}</span>
-            {label === "Notifications" && unread > 0 && <b className="nav-badge">{unread > 99 ? "99+" : unread}</b>}
-          </NavLink>)}
+          <div className="sidebar-nav-group">
+            <span className="sidebar-section-label" aria-hidden="true">WORKSPACE</span>
+            {workspaceNavigation.map(renderSidebarLink)}
+          </div>
+          <div className="sidebar-nav-group sidebar-activity-group">
+            <span className="sidebar-section-label" aria-hidden="true">ACTIVITY</span>
+            {activityNavigation.map(renderSidebarLink)}
+          </div>
+          {moreNavigation.length > 0 && <div className="sidebar-nav-group sidebar-more-group">
+            <Button variant="ghost" type="button"
+              className={"sidebar-nav-toggle" + (moreActive ? " current-section" : "")}
+              title="More pages" aria-label={moreOpen ? "Collapse more pages" : "Expand more pages"}
+              aria-controls="sidebar-more-links" aria-expanded={moreOpen}
+              onClick={() => setMoreOpen(value => !value)}>
+              <FiMoreHorizontal aria-hidden="true" />
+              <span>More</span>
+              <FiChevronDown className="sidebar-nav-chevron" aria-hidden="true" />
+            </Button>
+            {moreOpen && <div id="sidebar-more-links" className="sidebar-more-links">
+              {moreNavigation.map(renderSidebarLink)}
+            </div>}
+          </div>}
         </nav>
       </div>
 
