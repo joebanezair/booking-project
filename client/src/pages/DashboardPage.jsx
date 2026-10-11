@@ -40,7 +40,7 @@ export default function DashboardPage({ user, onLogout }) {
   const [overview, setOverview] = useState(null);
   const [businessSales, setBusinessSales] = useState(null);
   const [bookingSummary, setBookingSummary] = useState(null);
-  const [dashboardRange, setDashboardRange] = useState("month");
+  const dashboardRange = "month";
   const [salesLoading, setSalesLoading] = useState(true);
   const [statusLoading, setStatusLoading] = useState(true);
   const [setup, setSetup] = useState({ profile: null, business: null, services: null });
@@ -84,7 +84,7 @@ export default function DashboardPage({ user, onLogout }) {
     { label: "Share your booking link or QR", description: "Help customers book your services.", done: Boolean(localStorage.getItem("bookflow_booking_shared")), to: "/dashboard/profile" }
   ] : [];
 
-  return <AppLayout user={user} onLogout={onLogout} dashboardRange={isAdmin ? null : dashboardRange} onDashboardRangeChange={setDashboardRange}>
+  return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
       <div>
         <p className="eyebrow">{isAdmin ? "ADMIN DASHBOARD" : "BUSINESS DASHBOARD"}</p>
