@@ -126,7 +126,7 @@ export default function PublicProfilePage({ user }) {
               {friendship.incomingRequest ? <Button variant="plain" className="primary-button icon-link" disabled={friendBusy} onClick={() => friendAction("accept")}><FiUserPlus aria-hidden="true" />Accept Friend</Button> :
                friendship.isFriend ? <Button variant="plain" className="secondary icon-link" disabled={friendBusy} onClick={() => friendAction("unfriend")}><FiUserCheck aria-hidden="true" />Friends</Button> :
                <Button variant="plain" className="primary-button icon-link" disabled={friendBusy || friendship.requestSent || friendship.blocked} onClick={() => friendAction("add")}><FiUserPlus aria-hidden="true" />{friendship.requestSent ? "Request Sent" : "Add Friend"}</Button>}
-              {canMessage && <Link className="secondary button-link icon-link" to={conversationPath}><FiMessageSquare aria-hidden="true" />Message</Link>}
+              {canMessage && <Button asChild variant="outline"><Link  className="secondary button-link icon-link" to={conversationPath}><FiMessageSquare aria-hidden="true" />Message</Link></Button>}
             </div>}
           </div>
           {paused && <div className="paused-public-banner">Temporarily unavailable — this business is not accepting new bookings right now.</div>}
@@ -150,7 +150,7 @@ export default function PublicProfilePage({ user }) {
           <div className="profile-meta">
             {profile.location && <span>{profile.location}</span>}
             {profile.website && <a href={profile.website} target="_blank" rel="noreferrer">Website</a>}
-            {!paused && <Link className="public-book-session-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link>}
+            {!paused && <Button asChild variant="default"><Link  className="public-book-session-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
           </div>
         </div>
       </div>
