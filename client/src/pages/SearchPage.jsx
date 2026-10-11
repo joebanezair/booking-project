@@ -5,7 +5,7 @@ import { Input } from "../components/ui/input.jsx";
 import { Select } from "../components/ui/select.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect,useRef,useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
 import ContentCard from "../components/ContentCard.jsx";
 import SearchProductCard from "../components/SearchProductCard.jsx";
@@ -13,8 +13,11 @@ import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { FiBriefcase, FiGrid, FiList, FiPackage, FiStar, FiUsers } from "react-icons/fi";
 
 export default function SearchPage({user}) {
-  const [query,setQuery]=useState(""),[category,setCategory]=useState(""),[minRating,setMinRating]=useState("0"),[tab,setTab]=useState("services"),[businessView,setBusinessView]=useState("grid"),[data,setData]=useState({users:[],services:[],products:[],hasMore:false,hasMoreByType:{users:false,services:false,products:false}}),[error,setError]=useState(""),[loading,setLoading]=useState(true),[page,setPage]=useState(1);
+  const [searchParams] = useSearchParams();
+  const externalQuery = searchParams.get("q") || "";
+  const [query,setQuery]=useState(externalQuery),[category,setCategory]=useState(""),[minRating,setMinRating]=useState("0"),[tab,setTab]=useState("services"),[businessView,setBusinessView]=useState("grid"),[data,setData]=useState({users:[],services:[],products:[],hasMore:false,hasMoreByType:{users:false,services:false,products:false}}),[error,setError]=useState(""),[loading,setLoading]=useState(true),[page,setPage]=useState(1);
   const searchVersionRef=useRef(0),loadingMoreVersionRef=useRef(null);
+  useEffect(() => { setQuery(externalQuery); }, [externalQuery]);
   function changeFilter(setter,value){searchVersionRef.current+=1;setLoading(true);setError("");setter(value);}
   useEffect(()=>{let cancelled=false;const version=searchVersionRef.current;const timer=setTimeout(()=>{setLoading(true);setError("");api.search({q:query,category,minRating,page:1}).then(result=>{if(cancelled||version!==searchVersionRef.current)return;setData(result);setPage(1);}).catch(e=>{if(!cancelled&&version===searchVersionRef.current)setError(e.message);}).finally(()=>{if(!cancelled&&version===searchVersionRef.current)setLoading(false);});},300);return()=>{cancelled=true;clearTimeout(timer);searchVersionRef.current+=1;};},[query,category,minRating]);
   async function more(){const version=searchVersionRef.current;if(loading||loadingMoreVersionRef.current===version)return;loadingMoreVersionRef.current=version;setLoading(true);try{const next=page+1,result=await api.search({q:query,category,minRating,page:next});if(version!==searchVersionRef.current)return;setData(current=>({users:[...current.users,...result.users],services:[...current.services,...result.services],products:[...(current.products||[]),...(result.products||[])],hasMore:result.hasMore,hasMoreByType:result.hasMoreByType}));setPage(next);}catch(e){if(version===searchVersionRef.current)setError(e.message);}finally{if(loadingMoreVersionRef.current===version)loadingMoreVersionRef.current=null;if(version===searchVersionRef.current)setLoading(false);}}
