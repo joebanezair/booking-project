@@ -25,6 +25,44 @@ async function request(path, options = {}) {
   return data;
 }
 
+// Use binary transfer with a configured GridFS server, and preserve existing
+// Base64 forms in local development when the optional media DB is not enabled.
+let mediaCapabilities;
+async function binaryUploadsAvailable() {
+  if (!mediaCapabilities) mediaCapabilities = request("/media/capabilities")
+    .then(result => Boolean(result.binaryUploads))
+    .catch(error => { mediaCapabilities = null; throw error; });
+  return mediaCapabilities;
+}
+
+async function maybeUploadMedia(value, visibility = "public") {
+  if (typeof value !== "string" || !value.startsWith("data:")) return value;
+  if (!await binaryUploadsAvailable()) return value;
+  const match = /^data:([\w.+-]+\/[\w.+-]+);base64,([a-zA-Z0-9+/=]+)$/.exec(value);
+  if (!match) throw new Error("Invalid image or attachment format.");
+  const approximateSize = Math.floor(match[2].length * 3 / 4);
+  if (approximateSize > (visibility === "private" ? 5 : 2) * 1024 * 1024 + 2)
+    throw new Error("File is too large to upload.");
+  const decoded = atob(match[2]);
+  const bytes = new Uint8Array(decoded.length);
+  for (let i = 0; i < decoded.length; i += 1) bytes[i] = decoded.charCodeAt(i);
+  const saved = await request("/media/upload?visibility=" + visibility, {
+    method: "POST",
+    headers: { "Content-Type": "application/octet-stream", "X-File-Mime": match[1].toLowerCase() },
+    body: bytes
+  });
+  return saved.url;
+}
+
+async function uploadedFields(body, fields) {
+  const next = { ...body };
+  for (const field of fields) {
+    if (Array.isArray(next[field])) next[field] = await Promise.all(next[field].map(item => maybeUploadMedia(item)));
+    else if (typeof next[field] === "string") next[field] = await maybeUploadMedia(next[field]);
+  }
+  return next;
+}
+
 export const api = {
   register: body => request("/auth/register", { method: "POST", body: JSON.stringify(body) }),
   inviteAdmin: (inviteKey, body) => request(`/auth/register/admin/${encodeURIComponent(inviteKey)}`, { method: "POST", body: JSON.stringify(body) }),
@@ -33,17 +71,17 @@ export const api = {
 
   profile: {
     get: () => request("/profile"),
-    update: body => request("/profile", { method: "PUT", body: JSON.stringify(body) })
+    update: async body => request("/profile", { method: "PUT", body: JSON.stringify(await uploadedFields(body, ["profileImage", "coverImage"])) })
   },
   business: {
     mine: () => request("/businesses/mine"),
-    update: body => request("/businesses/mine", { method: "PUT", body: JSON.stringify(body) })
+    update: async body => request("/businesses/mine", { method: "PUT", body: JSON.stringify(await uploadedFields(body, ["logo"])) })
   },
   content: {
     list: () => request("/content"),
     get: id => request(`/content/${id}`),
-    create: body => request("/content", { method: "POST", body: JSON.stringify(body) }),
-    update: (id, body) => request(`/content/${id}`, { method: "PUT", body: JSON.stringify(body) }),
+    create: async body => request("/content", { method: "POST", body: JSON.stringify(await uploadedFields(body, ["coverImage", "images"])) }),
+    update: async (id, body) => request(`/content/${id}`, { method: "PUT", body: JSON.stringify(await uploadedFields(body, ["coverImage", "images"])) }),
     publish: (id, published) => request(`/content/${id}/publish`, { method: "PATCH", body: JSON.stringify({ published }) }),
     remove: id => request(`/content/${id}`, { method: "DELETE" })
   },
@@ -90,8 +128,8 @@ export const api = {
   sales: {
     analytics: params => request(`/sales/analytics?${new URLSearchParams(params)}`),
     products: () => request("/sales/products"),
-    createProduct: body => request("/sales/products", { method: "POST", body: JSON.stringify(body) }),
-    updateProduct: (id, body) => request(`/sales/products/${id}`, { method: "PUT", body: JSON.stringify(body) }),
+    createProduct: async body => request("/sales/products", { method: "POST", body: JSON.stringify(await uploadedFields(body, ["image", "images"])) }),
+    updateProduct: async (id, body) => request(`/sales/products/${id}`, { method: "PUT", body: JSON.stringify(await uploadedFields(body, ["image", "images"])) }),
     removeProduct: id => request(`/sales/products/${id}`, { method: "DELETE" }),
     posSales: () => request("/sales/pos"),
     checkout: body => request("/sales/pos", { method: "POST", body: JSON.stringify(body) }),
@@ -110,7 +148,13 @@ export const api = {
   messages: {
     users: () => request("/messages/users"),
     conversation: (userId, before = "") => request(`/messages/${userId}${before ? "?before=" + encodeURIComponent(before) : ""}`),
-    send: (userId, payload) => request(`/messages/${userId}`, { method: "POST", body: JSON.stringify(typeof payload === "string" ? { body: payload } : payload) }),
+    send: async (userId, payload) => {
+      const body = typeof payload === "string" ? { body: payload } : payload;
+      const next = body?.attachment?.dataUrl
+        ? { ...body, attachment: { ...body.attachment, dataUrl: await maybeUploadMedia(body.attachment.dataUrl, "private") } }
+        : body;
+      return request(`/messages/${userId}`, { method: "POST", body: JSON.stringify(next) });
+    },
     searchUsers: q => request(`/messages/friends/search?${new URLSearchParams({ q })}`),
     friendRequests: () => request("/messages/friends/requests"),
     addFriend: userId => request(`/messages/friends/${userId}/request`, { method: "POST" }),
