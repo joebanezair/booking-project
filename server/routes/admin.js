@@ -10,6 +10,7 @@ import Sale from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireAdmin } from "../middleware/requireRole.js";
 import { notify } from "../lib/notifications.js";
+import { readPageSize } from "../lib/pagination.js";
 
 const router = Router();
 router.use(requireAuth, requireAdmin);
@@ -67,12 +68,23 @@ router.get("/overview", async (_req, res) => {
   }
 });
 
-router.get("/businesses", async (_req, res) => {
+router.get("/businesses", async (req, res) => {
   try {
-    const users = await User.find({ role: "business" })
-      .select("name username email accountStatus profileImage createdAt")
-      .sort({ createdAt: -1 })
-      .lean();
+    // Retain the existing array response for current dashboards. For a large
+    // directory, callers opt into ?limit=50&before=<ObjectId>.
+    const paged = req.query.limit !== undefined || req.query.before !== undefined;
+    const limit = paged ? readPageSize(req.query.limit || "50") : null;
+    if (paged && !limit) return res.status(400).json({ message: "Limit must be between 1 and 100." });
+    if (req.query.before && !mongoose.isValidObjectId(req.query.before))
+      return res.status(400).json({ message: "Invalid directory cursor." });
+    const filter = { role: "business" };
+    if (paged && req.query.before) filter._id = { $lt: new mongoose.Types.ObjectId(req.query.before) };
+    const query = User.find(filter).select("name username email accountStatus profileImage createdAt");
+    const users = await (paged
+      ? query.sort({ _id: -1 }).limit(limit + 1).lean()
+      : query.sort({ createdAt: -1 }).lean());
+    const hasMore = paged && users.length > limit;
+    if (hasMore) users.pop();
     const ids = users.map(user => user._id);
     const [profiles, serviceCounts, bookingCounts, reviewRows] = await Promise.all([
       Business.find({ owner: { $in: ids } }).select("owner name category location phone website logo").lean(),
@@ -85,14 +97,15 @@ router.get("/businesses", async (_req, res) => {
     const bookings = new Map(bookingCounts.map(item => [String(item._id), item.count]));
     const reviews = new Map(reviewRows.map(item => [String(item._id), { count: item.count, averageRating: Number(item.averageRating.toFixed(1)) }]));
 
-    res.json(users.filter(user => byOwner.has(String(user._id))).map(user => ({
+    const items = users.filter(user => byOwner.has(String(user._id))).map(user => ({
       ...user,
       accountStatus: user.accountStatus || "active",
       business: byOwner.get(String(user._id)),
       serviceCount: services.get(String(user._id)) || 0,
       bookingCount: bookings.get(String(user._id)) || 0,
       reviewSummary: reviews.get(String(user._id)) || { count: 0, averageRating: 0 }
-    })));
+    }));
+    res.json(paged ? { items, hasMore, nextCursor: hasMore ? String(users[users.length - 1]._id) : null } : items);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to load businesses." });
