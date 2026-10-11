@@ -1,0 +1,543 @@
+/*
+ * Compact BookFlow workspace polish.
+ * Scoped to the create-product dialog, dashboard sidebar, and onboarding card;
+ * does not change business data, POS actions, or navigation destinations.
+ */
+
+/* PRODUCT CREATE: one quiet dialog with a fixed header, independently
+ * scrollable body and a small action footer instead of oversized raw inputs. */
+html body .ui-dialog.product-create-dialog {
+  width: min(620px, calc(100vw - 28px)) !important;
+  max-width: min(620px, calc(100vw - 28px)) !important;
+  max-height: calc(100dvh - 28px) !important;
+  margin: auto;
+  padding: 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  background: var(--card) !important;
+  color: var(--card-foreground) !important;
+  box-shadow: 0 20px 65px rgba(0,0,0,.24) !important;
+}
+html body .product-create-dialog .product-create-dialog-content {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  width: 100%;
+  max-height: calc(100dvh - 28px);
+  min-height: 0;
+  padding: 0 !important;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+html body .product-create-dialog .product-create-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 20px 22px 15px;
+  border-bottom: 1px solid var(--border);
+}
+.product-create-header > div { min-width: 0; }
+.product-create-dialog .product-create-header .eyebrow {
+  margin: 0 0 6px;
+  color: var(--primary);
+  font-size: 10px;
+  line-height: 1.25;
+}
+.product-create-dialog .product-create-header h2 {
+  margin: 0 !important;
+  color: var(--foreground);
+  font-size: 20px !important;
+  line-height: 1.2;
+  font-weight: 700;
+}
+.product-create-dialog .product-create-subtitle {
+  margin: 6px 0 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+html body .product-create-header button.ui-button {
+  flex: 0 0 30px !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  padding: 0 !important;
+  border: 1px solid var(--border);
+  border-radius: 10px !important;
+  background: var(--card);
+  color: var(--muted-foreground);
+}
+html body .product-create-dialog .product-create-form {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  gap: 0 !important;
+  min-height: 0;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+html body .product-create-dialog .product-form-body {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 18px 22px 20px;
+  min-height: 0;
+  scrollbar-width: thin;
+}
+.product-create-dialog .product-form-body > label,
+.product-create-dialog .product-form-grid > label {
+  display: grid !important;
+  grid-template-columns: minmax(0,1fr);
+  align-content: start;
+  gap: 6px !important;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.product-create-dialog .product-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+  min-width: 0;
+}
+.product-create-dialog .product-field-hint {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+html body .product-create-dialog .product-form-body :is(input.ui-input, select.ui-select, textarea.ui-textarea) {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 8px 10px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--background) !important;
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 400;
+  box-shadow: none !important;
+}
+html body .product-create-dialog .product-form-body textarea.ui-textarea {
+  height: 84px !important;
+  min-height: 84px !important;
+  resize: vertical;
+}
+html body .product-create-dialog .product-form-body :is(input.ui-input, select.ui-select, textarea.ui-textarea):focus-visible {
+  border-color: var(--ring) !important;
+  outline: 2px solid color-mix(in srgb, var(--ring) 24%, transparent);
+  outline-offset: 0;
+}
+.product-create-dialog .product-form-upload {
+  display: grid;
+  gap: 9px;
+  min-width: 0;
+}
+.product-create-dialog .product-upload-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 9px;
+  font-size: 12px;
+}
+.product-create-dialog .product-upload-title strong { font-weight: 600; }
+.product-create-dialog .product-upload-title span { color: var(--muted-foreground); font-size: 11px; }
+html body .product-create-dialog .product-upload-dropzone {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  flex-direction: row;
+  gap: 12px !important;
+  width: 100%;
+  min-height: 72px;
+  padding: 12px 14px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  background: var(--muted-bg, var(--secondary));
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+html body .product-create-dialog .product-upload-dropzone:hover,
+html body .product-create-dialog .product-upload-dropzone:focus-within {
+  border-color: var(--ring);
+  background: var(--secondary);
+}
+.product-create-dialog .product-upload-dropzone > svg {
+  width: 22px !important;
+  height: 22px !important;
+  color: var(--primary);
+  flex: 0 0 22px;
+}
+.product-create-dialog .product-upload-dropzone > span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  font-size: 12px;
+}
+.product-create-dialog .product-upload-dropzone > span strong { font-size: 12px; font-weight: 600; }
+.product-create-dialog .product-upload-dropzone > span small { font-size: 11px; color: var(--muted-foreground); font-weight: 400; }
+html body .product-create-dialog .product-upload-dropzone > input[type="file"] {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  cursor: pointer;
+}
+html body .product-create-dialog .product-upload-dropzone:focus-within {
+  outline: 2px solid color-mix(in srgb, var(--ring) 24%, transparent);
+  outline-offset: 2px;
+}
+.product-create-dialog .product-upload-dropzone.is-full {
+  opacity: .6;
+  cursor: not-allowed;
+}
+.product-create-dialog .product-create-previews {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 7px;
+}
+.product-create-dialog .product-create-previews .product-image-thumb {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  min-height: 60px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: visible;
+  background: var(--secondary);
+}
+.product-create-dialog .product-create-previews .product-image-thumb > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+}
+html body .product-create-dialog .product-create-previews .product-image-thumb button {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  display: grid;
+  place-items: center;
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  min-height: 22px !important;
+  padding: 0 !important;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 50% !important;
+}
+html body .product-create-dialog .product-create-publish {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 11px !important;
+  padding: 12px 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--card);
+}
+html body .product-create-dialog .product-create-publish > input[type="checkbox"] {
+  appearance: auto !important;
+  -webkit-appearance: checkbox !important;
+  display: block !important;
+  position: static !important;
+  flex: 0 0 17px !important;
+  width: 17px !important;
+  height: 17px !important;
+  min-width: 17px !important;
+  min-height: 17px !important;
+  max-width: 17px !important;
+  max-height: 17px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  accent-color: var(--primary);
+  transform: none !important;
+}
+.product-create-dialog .product-publish-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  font-size: 12px;
+}
+.product-create-dialog .product-publish-copy strong { font-size: 12px; font-weight: 600; }
+.product-create-dialog .product-publish-copy small { color: var(--muted-foreground); font-size: 11px; font-weight: 400; }
+.product-create-dialog .product-create-error {
+  margin: 0 22px 12px;
+}
+.product-create-dialog .product-create-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 8px;
+  padding: 13px 22px;
+  border-top: 1px solid var(--border);
+  background: var(--card);
+}
+html body .product-create-dialog .product-create-actions > button.ui-button {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto !important;
+  width: fit-content !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 6px 12px !important;
+  border-radius: 10px !important;
+  font-size: 12px;
+}
+
+/* SIDEBAR: compact, readable navigation with a distinct but restrained active
+ * state. The existing desktop hover-to-expand and mobile drawer still work. */
+html body .page-shell > aside.sidebar {
+  background: #111a2d;
+  color: #e8edf6;
+}
+html body .page-shell > aside.sidebar .sidebar-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 0;
+}
+html body .page-shell > aside.sidebar .sidebar-brand {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 48px;
+  margin: 0 0 8px !important;
+  gap: 10px;
+}
+html body .page-shell > aside.sidebar .sidebar-brand .brand-mark.small {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px !important;
+  box-shadow: 0 5px 12px rgba(62,90,230,.14);
+}
+html body .page-shell > aside.sidebar .sidebar-brand strong {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+html body .page-shell > aside.sidebar .sidebar-section-label {
+  display: block;
+  margin: 9px 0 8px;
+  padding: 0 10px;
+  color: #72819b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+html body .page-shell > aside.sidebar .sidebar-nav {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto;
+  gap: 4px !important;
+  min-width: 0;
+  min-height: 0;
+  padding: 3px 0 8px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link {
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-width: 0;
+  min-height: 40px !important;
+  height: 40px;
+  padding: 9px 11px !important;
+  gap: 11px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #9ba7bd;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.35;
+  text-decoration: none;
+  transform: none;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link > svg {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  flex: 0 0 18px !important;
+  color: currentColor;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link > span {
+  overflow: hidden;
+  min-width: 0;
+  font-size: 13px;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link:hover,
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link:focus-visible {
+  color: #e9efff !important;
+  background: rgba(135,159,216,.09) !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active {
+  color: #f7f9ff !important;
+  background: rgba(101,128,224,.18) !important;
+  font-weight: 650 !important;
+  box-shadow: inset 3px 0 0 #5d7cff !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active::before {
+  display: none !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active svg {
+  color: #9bb0ff !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link .nav-badge {
+  display: grid;
+  place-items: center;
+  background: #ef4444;
+  color: #fff;
+  border-radius: 999px !important;
+  font-size: 10px !important;
+  line-height: 1;
+  box-shadow: none;
+}
+html body .page-shell > aside.sidebar .sidebar-footer {
+  border-top: 1px solid rgba(255,255,255,.09);
+  padding-top: 12px;
+}
+html body .page-shell > aside.sidebar .sidebar-email {
+  color: #8b9ab6;
+  font-size: 10px;
+  line-height: 1.5;
+}
+/* Preserve the collapsed icon rail, rather than forcing it open. */
+@media (min-width: 801px) {
+  html body .page-shell > aside.sidebar .sidebar-section-label {
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  html body .page-shell > aside.sidebar:hover .sidebar-section-label,
+  html body .page-shell > aside.sidebar:focus-within .sidebar-section-label {
+    opacity: 1;
+    height: auto;
+    margin: 10px 0 6px;
+    padding: 0 10px;
+  }
+  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) .sidebar-nav a.sidebar-nav-link {
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: 10px !important;
+  }
+  html body .page-shell > aside.sidebar:hover .sidebar-nav a.sidebar-nav-link,
+  html body .page-shell > aside.sidebar:focus-within .sidebar-nav a.sidebar-nav-link {
+    justify-content: flex-start !important;
+    gap: 11px !important;
+  }
+}
+@media (max-width: 800px) {
+  html body .page-shell > aside.sidebar .sidebar-section-label {
+    margin: 8px 0 8px;
+  }
+  html body .page-shell > aside.sidebar .sidebar-brand {
+    justify-content: flex-start !important;
+  }
+  html body .page-shell > aside.sidebar .sidebar-brand strong,
+  html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link > span {
+    width: auto !important;
+    max-width: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link {
+    min-height: 43px !important;
+    height: 43px;
+    padding: 9px 12px !important;
+  }
+}
+@media (max-width: 600px) {
+  html body .product-create-dialog .product-create-header { padding: 16px 16px 12px; }
+  html body .product-create-dialog .product-form-body { padding: 14px 16px 18px; }
+  .product-create-dialog .product-create-actions { padding: 11px 16px; }
+}
+@media (max-width: 420px) {
+  html body .product-create-dialog .product-form-grid { grid-template-columns: minmax(0, 1fr); }
+  html body .product-create-dialog .product-create-header h2 { font-size: 19px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body .product-create-dialog .product-upload-dropzone,
+  html body .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link { transition: none !important; }
+}
+
+/* SETUP CHECKLIST: 20% tighter and collapsed on initial dashboard load.
+ * Expanded actions, illustration, and completion conditions remain intact. */
+#root .dashboard-content-rail > .onboarding-panel.onboarding-relaunch {
+  padding: clamp(13px, 1.75vw, 21px) !important;
+  margin-bottom: 19px !important;
+}
+#root .onboarding-relaunch .onboarding-launch-hero {
+  grid-template-columns: minmax(0, 1fr) 118px;
+  column-gap: 13px;
+  margin-bottom: 12px;
+}
+#root .onboarding-relaunch .onboarding-launch-trigger.ui-button {
+  min-height: 73px !important;
+  gap: 18px !important;
+}
+#root .onboarding-relaunch .onboarding-launch-copy { gap: 5px; }
+#root .onboarding-relaunch .onboarding-launch-title { font-size: clamp(17px, 1.65vw, 20px); }
+#root .onboarding-relaunch .onboarding-launch-description { font-size: 11.5px; }
+#root .onboarding-relaunch .onboarding-launch-metrics > strong { font-size: 25px; }
+#root .onboarding-relaunch .onboarding-launch-art { width: 118px; height: 88px; }
+#root .onboarding-relaunch .onboarding-launch-progress {
+  height: 7px !important;
+  min-height: 7px !important;
+  margin-bottom: 14px !important;
+}
+#root .onboarding-relaunch .onboarding-launch-list { gap: 9px !important; }
+#root .onboarding-relaunch .onboarding-launch-item.ui-button {
+  min-height: 78px !important;
+  padding: 11px 10px !important;
+  grid-template-columns: 20px 34px minmax(0, 1fr) 14px !important;
+  gap: 8px !important;
+}
+#root .onboarding-relaunch .onboarding-item-icon { width: 34px; height: 34px; }
+#root .onboarding-relaunch .onboarding-item-icon svg { width: 18px !important; height: 18px !important; }
+#root .onboarding-relaunch .onboarding-item-copy strong { font-size: 11px; }
+#root .onboarding-relaunch .onboarding-item-copy small { font-size: 10px; }
+@media (max-width: 1100px) {
+  #root .onboarding-relaunch .onboarding-launch-hero { grid-template-columns: minmax(0, 1fr) 100px; }
+  #root .onboarding-relaunch .onboarding-launch-art { width: 100px; height: 78px; }
+}
+@media (max-width: 700px) {
+  #root .onboarding-relaunch .onboarding-launch-hero { grid-template-columns: minmax(0, 1fr); }
+  #root .onboarding-relaunch .onboarding-launch-art { display: none; }
+}
