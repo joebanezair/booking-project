@@ -833,7 +833,7 @@ html body #root .dashboard-route-section .dashboard-shadcn-card-content .ui-butt
 #root .onboarding-relaunch .onboarding-launch-art { opacity: .8; }
 #root .onboarding-relaunch .onboarding-launch-eyebrow { color: var(--primary); }
 
-@media (max-width: 1280px) {
+@media (max-width: 1040px) {
   html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid {
     grid-template-columns: minmax(0, 1.6fr) minmax(205px, 1fr) !important;
   }
@@ -886,4 +886,160 @@ html body #root .dashboard-route-section .dashboard-shadcn-card-content .ui-butt
 @media (prefers-reduced-motion: reduce) {
   #root .dashboard-metric-sparkline, #root .workspace-topbar *,
   #root .dashboard-chart-tab { transition: none !important; }
+}
+
+/*
+ * Analytics row alignment correction.
+ * Previous 1280px breakpoint pushed Top Services to a separate full-width
+ * row on common laptops; scope the two-column fallback to truly narrow
+ * screens, and force square-to-round fixes over the legacy stylesheet.
+ */
+@media (min-width: 1041px) {
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 2fr) minmax(190px, 1fr) minmax(190px, 1fr) !important;
+    grid-auto-flow: row;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  html body #root .dashboard-v2-analysis-grid > .dashboard-v2-top-services {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) {
+  box-sizing: border-box;
+  min-height: 288px !important;
+  height: auto;
+  padding: 17px !important;
+  border-radius: 10px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-status-content {
+  gap: 11px !important;
+  padding-top: 13px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-status-donut {
+  box-sizing: border-box !important;
+  display: grid !important;
+  place-items: center !important;
+  width: clamp(108px, 10vw, 135px) !important;
+  height: clamp(108px, 10vw, 135px) !important;
+  max-width: 135px !important;
+  max-height: 135px !important;
+  min-width: 108px !important;
+  min-height: 108px !important;
+  aspect-ratio: 1 / 1 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  isolation: isolate;
+}
+html body #root .dashboard-v2-analytics .dashboard-status-donut > .dashboard-status-hole {
+  display: grid !important;
+  place-content: center !important;
+  justify-items: center !important;
+  width: 72% !important;
+  height: 72% !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: var(--card) !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-top-empty > svg,
+html body #root .dashboard-v2-analytics .dashboard-v2-empty > svg {
+  border-radius: 50% !important;
+  background: var(--secondary) !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-stat-icon {
+  border-radius: 10px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-sales-controls {
+  border-radius: 10px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-sales-controls .dashboard-chart-tab {
+  border-radius: 8px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-chart-area {
+  margin-top: 11px !important;
+  min-height: 163px !important;
+  overflow: hidden;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-chart-area svg.sales-line-chart {
+  max-height: 178px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-status-legend {
+  gap: 8px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-status-row {
+  min-height: 19px;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-top-empty {
+  min-height: 160px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-top-empty > svg {
+  width: 30px !important;
+  height: 30px !important;
+  padding: 13px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-sales-footer {
+  min-height: 26px;
+  margin-top: auto;
+}
+#root .dashboard-v2-analytics .dashboard-single-period {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
+  min-height: 162px;
+  padding: 15px 12px;
+  text-align: center;
+  background: var(--muted-bg);
+  border: 1px dashed var(--border);
+  border-radius: 10px !important;
+}
+#root .dashboard-v2-analytics .dashboard-single-period > strong {
+  color: var(--foreground);
+  font-size: clamp(21px, 2vw, 27px);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+#root .dashboard-v2-analytics .dashboard-single-period > span {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 650;
+}
+#root .dashboard-v2-analytics .dashboard-single-period > small {
+  max-width: 265px;
+  color: var(--muted-foreground);
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+/* A two-panel layout is still preferable when three cards would be too narrow. */
+@media (min-width: 801px) and (max-width: 1040px) {
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid {
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr) !important;
+  }
+  html body #root .dashboard-v2-analytics .dashboard-v2-top-services {
+    grid-column: 1 / -1 !important;
+  }
+}
+/* Mobile gets one balanced column and keeps usable tab button hit targets. */
+@media (max-width: 640px) {
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  html body #root .dashboard-v2-analytics .dashboard-v2-top-services {
+    grid-column: auto !important;
+  }
+  html body #root .dashboard-v2-analytics .dashboard-v2-sales,
+  html body #root .dashboard-v2-analytics .dashboard-v2-status,
+  html body #root .dashboard-v2-analytics .dashboard-v2-top-services {
+    min-height: 0 !important;
+  }
+  html body #root .dashboard-v2-analytics .dashboard-v2-chart-area {
+    overflow-x: auto;
+  }
 }
