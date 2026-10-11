@@ -44,7 +44,7 @@ export default function BusinessSetupChecklist({ items, expanded, onToggle }) {
         aria-label={`Business setup checklist, ${percentage}% complete. ${expanded ? "Collapse" : "Expand"} steps`}>
         <span className="onboarding-launch-copy">
           <span className="onboarding-launch-eyebrow">GET READY TO LAUNCH</span>
-          <span id="business-setup-title" className="onboarding-launch-title">Business setup checklist</span>
+          <span id="business-setup-title" role="heading" aria-level={2} className="onboarding-launch-title">Business setup checklist</span>
           <span className="onboarding-launch-description">Complete these steps to set up your business and start offering services.</span>
         </span>
         <span className="onboarding-launch-metrics">
