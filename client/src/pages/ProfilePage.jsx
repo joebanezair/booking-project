@@ -1,7 +1,8 @@
 import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiBriefcase, FiEdit3, FiExternalLink, FiMapPin } from "react-icons/fi";
+import { FiArrowUpRight, FiBriefcase, FiEdit3, FiExternalLink, FiMapPin } from "react-icons/fi";
+import { Card } from "../components/ui/card.jsx";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileMediaHeader from "../components/ProfileMediaHeader.jsx";
 import BookingQrCard from "../components/BookingQrCard.jsx";
@@ -59,13 +60,14 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
   const publicPath = profile?.username ? "/profile/" + profile.username : "";
 
   return <AppLayout user={user} onLogout={onLogout}>
-    <header className="topbar">
+    <div className="profile-page-redesign">
+    <header className="topbar profile-page-topbar">
       <div><p className="eyebrow">PROFILE</p><h1>Your profile</h1><p className="muted">Manage how your account appears across BookFlow.</p></div>
       <Button asChild variant="default"><Link  className="primary-button button-link icon-link" to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit profile</Link></Button>
     </header>
 
     {!profile ? <p>{error || "Loading..."}</p> : <>
-      <section className="panel profile-overview-card">
+      <Card as="section" className="panel profile-overview-card">
         <ProfileMediaHeader
           profile={profile}
           disabled={saving}
@@ -91,17 +93,23 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
           {profile.bio && <p className="profile-overview-bio">{profile.bio}</p>}
           {profile.website && <a className="profile-website-link" href={profile.website} target="_blank" rel="noreferrer">{profile.website}</a>}
         </div>
-      </section>
+      </Card>
 
-      <section className="profile-hub-grid">
-        <Link className="panel profile-hub-card" to="/dashboard/profile/edit">
-          <FiEdit3 aria-hidden="true" />
-          <div><h3>Edit Profile</h3><p>Update your name, username, bio, headline, location, website, and profile media.</p></div>
-        </Link>
-        <Link className="panel profile-hub-card" to="/dashboard/profile/business">
-          <FiBriefcase aria-hidden="true" />
-          <div><h3>Business Page</h3><p>Manage your business name, category, description, contact information, website, and logo.</p></div>
-        </Link>
+      <section className="profile-hub-grid" aria-label="Manage your profile">
+        <Card as="article" className="profile-hub-card">
+          <Link className="profile-hub-action" to="/dashboard/profile/edit">
+            <span className="profile-hub-icon" aria-hidden="true"><FiEdit3 /></span>
+            <FiArrowUpRight className="profile-hub-arrow" aria-hidden="true" />
+            <span className="profile-hub-copy"><strong>Edit Profile</strong><small>Update your name, username, bio, headline, location, website, and profile media.</small></span>
+          </Link>
+        </Card>
+        <Card as="article" className="profile-hub-card">
+          <Link className="profile-hub-action" to="/dashboard/profile/business">
+            <span className="profile-hub-icon" aria-hidden="true"><FiBriefcase /></span>
+            <FiArrowUpRight className="profile-hub-arrow" aria-hidden="true" />
+            <span className="profile-hub-copy"><strong>Business Page</strong><small>Manage your business name, category, description, contact information, website, and logo.</small></span>
+          </Link>
+        </Card>
       </section>
 
       <BookingQrCard bookingUrl={window.location.origin + "/b/" + (user.id || user._id)} businessName={profile.name} />
@@ -109,5 +117,6 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
       {error && <p className="error profile-feedback">{error}</p>}
       {message && <p className="success profile-feedback">{message}</p>}
     </>}
+    </div>
   </AppLayout>;
 }
