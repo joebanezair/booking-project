@@ -181,7 +181,7 @@
 }
 #root .onboarding-relaunch .onboarding-launch-item.ui-button {
   display: grid !important;
-  grid-template-columns: 23px 42px minmax(0, 1fr) 16px !important;
+  grid-template-columns: 42px minmax(0, 1fr) 16px !important;
   grid-template-rows: auto !important;
   gap: 10px !important;
   align-items: center !important;
@@ -217,33 +217,6 @@
   border-color: var(--ring) !important;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--ring) 18%, transparent) !important;
   transform: none !important;
-}
-#root .onboarding-relaunch .onboarding-item-check {
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border: 1.5px solid var(--muted-foreground);
-  border-radius: 50%;
-  color: var(--muted-foreground);
-}
-#root .onboarding-relaunch .onboarding-item-check svg {
-  width: 12px;
-  height: 12px;
-  stroke-width: 2.4;
-}
-#root .onboarding-relaunch .onboarding-launch-item.done .onboarding-item-check {
-  border-color: #138343;
-  background: #138343;
-  color: #fff;
-}
-#root .onboarding-relaunch .onboarding-launch-item:not(.done) .onboarding-item-check {
-  border-color: transparent;
-}
-#root .onboarding-relaunch .onboarding-launch-item:not(.done) .onboarding-item-check svg {
-  width: 17px;
-  height: 17px;
-  color: var(--muted-foreground);
 }
 #root .onboarding-relaunch .onboarding-item-icon {
   display: grid;
@@ -311,10 +284,6 @@
   background: #244b36;
   color: #b3e8c4;
 }
-[data-theme="dark"] #root .onboarding-relaunch .onboarding-launch-item.done .onboarding-item-check {
-  background: #268449;
-  border-color: #268449;
-}
 [data-theme="dark"] #root .onboarding-relaunch .onboarding-launch-item:not(.done) .onboarding-item-icon {
   background: #283449;
 }
@@ -370,7 +339,7 @@
     margin-left: auto;
   }
   #root .onboarding-relaunch .onboarding-launch-item.ui-button {
-    grid-template-columns: 19px 36px minmax(0, 1fr) 14px !important;
+    grid-template-columns: 36px minmax(0, 1fr) 14px !important;
     gap: 8px !important;
   }
   #root .onboarding-relaunch .onboarding-item-icon {
@@ -385,7 +354,6 @@
 }
 
 /* Legacy onboarding selectors lower trailing SVG opacity: keep step icons crisp. */
-#root .onboarding-relaunch .onboarding-launch-item .onboarding-item-icon svg,
-#root .onboarding-relaunch .onboarding-launch-item .onboarding-item-check svg {
+#root .onboarding-relaunch .onboarding-launch-item .onboarding-item-icon svg {
   opacity: 1 !important;
 }
