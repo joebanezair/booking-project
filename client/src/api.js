@@ -143,6 +143,7 @@ export const api = {
     reply: (id, body) => request(`/forum/${id}/replies`, { method: "POST", body: JSON.stringify({ body }) })
   },
   bookings: {
+    statusSummary: params => request(`/bookings/status-summary?${new URLSearchParams(params)}`),
     list: (params = {}) => {
       const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== "" && value != null));
       return request(`/bookings${query.toString() ? "?" + query : ""}`);
