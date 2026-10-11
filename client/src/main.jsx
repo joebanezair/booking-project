@@ -16,6 +16,7 @@ import "./business-onboarding-refresh.css";
 import "./workspace-polish.css";
 import "./sidebar-redesign.css";
 import "./profile-dashboard-refresh.css";
+import "./dashboard-fullpage.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
