@@ -107,6 +107,30 @@ if (!onboardingCss.includes("repeat(3, minmax(0, 1fr))") ||
   failures.push("Business checklist needs responsive 3/2/1-column layout and hidden state.");
 if (!appEntry.includes('import "./business-onboarding-refresh.css";'))
   failures.push("Business checklist styles must load after legacy dashboard CSS.");
+// The compact create-product dialog and sidebar must keep their core controls.
+const posSource = readFileSync(join(root,"pages/ProductsPage.jsx"),"utf8");
+const sidebarSource = readFileSync(join(root,"components/AppLayout.jsx"),"utf8");
+const workspaceCss = readFileSync(join(root,"workspace-polish.css"),"utf8");
+const dashboardSource = readFileSync(join(root,"pages/DashboardPage.jsx"),"utf8");
+for(const required of [
+  'className="product-create-dialog"', 'className="product-create-form"',
+  'className="product-create-publish"', 'className="product-upload-dropzone"',
+  'aria-label="Choose product images"', 'onSubmit={addProduct}',
+  'readProductImages(', 'Save changes', 'Confirm checkout'
+]) if(!posSource.includes(required)) failures.push("Product create/edit/POS control missing: "+required);
+if(!workspaceCss.includes('input[type="checkbox"]') ||
+   !workspaceCss.includes("max-height: calc(100dvh - 28px)") ||
+   !workspaceCss.includes(".product-create-actions"))
+  failures.push("Create product modal must have compact checkbox and responsive actions.");
+if(!sidebarSource.includes('aria-label="Dashboard navigation"') ||
+   !sidebarSource.includes('className="sidebar-nav-link"') ||
+   !sidebarSource.includes('className="sidebar-section-label"') ||
+   !workspaceCss.includes(".sidebar-nav a.sidebar-nav-link.active"))
+  failures.push("Navigation sidebar must preserve links, label and active state.");
+if(!dashboardSource.includes('const [setupExpanded, setSetupExpanded] = useState(false);'))
+  failures.push("Business setup checklist must be collapsed initially.");
+if(!appEntry.includes('import "./workspace-polish.css";'))
+  failures.push("Workspace styles must load after existing styles.");
 const editorCover=readFileSync(join(root,"components/ProfileMediaHeader.jsx"),"utf8");
 const publicCover=readFileSync(join(root,"pages/PublicProfilePage.jsx"),"utf8");
 if (!editorCover.includes('className="ui-profile-cover-image"')) failures.push("ProfileMediaHeader cover is not using shared Image");
