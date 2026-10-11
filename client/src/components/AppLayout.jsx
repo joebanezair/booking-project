@@ -120,8 +120,9 @@ export default function AppLayout({ children, user, onLogout }) {
           <strong>BookFlow</strong>
         </Link>
 
+        <span className="sidebar-section-label" aria-hidden="true">WORKSPACE</span>
         <nav className="sidebar-nav" aria-label="Dashboard navigation">
-          {visibleNavigation.map(({ to, label, icon: Icon, end }) => <NavLink to={to} end={end} key={to} onClick={() => closeMobileNavigation()}>
+          {visibleNavigation.map(({ to, label, icon: Icon, end }) => <NavLink className="sidebar-nav-link" to={to} end={end} key={to} title={label} onClick={() => closeMobileNavigation()}>
             <Icon aria-hidden="true" />
             <span>{label}</span>
             {label === "Notifications" && unread > 0 && <b className="nav-badge">{unread > 99 ? "99+" : unread}</b>}
