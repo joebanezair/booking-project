@@ -1,3 +1,4 @@
+import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FiArrowLeft, FiCalendar, FiDollarSign, FiPause, FiPlay, FiSlash, FiStar } from "react-icons/fi";
@@ -50,9 +51,9 @@ export default function BusinessDetailPage({ user, onLogout }) {
         <div><h2>{data.business.name}</h2><p className="muted">{data.business.category || "General"} · {data.business.location || "No location set"}</p><p>{data.user.email}</p></div>
         <span className={`status ${data.user.accountStatus}`}>{data.user.accountStatus}</span>
         <div className="row-actions admin-status-actions">
-          {data.user.accountStatus !== "paused" && data.user.accountStatus !== "disabled" && <button className="secondary" onClick={() => setStatus("paused")}><FiPause />Pause</button>}
-          {data.user.accountStatus !== "active" && <button className="secondary" onClick={() => setStatus("active")}><FiPlay />Reactivate</button>}
-          {data.user.accountStatus !== "disabled" && <button className="danger" onClick={() => setStatus("disabled")}><FiSlash />Disable</button>}
+          {data.user.accountStatus !== "paused" && data.user.accountStatus !== "disabled" && <Button variant="plain" className="secondary" onClick={() => setStatus("paused")}><FiPause />Pause</Button>}
+          {data.user.accountStatus !== "active" && <Button variant="plain" className="secondary" onClick={() => setStatus("active")}><FiPlay />Reactivate</Button>}
+          {data.user.accountStatus !== "disabled" && <Button variant="plain" className="danger" onClick={() => setStatus("disabled")}><FiSlash />Disable</Button>}
         </div>
       </section>
 
