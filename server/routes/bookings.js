@@ -10,9 +10,12 @@ import requireAuth from "../middleware/auth.js";
 import { requireActiveBusiness, requireBusiness } from "../middleware/requireRole.js";
 import { syncSaleForBooking } from "../lib/sales.js";
 import { calculateBookingEndsAt, makeBookingReference, validateBookingWindow } from "../lib/scheduling.js";
+import { bookingMutationGuard } from "../middleware/bookingMutationGuard.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
+// Guard every booking write, including reschedules and status transitions.
+router.use(bookingMutationGuard(req => req.user.id));
 
 const allowedStatuses = new Set(["pending", "confirmed", "in_progress", "completed", "cancelled", "no_show"]);
 const schedulableStatuses = new Set(["pending", "confirmed", "in_progress"]);
