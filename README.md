@@ -191,25 +191,25 @@ cd "$(git rev-parse --show-toplevel)" && git fetch origin && git checkout betta-
 
 ### 5A. Two MongoDB containers in GitHub Codespaces (primary + media GridFS)
 
-This optional Codespaces setup matches the existing **\`booking-mongodb\` container on \`127.0.0.1:27017\`** and adds a **second MongoDB container for GridFS images/files on \`127.0.0.1:27018\`**. It is a separate database process and Docker volume, **not a separate physical server**: both run on the same Codespaces host. Do not expose the MongoDB ports publicly.
+This optional Codespaces setup matches the existing **`booking-mongodb` container on `127.0.0.1:27017`** and adds a **second MongoDB container for GridFS images/files on `127.0.0.1:27018`**. It is a separate database process and Docker volume, **not a separate physical server**: both run on the same Codespaces host. Do not expose the MongoDB ports publicly.
 
 | Database | Docker container | Local port | Stores |
 | --- | --- | --- | --- |
-| Main MongoDB | \`booking-mongodb\` | \`127.0.0.1:27017\` | Users, bookings, businesses, products, messages, sales and application records |
-| Media MongoDB | \`booking-media-mongodb\` | \`127.0.0.1:27018\` | GridFS files (profile/cover photos, images and attachments) |
+| Main MongoDB | `booking-mongodb` | `127.0.0.1:27017` | Users, bookings, businesses, products, messages, sales and application records |
+| Media MongoDB | `booking-media-mongodb` | `127.0.0.1:27018` | GridFS files (profile/cover photos, images and attachments) |
 
 **A. Check your existing primary database first:**
 
-\`\`\`bash
+```bash
 docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}"
 docker start booking-mongodb  # Only if your existing primary container is stopped
-\`\`\`
+```
 
-If \`booking-mongodb\` already appears as running, the \`docker start\` command is unnecessary. **Never remove or recreate this container/its named volume just to add GridFS.** Keep the primary \`MONGO_URI=mongodb://127.0.0.1:27017/booking_app\` unchanged.
+If `booking-mongodb` already appears as running, the `docker start` command is unnecessary. **Never remove or recreate this container/its named volume just to add GridFS.** Keep the primary `MONGO_URI=mongodb://127.0.0.1:27017/booking_app` unchanged.
 
-**B. First-time media MongoDB setup — execute this block together in ONE Bash terminal** from the repository root. Run this block **only if \`booking-media-mongodb\` does not already exist**:
+**B. First-time media MongoDB setup — execute this block together in ONE Bash terminal** from the repository root. Run this block **only if `booking-media-mongodb` does not already exist**:
 
-\`\`\`bash
+```bash
 cd "$(git rev-parse --show-toplevel)"
 test -f server/.env || cp server/.env.example server/.env
 umask 077
@@ -239,56 +239,56 @@ fi
 
 chmod 600 server/.env
 unset MEDIA_PASS
-\`\`\`
+```
 
-The root user is initialized **only on an empty media database volume**. Save the connection URI securely in \`server/.env\`; do not regenerate the password and expect it to change an existing container's credentials. \`server/.env\` is Git-ignored and must not be committed.
+The root user is initialized **only on an empty media database volume**. Save the connection URI securely in `server/.env`; do not regenerate the password and expect it to change an existing container's credentials. `server/.env` is Git-ignored and must not be committed.
 
-**C. Every subsequent Codespaces restart** (do **not** rerun \`docker run\` or reset either volume):
+**C. Every subsequent Codespaces restart** (do **not** rerun `docker run` or reset either volume):
 
-\`\`\`bash
+```bash
 docker start booking-mongodb booking-media-mongodb
 docker ps --format "table {{.Names}}\t{{.Ports}}"
-\`\`\`
+```
 
-Expected bindings: \`booking-mongodb\` → \`127.0.0.1:27017\`, \`booking-media-mongodb\` → \`127.0.0.1:27018\`. You might see port \`27017\` in Codespaces **Ports** even if the database is bound to the container's loopback; port forwarding alone does **not** establish how many databases are running. Use \`docker ps\` for that.
+Expected bindings: `booking-mongodb` → `127.0.0.1:27017`, `booking-media-mongodb` → `127.0.0.1:27018`. You might see port `27017` in Codespaces **Ports** even if the database is bound to the container's loopback; port forwarding alone does **not** establish how many databases are running. Use `docker ps` for that.
 
 **D. Restart the API and confirm GridFS is really connected:**
 
-\`\`\`bash
+```bash
 # Terminal 2: from repo root
 cd server
 npm run dev
-\`\`\`
+```
 
 From another terminal:
 
-\`\`\`bash
+```bash
 curl http://localhost:5000/api/health
 curl http://localhost:5000/api/ready
 curl http://localhost:5000/api/media/capabilities
-\`\`\`
+```
 
-\`/api/health\` checks the main MongoDB connection; \`/api/ready\` should return \`{"ok":true}\` when all *configured* database connections are ready; \`/api/media/capabilities\` should return \`{"binaryUploads":true}\` with the separate GridFS store enabled. If media capabilities are \`false\`, verify \`server/.env\`, \`docker logs --tail 40 booking-media-mongodb\`, credentials, container availability, and restart the API. An unreachable configured media database can prevent normal API startup.
+`/api/health` checks the main MongoDB connection; `/api/ready` should return `{"ok":true}` when all *configured* database connections are ready; `/api/media/capabilities` should return `{"binaryUploads":true}` with the separate GridFS store enabled. If media capabilities are `false`, verify `server/.env`, `docker logs --tail 40 booking-media-mongodb`, credentials, container availability, and restart the API. An unreachable configured media database can prevent normal API startup.
 
 **E. Start the frontend** in a third terminal:
 
-\`\`\`bash
+```bash
 cd "$(git rev-parse --show-toplevel)/client"
 npm run dev -- --host 0.0.0.0
-\`\`\`
+```
 
-Open the forwarded frontend port **5173** in Codespaces; leave database ports **27017** and **27018** private. The browser uses the Vite \`/api\` proxy and does not connect directly to either MongoDB server.
+Open the forwarded frontend port **5173** in Codespaces; leave database ports **27017** and **27018** private. The browser uses the Vite `/api` proxy and does not connect directly to either MongoDB server.
 
-**F. Previously uploaded Base64 images are not transferred automatically.** Once both MongoDB databases have **verified backups**, use \`cd server && node scripts/migrate-media.js --dry-run\` to estimate the work. Only then consider the actual \`node scripts/migrate-media.js\` migration during a controlled maintenance period. See [Migrate existing Base64 media](#migrate-existing-base64-media) and verify uploaded files and application references afterwards.
+**F. Previously uploaded Base64 images are not transferred automatically.** Once both MongoDB databases have **verified backups**, use `cd server && node scripts/migrate-media.js --dry-run` to estimate the work. Only then consider the actual `node scripts/migrate-media.js` migration during a controlled maintenance period. See [Migrate existing Base64 media](#migrate-existing-base64-media) and verify uploaded files and application references afterwards.
 
-**Alternative: Docker Compose.** Section 6 below provides \`infrastructure/compose.services.yml\`, with the optional service named \`media-mongo\` and its own **different volume/container naming**. **Choose either the manual \`booking-media-mongodb\` method above OR the Compose \`media-mongo\` service, not both on port 27018.** RabbitMQ and Redis are independent optional services; neither is required to enable GridFS.
+**Alternative: Docker Compose.** Section 6 below provides `infrastructure/compose.services.yml`, with the optional service named `media-mongo` and its own **different volume/container naming**. **Choose either the manual `booking-media-mongodb` method above OR the Compose `media-mongo` service, not both on port 27018.** RabbitMQ and Redis are independent optional services; neither is required to enable GridFS.
 
 **Troubleshooting / data safety:**
 
-- \`Conflict. The container name ... is already in use\`: use \`docker start booking-media-mongodb\` (and the already-saved URI), **not** a second \`docker run\`.
-- \`bind: address already in use\` on \`27018\`: run \`docker ps\` and check for an existing media service; don't create duplicates.
-- \`Authentication failed\`: use the original credentials saved when the media volume was first initialized. Changing \`MONGO_INITDB_ROOT_PASSWORD\` does **not** reset an existing MongoDB user.
-- Never use \`docker compose down -v\`, \`docker volume rm\`, \`docker rm -v\`, or database-drop commands for routine restart/troubleshooting. Both databases contain potentially important data.
+- `Conflict. The container name ... is already in use`: use `docker start booking-media-mongodb` (and the already-saved URI), **not** a second `docker run`.
+- `bind: address already in use` on `27018`: run `docker ps` and check for an existing media service; don't create duplicates.
+- `Authentication failed`: use the original credentials saved when the media volume was first initialized. Changing `MONGO_INITDB_ROOT_PASSWORD` does **not** reset an existing MongoDB user.
+- Never use `docker compose down -v`, `docker volume rm`, `docker rm -v`, or database-drop commands for routine restart/troubleshooting. Both databases contain potentially important data.
 - Docker volumes are persistent across ordinary container restarts but **not a substitute for backups**, especially if the Codespace is deleted.
 
 ### 6. Optional: run separate media MongoDB, RabbitMQ and Redis locally
