@@ -1,7 +1,8 @@
 import { Button } from "./ui/button.jsx";
 import { Input } from "./ui/input.jsx";
 import { Image } from "./ui/image.jsx";
-import { useRef, useState } from "react";
+import { Dialog, DialogContent } from "./ui/dialog.jsx";
+import { useEffect, useRef, useState } from "react";
 import { FiCamera, FiEye, FiMove, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 import ProfileAvatar from "./ProfileAvatar.jsx";
 
@@ -18,6 +19,7 @@ export default function ProfileMediaHeader({
   const profileInput = useRef(null);
   const [menu, setMenu] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
+  useEffect(() => { if (!menu) return; const close = event => { if (event.key === "Escape") setMenu(""); }; document.addEventListener("keydown", close); return () => document.removeEventListener("keydown", close); }, [menu]);
 
   function pick(inputRef) {
     setMenu("");
@@ -39,6 +41,7 @@ export default function ProfileMediaHeader({
         type="button"
         className="media-hit-area cover-hit-area"
         aria-label="Edit cover photo"
+        aria-expanded={menu === "cover"}
         onClick={() => !disabled && setMenu(menu === "cover" ? "" : "cover")}
         disabled={disabled}
       />
@@ -46,13 +49,14 @@ export default function ProfileMediaHeader({
         type="button"
         className="media-edit-button cover-edit-button"
         aria-label="Cover photo options"
+        aria-expanded={menu === "cover"}
         onClick={() => setMenu(menu === "cover" ? "" : "cover")}
         disabled={disabled}
       >
         <FiCamera aria-hidden="true" />
       </Button>
 
-      {menu === "cover" && <div className="profile-media-menu cover-media-menu" role="menu">
+      {menu === "cover" && <div className="profile-media-menu cover-media-menu" role="group" aria-label="Cover photo actions">
         <Button variant="plain" type="button" onClick={() => pick(coverInput)}><FiUpload aria-hidden="true" />Change cover photo</Button>
         {profile?.coverImage && <Button variant="plain" type="button" className="menu-danger" onClick={() => { setMenu(""); onRemoveCover?.(); }}><FiTrash2 aria-hidden="true" />Remove cover photo</Button>}
         <Button variant="plain" type="button" onClick={() => setMenu("")}><FiX aria-hidden="true" />Cancel</Button>
@@ -63,6 +67,7 @@ export default function ProfileMediaHeader({
           type="button"
           className="linkedin-avatar-button"
           aria-label="Profile photo options"
+          aria-expanded={menu === "profile"}
           onClick={() => !disabled && setMenu(menu === "profile" ? "" : "profile")}
           disabled={disabled}
         >
@@ -70,7 +75,7 @@ export default function ProfileMediaHeader({
           <span className="avatar-camera-badge"><FiCamera aria-hidden="true" /></span>
         </Button>
 
-        {menu === "profile" && <div className="profile-media-menu profile-photo-menu" role="menu">
+        {menu === "profile" && <div className="profile-media-menu profile-photo-menu" role="group" aria-label="Profile photo actions">
           {profile?.profileImage && <Button variant="plain" type="button" onClick={() => { setMenu(""); setPreviewOpen(true); }}><FiEye aria-hidden="true" />View photo</Button>}
           <Button variant="plain" type="button" onClick={() => pick(profileInput)}><FiUpload aria-hidden="true" />Change profile photo</Button>
           {profile?.profileImage && onReposition && <Button variant="plain" type="button" onClick={() => { setMenu(""); onReposition(); }}><FiMove aria-hidden="true" />Reposition profile photo</Button>}
@@ -83,15 +88,17 @@ export default function ProfileMediaHeader({
     <Input ref={coverInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={event => selected(onCoverFile, event)} />
     <Input ref={profileInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={event => selected(onProfileFile, event)} />
 
-    {previewOpen && profile?.profileImage && <div className="photo-preview-modal" role="dialog" aria-modal="true" aria-label="Profile photo preview" onClick={() => setPreviewOpen(false)}>
-      <div className="photo-preview-dialog" onClick={event => event.stopPropagation()}>
-        <Button variant="plain" type="button" className="photo-preview-close" aria-label="Close photo preview" onClick={() => setPreviewOpen(false)}><FiX /></Button>
-        <Image
+    <Dialog open={previewOpen && Boolean(profile?.profileImage)} onOpenChange={setPreviewOpen}
+      title="Profile photo preview" className="ui-photo-preview-dialog">
+      <DialogContent className="ui-photo-preview-content">
+        <Button variant="outline" type="button" size="icon-sm" className="ui-photo-preview-close"
+          aria-label="Close photo preview" onClick={() => setPreviewOpen(false)}><FiX /></Button>
+        {profile?.profileImage && <Image
           src={profile.profileImage}
           alt={profile.name || "Profile"}
           style={{ objectPosition: String(profile.profileImagePositionX ?? 50) + "% " + String(profile.profileImagePositionY ?? 50) + "%" }}
-        />
-      </div>
-    </div>}
+        />}
+      </DialogContent>
+    </Dialog>
   </section>;
 }
