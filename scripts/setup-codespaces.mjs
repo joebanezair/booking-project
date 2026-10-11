@@ -136,9 +136,15 @@ async function setup() {
   if (!envValue(content, "PORT")) update("PORT", "5000");
   if (!envValue(content, "CLIENT_URL")) update("CLIENT_URL", "http://localhost:5173");
 
-  // Do not configure a second database for an existing remote/custom URI.
+  // Keep remote media hosts untouched; local unauthenticated sample URIs
+  // cannot work with the authenticated media MongoDB and must be replaced.
   const currentMedia = envValue(content, "MEDIA_MONGO_URI");
-  const customMedia = currentMedia && !placeholder(currentMedia) && !currentMedia.includes("127.0.0.1:27018") && !currentMedia.includes("localhost:27018");
+  let parsedMedia = null;
+  try { if (currentMedia && !placeholder(currentMedia)) parsedMedia = new URL(currentMedia); }
+  catch { throw new Error("MEDIA_MONGO_URI is invalid. Correct it in server/.env before retrying."); }
+  const localMedia = parsedMedia && ["127.0.0.1", "localhost"].includes(parsedMedia.hostname) && parsedMedia.port === "27018";
+  const customMedia = parsedMedia && !localMedia;
+  const replaceMedia = placeholder(currentMedia) || (localMedia && (!parsedMedia.username || !parsedMedia.password));
   console.log("BookFlow Codespaces setup");
   console.log("Checking MongoDB containers (no existing data will be deleted)...");
   ensureContainer("booking-mongodb", [
@@ -148,17 +154,20 @@ async function setup() {
 
   if (!withoutMedia && !customMedia) {
     const existing = container("booking-media-mongodb");
-    const username = existing?.vars.MONGO_INITDB_ROOT_USERNAME || "bookflowmedia";
-    const password = existing?.vars.MONGO_INITDB_ROOT_PASSWORD || randomBytes(24).toString("hex");
-    if (existing && !existing.vars.MONGO_INITDB_ROOT_PASSWORD && !currentMedia)
-      throw new Error("Media container exists without recoverable initialization credentials. Set MEDIA_MONGO_URI manually; no data was deleted.");
+    const username = existing?.vars.MONGO_INITDB_ROOT_USERNAME || (localMedia && !replaceMedia ? decodeURIComponent(parsedMedia.username) : "bookflowmedia");
+    const password = existing?.vars.MONGO_INITDB_ROOT_PASSWORD || (localMedia && !replaceMedia ? decodeURIComponent(parsedMedia.password) : randomBytes(24).toString("hex"));
+    if (existing && !existing.vars.MONGO_INITDB_ROOT_PASSWORD)
+      throw new Error("Media container exists without recoverable initialization credentials. Configure its existing database manually; no data was deleted.");
+    if (existing && localMedia && !replaceMedia &&
+        (decodeURIComponent(parsedMedia.username) !== username || decodeURIComponent(parsedMedia.password) !== password))
+      throw new Error("MEDIA_MONGO_URI credentials do not match the existing media container. Update server/.env using the original container credentials; the volume is preserved.");
     ensureContainer("booking-media-mongodb", [
       "-p", "127.0.0.1:27018:27017",
       "-v", "booking-media-mongodb-data:/data/db",
       "-e", "MONGO_INITDB_ROOT_USERNAME=" + username,
       "-e", "MONGO_INITDB_ROOT_PASSWORD=" + password, "mongo:8"
     ]);
-    if (placeholder(currentMedia)) {
+    if (replaceMedia) {
       update("MEDIA_MONGO_URI", "mongodb://" + encodeURIComponent(username) + ":" + encodeURIComponent(password) + "@127.0.0.1:27018/bookflow_media?authSource=admin");
     } else {
       warn("Existing MEDIA_MONGO_URI preserved. Ensure it matches the media container credentials.");
