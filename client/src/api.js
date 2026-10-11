@@ -35,6 +35,34 @@ async function binaryUploadsAvailable() {
   return mediaCapabilities;
 }
 
+// Image previews remain unchanged; upload bytes are resized for network efficiency.
+// Animated GIF and unsupported browsers retain the original file.
+async function optimizeImageForUpload(bytes, mime) {
+  if (!/^image\/(jpeg|png|webp)$/.test(mime) || typeof createImageBitmap !== "function" ||
+      typeof document === "undefined") return { bytes, mime };
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(new Blob([bytes], { type: mime }));
+    const ratio = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+    if (ratio === 1 && mime === "image/webp") return { bytes, mime };
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * ratio));
+    canvas.height = Math.max(1, Math.round(bitmap.height * ratio));
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return { bytes, mime };
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const webp = await new Promise(resolve => canvas.toBlob(resolve, "image/webp", 0.88));
+    if (webp?.type === "image/webp" && webp.size < bytes.byteLength) {
+      return { bytes: new Uint8Array(await webp.arrayBuffer()), mime: "image/webp" };
+    }
+  } catch {
+    // Unsupported decoding/encoding falls back to the original safe upload path.
+  } finally {
+    bitmap?.close?.();
+  }
+  return { bytes, mime };
+}
+
 async function maybeUploadMedia(value, visibility = "public") {
   if (typeof value !== "string" || !value.startsWith("data:")) return value;
   if (!await binaryUploadsAvailable()) return value;
@@ -44,11 +72,13 @@ async function maybeUploadMedia(value, visibility = "public") {
   if (approximateSize > (visibility === "private" ? 5 : 2) * 1024 * 1024 + 2)
     throw new Error("File is too large to upload.");
   const decoded = atob(match[2]);
-  const bytes = new Uint8Array(decoded.length);
+  let bytes = new Uint8Array(decoded.length);
   for (let i = 0; i < decoded.length; i += 1) bytes[i] = decoded.charCodeAt(i);
+  let mime = match[1].toLowerCase();
+  if (visibility === "public") ({ bytes, mime } = await optimizeImageForUpload(bytes, mime));
   const saved = await request("/media/upload?visibility=" + visibility, {
     method: "POST",
-    headers: { "Content-Type": "application/octet-stream", "X-File-Mime": match[1].toLowerCase() },
+    headers: { "Content-Type": "application/octet-stream", "X-File-Mime": mime },
     body: bytes
   });
   return saved.url;
