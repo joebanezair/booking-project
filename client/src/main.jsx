@@ -18,6 +18,7 @@ import "./sidebar-redesign.css";
 import "./profile-dashboard-refresh.css";
 import "./dashboard-fullpage.css";
 import "./workspace-header-rail.css";
+import "./booking-compact-refresh.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>

@@ -7,7 +7,7 @@ import { Label } from "./ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiCalendar, FiCheckCircle, FiClock, FiEdit2, FiEye, FiGlobe, FiList, FiDownload, FiPlay, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTrash2, FiUserX, FiUsers, FiX } from "react-icons/fi";
+import { FiCalendar, FiChevronDown, FiChevronUp, FiCheckCircle, FiClock, FiFilter, FiEdit2, FiEye, FiGlobe, FiList, FiDownload, FiPlay, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTrash2, FiUserX, FiUsers, FiX } from "react-icons/fi";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
 
@@ -16,6 +16,7 @@ const empty={contentId:"",guestName:"",guestEmail:"",guestPhone:"",locationLabel
 
 function money(value,currency="PHP"){try{return new Intl.NumberFormat(undefined,{style:"currency",currency,maximumFractionDigits:2}).format(value||0);}catch{return `${currency} ${Number(value||0).toLocaleString()}`;}}
 function localInput(value){if(!value)return"";const date=new Date(value);const offset=date.getTimezoneOffset()*60000;return new Date(date.getTime()-offset).toISOString().slice(0,16);}
+function bookingDateLabel(value){return new Date(value).toLocaleString(undefined,{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"});}
 function customerKey(item){return String(item.guestEmail||"").toLowerCase()||String(item.guestPhone||"").replace(/\D/g,"")||String(item.guestName||"").toLowerCase();}
 
 export default function BookingManager({user}){
@@ -32,7 +33,8 @@ export default function BookingManager({user}){
   const [bookingModalOpen,setBookingModalOpen]=useState(false);
   const [availability,setAvailability]=useState(null);
   const [availabilitySavedAt,setAvailabilitySavedAt]=useState(null);
-  const [historyOpen,setHistoryOpen]=useState(false);
+  const [historyOpen,setHistoryOpen]=useState(true);
+  const [historyDateOpen,setHistoryDateOpen]=useState(false);
   const [historyFrom,setHistoryFrom]=useState("");
   const [historyTo,setHistoryTo]=useState("");
   const [historySearch,setHistorySearch]=useState("");
@@ -189,7 +191,6 @@ export default function BookingManager({user}){
     <div className="booking-view-tabs"><Button variant="plain" className={view==="list"?"filter-chip active":"filter-chip"} onClick={()=>setView("list")}><FiList/>Bookings</Button><Button variant="plain" className={view==="calendar"?"filter-chip active":"filter-chip"} onClick={()=>setView("calendar")}><FiCalendar/>Calendar</Button><Button variant="plain" className={view==="customers"?"filter-chip active":"filter-chip"} onClick={()=>setView("customers")}><FiUsers/>Customers</Button><Button variant="plain" className={view==="availability"?"filter-chip active":"filter-chip"} onClick={()=>setView("availability")}><FiClock/>Availability</Button>{canCreate&&<Button variant="plain" className="primary-button booking-new-button" onClick={()=>{setEditing(null);setForm(empty);setBookingModalOpen(true);}}><FiPlus/>New booking</Button>}</div>
 
     {view==="availability"&&availability?<section className="panel"><div className="panel-title"><div><p className="eyebrow">AVAILABILITY</p><h2>Booking availability</h2></div></div><div className="availability-days">{availability.workingHours?.map((row,index)=><div className="availability-row" key={row.day}><Label><Input type="checkbox" checked={row.enabled} onChange={e=>setAvailability({...availability,workingHours:availability.workingHours.map((x,i)=>i===index?{...x,enabled:e.target.checked}:x)})}/>{["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][row.day]}</Label><Input type="time" value={row.start} disabled={!row.enabled} onChange={e=>setAvailability({...availability,workingHours:availability.workingHours.map((x,i)=>i===index?{...x,start:e.target.value}:x)})}/><span>to</span><Input type="time" value={row.end} disabled={!row.enabled} onChange={e=>setAvailability({...availability,workingHours:availability.workingHours.map((x,i)=>i===index?{...x,end:e.target.value}:x)})}/></div>)}</div><div className="three-col availability-settings-grid"><Label className="availability-control"><span className="availability-input-icon" aria-label="Timezone" data-tooltip="Timezone" title="Timezone"><FiGlobe/></span><Input aria-label="Timezone" value={availability.timezone||"Asia/Manila"} onChange={e=>setAvailability({...availability,timezone:e.target.value})} placeholder="Asia/Manila"/></Label><Label className="availability-control"><span className="availability-input-icon" aria-label="Minimum notice (minutes)" data-tooltip="Minimum notice (minutes)" title="Minimum notice (minutes)"><FiClock/></span><Input aria-label="Minimum notice (minutes)" type="number" min="0" max="43200" value={availability.leadTimeMinutes??60} onChange={e=>setAvailability({...availability,leadTimeMinutes:Number(e.target.value)})}/></Label><Label className="availability-control"><span className="availability-input-icon" aria-label="Book up to (days)" data-tooltip="Book up to (days)" title="Book up to (days)"><FiCalendar/></span><Input aria-label="Book up to (days)" type="number" min="1" max="730" value={availability.maxAdvanceDays??60} onChange={e=>setAvailability({...availability,maxAdvanceDays:Number(e.target.value)})}/></Label></div><Label className="availability-control"><span className="availability-input-icon" aria-label="Slot interval" data-tooltip="Slot interval" title="Slot interval"><FiClock/></span><Select aria-label="Slot interval" value={availability.slotIntervalMinutes??30} onChange={e=>setAvailability({...availability,slotIntervalMinutes:Number(e.target.value)})}>{[5,10,15,20,30,45,60,90,120].map(v=><option key={v} value={v}>{v} minutes</option>)}</Select></Label><div className="availability-blocked-range"><Label className="availability-control"><span className="availability-input-icon" aria-label="Blocked from" data-tooltip="Blocked from" title="Blocked from"><FiCalendar/></span><Input aria-label="Blocked from" type="datetime-local" value={availability.blockedFrom||""} onChange={e=>setAvailability({...availability,blockedFrom:e.target.value})}/></Label><span className="availability-range-arrow" aria-hidden="true">→</span><Label className="availability-control"><span className="availability-input-icon" aria-label="Blocked until" data-tooltip="Blocked until" title="Blocked until"><FiCalendar/></span><Input aria-label="Blocked until" type="datetime-local" min={availability.blockedFrom||undefined} value={availability.blockedUntil||""} onChange={e=>setAvailability({...availability,blockedUntil:e.target.value})}/></Label></div><div className="row-actions availability-save-actions"><Button variant="plain" className="availability-save-button" type="button" aria-label="Save availability" onClick={async()=>{try{const saved=await api.business.update(availability);setAvailability(saved);setAvailabilitySavedAt(new Date());setError("");}catch(e){setError(e.message);}}}><FiSave/><span>Save</span></Button></div>{availabilitySavedAt&&<div className="availability-saved-toast" role="status"><FiCheckCircle/><span>Availability saved · {availabilitySavedAt.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})}</span><Button variant="plain" type="button" className="availability-toast-close" aria-label="Dismiss" onClick={()=>setAvailabilitySavedAt(null)}><FiX/></Button></div>}</section>:view==="calendar"?<CalendarView/>:view==="customers"?<CustomerView/>:<>
-      <section className="panel booking-filter-bar"><Label><span><FiSearch/>Search</span><Input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Reference, customer, phone, service…"/></Label><Label>Status<Select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}><option value="">All statuses</option>{statuses.map(([value,label])=><option key={value} value={value}>{label}</option>)}</Select></Label></section>
       <div className="workspace-grid booking-workspace-grid">
         {bookingModalOpen&&<div className="booking-modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget){setBookingModalOpen(false);setEditing(null);setForm(empty);}}}>
         <section className="panel booking-editor-panel booking-modal" role="dialog" aria-modal="true" aria-label={editing?"Edit booking":"New booking"}><div className="panel-title"><h2>{editing?"Edit booking":"New booking"}</h2><Button variant="plain" type="button" className="icon-button booking-modal-close" aria-label="Close booking form" onClick={()=>{setBookingModalOpen(false);setEditing(null);setForm(empty);}}><FiX/></Button></div>
@@ -206,13 +207,88 @@ export default function BookingManager({user}){
           </form>}
         </section></div>}
 
-        <section className="panel booking-list-panel"><div className="panel-title"><h2>Guest bookings</h2><span className="count">{filtered.length}</span></div><div className="booking-list">
-          {filtered.length===0?<p className="muted">No matching bookings.</p>:filtered.map(booking=>{const customer=customerMap.get(customerKey(booking));return <Card as="article" className="booking-card booking-lifecycle-card" key={booking._id}>
-            <div className="booking-main"><div className="booking-reference-line">{booking.bookingReference&&<span>{booking.bookingReference}</span>}{customer?.totalBookings>1&&<span className="returning-customer-badge">Returning · {customer.totalBookings}</span>}</div><h3><Link className="entity-link" to={"/dashboard/bookings/"+booking._id}>{booking.service}</Link></h3><p>{booking.guestName}{booking.guestPhone?` · ${booking.guestPhone}`:""}</p><small><FiClock/> {new Date(booking.bookingDate).toLocaleString()} · {booking.serviceDurationMinutes||60} min · {money(booking.servicePrice,booking.currency)}</small>{booking.status==="completed"&&<small className="sale-recorded-note">Sale recorded when completed</small>}</div>
-            <div className="booking-card-right"><span className={"status "+booking.status}>{statuses.find(([value])=>value===booking.status)?.[1]||booking.status}</span><div className="row-actions booking-status-actions">{statusActions(booking)}</div><div className="row-actions booking-secondary-actions"><Button asChild variant="outline"><Link  className="secondary button-link small-link icon-action" aria-label="View booking" data-tooltip="View booking" to={"/dashboard/bookings/"+booking._id}><FiEye/></Link></Button>{["pending","confirmed","in_progress"].includes(booking.status)&&<Button variant="plain" className="secondary icon-action" aria-label="Reschedule booking" data-tooltip="Reschedule" onClick={()=>reschedule(booking)}><FiCalendar/></Button>}{booking.status!=="completed"&&<><Button variant="plain" className="secondary icon-action" aria-label="Edit booking" data-tooltip="Edit booking" onClick={()=>edit(booking)}><FiEdit2/></Button><Button variant="plain" className="danger icon-action" aria-label="Delete booking" data-tooltip="Delete booking" onClick={()=>remove(booking._id)}><FiTrash2/></Button></>}</div></div>
-          </Card>;})}
-        </div></section>
-        <section className="panel booking-history-panel"><div className="booking-history-header"><Button variant="plain" type="button" className="booking-history-toggle" onClick={()=>setHistoryOpen(v=>!v)} aria-expanded={historyOpen}><span><FiClock/> Booking history</span></Button><Label className="booking-history-search"><FiSearch/><Input aria-label="Search booking history" value={historySearch} onChange={e=>setHistorySearch(e.target.value)} placeholder="Search history…"/></Label><span className="booking-history-count" aria-label="Total booking history" data-tooltip="Total booking history"><FiClock/><strong>{items.filter(item=>item.status==="completed").length}</strong></span></div>{historyOpen&&<div className="booking-history-content"><div className="booking-history-filters"><Label>From<Input type="datetime-local" value={historyFrom} onChange={e=>setHistoryFrom(e.target.value)}/></Label><span className="availability-range-arrow" aria-hidden="true">→</span><Label>To<Input type="datetime-local" min={historyFrom||undefined} value={historyTo} onChange={e=>setHistoryTo(e.target.value)}/></Label><Button variant="plain" type="button" className="booking-history-export" onClick={exportBookingHistory} disabled={completedHistory.length===0} aria-label="Export booking history to sheet" data-tooltip="Export to sheet"><FiDownload/><span>Export to sheet</span></Button>{(historyFrom||historyTo)&&<Button variant="plain" type="button" className="secondary" onClick={()=>{setHistoryFrom("");setHistoryTo("");}}>Clear</Button>}</div><div className="booking-list">{completedHistory.length===0?<p className="muted">No completed bookings in this date and time range.</p>:completedHistory.map(booking=><Card as="article" className="booking-card booking-lifecycle-card" key={booking._id}><div className="booking-main"><div className="booking-reference-line">{booking.bookingReference&&<span>{booking.bookingReference}</span>}</div><h3><Link className="entity-link" to={"/dashboard/bookings/"+booking._id}>{booking.service}</Link></h3><p>{booking.guestName}{booking.guestPhone?` · ${booking.guestPhone}`:""}</p><small><FiClock/> {new Date(booking.bookingDate).toLocaleString()} · {booking.serviceDurationMinutes||60} min · {money(booking.servicePrice,booking.currency)}</small><small className="sale-recorded-note">Completed · sale recorded</small></div><div className="booking-card-right"><span className="status completed">Completed</span><div className="row-actions booking-secondary-actions"><Button asChild variant="outline"><Link  className="secondary button-link small-link icon-action" aria-label="View completed booking" data-tooltip="View booking" to={"/dashboard/bookings/"+booking._id}><FiEye/></Link></Button></div></div></Card>)}</div></div>}</section>
+        <section className="panel booking-list-panel booking-compact-panel">
+          <div className="booking-section-heading">
+            <div><h2>Guest bookings</h2><p>Manage your customer appointments</p></div>
+            <span className="booking-total-pill">{filtered.length} {filtered.length===1?"booking":"bookings"}</span>
+          </div>
+          <div className="booking-controls">
+            <label className="booking-inline-search"><FiSearch aria-hidden="true"/><Input aria-label="Search guest bookings" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search bookings..."/></label>
+            <label className="booking-inline-select"><FiFilter aria-hidden="true"/><Select aria-label="Filter bookings by status" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}><option value="">All statuses</option>{statuses.map(([value,label])=><option key={value} value={value}>{label}</option>)}</Select></label>
+          </div>
+          <div className="booking-list booking-compact-list">
+            {filtered.length===0?<p className="booking-empty-message">No matching bookings.</p>:filtered.map(booking=>{
+              const customer=customerMap.get(customerKey(booking));
+              return <Card as="article" className="booking-card booking-lifecycle-card booking-compact-card" key={booking._id}>
+                <div className="booking-card-top">
+                  <div className="booking-main">
+                    <div className="booking-reference-line">{booking.bookingReference&&<span>{booking.bookingReference}</span>}{customer?.totalBookings>1&&<span className="returning-customer-badge">Returning · {customer.totalBookings}</span>}</div>
+                    <h3><Link className="entity-link" to={"/dashboard/bookings/"+booking._id}>{booking.service}</Link></h3>
+                    <p>{booking.guestName}{booking.guestPhone?" · "+booking.guestPhone:""}</p>
+                    <div className="booking-card-meta"><FiCalendar aria-hidden="true"/><span>{bookingDateLabel(booking.bookingDate)} · {booking.serviceDurationMinutes||60} min · {money(booking.servicePrice,booking.currency)}</span></div>
+                  </div>
+                  <span className={"status "+booking.status}>{statuses.find(([value])=>value===booking.status)?.[1]||booking.status}</span>
+                </div>
+                <div className="booking-card-footer">
+                  {booking.status==="completed"?<span className="booking-sale-hint"><FiCheckCircle aria-hidden="true"/>Sale recorded when completed</span>:<span className="booking-card-spacer" aria-hidden="true"/>}
+                  <div className="booking-card-actions">
+                    <div className="row-actions booking-status-actions">{statusActions(booking)}</div>
+                    <div className="row-actions booking-secondary-actions">
+                      <Button asChild variant="outline"><Link className="secondary button-link small-link icon-action" aria-label="View booking" title="View booking" data-tooltip="View booking" to={"/dashboard/bookings/"+booking._id}><FiEye/></Link></Button>
+                      {["pending","confirmed","in_progress"].includes(booking.status)&&<Button variant="outline" className="secondary icon-action" aria-label="Reschedule booking" title="Reschedule" data-tooltip="Reschedule" onClick={()=>reschedule(booking)}><FiCalendar/></Button>}
+                      {booking.status!=="completed"&&<><Button variant="outline" className="secondary icon-action" aria-label="Edit booking" title="Edit booking" data-tooltip="Edit booking" onClick={()=>edit(booking)}><FiEdit2/></Button><Button variant="outline" className="danger icon-action" aria-label="Delete booking" title="Delete booking" data-tooltip="Delete booking" onClick={()=>remove(booking._id)}><FiTrash2/></Button></>}
+                    </div>
+                  </div>
+                </div>
+              </Card>;
+            })}
+          </div>
+        </section>
+        <section className="panel booking-history-panel booking-compact-panel">
+          <div className="booking-section-heading booking-history-heading">
+            <div><h2>Booking history</h2><p>Completed and previously recorded bookings</p></div>
+            <div className="booking-history-heading-actions">
+              <span className="booking-record-count">{completedHistory.length} {completedHistory.length===1?"record":"records"}</span>
+              <Button type="button" variant="outline" className="booking-history-collapse" aria-label={historyOpen?"Collapse booking history":"Expand booking history"} aria-expanded={historyOpen} onClick={()=>setHistoryOpen(v=>!v)}>{historyOpen?<FiChevronUp/>:<FiChevronDown/>}</Button>
+            </div>
+          </div>
+          {historyOpen&&<div className="booking-history-content">
+            <div className="booking-history-controls">
+              <label className="booking-inline-search booking-history-search"><FiSearch aria-hidden="true"/><Input aria-label="Search booking history" value={historySearch} onChange={e=>setHistorySearch(e.target.value)} placeholder="Search history..."/></label>
+              <div className="booking-date-filter">
+                <Button variant="outline" type="button" className="booking-date-trigger" aria-expanded={historyDateOpen} aria-controls="booking-date-range-popup" onClick={()=>setHistoryDateOpen(v=>!v)}><FiCalendar aria-hidden="true"/><span>{historyFrom||historyTo?"Date range · active":"Date range"}</span><FiChevronDown aria-hidden="true"/></Button>
+                {historyDateOpen&&<div id="booking-date-range-popup" className="booking-date-popup">
+                  <div className="booking-date-inputs">
+                    <Label>From<Input type="datetime-local" value={historyFrom} onChange={e=>setHistoryFrom(e.target.value)}/></Label>
+                    <Label>To<Input type="datetime-local" min={historyFrom||undefined} value={historyTo} onChange={e=>setHistoryTo(e.target.value)}/></Label>
+                  </div>
+                  <div className="booking-date-actions">
+                    <Button type="button" variant="ghost" onClick={()=>{setHistoryFrom("");setHistoryTo("");}}>Clear dates</Button>
+                    <Button type="button" variant="outline" onClick={()=>setHistoryDateOpen(false)}>Done</Button>
+                  </div>
+                </div>}
+              </div>
+              <Button variant="outline" type="button" className="booking-history-export" onClick={exportBookingHistory} disabled={completedHistory.length===0} aria-label="Export booking history to sheet" title="Export booking history to CSV"><FiDownload/><span>Export to sheet</span></Button>
+            </div>
+            <div className="booking-list booking-compact-list">
+              {completedHistory.length===0?<p className="booking-empty-message">No completed bookings in this date and time range.</p>:completedHistory.map(booking=><Card as="article" className="booking-card booking-lifecycle-card booking-compact-card booking-history-card" key={booking._id}>
+                <div className="booking-card-top">
+                  <div className="booking-main">
+                    <div className="booking-reference-line">{booking.bookingReference&&<span>{booking.bookingReference}</span>}</div>
+                    <h3><Link className="entity-link" to={"/dashboard/bookings/"+booking._id}>{booking.service}</Link></h3>
+                    <p>{booking.guestName}{booking.guestPhone?" · "+booking.guestPhone:""}</p>
+                    <div className="booking-card-meta"><FiCalendar aria-hidden="true"/><span>{bookingDateLabel(booking.bookingDate)} · {booking.serviceDurationMinutes||60} min · {money(booking.servicePrice,booking.currency)}</span></div>
+                  </div>
+                  <span className="status completed">Completed</span>
+                </div>
+                <div className="booking-card-footer">
+                  <span className="booking-sale-hint"><FiCheckCircle aria-hidden="true"/>Sale recorded</span>
+                  <div className="row-actions booking-secondary-actions"><Button asChild variant="outline"><Link className="secondary button-link small-link icon-action" aria-label="View completed booking" title="View booking" data-tooltip="View booking" to={"/dashboard/bookings/"+booking._id}><FiEye/></Link></Button></div>
+                </div>
+              </Card>)}
+            </div>
+          </div>}
+        </section>
       </div>
     </>}
   </section>;
