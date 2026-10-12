@@ -584,17 +584,22 @@ html body #root #bookings .booking-view-toolbar .booking-new-button.ui-button {
   min-height: 42px !important;
   width: auto !important;
   padding: 9px 15px !important;
-  border: 1px solid var(--primary, #5267d7) !important;
+  border: 1px solid var(--border, #d8dee8) !important;
   border-radius: 10px !important;
-  background: var(--primary, #5267d7) !important;
-  color: var(--primary-foreground, #fff) !important;
+  background: var(--card, #fff) !important;
+  color: var(--foreground, #0f172a) !important;
   box-shadow: none !important;
   font-size: 12px;
   font-weight: 650;
   white-space: nowrap;
 }
 html body #root #bookings .booking-view-toolbar .booking-new-button.ui-button:hover {
-  filter: brightness(.96);
+  border-color: var(--primary, #5267d7) !important;
+  background: color-mix(in srgb, var(--primary, #5267d7) 5%, var(--card, #fff)) !important;
+}
+html body #root #bookings .booking-view-toolbar .booking-new-button.ui-button:focus-visible {
+  outline: 2px solid var(--primary, #5267d7);
+  outline-offset: 2px;
 }
 html body #root #bookings .booking-view-toolbar .booking-new-button.ui-button svg {
   width: 16px;
