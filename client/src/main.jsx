@@ -19,6 +19,7 @@ import "./profile-dashboard-refresh.css";
 import "./dashboard-fullpage.css";
 import "./workspace-header-rail.css";
 import "./booking-compact-refresh.css";
+import "./service-create-outline.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>

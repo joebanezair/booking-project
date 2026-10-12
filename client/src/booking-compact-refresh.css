@@ -498,29 +498,14 @@ html body #root #bookings .booking-overview-grid .booking-overview-card-head .bo
   width: 28px;
   height: 28px;
   border-radius: 8px !important;
-  color: #5467dc;
-  background: #eef2ff;
+  color: var(--primary, #5467dc);
+  background: color-mix(in srgb, var(--primary, #5467dc) 10%, var(--card, #fff));
 }
 html body #root #bookings .booking-overview-grid .booking-overview-icon svg {
   width: 15px;
   height: 15px;
 }
-html body #root #bookings .booking-overview-grid .booking-overview-pending .booking-overview-icon {
-  background: #fffbeb;
-  color: #b45309;
-}
-html body #root #bookings .booking-overview-grid .booking-overview-confirmed .booking-overview-icon {
-  background: #ecfdf5;
-  color: #047857;
-}
-html body #root #bookings .booking-overview-grid .booking-overview-progress .booking-overview-icon {
-  background: #eff6ff;
-  color: #2563eb;
-}
-html body #root #bookings .booking-overview-grid .booking-overview-completed .booking-overview-icon {
-  background: #effaf2;
-  color: #16a34a;
-}
+
 html body #root #bookings .booking-overview-grid .booking-overview-card > strong {
   display: block;
   margin: 0 !important;
@@ -621,22 +606,10 @@ html body #root #bookings .booking-view-toolbar .booking-new-button.ui-button sv
   color: #bbf7d0;
 }
 [data-theme="dark"] #root #bookings .booking-overview-grid .booking-overview-icon {
-  background: #252f50;
-  color: #a5b4fc;
+  background: color-mix(in srgb, var(--primary, #a5b4fc) 15%, var(--card, #171923));
+  color: var(--primary, #a5b4fc);
 }
-[data-theme="dark"] #root #bookings .booking-overview-grid .booking-overview-pending .booking-overview-icon {
-  background: #493814;
-  color: #fde68a;
-}
-[data-theme="dark"] #root #bookings .booking-overview-grid .booking-overview-confirmed .booking-overview-icon,
-[data-theme="dark"] #root #bookings .booking-overview-grid .booking-overview-completed .booking-overview-icon {
-  background: #153c2c;
-  color: #86efac;
-}
-[data-theme="dark"] #root #bookings .booking-overview-grid .booking-overview-progress .booking-overview-icon {
-  background: #172b54;
-  color: #93c5fd;
-}
+
 @media (max-width: 1000px) {
   html body #root #bookings .booking-overview-grid.stats-grid {
     grid-template-columns: repeat(3,minmax(0,1fr)) !important;
