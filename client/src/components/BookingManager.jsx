@@ -7,7 +7,7 @@ import { Label } from "./ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiAlertTriangle, FiCalendar, FiChevronDown, FiChevronUp, FiCheckCircle, FiClock, FiFilter, FiEdit2, FiEye, FiCheckSquare, FiGlobe, FiList, FiDownload, FiPlay, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTrash2, FiUserX, FiUsers, FiX } from "react-icons/fi";
+import { FiAlertTriangle, FiCalendar, FiChevronDown, FiChevronUp, FiCheckCircle, FiClock, FiFilter, FiEdit2, FiEye, FiCheckSquare, FiGlobe, FiGrid, FiList, FiDownload, FiPlay, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTrash2, FiUserX, FiUsers, FiX } from "react-icons/fi";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
 
@@ -26,6 +26,7 @@ export default function BookingManager({user}){
   const [form,setForm]=useState(empty);
   const [editing,setEditing]=useState(null);
   const [view,setView]=useState("list");
+  const [bookingLayout,setBookingLayout]=useState("list");
   const [search,setSearch]=useState("");
   const [statusFilter,setStatusFilter]=useState("");
   const [month,setMonth]=useState(()=>new Date().toISOString().slice(0,7));
@@ -355,13 +356,19 @@ export default function BookingManager({user}){
         <section className="panel booking-list-panel booking-compact-panel">
           <div className="booking-section-heading">
             <div><h2>Guest bookings</h2><p>Manage your customer appointments</p></div>
-            <span className="booking-total-pill">{filtered.length} {filtered.length===1?"booking":"bookings"}</span>
+            <div className="booking-list-heading-actions">
+              <span className="booking-total-pill">{filtered.length} {filtered.length===1?"booking":"bookings"}</span>
+              <div className="booking-layout-switch" role="group" aria-label="Guest booking layout">
+                <Button variant="ghost" size="icon-sm" type="button" className={bookingLayout==="list"?"booking-layout-button active":"booking-layout-button"} onClick={()=>setBookingLayout("list")} aria-label="List view" aria-pressed={bookingLayout==="list"} title="List view" data-tooltip="List view"><FiList aria-hidden="true"/></Button>
+                <Button variant="ghost" size="icon-sm" type="button" className={bookingLayout==="grid"?"booking-layout-button active":"booking-layout-button"} onClick={()=>setBookingLayout("grid")} aria-label="Grid view" aria-pressed={bookingLayout==="grid"} title="Grid view" data-tooltip="Grid view"><FiGrid aria-hidden="true"/></Button>
+              </div>
+            </div>
           </div>
           <div className="booking-controls">
             <label className="booking-inline-search"><FiSearch aria-hidden="true"/><Input aria-label="Search guest bookings" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search bookings..."/></label>
             <label className="booking-inline-select"><FiFilter aria-hidden="true"/><Select aria-label="Filter bookings by status" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}><option value="">All statuses</option>{statuses.map(([value,label])=><option key={value} value={value}>{label}</option>)}</Select></label>
           </div>
-          <div className="booking-list booking-compact-list">
+          <div className={"booking-list booking-compact-list "+(bookingLayout==="grid"?"booking-layout-grid":"booking-layout-list")}>
             {filtered.length===0?<p className="booking-empty-message">No matching bookings.</p>:filtered.map(booking=>{
               const customer=customerMap.get(customerKey(booking));
               return <Card as="article" className="booking-card booking-lifecycle-card booking-compact-card" key={booking._id}>
