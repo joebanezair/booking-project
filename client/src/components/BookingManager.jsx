@@ -7,7 +7,7 @@ import { Label } from "./ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiCalendar, FiChevronDown, FiChevronUp, FiCheckCircle, FiClock, FiFilter, FiEdit2, FiEye, FiGlobe, FiList, FiDownload, FiPlay, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTrash2, FiUserX, FiUsers, FiX } from "react-icons/fi";
+import { FiAlertTriangle, FiCalendar, FiChevronDown, FiChevronUp, FiCheckCircle, FiClock, FiFilter, FiEdit2, FiEye, FiGlobe, FiList, FiDownload, FiPlay, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTrash2, FiUserX, FiUsers, FiX } from "react-icons/fi";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
 
@@ -42,6 +42,35 @@ export default function BookingManager({user}){
   const [rescheduleDate,setRescheduleDate]=useState("");
   const [rescheduleReason,setRescheduleReason]=useState("");
   const [rescheduleBusy,setRescheduleBusy]=useState(false);
+  const [confirmation,setConfirmation]=useState(null);
+  const [confirmationBusy,setConfirmationBusy]=useState(false);
+  const [confirmationError,setConfirmationError]=useState("");
+
+  function requestConfirmation(options){
+    setConfirmationError("");
+    setConfirmation(options);
+  }
+
+  function dismissConfirmation(){
+    if(confirmationBusy)return;
+    setConfirmation(null);
+    setConfirmationError("");
+  }
+
+  async function confirmPendingAction(){
+    if(!confirmation||confirmationBusy)return;
+    setConfirmationBusy(true);
+    setConfirmationError("");
+    try{
+      await confirmation.onConfirm();
+      setConfirmation(null);
+      setError("");
+    }catch(e){
+      setConfirmationError(e.message||"Unable to complete this action. Please try again.");
+    }finally{
+      setConfirmationBusy(false);
+    }
+  }
 
   async function refreshCustomers(){try{setCustomers(await api.bookings.customers());}catch{}}
 
@@ -77,17 +106,39 @@ export default function BookingManager({user}){
     setForm(v=>({...v,contentId:service._id,service:service.title,servicePrice:Number(service.price||0),currency:service.currency||"PHP",serviceDurationMinutes:Number(service.durationMinutes||60),bufferMinutes:Number(service.bufferMinutes||0)}));
   }
 
+  async function persistBooking(){
+    const body={...form,bookingDate:new Date(form.bookingDate).toISOString(),servicePrice:Number(form.servicePrice||0),serviceDurationMinutes:Number(form.serviceDurationMinutes||60),bufferMinutes:Number(form.bufferMinutes||0)};
+    const updated=editing?await api.bookings.update(editing,body):await api.bookings.create(body);
+    setItems(current=>editing?current.map(item=>item._id===editing?updated:item):(current.some(item=>item._id===updated._id)?current:[...current,updated]));
+    setForm(empty);setEditing(null);setBookingModalOpen(false);setError("");refreshCustomers();
+  }
+
   async function save(event){
     event.preventDefault();
-    try{
-      const original=editing?items.find(item=>item._id===editing):null;
-      if(form.status==="completed"&&original?.status!=="completed"&&!confirm(`Mark this service completed? This will record ${money(form.servicePrice,form.currency)} as a sale.`))return;
-      if(original?.status==="completed"&&form.status!=="completed"&&!confirm("Reopening this completed booking will void its recorded sale while keeping the sales history. Continue?"))return;
-      const body={...form,bookingDate:new Date(form.bookingDate).toISOString(),servicePrice:Number(form.servicePrice||0),serviceDurationMinutes:Number(form.serviceDurationMinutes||60),bufferMinutes:Number(form.bufferMinutes||0)};
-      const updated=editing?await api.bookings.update(editing,body):await api.bookings.create(body);
-      setItems(current=>editing?current.map(item=>item._id===editing?updated:item):(current.some(item=>item._id===updated._id)?current:[...current,updated]));
-      setForm(empty);setEditing(null);setBookingModalOpen(false);setError("");refreshCustomers();
-    }catch(e){setError(e.message);}
+    const original=editing?items.find(item=>item._id===editing):null;
+    if(form.status==="completed"&&original?.status!=="completed"){
+      requestConfirmation({
+        title:"Complete this service?",
+        description:"The booking will be marked completed and BookFlow will record a sale.",
+        service:form.service,
+        saleAmount:money(form.servicePrice,form.currency),
+        confirmLabel:"Complete service",
+        onConfirm:persistBooking
+      });
+      return;
+    }
+    if(original?.status==="completed"&&form.status!=="completed"){
+      requestConfirmation({
+        title:"Reopen completed booking?",
+        description:"Reopening this booking will void its recorded sale while keeping the sales history for auditing.",
+        service:form.service,
+        confirmLabel:"Reopen booking",
+        tone:"danger",
+        onConfirm:persistBooking
+      });
+      return;
+    }
+    try{await persistBooking();}catch(e){setError(e.message);}
   }
 
   function edit(booking){
@@ -102,12 +153,37 @@ export default function BookingManager({user}){
     setBookingModalOpen(true);
   }
 
+  async function persistStatus(booking,status){
+    const updated=await api.bookings.setStatus(booking._id,status);
+    setItems(current=>current.map(item=>item._id===booking._id?updated:item));
+    setError("");
+    refreshCustomers();
+  }
+
   async function changeStatus(booking,status){
-    try{
-      if(status==="completed"&&!confirm(`Mark this service completed? BookFlow will record ${money(booking.servicePrice,booking.currency)} as a sale.`))return;
-      if(booking.status==="completed"&&status!=="completed"&&!confirm("Reopening this completed booking will void its recorded sale while keeping an audit trail. Continue?"))return;
-      const updated=await api.bookings.setStatus(booking._id,status);setItems(current=>current.map(item=>item._id===booking._id?updated:item));setError("");refreshCustomers();
-    }catch(e){setError(e.message);}
+    if(status==="completed"){
+      requestConfirmation({
+        title:"Complete this service?",
+        description:"The booking will be marked completed and BookFlow will record a sale.",
+        service:booking.service,
+        saleAmount:money(booking.servicePrice,booking.currency),
+        confirmLabel:"Complete service",
+        onConfirm:()=>persistStatus(booking,status)
+      });
+      return;
+    }
+    if(booking.status==="completed"&&status!=="completed"){
+      requestConfirmation({
+        title:"Reopen completed booking?",
+        description:"Reopening this booking will void its recorded sale while keeping an audit trail.",
+        service:booking.service,
+        confirmLabel:"Reopen booking",
+        tone:"danger",
+        onConfirm:()=>persistStatus(booking,status)
+      });
+      return;
+    }
+    try{await persistStatus(booking,status);}catch(e){setError(e.message);}
   }
 
   function reschedule(booking) {
@@ -132,9 +208,23 @@ export default function BookingManager({user}){
     finally { setRescheduleBusy(false); }
   }
 
-  async function remove(id){
-    if(!confirm("Delete this booking? Bookings that already have a sales audit record cannot be deleted."))return;
-    try{await api.bookings.remove(id);setItems(current=>current.filter(item=>item._id!==id));refreshCustomers();}catch(e){setError(e.message);}
+  async function persistRemoval(id){
+    await api.bookings.remove(id);
+    setItems(current=>current.filter(item=>item._id!==id));
+    setError("");
+    refreshCustomers();
+  }
+
+  function remove(id){
+    const booking=items.find(item=>item._id===id);
+    requestConfirmation({
+      title:"Delete booking?",
+      description:"This booking will be permanently deleted. Bookings with a sales audit record cannot be deleted.",
+      service:booking?.service,
+      confirmLabel:"Delete booking",
+      tone:"danger",
+      onConfirm:()=>persistRemoval(id)
+    });
   }
 
   function statusActions(booking){
@@ -168,6 +258,32 @@ export default function BookingManager({user}){
   const canCreate=user.accountStatus==="active";
 
   return <section id="bookings">
+    <Dialog open={Boolean(confirmation)} title={confirmation?.title||"Confirm booking action"}
+      className="booking-confirm-dialog" dismissible={!confirmationBusy}
+      onOpenChange={open=>{if(!open)dismissConfirmation();}}>
+      <DialogContent className="booking-confirm-content">
+        <DialogHeader className="booking-confirm-header">
+          <span className={"booking-confirm-icon "+(confirmation?.tone==="danger"?"booking-confirm-icon-danger":"")} aria-hidden="true">
+            {confirmation?.tone==="danger"?<FiAlertTriangle/>:<FiCheckCircle/>}
+          </span>
+          <div className="booking-confirm-heading">
+            <DialogTitle>{confirmation?.title}</DialogTitle>
+            <DialogDescription>{confirmation?.description}</DialogDescription>
+          </div>
+        </DialogHeader>
+        {(confirmation?.service||confirmation?.saleAmount)&&<div className="booking-confirm-details">
+          {confirmation?.service&&<div className="booking-confirm-detail-row"><span>Service</span><strong>{confirmation.service}</strong></div>}
+          {confirmation?.saleAmount&&<div className="booking-confirm-detail-row booking-confirm-amount"><span>Sale to record</span><strong>{confirmation.saleAmount}</strong></div>}
+        </div>}
+        {confirmationError&&<p className="booking-confirm-error" role="alert">{confirmationError}</p>}
+        <DialogFooter className="booking-confirm-footer">
+          <Button type="button" variant="outline" className="booking-confirm-cancel" disabled={confirmationBusy} autoFocus onClick={dismissConfirmation}>Cancel</Button>
+          <Button type="button" variant={confirmation?.tone==="danger"?"destructive":"default"} className="booking-confirm-submit" disabled={confirmationBusy} onClick={confirmPendingAction}>
+            {confirmationBusy?"Processing…":confirmation?.confirmLabel||"Confirm"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
     <Dialog open={Boolean(rescheduleTarget)} title="Reschedule booking"
       dismissible={!rescheduleBusy}
       onOpenChange={open=>{if(!open&&!rescheduleBusy)setRescheduleTarget(null);}}>
