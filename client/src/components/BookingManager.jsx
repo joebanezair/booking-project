@@ -7,7 +7,7 @@ import { Label } from "./ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiAlertTriangle, FiCalendar, FiChevronDown, FiChevronUp, FiCheckCircle, FiClock, FiFilter, FiEdit2, FiEye, FiGlobe, FiList, FiDownload, FiPlay, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTrash2, FiUserX, FiUsers, FiX } from "react-icons/fi";
+import { FiAlertTriangle, FiCalendar, FiChevronDown, FiChevronUp, FiCheckCircle, FiClock, FiFilter, FiEdit2, FiEye, FiCheckSquare, FiGlobe, FiList, FiDownload, FiPlay, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTrash2, FiUserX, FiUsers, FiX } from "react-icons/fi";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
 
@@ -301,10 +301,39 @@ export default function BookingManager({user}){
         </form>
       </DialogContent>
     </Dialog>
-    <div className="stats-grid booking-stats-grid"><Card as="article" className="stat-card"><span>Total bookings</span><strong>{stats.total}</strong></Card><Card as="article" className="stat-card"><span>Pending</span><strong>{stats.pending}</strong></Card><Card as="article" className="stat-card"><span>Confirmed</span><strong>{stats.confirmed}</strong></Card><Card as="article" className="stat-card"><span>In progress</span><strong>{stats.inProgress}</strong></Card><Card as="article" className="stat-card"><span>Completed</span><strong>{stats.completed}</strong></Card></div>
+    <div className="stats-grid booking-stats-grid booking-overview-grid" aria-label="Booking overview">
+      <Card as="article" className="stat-card booking-overview-card booking-overview-total">
+        <div className="booking-overview-card-head"><span>Total bookings</span><span className="booking-overview-icon" aria-hidden="true"><FiCalendar/></span></div>
+        <strong>{stats.total}</strong>
+      </Card>
+      <Card as="article" className="stat-card booking-overview-card booking-overview-pending">
+        <div className="booking-overview-card-head"><span>Pending</span><span className="booking-overview-icon" aria-hidden="true"><FiClock/></span></div>
+        <strong>{stats.pending}</strong>
+      </Card>
+      <Card as="article" className="stat-card booking-overview-card booking-overview-confirmed">
+        <div className="booking-overview-card-head"><span>Confirmed</span><span className="booking-overview-icon" aria-hidden="true"><FiCheckCircle/></span></div>
+        <strong>{stats.confirmed}</strong>
+      </Card>
+      <Card as="article" className="stat-card booking-overview-card booking-overview-progress">
+        <div className="booking-overview-card-head"><span>In progress</span><span className="booking-overview-icon" aria-hidden="true"><FiPlay/></span></div>
+        <strong>{stats.inProgress}</strong>
+      </Card>
+      <Card as="article" className="stat-card booking-overview-card booking-overview-completed">
+        <div className="booking-overview-card-head"><span>Completed</span><span className="booking-overview-icon" aria-hidden="true"><FiCheckSquare/></span></div>
+        <strong>{stats.completed}</strong>
+      </Card>
+    </div>
     {error&&<p className="error">{error}</p>}
 
-    <div className="booking-view-tabs"><Button variant="plain" className={view==="list"?"filter-chip active":"filter-chip"} onClick={()=>setView("list")}><FiList/>Bookings</Button><Button variant="plain" className={view==="calendar"?"filter-chip active":"filter-chip"} onClick={()=>setView("calendar")}><FiCalendar/>Calendar</Button><Button variant="plain" className={view==="customers"?"filter-chip active":"filter-chip"} onClick={()=>setView("customers")}><FiUsers/>Customers</Button><Button variant="plain" className={view==="availability"?"filter-chip active":"filter-chip"} onClick={()=>setView("availability")}><FiClock/>Availability</Button>{canCreate&&<Button variant="plain" className="primary-button booking-new-button" onClick={()=>{setEditing(null);setForm(empty);setBookingModalOpen(true);}}><FiPlus/>New booking</Button>}</div>
+    <div className="booking-view-toolbar">
+      <div className="booking-view-tabs" role="group" aria-label="Booking views">
+        <Button variant="plain" type="button" aria-pressed={view==="list"} className={view==="list"?"filter-chip active":"filter-chip"} onClick={()=>setView("list")}><FiList/>Bookings</Button>
+        <Button variant="plain" type="button" aria-pressed={view==="calendar"} className={view==="calendar"?"filter-chip active":"filter-chip"} onClick={()=>setView("calendar")}><FiCalendar/>Calendar</Button>
+        <Button variant="plain" type="button" aria-pressed={view==="customers"} className={view==="customers"?"filter-chip active":"filter-chip"} onClick={()=>setView("customers")}><FiUsers/>Customers</Button>
+        <Button variant="plain" type="button" aria-pressed={view==="availability"} className={view==="availability"?"filter-chip active":"filter-chip"} onClick={()=>setView("availability")}><FiClock/>Availability</Button>
+      </div>
+      {canCreate&&<Button variant="plain" type="button" className="primary-button booking-new-button" onClick={()=>{setEditing(null);setForm(empty);setBookingModalOpen(true);}}><FiPlus/>New booking</Button>}
+    </div>
 
     {view==="availability"&&availability?<section className="panel"><div className="panel-title"><div><p className="eyebrow">AVAILABILITY</p><h2>Booking availability</h2></div></div><div className="availability-days">{availability.workingHours?.map((row,index)=><div className="availability-row" key={row.day}><Label><Input type="checkbox" checked={row.enabled} onChange={e=>setAvailability({...availability,workingHours:availability.workingHours.map((x,i)=>i===index?{...x,enabled:e.target.checked}:x)})}/>{["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][row.day]}</Label><Input type="time" value={row.start} disabled={!row.enabled} onChange={e=>setAvailability({...availability,workingHours:availability.workingHours.map((x,i)=>i===index?{...x,start:e.target.value}:x)})}/><span>to</span><Input type="time" value={row.end} disabled={!row.enabled} onChange={e=>setAvailability({...availability,workingHours:availability.workingHours.map((x,i)=>i===index?{...x,end:e.target.value}:x)})}/></div>)}</div><div className="three-col availability-settings-grid"><Label className="availability-control"><span className="availability-input-icon" aria-label="Timezone" data-tooltip="Timezone" title="Timezone"><FiGlobe/></span><Input aria-label="Timezone" value={availability.timezone||"Asia/Manila"} onChange={e=>setAvailability({...availability,timezone:e.target.value})} placeholder="Asia/Manila"/></Label><Label className="availability-control"><span className="availability-input-icon" aria-label="Minimum notice (minutes)" data-tooltip="Minimum notice (minutes)" title="Minimum notice (minutes)"><FiClock/></span><Input aria-label="Minimum notice (minutes)" type="number" min="0" max="43200" value={availability.leadTimeMinutes??60} onChange={e=>setAvailability({...availability,leadTimeMinutes:Number(e.target.value)})}/></Label><Label className="availability-control"><span className="availability-input-icon" aria-label="Book up to (days)" data-tooltip="Book up to (days)" title="Book up to (days)"><FiCalendar/></span><Input aria-label="Book up to (days)" type="number" min="1" max="730" value={availability.maxAdvanceDays??60} onChange={e=>setAvailability({...availability,maxAdvanceDays:Number(e.target.value)})}/></Label></div><Label className="availability-control"><span className="availability-input-icon" aria-label="Slot interval" data-tooltip="Slot interval" title="Slot interval"><FiClock/></span><Select aria-label="Slot interval" value={availability.slotIntervalMinutes??30} onChange={e=>setAvailability({...availability,slotIntervalMinutes:Number(e.target.value)})}>{[5,10,15,20,30,45,60,90,120].map(v=><option key={v} value={v}>{v} minutes</option>)}</Select></Label><div className="availability-blocked-range"><Label className="availability-control"><span className="availability-input-icon" aria-label="Blocked from" data-tooltip="Blocked from" title="Blocked from"><FiCalendar/></span><Input aria-label="Blocked from" type="datetime-local" value={availability.blockedFrom||""} onChange={e=>setAvailability({...availability,blockedFrom:e.target.value})}/></Label><span className="availability-range-arrow" aria-hidden="true">→</span><Label className="availability-control"><span className="availability-input-icon" aria-label="Blocked until" data-tooltip="Blocked until" title="Blocked until"><FiCalendar/></span><Input aria-label="Blocked until" type="datetime-local" min={availability.blockedFrom||undefined} value={availability.blockedUntil||""} onChange={e=>setAvailability({...availability,blockedUntil:e.target.value})}/></Label></div><div className="row-actions availability-save-actions"><Button variant="plain" className="availability-save-button" type="button" aria-label="Save availability" onClick={async()=>{try{const saved=await api.business.update(availability);setAvailability(saved);setAvailabilitySavedAt(new Date());setError("");}catch(e){setError(e.message);}}}><FiSave/><span>Save</span></Button></div>{availabilitySavedAt&&<div className="availability-saved-toast" role="status"><FiCheckCircle/><span>Availability saved · {availabilitySavedAt.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})}</span><Button variant="plain" type="button" className="availability-toast-close" aria-label="Dismiss" onClick={()=>setAvailabilitySavedAt(null)}><FiX/></Button></div>}</section>:view==="calendar"?<CalendarView/>:view==="customers"?<CustomerView/>:<>
       <div className="workspace-grid booking-workspace-grid">
