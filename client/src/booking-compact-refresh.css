@@ -911,7 +911,7 @@ html body #root #bookings .booking-list-panel .booking-card-footer {
   min-height: 34px;
   margin-top: 14px !important;
   padding-top: 10px;
-  border-top: 1px solid var(--border, #e2e8f0);
+  border-top: none !important;
 }
 html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-card-spacer { display: none; }
 html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-card-actions {
