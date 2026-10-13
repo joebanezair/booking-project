@@ -24,6 +24,7 @@ import "./discovery-settings-refresh.css";
 import "./services-management-layout.css";
 import "./sales-breakdown-refresh.css";
 import "./sales-analytics-layout.css";
+import "./order-experience.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>

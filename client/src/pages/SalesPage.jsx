@@ -3,9 +3,11 @@ import { Button } from "../components/ui/button.jsx";
 import { Input } from "../components/ui/input.jsx";
 import { Select } from "../components/ui/select.jsx";
 import { Label } from "../components/ui/label.jsx";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog.jsx";
+import { Textarea } from "../components/ui/textarea.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FiCalendar, FiChevronDown, FiCreditCard, FiDownload, FiFileText, FiInbox, FiPackage, FiPrinter, FiShoppingBag, FiTrendingUp, FiX } from "react-icons/fi";
+import { FiCalendar, FiChevronDown, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
@@ -43,6 +45,13 @@ export default function SalesPage({ user, onLogout }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [orders,setOrders]=useState([]);
+  const [selectedOrderId,setSelectedOrderId]=useState(null);
+  const [editingOrder,setEditingOrder]=useState(false);
+  const [orderSaving,setOrderSaving]=useState(false);
+  const [orderModalError,setOrderModalError]=useState("");
+  const [trackingLink,setTrackingLink]=useState("");
+  const [shareNotice,setShareNotice]=useState("");
+  const [orderStatusBusy,setOrderStatusBusy]=useState("");
   const [receipt,setReceipt]=useState(null);
   const [historyExpanded,setHistoryExpanded]=useState(true);
 
@@ -79,8 +88,58 @@ export default function SalesPage({ user, onLogout }) {
     if (value !== "custom") setCustom({ start: "", end: "" });
   }
 
-  async function changeOrderStatus(order,status){try{const updated=await api.sales.setOrderStatus(order._id,status);setOrders(current=>current.map(x=>x._id===updated._id?updated:x));if(status==="completed")await load();setError("");}catch(e){setError(e.message);}}
+  async function changeOrderStatus(order,status){if(orderStatusBusy)return;setOrderStatusBusy(order._id);try{const updated=await api.sales.setOrderStatus(order._id,status);setOrders(current=>current.map(x=>x._id===updated._id?updated:x));if(status==="completed")await load();setError("");}catch(e){setError(e.message);}finally{setOrderStatusBusy("");}}
 
+
+  const selectedOrder = orders.find(o=>o._id===selectedOrderId) || null;
+
+  function openOrder(order) {
+    setSelectedOrderId(order._id); setEditingOrder(false);
+    setOrderModalError(""); setTrackingLink(""); setShareNotice("");
+  }
+  useEffect(()=>{
+    if(!selectedOrderId)return;
+    let active=true;
+    api.sales.orderTracking(selectedOrderId).then(result=>{
+      if(active)setTrackingLink(window.location.origin+"/order-status/"+result.id+"#"+result.trackingToken);
+    }).catch(e=>{if(active)setShareNotice(e.message);});
+    return ()=>{active=false;};
+  },[selectedOrderId]);
+
+  async function copyOrderLink() {
+    if(!trackingLink)return;
+    try {
+      await navigator.clipboard.writeText(trackingLink);
+      setShareNotice("Tracking link copied. You can send it to the buyer.");
+    } catch {
+      setShareNotice("Select and copy the tracking link below.");
+    }
+  }
+  async function shareOrderLink() {
+    if(!trackingLink)return;
+    if(navigator.share) {
+      try { await navigator.share({title:"BookFlow order status",text:"Track your BookFlow order:",url:trackingLink});return; }
+      catch(e){if(e.name==="AbortError")return;}
+    }
+    await copyOrderLink();
+  }
+  async function saveOrderDetails(event) {
+    event.preventDefault();
+    if(!selectedOrder||orderSaving||["completed","cancelled"].includes(selectedOrder.status))return;
+    const form=new FormData(event.currentTarget);
+    setOrderSaving(true);setOrderModalError("");
+    try{
+      const updated=await api.sales.updateOrder(selectedOrder._id,{
+        customerName:form.get("customerName"),customerPhone:form.get("customerPhone"),
+        customerEmail:form.get("customerEmail"),deliveryLocation:form.get("deliveryLocation"),
+        notes:form.get("notes"),courierName:form.get("courierName"),
+        trackingNumber:form.get("trackingNumber"),trackingUrl:form.get("trackingUrl"),
+        items:selectedOrder.items.map((item,i)=>({productId:item.product,quantity:Number(form.get("quantity-"+i))}))
+      });
+      setOrders(existing=>existing.map(o=>o._id===updated._id?updated:o));
+      setEditingOrder(false);setError("");
+    }catch(e){setOrderModalError(e.message);}finally{setOrderSaving(false);}
+  }
 
   const primaryCurrency = data?.primaryCurrency || "PHP";
   const summary = data?.summary || {};
@@ -137,7 +196,23 @@ export default function SalesPage({ user, onLogout }) {
       </div>
       {!orders.length
         ? <div className="sales-orders-empty"><FiInbox aria-hidden="true"/><p className="muted">No public product orders yet.</p></div>
-        : <div className="sales-table-wrap"><table className="sales-table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>{orders.map(order=><tr key={order._id}><td>{order.orderNumber}</td><td><strong>{order.customerName}</strong><small>{order.customerPhone}</small></td><td>{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</td><td>{money(order.total,order.currency)}</td><td><Select value={order.status} disabled={order.status==="completed"} onChange={e=>changeOrderStatus(order,e.target.value)}><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></Select></td></tr>)}</tbody></table></div>}
+        : <div className="sales-table-wrap"><table className="sales-table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>{orders.map(order=><tr key={order._id}
+          className="sales-order-row" tabIndex={0} role="button" aria-label={`View details for order ${order.orderNumber}`}
+          onClick={()=>openOrder(order)}
+          onKeyDown={e=>{if(e.target===e.currentTarget&&(e.key==="Enter"||e.key===" ")){e.preventDefault();openOrder(order);}}}>
+          <td data-label="Order"><span className="sales-order-number">{order.orderNumber}</span></td>
+          <td data-label="Customer"><strong>{order.customerName}</strong><small>{order.customerPhone}</small></td>
+          <td data-label="Items">{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</td>
+          <td data-label="Total">{money(order.total,order.currency)}</td>
+          <td data-label="Status" onClick={e=>e.stopPropagation()}>
+            <Select aria-label={`Status for order ${order.orderNumber}`} value={order.status}
+              disabled={order.status==="completed"||orderStatusBusy===order._id}
+              onChange={e=>changeOrderStatus(order,e.target.value)}>
+              {["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].map(status=>
+                <option key={status} value={status}>{status.replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase())}</option>)}
+            </Select>
+          </td>
+        </tr>)}</tbody></table></div>}
     </section>
 
       {data?.totalsByCurrency?.length > 1 && <section className="panel currency-summary">
@@ -228,5 +303,84 @@ export default function SalesPage({ user, onLogout }) {
         </section>
       </div>,document.body)}
     </>}
+
+    <Dialog open={Boolean(selectedOrder)} title="Order details" className="vendor-order-dialog"
+      dismissible={!orderSaving}
+      onOpenChange={open=>{if(!open&&!orderSaving){setSelectedOrderId(null);setEditingOrder(false);setOrderModalError("");}}}>
+      <DialogContent className="vendor-order-dialog-content">
+        <DialogHeader>
+          <p className="eyebrow">ORDER DETAILS</p>
+          <DialogTitle>{selectedOrder?.orderNumber}</DialogTitle>
+          <DialogDescription>View order details, share tracking and manage fulfillment.</DialogDescription>
+        </DialogHeader>
+        {selectedOrder && <>
+          <div className="vendor-order-state-row">
+            <span className="vendor-order-status">{selectedOrder.status.replaceAll("_"," ")}</span>
+            {["completed","cancelled"].includes(selectedOrder.status)
+              ? <span className="muted">Read-only: this sale is {selectedOrder.status}.</span>
+              : <Button type="button" variant="outline" size="sm" onClick={()=>{setEditingOrder(!editingOrder);setOrderModalError("");}}
+                  disabled={orderSaving}><FiEdit2 aria-hidden="true"/>{editingOrder?"Cancel editing":"Edit order"}</Button>}
+          </div>
+          {editingOrder && !["completed","cancelled"].includes(selectedOrder.status)
+            ? <form id="vendor-order-edit" key={selectedOrder._id} onSubmit={saveOrderDetails} className="vendor-order-edit-form">
+                <div className="vendor-order-form-grid">
+                  <Label>Customer name<Input name="customerName" defaultValue={selectedOrder.customerName} required maxLength={120}/></Label>
+                  <Label>Contact number<Input name="customerPhone" defaultValue={selectedOrder.customerPhone} required maxLength={30}/></Label>
+                  <Label>Email<Input name="customerEmail" type="email" defaultValue={selectedOrder.customerEmail||""} maxLength={150}/></Label>
+                  <Label>Delivery location<Input name="deliveryLocation" defaultValue={selectedOrder.deliveryLocation} required maxLength={250}/></Label>
+                </div>
+                <h3>Items</h3>
+                {selectedOrder.items.map((item,i)=><div className="vendor-order-edit-item" key={String(item.product)+"-"+i}>
+                  <div><strong>{item.name}</strong><small>{money(item.unitPrice,selectedOrder.currency)} each</small></div>
+                  <Label>Quantity<Input name={"quantity-"+i} type="number" min="1" max="999" step="1" required defaultValue={item.quantity}/></Label>
+                </div>)}
+                <h3>Courier information</h3>
+                <div className="vendor-order-form-grid">
+                  <Label>Courier name<Input name="courierName" defaultValue={selectedOrder.courierName||""} maxLength={120} placeholder="e.g. LBC, J&T"/></Label>
+                  <Label>Tracking number<Input name="trackingNumber" defaultValue={selectedOrder.trackingNumber||""} maxLength={120} placeholder="Courier tracking reference"/></Label>
+                  <Label>Tracking URL<Input name="trackingUrl" defaultValue={selectedOrder.trackingUrl||""} type="url" maxLength={512} placeholder="https://courier.example/track"/></Label>
+                </div>
+                <Label>Order notes<Textarea name="notes" defaultValue={selectedOrder.notes||""} maxLength={500} rows={2}/></Label>
+                <p className="muted">The total is recalculated automatically from product prices and quantities. Courier details are displayed on the buyer tracking page.</p>
+                {orderModalError&&<p className="error" role="alert">{orderModalError}</p>}
+                <DialogFooter>
+                  <Button type="button" variant="outline" disabled={orderSaving} onClick={()=>setEditingOrder(false)}>Cancel</Button>
+                  <Button type="submit" disabled={orderSaving}>{orderSaving?"Saving...":"Save changes"}</Button>
+                </DialogFooter>
+              </form>
+            : <div className="vendor-order-readonly">
+                <dl className="vendor-order-details-grid">
+                  <div><dt>Customer</dt><dd>{selectedOrder.customerName}</dd></div>
+                  <div><dt>Contact</dt><dd>{selectedOrder.customerPhone}</dd></div>
+                  <div><dt>Email</dt><dd>{selectedOrder.customerEmail||"—"}</dd></div>
+                  <div><dt>Delivery location</dt><dd>{selectedOrder.deliveryLocation}</dd></div>
+                </dl>
+                <h3>Ordered products</h3>
+                <div className="vendor-order-lines">{selectedOrder.items.map((item,i)=><div key={String(item.product)+"-"+i}>
+                  <span>{item.name} × {item.quantity}</span><strong>{money(item.lineTotal,selectedOrder.currency)}</strong>
+                </div>)}</div>
+                <h3><FiTruck aria-hidden="true"/> Courier information</h3>
+                <dl className="vendor-order-details-grid">
+                  <div><dt>Courier</dt><dd>{selectedOrder.courierName||"Not assigned yet"}</dd></div>
+                  <div><dt>Tracking number</dt><dd>{selectedOrder.trackingNumber||"—"}</dd></div>
+                  {selectedOrder.trackingUrl&&<div><dt>Courier tracking</dt><dd><a href={selectedOrder.trackingUrl} target="_blank" rel="noopener noreferrer">Open courier website <FiExternalLink aria-hidden="true"/></a></dd></div>}
+                </dl>
+                {selectedOrder.notes&&<p className="muted">Notes: {selectedOrder.notes}</p>}
+                <div className="vendor-order-total"><span>Order total</span><strong>{money(selectedOrder.total,selectedOrder.currency)}</strong></div>
+              </div>}
+          <div className="vendor-order-share">
+            <h3>Buyer status link</h3>
+            <p className="muted">Share this private link with your buyer to view status and courier updates. No account is required.</p>
+            {trackingLink&&<Input aria-label="Buyer tracking link" value={trackingLink} readOnly onFocus={e=>e.target.select()}/>}
+            <div className="vendor-order-share-actions">
+              <Button type="button" variant="outline" disabled={!trackingLink} onClick={copyOrderLink}><FiCopy aria-hidden="true"/>Copy link</Button>
+              <Button type="button" variant="secondary" disabled={!trackingLink} onClick={shareOrderLink}><FiShare2 aria-hidden="true"/>Share</Button>
+              {trackingLink&&<a href={trackingLink} target="_blank" rel="noopener noreferrer" className="ui-button ui-button-outline">Preview <FiExternalLink aria-hidden="true"/></a>}
+            </div>
+            {shareNotice&&<p className="muted" role="status">{shareNotice}</p>}
+          </div>
+        </>}
+      </DialogContent>
+    </Dialog>
   </AppLayout>;
 }

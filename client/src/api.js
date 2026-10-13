@@ -165,6 +165,8 @@ export const api = {
     posSales: () => request("/sales/pos"),
     checkout: body => request("/sales/pos", { method: "POST", body: JSON.stringify(body) }),
     orders: () => request("/sales/orders"),
+    updateOrder: (id, body) => request(`/sales/orders/${encodeURIComponent(id)}`, {method:"PATCH",body:JSON.stringify(body)}),
+    orderTracking: id => request(`/sales/orders/${encodeURIComponent(id)}/tracking`),
     setOrderStatus: (id, status) => request(`/sales/orders/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }),
     recordOrderPayment: (id, body) => request(`/sales/orders/${id}/payment`, { method: "PATCH", body: JSON.stringify(body) }),
     inventoryHistory: () => request("/sales/inventory-history")
@@ -207,6 +209,7 @@ export const api = {
   },
   publicProfile: username => request(`/public/profile/${username}`),
   publicProductOrder: (userId, body) => request(`/public/products/${userId}/order`, { method: "POST", body: JSON.stringify(body) }),
+  publicOrderStatus: (id, token) => request(`/public/orders/${encodeURIComponent(id)}/status`, { headers:{"X-Order-Token":token} }),
   publicContent: id => request(`/public/content/${id}`),
   browse: () => request("/public/browse"),
   search: params => request(`/public/search?${new URLSearchParams(params)}`)

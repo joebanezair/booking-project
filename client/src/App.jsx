@@ -24,6 +24,7 @@ import BusinessDetailPage from "./pages/BusinessDetailPage.jsx";
 import ReviewPage from "./pages/ReviewPage.jsx";
 import SalesPage from "./pages/SalesPage.jsx";
 import ProductsPage from "./pages/ProductsPage.jsx";
+import OrderStatusPage from "./pages/OrderStatusPage.jsx";
 import { disconnectRealtime } from "./realtime.js";
 import { api } from "./api.js";
 
@@ -105,6 +106,7 @@ export default function App() {
     <Route path="/services/:contentId" element={<PublicContentPage user={user} />} />
     <Route path="/b/:userId" element={<PublicBookingPage user={user} />} />
     <Route path="/review/:token" element={<ReviewPage />} />
+    <Route path="/order-status/:orderId" element={<OrderStatusPage />} />
 
     <Route path="*" element={<Navigate to="/" replace />} />
   </Routes>;
