@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Textarea } from "../components/ui/textarea.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FiCalendar, FiChevronDown, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiEye, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
+import { FiCalendar, FiChevronDown, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
@@ -276,7 +276,7 @@ export default function SalesPage({ user, onLogout }) {
             {filteredOrders.length===0 ? <p className="muted sales-orders-no-match" role="status">No matching orders. Adjust your search or status filter.</p> :
               <div className="sales-table-wrap sales-orders-table-wrap">
                 <table className="sales-table sales-orders-table">
-                  <thead><tr><th scope="col">Order</th><th scope="col">Product</th><th scope="col">Customer</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+                  <thead><tr><th scope="col">Order</th><th scope="col">Product</th><th scope="col">Customer</th><th scope="col">Total</th><th scope="col">Status</th></tr></thead>
                   <tbody>{filteredOrders.map(order=><tr key={order._id} className="sales-order-row"
                     onClick={()=>openOrder(order)}>
                     <td data-label="Order" className="sales-orders-ident">
@@ -289,11 +289,6 @@ export default function SalesPage({ user, onLogout }) {
                     <td data-label="Customer" className="sales-orders-customer">{order.customerName}</td>
                     <td data-label="Total" className="sales-orders-amount">{money(order.total,order.currency)}</td>
                     <td data-label="Status" className="sales-orders-status-cell"><span className={"sales-orders-status is-"+order.status}>{orderStatusLabel(order.status)}</span></td>
-                    <td data-label="Action" className="sales-orders-view-cell">
-                      <Button type="button" size="sm" variant="outline" className="sales-orders-view"
-                        aria-label={`View order details for ${order.orderNumber}`}
-                        onClick={event=>{event.stopPropagation();openOrder(order);}}><FiEye aria-hidden="true"/><span>View</span></Button>
-                    </td>
                   </tr>)}</tbody>
                 </table>
               </div>}
