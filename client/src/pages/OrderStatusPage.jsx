@@ -7,7 +7,6 @@ import { api } from "../api.js";
 const phases=["pending","confirmed","processing","ready","out_for_delivery","completed"];
 const names={pending:"Order placed",confirmed:"Confirmed",processing:"Processing",
   ready:"Ready",out_for_delivery:"Out for delivery",completed:"Completed",cancelled:"Cancelled"};
-const cash=value=>new Intl.NumberFormat("en-PH",{style:"currency",currency:value||"PHP"}).format;
 function money(value,currency){
   try{return new Intl.NumberFormat("en-PH",{style:"currency",currency:currency||"PHP"}).format(Number(value||0));}
   catch{return String(Number(value||0).toFixed(2))+" "+(currency||"PHP");}
