@@ -398,7 +398,7 @@ export default function BookingManager({user}){
                   </div>
                 </div>
                 <div className={"booking-card-footer"+(booking.status==="completed"?" is-completed":" has-actions")}>
-                  {booking.status==="completed"?<span className="booking-sale-hint"><FiCheckCircle aria-hidden="true"/>Sale recorded when completed</span>:<span className="booking-card-spacer" aria-hidden="true"/>}
+                  {booking.status==="completed"?<span className="booking-sale-hint booking-sale-tooltip" role="img" tabIndex={0} aria-label="Sale recorded when completed" data-tooltip="Sale recorded when completed"><FiCheckCircle aria-hidden="true"/></span>:<span className="booking-card-spacer" aria-hidden="true"/>}
                   <div className="booking-card-actions">
                     <div className="row-actions booking-status-actions">{statusActions(booking)}</div>
                     <div className="row-actions booking-secondary-actions">

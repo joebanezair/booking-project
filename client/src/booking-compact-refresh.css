@@ -1079,3 +1079,65 @@ html body #root #bookings .booking-list-panel .booking-compact-card .booking-sec
 @media (prefers-reduced-motion: reduce) {
   html body #root #bookings .booking-list-panel .booking-compact-card { transition: none !important; }
 }
+
+
+/* Icon-only completed booking sale indicator. Tooltip is revealed on hover,
+   keyboard focus, or tap focus without changing booking actions or history. */
+html body #root #bookings .booking-list-panel .booking-sale-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  gap: 0;
+  border: 1px solid color-mix(in srgb, #16a34a 22%, var(--border, #e2e8f0));
+  border-radius: 8px;
+  background: color-mix(in srgb, #16a34a 7%, var(--card, #fff));
+  cursor: help;
+}
+html body #root #bookings .booking-list-panel .booking-sale-tooltip > svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+}
+html body #root #bookings .booking-list-panel .booking-sale-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  bottom: calc(100% + 8px);
+  width: max-content;
+  max-width: min(235px, calc(100vw - 48px));
+  padding: 7px 9px;
+  border-radius: 7px;
+  background: #111827;
+  box-shadow: 0 5px 16px rgba(15, 23, 42, .15);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(3px);
+  transition: opacity .12s ease, transform .12s ease, visibility .12s ease;
+}
+html body #root #bookings .booking-list-panel .booking-sale-tooltip:is(:hover, :focus, :focus-visible)::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+html body #root #bookings .booking-list-panel .booking-sale-tooltip:focus-visible {
+  outline: 2px solid var(--primary, #5267d7);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root #bookings .booking-list-panel .booking-sale-tooltip::after {
+    transition: none;
+  }
+}
