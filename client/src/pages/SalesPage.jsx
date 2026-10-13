@@ -280,8 +280,8 @@ export default function SalesPage({ user, onLogout }) {
                   <tbody>{filteredOrders.map(order=><tr key={order._id} className="sales-order-row"
                     onClick={()=>openOrder(order)}>
                     <td data-label="Order" className="sales-orders-ident">
-                      <button type="button" className="sales-orders-order-link" title={order.orderNumber}
-                        onClick={event=>{event.stopPropagation();openOrder(order);}}>{order.orderNumber}</button>
+                      <Button type="button" variant="plain" className="sales-orders-order-link" title={order.orderNumber}
+                        onClick={event=>{event.stopPropagation();openOrder(order);}}>{order.orderNumber}</Button>
                     </td>
                     <td data-label="Product" className="sales-orders-product">
                       <span className="sales-orders-item">{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</span>
