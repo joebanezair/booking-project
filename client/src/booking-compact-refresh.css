@@ -948,18 +948,133 @@ html body #root #bookings .booking-list-panel .booking-compact-card .booking-sec
   border-color: #dc2626 !important;
   color: #b91c1c !important;
 }
+/* Mobile guest booking layout: compact metadata and a single-row action toolbar
+   when space allows; other booking views and history keep their existing behavior. */
 @media (max-width: 700px) {
   html body #root #bookings .booking-list-panel .booking-controls { flex-wrap: wrap; }
   html body #root #bookings .booking-list-panel .booking-controls .booking-inline-search,
   html body #root #bookings .booking-list-panel .booking-controls .booking-inline-select { flex: 1 1 100%; }
-  html body #root #bookings .booking-list-panel .booking-compact-list .booking-compact-card { padding: 13px !important; }
-  html body #root #bookings .booking-list-panel .booking-card-top { align-items: flex-start; }
-  html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-card-actions { gap: 10px; }
+
+  html body #root #bookings .booking-list-panel .booking-compact-list .booking-compact-card {
+    padding: 12px 13px !important;
+  }
+  html body #root #bookings .booking-list-panel .booking-card-top {
+    display: flex !important;
+    align-items: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 8px;
+  }
+  html body #root #bookings .booking-list-panel .booking-reference-line {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 5px;
+    min-width: 0;
+  }
+  html body #root #bookings .booking-list-panel .booking-reference-line > span:first-child,
+  html body #root #bookings .booking-list-panel .booking-reference-line .returning-customer-badge {
+    padding: 5px 6px;
+    font-size: 10px;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  html body #root #bookings .booking-list-panel .booking-compact-card > .booking-card-top > .status {
+    flex: 0 0 auto !important;
+    padding: 5px 7px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  html body #root #bookings .booking-list-panel .booking-main {
+    margin-top: 9px;
+  }
+  html body #root #bookings .booking-list-panel .booking-compact-card h3 {
+    margin-bottom: 7px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  html body #root #bookings .booking-list-panel .booking-customer-meta {
+    column-gap: 12px;
+    row-gap: 5px;
+    font-size: 11.5px;
+  }
+  html body #root #bookings .booking-list-panel .booking-card-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 9px;
+    margin-top: 10px;
+    font-size: 11.5px;
+  }
+  html body #root #bookings .booking-list-panel .booking-card-meta .booking-meta-item {
+    min-width: 0;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  html body #root #bookings .booking-list-panel .booking-price {
+    font-size: 12px;
+  }
+  html body #root #bookings .booking-list-panel .booking-card-footer {
+    align-items: center !important;
+    flex-direction: row !important;
+    gap: 8px;
+    margin-top: 12px !important;
+    padding-top: 10px;
+  }
+  html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-card-actions {
+    display: flex;
+    width: 100% !important;
+    margin: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between !important;
+    column-gap: 8px !important;
+    row-gap: 8px !important;
+  }
+  html body #root #bookings .booking-list-panel .booking-status-actions,
+  html body #root #bookings .booking-list-panel .booking-secondary-actions {
+    display: flex !important;
+    width: auto !important;
+    margin: 0 !important;
+    gap: 6px !important;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  html body #root #bookings .booking-list-panel .booking-status-actions {
+    flex: 0 1 auto !important;
+    flex-wrap: wrap !important;
+    max-width: 100%;
+  }
+  html body #root #bookings .booking-list-panel .booking-secondary-actions {
+    flex: 0 0 auto !important;
+    flex-wrap: nowrap !important;
+    margin-left: auto !important;
+  }
+  html body #root #bookings .booking-list-panel .booking-compact-card .booking-status-actions > .ui-button {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    white-space: nowrap;
+    padding: 6px 10px !important;
+  }
+  html body #root #bookings .booking-list-panel .booking-compact-card .booking-secondary-actions > .ui-button {
+    flex: 0 0 32px !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
+    height: 32px !important;
+  }
+  html body #root #bookings .booking-list-panel .booking-card-footer.is-completed {
+    flex-wrap: nowrap;
+  }
 }
-@media (max-width: 420px) {
-  html body #root #bookings .booking-list-panel .booking-card-top { flex-wrap: wrap; }
-  html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-card-actions { justify-content: flex-start; }
-  html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-secondary-actions { margin-left: auto; }
+@media (max-width: 360px) {
+  html body #root #bookings .booking-list-panel .booking-compact-list .booking-compact-card { padding: 11px !important; }
+  html body #root #bookings .booking-list-panel .booking-customer-meta,
+  html body #root #bookings .booking-list-panel .booking-card-meta { font-size: 11px; }
+  html body #root #bookings .booking-list-panel .booking-card-meta .booking-meta-item svg { width: 13px; height: 13px; flex-basis: 13px; }
+  html body #root #bookings .booking-list-panel .booking-card-footer.is-completed .booking-sale-hint { font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html body #root #bookings .booking-list-panel .booking-compact-card { transition: none !important; }
