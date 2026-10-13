@@ -66,11 +66,11 @@ export default function OrdersPage({user,onLogout}) {
         <p>{o.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</p>
         <strong>{new Intl.NumberFormat("en-PH",{style:"currency",currency:o.currency||"PHP"}).format(o.total||0)}</strong>
         <div className="order-actions"><Select aria-label={`Order status for ${o.orderNumber}`}
-          value={o.status} disabled={changing===o._id}
+          value={o.status} disabled={changing===o._id||o.status==="completed"}
           onChange={e=>status(o._id,e.target.value)}>
           {statuses.map(s=><option value={s} key={s}>{s.replaceAll("_"," ")}</option>)}
         </Select>
-          <Button type="button" variant="outline" onClick={()=>setPaying(o)}>Record payment</Button>
+          <Button type="button" variant="outline" disabled={o.status==="completed"} title={o.status==="completed"?"Completed sales are read-only":undefined} onClick={()=>setPaying(o)}>Record payment</Button>
         </div>
       </Card>)}
     </section>
