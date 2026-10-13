@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Textarea } from "../components/ui/textarea.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FiCalendar, FiChevronDown, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
+import { FiCalendar, FiChevronDown, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiEye, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
@@ -21,6 +21,15 @@ const ranges = [
   ["all", "All Time"],
   ["custom", "Custom"]
 ];
+
+const orderStatuses = [
+  ["pending", "Pending"], ["confirmed", "Confirmed"], ["processing", "Processing"],
+  ["ready", "Ready"], ["out_for_delivery", "Out for delivery"],
+  ["completed", "Completed"], ["cancelled", "Cancelled"]
+];
+const commonOrderFilters = [["all","All"],["pending","Pending"],["processing","Processing"],["completed","Completed"]];
+const extraOrderFilters = orderStatuses.filter(([value])=>!commonOrderFilters.some(([common])=>common===value));
+const orderStatusLabel = value => orderStatuses.find(([key])=>key===value)?.[1] || value;
 
 const groups = [
   ["daily", "Daily"],
@@ -45,6 +54,10 @@ export default function SalesPage({ user, onLogout }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [orders,setOrders]=useState([]);
+  const [ordersExpanded,setOrdersExpanded]=useState(true);
+  const [orderFilter,setOrderFilter]=useState("all");
+  const [orderSearch,setOrderSearch]=useState("");
+  const [draftOrderStatus,setDraftOrderStatus]=useState("pending");
   const [selectedOrderId,setSelectedOrderId]=useState(null);
   const [editingOrder,setEditingOrder]=useState(false);
   const [orderSaving,setOrderSaving]=useState(false);
@@ -88,13 +101,22 @@ export default function SalesPage({ user, onLogout }) {
     if (value !== "custom") setCustom({ start: "", end: "" });
   }
 
-  async function changeOrderStatus(order,status){if(orderStatusBusy)return;setOrderStatusBusy(order._id);try{const updated=await api.sales.setOrderStatus(order._id,status);setOrders(current=>current.map(x=>x._id===updated._id?updated:x));if(status==="completed")await load();setError("");}catch(e){setError(e.message);}finally{setOrderStatusBusy("");}}
+  const filteredOrders = useMemo(()=>{
+    const term=orderSearch.trim().toLowerCase();
+    return orders.filter(order=>
+      (orderFilter==="all"||order.status===orderFilter) &&
+      (!term || [order.orderNumber,order.customerName,order.customerPhone,
+        ...(order.items||[]).map(item=>item.name)].some(value=>String(value||"").toLowerCase().includes(term)))
+    );
+  },[orders,orderFilter,orderSearch]);
+
 
 
   const selectedOrder = orders.find(o=>o._id===selectedOrderId) || null;
 
   function openOrder(order) {
     setSelectedOrderId(order._id); setEditingOrder(false);
+    setDraftOrderStatus(order.status);
     setOrderModalError(""); setTrackingLink(""); setShareNotice("");
   }
   useEffect(()=>{
@@ -137,6 +159,16 @@ export default function SalesPage({ user, onLogout }) {
         items:selectedOrder.items.map((item,i)=>({productId:item.product,quantity:Number(form.get("quantity-"+i))}))
       });
       setOrders(existing=>existing.map(o=>o._id===updated._id?updated:o));
+      if(draftOrderStatus!==updated.status){
+        try {
+          const statusUpdated=await api.sales.setOrderStatus(updated._id,draftOrderStatus);
+          setOrders(existing=>existing.map(o=>o._id===statusUpdated._id?statusUpdated:o));
+          if(draftOrderStatus==="completed")await load();
+        } catch(statusError) {
+          setOrderModalError("Order details were saved, but the status change failed: "+statusError.message);
+          return;
+        }
+      }
       setEditingOrder(false);setError("");
     }catch(e){setOrderModalError(e.message);}finally{setOrderSaving(false);}
   }
@@ -194,30 +226,62 @@ export default function SalesPage({ user, onLogout }) {
         <Card as="article" className="stat-card analytics-stat"><span><FiPackage aria-hidden="true"/>Products sold online</span><strong>{onlineProductsSold}</strong><small>Units from completed online orders</small></Card>
       </section>
 
-    <section className={"panel pos-history-panel sales-orders-panel" + (!orders.length ? " is-empty" : "")}>
+    <section className={"panel pos-history-panel sales-orders-panel"+(!orders.length?" is-empty":"")}>
       <div className="panel-title sales-orders-head">
         <div><p className="eyebrow">ONLINE ORDERS</p><h2>Public product orders</h2></div>
-        <span className="sales-orders-count">{orders.length} record{orders.length===1?"":"s"}</span>
+        <Button type="button" variant="outline" className="sales-orders-collapse" aria-expanded={ordersExpanded}
+          aria-controls="sales-online-orders-content" onClick={()=>setOrdersExpanded(value=>!value)}>
+          {orders.length} order{orders.length===1?"":"s"} <FiChevronDown aria-hidden="true"/>
+        </Button>
       </div>
-      {!orders.length
-        ? <div className="sales-orders-empty"><FiInbox aria-hidden="true"/><p className="muted">No public product orders yet.</p></div>
-        : <div className="sales-table-wrap"><table className="sales-table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>{orders.map(order=><tr key={order._id}
-          className="sales-order-row" tabIndex={0} role="button" aria-label={`View details for order ${order.orderNumber}`}
-          onClick={()=>openOrder(order)}
-          onKeyDown={e=>{if(e.target===e.currentTarget&&(e.key==="Enter"||e.key===" ")){e.preventDefault();openOrder(order);}}}>
-          <td data-label="Order"><span className="sales-order-number">{order.orderNumber}</span></td>
-          <td data-label="Customer"><strong>{order.customerName}</strong><small>{order.customerPhone}</small></td>
-          <td data-label="Items">{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</td>
-          <td data-label="Total">{money(order.total,order.currency)}</td>
-          <td data-label="Status" onClick={e=>e.stopPropagation()}>
-            <Select aria-label={`Status for order ${order.orderNumber}`} value={order.status}
-              disabled={order.status==="completed"||orderStatusBusy===order._id}
-              onChange={e=>changeOrderStatus(order,e.target.value)}>
-              {["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].map(status=>
-                <option key={status} value={status}>{status.replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase())}</option>)}
-            </Select>
-          </td>
-        </tr>)}</tbody></table></div>}
+      <div id="sales-online-orders-content" className="sales-online-orders-content" hidden={!ordersExpanded}>
+        {orders.length===0
+          ? <div className="sales-orders-empty"><FiInbox aria-hidden="true"/><p className="muted">No public product orders yet.</p></div>
+          : <>
+            <div className="sales-orders-toolbar">
+              <div className="sales-orders-filters" role="group" aria-label="Filter online orders">
+                {commonOrderFilters.map(([value,label])=><Button type="button" key={value}
+                  variant={orderFilter===value?"secondary":"outline"}
+                  className={"sales-orders-filter"+(orderFilter===value?" active":"")}
+                  aria-pressed={orderFilter===value} onClick={()=>setOrderFilter(value)}>
+                  {label}<span className="sales-orders-filter-count">{value==="all"?orders.length:orders.filter(o=>o.status===value).length}</span>
+                </Button>)}
+                <Select aria-label="More order statuses" className="sales-orders-more-status"
+                  value={extraOrderFilters.some(([value])=>value===orderFilter)?orderFilter:""}
+                  onChange={e=>setOrderFilter(e.target.value||"all")}>
+                  <option value="">More statuses</option>
+                  {extraOrderFilters.map(([value,label])=><option value={value} key={value}>{label}</option>)}
+                </Select>
+              </div>
+              <label className="sales-orders-search">
+                <FiSearch aria-hidden="true"/>
+                <Input type="search" value={orderSearch} onChange={e=>setOrderSearch(e.target.value)}
+                  placeholder="Search orders, customers, or products..." aria-label="Search online orders"/>
+              </label>
+            </div>
+            {filteredOrders.length===0 ? <p className="muted sales-orders-no-match" role="status">No matching orders. Adjust your search or status filter.</p> :
+              <div className="sales-table-wrap sales-orders-table-wrap">
+                <table className="sales-table sales-orders-table">
+                  <thead><tr><th scope="col">Order / Customer</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">View</th></tr></thead>
+                  <tbody>{filteredOrders.map(order=><tr key={order._id} className="sales-order-row"
+                    onClick={()=>openOrder(order)}>
+                    <td data-label="Order" className="sales-orders-ident">
+                      <button type="button" className="sales-orders-order-link" onClick={()=>openOrder(order)}>{order.orderNumber}</button>
+                      <span className="sales-orders-item">{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</span>
+                      <small>{order.customerName}</small>
+                    </td>
+                    <td data-label="Total" className="sales-orders-amount">{money(order.total,order.currency)}</td>
+                    <td data-label="Status"><span className={"sales-orders-status is-"+order.status}>{orderStatusLabel(order.status)}</span></td>
+                    <td data-label="View" className="sales-orders-view-cell">
+                      <Button type="button" size="icon" variant="outline" className="sales-orders-view"
+                        aria-label={`View order details for ${order.orderNumber}`}
+                        onClick={event=>{event.stopPropagation();openOrder(order);}}><FiEye aria-hidden="true"/></Button>
+                    </td>
+                  </tr>)}</tbody>
+                </table>
+              </div>}
+          </>}
+      </div>
     </section>
 
       {data?.totalsByCurrency?.length > 1 && <section className="panel currency-summary">
@@ -320,14 +384,23 @@ export default function SalesPage({ user, onLogout }) {
         </DialogHeader>
         {selectedOrder && <>
           <div className="vendor-order-state-row">
-            <span className="vendor-order-status">{selectedOrder.status.replaceAll("_"," ")}</span>
+            <span className="vendor-order-status">{orderStatusLabel(selectedOrder.status)}</span>
             {["completed","cancelled"].includes(selectedOrder.status)
               ? <span className="muted">Read-only: this sale is {selectedOrder.status}.</span>
-              : <Button type="button" variant="outline" size="sm" onClick={()=>{setEditingOrder(!editingOrder);setOrderModalError("");}}
+              : <Button type="button" variant="outline" size="sm" onClick={()=>{setEditingOrder(!editingOrder);setDraftOrderStatus(selectedOrder.status);setOrderModalError("");}}
                   disabled={orderSaving}><FiEdit2 aria-hidden="true"/>{editingOrder?"Cancel editing":"Edit order"}</Button>}
           </div>
           {editingOrder && !["completed","cancelled"].includes(selectedOrder.status)
             ? <form id="vendor-order-edit" key={selectedOrder._id} onSubmit={saveOrderDetails} className="vendor-order-edit-form">
+                <Label>Order status
+                  <Select value={draftOrderStatus} disabled={orderSaving} onChange={e=>setDraftOrderStatus(e.target.value)}
+                    aria-label="Edit order status">
+                    {orderStatuses.map(([value,label])=><option value={value} key={value}>{label}</option>)}
+                  </Select>
+                </Label>
+                {draftOrderStatus==="completed" && <p className="muted vendor-order-final-warning">
+                  Completing this order records the sale and deducts stock. Completed orders cannot be edited or reopened.
+                </p>}
                 <div className="vendor-order-form-grid">
                   <Label>Customer name<Input name="customerName" defaultValue={selectedOrder.customerName} required maxLength={120}/></Label>
                   <Label>Contact number<Input name="customerPhone" defaultValue={selectedOrder.customerPhone} required maxLength={30}/></Label>
