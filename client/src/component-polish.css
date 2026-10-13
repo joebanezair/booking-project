@@ -630,7 +630,7 @@ html body .order-actions > button.ui-button {
   }
   #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
     align-items: center !important;
     justify-content: center !important;
     flex: initial !important;
@@ -647,9 +647,9 @@ html body .order-actions > button.ui-button {
     border-radius: 10px !important;
   }
   #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button > svg {
-    width: 18px !important;
-    height: 18px !important;
-    flex: 0 0 18px !important;
+    width: 16px !important;
+    height: 16px !important;
+    flex: 0 0 16px !important;
   }
   #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button > div {
     display: flex !important;
@@ -658,7 +658,7 @@ html body .order-actions > button.ui-button {
     justify-content: center !important;
     min-width: 0 !important;
     max-width: 100% !important;
-    gap: 4px !important;
+    gap: 3px !important;
   }
   #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button :is(span, strong) {
     font-size: 11px !important;
