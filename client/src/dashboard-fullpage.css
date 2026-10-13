@@ -1043,3 +1043,27 @@ html body #root .dashboard-v2-analytics .dashboard-v2-sales-footer {
     overflow-x: auto;
   }
 }
+
+
+/* Secondary variant for the business dashboard creation action. */
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar > .dashboard-post-service.ui-button {
+  min-height: 38px !important;
+  padding: 9px 13px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
+}
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar > .dashboard-post-service.ui-button > svg {
+  color: inherit !important;
+}
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar > .dashboard-post-service.ui-button:hover {
+  background: color-mix(in srgb, var(--primary) 7%, var(--secondary)) !important;
+  border-color: color-mix(in srgb, var(--primary) 18%, var(--border)) !important;
+}
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar > .dashboard-post-service.ui-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}

@@ -102,7 +102,7 @@ export default function DashboardPage({ user, onLogout }) {
         <h1>Welcome back, {user.name.split(" ")[0]}</h1>
         <p className="muted">{isAdmin ? "Manage businesses and monitor platform activity." : user.accountStatus === "paused" ? "Your account is paused. Existing data remains available while new publishing and bookings are disabled." : "Manage services, bookings, recorded sales, messages, reviews, and your public profile."}</p>
       </div>
-      {!isAdmin && user.accountStatus === "active" && <Button asChild variant="default"><Link  className="primary-button button-link icon-link" to="/dashboard/services/new"><FiPlus aria-hidden="true" />Post a service</Link></Button>}
+      {!isAdmin && user.accountStatus === "active" && <Button asChild variant="secondary"><Link className="secondary button-link icon-link dashboard-post-service" to="/dashboard/services/new"><FiPlus aria-hidden="true" />Post a service</Link></Button>}
     </header>
 
     <div className="dashboard-content-rail">
