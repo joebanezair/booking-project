@@ -133,7 +133,7 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
     <div className="dashboard-v2-stats">
       {metrics.map(({ icon: Icon, ...metric }) => <Card key={metric.key} as="article" className={`dashboard-v2-stat tone-${metric.tone}`}>
         <div className="dashboard-v2-stat-heading">
-          <span className="dashboard-v2-stat-icon" style={metric.key === "sales" ? { color: "#B7791F", background: "rgba(245, 158, 11, 0.13)" } : undefined}><Icon aria-hidden="true" /></span>
+          <span className="dashboard-v2-stat-icon"><Icon aria-hidden="true" /></span>
           <span className="dashboard-v2-stat-label">{metric.label === "This period" ? title : metric.label}</span>
         </div>
         <strong className="dashboard-v2-stat-number">{metric.value}</strong>
