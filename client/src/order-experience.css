@@ -540,7 +540,7 @@ html body #root .sales-orders-panel .sales-orders-no-match {
   text-align:center;
   font-size:12px;
 }
-/* Dense six-column desktop list: every piece of information has its own column. */
+/* Compact five-column online order list. Row and order number open details. */
 html body #root .sales-orders-panel .sales-orders-table-wrap.sales-table-wrap {
   width:100%;
   border:1px solid var(--border) !important;
@@ -549,7 +549,7 @@ html body #root .sales-orders-panel .sales-orders-table-wrap.sales-table-wrap {
 }
 html body #root .sales-orders-panel .sales-orders-table.sales-table {
   width:100%;
-  min-width:920px;
+  min-width:780px;
   table-layout:fixed;
   border-collapse:collapse;
 }
@@ -579,12 +579,11 @@ html body #root .sales-orders-panel .sales-orders-table tbody tr {cursor:pointer
 html body #root .sales-orders-panel .sales-orders-table tbody tr:hover {
   background:color-mix(in srgb,var(--primary) 4%,var(--card));
 }
-html body #root .sales-orders-panel .sales-orders-table th:nth-child(1) {width:23%;}
-html body #root .sales-orders-panel .sales-orders-table th:nth-child(2) {width:28%;}
-html body #root .sales-orders-panel .sales-orders-table th:nth-child(3) {width:17%;}
+html body #root .sales-orders-panel .sales-orders-table th:nth-child(1) {width:27%;}
+html body #root .sales-orders-panel .sales-orders-table th:nth-child(2) {width:30%;}
+html body #root .sales-orders-panel .sales-orders-table th:nth-child(3) {width:18%;}
 html body #root .sales-orders-panel .sales-orders-table th:nth-child(4) {width:12%;text-align:right;}
-html body #root .sales-orders-panel .sales-orders-table th:nth-child(5) {width:12%;}
-html body #root .sales-orders-panel .sales-orders-table th:nth-child(6) {width:8%;text-align:right;}
+html body #root .sales-orders-panel .sales-orders-table th:nth-child(5) {width:13%;}
 html body #root .sales-orders-panel .sales-orders-ident {min-width:0;}
 /* Global button borders must not box in the order reference. */
 html body #root .sales-orders-panel button.sales-orders-order-link {
@@ -615,8 +614,7 @@ html body #root .sales-orders-panel button.sales-orders-order-link:hover {
   filter:none !important;
   text-decoration:underline;
 }
-html body #root .sales-orders-panel button.sales-orders-order-link:focus-visible,
-html body #root .sales-orders-panel .sales-orders-view.ui-button:focus-visible {
+html body #root .sales-orders-panel button.sales-orders-order-link:focus-visible {
   outline:2px solid var(--ring);
   outline-offset:3px;
 }
@@ -682,35 +680,6 @@ html body #root .sales-orders-panel .sales-orders-status.is-cancelled {
   border-color:color-mix(in srgb,var(--destructive) 18%,var(--border));
   color:var(--destructive);
 }
-html body #root .sales-orders-panel .sales-orders-view-cell {text-align:right;}
-html body #root .sales-orders-panel .sales-orders-view.ui-button {
-  display:inline-flex !important;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  box-sizing:border-box;
-  width:auto !important;
-  min-width:74px !important;
-  height:32px !important;
-  min-height:32px !important;
-  padding:0 10px !important;
-  border:1px solid var(--border) !important;
-  border-radius:8px !important;
-  color:var(--foreground);
-  background:var(--card) !important;
-  box-shadow:none !important;
-  font-size:11px;
-  font-weight:600;
-}
-html body #root .sales-orders-panel .sales-orders-view.ui-button:hover {
-  background:var(--secondary) !important;
-  color:var(--primary);
-}
-html body #root .sales-orders-panel .sales-orders-view.ui-button svg {
-  flex:0 0 14px;
-  width:14px;
-  height:14px;
-}
 html body #root .vendor-order-dialog .vendor-order-final-warning {
   margin:0 !important;
   padding:10px 12px;
@@ -737,7 +706,7 @@ html body #root .vendor-order-dialog .vendor-order-final-warning {
   html body #root .sales-orders-panel .sales-orders-table tr.sales-order-row {
     display:grid !important;
     grid-template-columns:minmax(0,1fr) auto;
-    grid-template-areas:"order total" "product product" "customer customer" "status action";
+    grid-template-areas:"order total" "product product" "customer status";
     align-items:center;
     gap:5px 12px;
     width:100%;
@@ -763,8 +732,7 @@ html body #root .vendor-order-dialog .vendor-order-final-warning {
   html body #root .sales-orders-panel .sales-orders-table td.sales-orders-product {grid-area:product;}
   html body #root .sales-orders-panel .sales-orders-table td.sales-orders-customer {grid-area:customer;}
   html body #root .sales-orders-panel .sales-orders-table td.sales-orders-amount {grid-area:total;}
-  html body #root .sales-orders-panel .sales-orders-table td.sales-orders-status-cell {grid-area:status;}
-  html body #root .sales-orders-panel .sales-orders-table td.sales-orders-view-cell {grid-area:action;}
+  html body #root .sales-orders-panel .sales-orders-table td.sales-orders-status-cell {grid-area:status;justify-self:end;text-align:right;}
 }
 @media (max-width: 800px) {
   html body #root .sales-orders-panel .sales-orders-toolbar {align-items:stretch;}
