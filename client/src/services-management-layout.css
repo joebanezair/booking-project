@@ -1,0 +1,292 @@
+/*
+ * Service Management layout: one aligned workspace column.
+ * Loaded last to resolve earlier competing 1200px header, services card grid,
+ * and responsive chip styles without altering service behavior or list view.
+ */
+
+html body #root .page-shell > .content-shell:has(> .services-management-header) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 20px !important;
+}
+html body #root .page-shell > .content-shell > :is(
+  .services-management-header,
+  .services-stats-grid,
+  .services-controls-card
+) {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 1720px !important;
+  min-width: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+html body #root .page-shell > .content-shell > .services-management-header.topbar {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap;
+  gap: 16px 24px !important;
+  margin-top: 0 !important;
+  margin-bottom: 17px !important;
+  padding: 0 !important;
+}
+html body #root .services-management-header > div:first-child {
+  flex: 1 1 360px;
+  min-width: 0;
+  width: auto !important;
+}
+html body #root .services-management-header .eyebrow {
+  margin: 0 0 7px;
+  color: var(--primary);
+}
+html body #root .services-management-header h1 {
+  margin: 0 0 7px !important;
+  font-size: clamp(24px, 2.2vw, 31px) !important;
+  font-weight: 700;
+  line-height: 1.2 !important;
+  letter-spacing: -.03em;
+}
+html body #root .services-management-header .muted {
+  max-width: 720px;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.5;
+}
+html body #root .services-management-header > .service-create-link.ui-button {
+  flex: 0 0 auto !important;
+  align-self: flex-start !important;
+  min-height: 38px !important;
+  margin: 0 !important;
+  border-radius: 10px !important;
+}
+
+/* Filters align with the same outer edge as the page title and panel. */
+html body #root .page-shell > .content-shell > .services-stats-grid.stats-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin-top: 0 !important;
+  margin-bottom: 14px !important;
+  padding: 0 !important;
+}
+html body #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button {
+  width: fit-content !important;
+  min-width: 0 !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 7px 11px !important;
+  border-radius: 10px !important;
+  gap: 7px !important;
+}
+
+/* Search, toggle, and cards share the same inset within the results surface. */
+html body #root .page-shell > .content-shell > .services-controls-card.panel {
+  padding: 14px !important;
+  margin-top: 0 !important;
+  margin-bottom: 24px !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+html body #root .services-controls-card .services-view-toolbar {
+  display: grid !important;
+  grid-template-columns: minmax(0, 420px) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 0 0 14px !important;
+  width: 100% !important;
+}
+html body #root .services-controls-card .services-search-wrap {
+  min-width: 0 !important;
+  max-width: 420px !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+html body #root .services-controls-card .services-search.ui-search-field {
+  min-height: 38px !important;
+  height: 38px !important;
+  width: 100% !important;
+  border-radius: 10px !important;
+}
+html body #root .services-controls-card .service-view-toggle {
+  justify-self: end !important;
+  margin: 0 !important;
+  gap: 6px !important;
+}
+html body #root .services-controls-card .service-view-toggle .ui-button {
+  width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  border-radius: 10px !important;
+}
+html body #root .services-controls-card .services-list-section.dashboard-section {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+html body #root .services-controls-card .content-admin-list {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Capped at five columns by the 1720px parent, shrinking naturally at narrower widths. */
+html body #root .page-shell .services-controls-card .services-view-grid.content-admin-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+  align-items: stretch !important;
+  gap: 12px !important;
+}
+html body #root .page-shell .services-controls-card .services-view-grid > .admin-content-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-self: stretch !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .page-shell .services-controls-card .services-view-grid .admin-content-card > .admin-content-cover {
+  box-sizing: border-box !important;
+  display: block !important;
+  width: calc(100% - 20px) !important;
+  max-width: calc(100% - 20px) !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  aspect-ratio: 4 / 3;
+  object-fit: cover !important;
+  flex: 0 0 auto !important;
+  margin: 10px 10px 0 !important;
+  border-radius: 10px !important;
+}
+html body #root .page-shell .services-controls-card .services-view-grid .admin-content-card > .content-placeholder.admin-content-cover {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+html body #root .page-shell .services-controls-card .services-view-grid .admin-content-body {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 12px 14px 14px !important;
+  gap: 8px !important;
+}
+html body #root .page-shell .services-controls-card .services-view-grid .admin-content-body h3 {
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2 !important;
+  white-space: normal !important;
+  min-height: 2.6em !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  font-size: 15px !important;
+  font-weight: 650 !important;
+  line-height: 1.3 !important;
+}
+html body #root .page-shell .services-controls-card .services-view-grid .admin-content-body p {
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2 !important;
+  min-height: 3em !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5 !important;
+}
+html body #root .page-shell .services-controls-card .services-view-grid .admin-content-body > strong {
+  display: block;
+  flex: 0 0 auto;
+  margin-top: auto !important;
+  padding-top: 4px;
+  font-size: 13px;
+  font-weight: 650;
+}
+html body #root .page-shell .services-controls-card .services-view-grid .service-icon-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  margin-top: 0 !important;
+  padding-top: 8px !important;
+  gap: 6px !important;
+}
+html body #root .page-shell .services-controls-card .services-view-grid .service-card-meta {
+  top: 18px !important;
+  right: 18px !important;
+  gap: 5px !important;
+}
+html body #root .page-shell .services-controls-card .services-view-grid .service-card-meta .icon-action {
+  border-radius: 8px !important;
+}
+
+/* Preserve full-width list mode and the existing service card actions. */
+html body #root .page-shell .services-controls-card .services-view-list.content-admin-list {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  gap: 10px !important;
+}
+@media (max-width: 800px) {
+  html body #root .page-shell > .content-shell:has(> .services-management-header) {
+    padding: 16px !important;
+  }
+}
+@media (max-width: 560px) {
+  html body #root .page-shell > .content-shell:has(> .services-management-header) {
+    padding: 12px !important;
+  }
+  html body #root .page-shell > .content-shell > .services-management-header.topbar {
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-bottom: 14px !important;
+  }
+  html body #root .services-management-header > div:first-child {
+    width: 100% !important;
+    flex: 0 1 auto;
+  }
+  html body #root .page-shell > .content-shell > .services-stats-grid.stats-grid {
+    gap: 6px !important;
+  }
+  html body #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button {
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 6px 9px !important;
+  }
+  html body #root .page-shell > .content-shell > .services-controls-card.panel {
+    padding: 10px !important;
+  }
+  html body #root .services-controls-card .services-view-toolbar {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+  }
+  html body #root .page-shell .services-controls-card .services-view-grid .admin-content-body {
+    padding: 12px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .page-shell .services-controls-card .services-view-grid > .admin-content-card {
+    transition: none !important;
+  }
+}
