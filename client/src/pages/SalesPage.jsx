@@ -5,7 +5,7 @@ import { Select } from "../components/ui/select.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FiCalendar, FiDollarSign, FiDownload, FiPackage, FiPrinter, FiTrendingUp, FiX } from "react-icons/fi";
+import { FiCalendar, FiCreditCard, FiDollarSign, FiDownload, FiFileText, FiPackage, FiPrinter, FiShoppingBag, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
@@ -145,11 +145,26 @@ export default function SalesPage({ user, onLogout }) {
         </section>
       </div>
 
-      {(data?.byChannel?.length > 0 || data?.byPaymentMethod?.length > 0) && <section className="panel currency-summary">
-        <div className="panel-title"><div><p className="eyebrow">BREAKDOWN</p><h2>Sales channels & POS payments</h2></div></div>
-        <div className="currency-total-list">
-          {(data?.byChannel || []).map(item => <div key={"channel-"+item.channel}><strong>{item.channel}</strong><span>{money(item.revenue, primaryCurrency)}</span><small>{item.sales} transaction{item.sales===1?"":"s"}</small></div>)}
-          {(data?.byPaymentMethod || []).map(item => <div key={"payment-"+item.method}><strong>POS · {item.method.toUpperCase()}</strong><span>{money(item.revenue, primaryCurrency)}</span><small>{item.sales} sale{item.sales===1?"":"s"}</small></div>)}
+      {(data?.byChannel?.length > 0 || data?.byPaymentMethod?.length > 0) && <section className="panel currency-summary sales-channel-breakdown">
+        <div className="panel-title sales-channel-breakdown-heading"><div><p className="eyebrow">BREAKDOWN</p><h2>Sales channels & POS payments</h2><p className="muted sales-channel-breakdown-description">Revenue and transaction breakdown by source.</p></div></div>
+        <div className="currency-total-list sales-channel-breakdown-grid">
+          {(data?.byChannel || []).map(item => {
+            const Icon = item.channel?.toLowerCase().includes("service") ? FiCalendar : FiShoppingBag;
+            return <div className="sales-channel-breakdown-card" key={"channel-"+item.channel}>
+              <div className="sales-channel-breakdown-label"><span className="sales-channel-breakdown-icon"><Icon aria-hidden="true"/></span><strong>{item.channel}</strong></div>
+              <div className="sales-channel-breakdown-details">
+                <span className="sales-channel-breakdown-amount">{money(item.revenue, primaryCurrency)}</span>
+                <small className="sales-channel-breakdown-count"><FiFileText aria-hidden="true"/>{item.sales} transaction{item.sales===1?"":"s"}</small>
+              </div>
+            </div>;
+          })}
+          {(data?.byPaymentMethod || []).map(item => <div className="sales-channel-breakdown-card" key={"payment-"+item.method}>
+            <div className="sales-channel-breakdown-label"><span className="sales-channel-breakdown-icon"><FiCreditCard aria-hidden="true"/></span><strong>POS · {item.method.toUpperCase()}</strong></div>
+            <div className="sales-channel-breakdown-details">
+              <span className="sales-channel-breakdown-amount">{money(item.revenue, primaryCurrency)}</span>
+              <small className="sales-channel-breakdown-count"><FiFileText aria-hidden="true"/>{item.sales} sale{item.sales===1?"":"s"}</small>
+            </div>
+          </div>)}
         </div>
       </section>}
 

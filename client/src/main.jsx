@@ -22,6 +22,7 @@ import "./booking-compact-refresh.css";
 import "./service-create-outline.css";
 import "./discovery-settings-refresh.css";
 import "./services-management-layout.css";
+import "./sales-breakdown-refresh.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
