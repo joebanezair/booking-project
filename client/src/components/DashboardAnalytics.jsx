@@ -123,9 +123,9 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
   const salesTrend = data?.trend || [];
   const metrics = [
     { key: "sales", label: "This period", value: summary ? currencyFormat(summary.totalSales, primaryCurrency) : "—", description: "Recorded service and product sales", icon: FiDollarSign, tone: "blue", series: salesTrend.map(item => item.revenue) },
-    { key: "completed", label: "Completed", value: summary?.completedServices ?? "—", description: "Services completed this period", icon: FiCalendar, tone: "green", series: completedTrend.map(item => item.revenue) },
-    { key: "average", label: "Average sale", value: summary ? currencyFormat(summary.averageSale, primaryCurrency) : "—", description: "Primary currency", icon: FiTrendingUp, tone: "orange", series: [] },
-    { key: "services", label: "Services sold", value: summary?.servicesSold ?? "—", description: "Distinct services this period", icon: FiBriefcase, tone: "purple", series: [] }
+    { key: "completed", label: "Completed", value: summary?.completedServices ?? "—", description: "Services completed this period", icon: FiCalendar, tone: "blue", series: completedTrend.map(item => item.revenue) },
+    { key: "average", label: "Average sale", value: summary ? currencyFormat(summary.averageSale, primaryCurrency) : "—", description: "Primary currency", icon: FiTrendingUp, tone: "blue", series: [] },
+    { key: "services", label: "Services sold", value: summary?.servicesSold ?? "—", description: "Distinct services this period", icon: FiBriefcase, tone: "blue", series: [] }
   ];
   const title = DASHBOARD_RANGES.find(item => item.value === range)?.label || "This month";
   return <section className="business-dashboard-analytics dashboard-v2-analytics" aria-label="Business analytics">
