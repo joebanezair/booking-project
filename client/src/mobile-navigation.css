@@ -143,3 +143,133 @@
     transition: none;
   }
 }
+
+
+/* Mobile bottom tab bar — padded floating navigation.
+   Five existing destinations, More drawer and unread badges are unchanged. */
+@media (max-width: 800px) {
+  html body #root .page-shell > .mobile-bottom-nav {
+    display: grid !important;
+    position: fixed !important;
+    z-index: 48;
+    left: max(10px, env(safe-area-inset-left)) !important;
+    right: max(10px, env(safe-area-inset-right)) !important;
+    bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    min-width: 0;
+    min-height: 0 !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 8px !important;
+    box-sizing: border-box;
+    border: 1px solid var(--border, #e2e8f0) !important;
+    border-radius: 18px !important;
+    background: rgba(255, 255, 255, .97) !important;
+    box-shadow: 0 5px 24px rgba(15, 23, 42, .10) !important;
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+
+  html body #root .page-shell > .mobile-bottom-nav :is(a, button.mobile-nav-more.ui-button) {
+    position: relative;
+    display: flex !important;
+    box-sizing: border-box;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 54px !important;
+    height: 54px !important;
+    margin: 0 !important;
+    padding: 7px 3px !important;
+    gap: 4px !important;
+    border: 0 !important;
+    border-radius: 12px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #6c7891 !important;
+    text-decoration: none !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    transition: color .16s ease, background-color .16s ease !important;
+  }
+  html body #root .page-shell > .mobile-bottom-nav :is(a, button.mobile-nav-more.ui-button) > svg {
+    display: block;
+    width: 20px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    flex: 0 0 20px !important;
+    stroke-width: 1.8;
+  }
+  html body #root .page-shell > .mobile-bottom-nav :is(a, button.mobile-nav-more.ui-button) > span {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    text-align: center;
+    white-space: nowrap;
+  }
+  html body #root .page-shell > .mobile-bottom-nav :is(a.active, button.mobile-nav-more.active.ui-button) {
+    color: var(--primary, #4f63e8) !important;
+    background: color-mix(in srgb, var(--primary, #4f63e8) 9%, var(--card, #fff)) !important;
+  }
+  html body #root .page-shell > .mobile-bottom-nav :is(a, button.mobile-nav-more.ui-button):focus-visible {
+    outline: 2px solid var(--primary, #4f63e8) !important;
+    outline-offset: 2px !important;
+  }
+  @media (hover: hover) {
+    html body #root .page-shell > .mobile-bottom-nav :is(a:not(.active), button.mobile-nav-more:not(.active).ui-button):hover {
+      color: var(--primary, #4f63e8) !important;
+      background: color-mix(in srgb, var(--primary, #4f63e8) 5%, var(--card, #fff)) !important;
+    }
+  }
+  html body #root .page-shell > .mobile-bottom-nav .mobile-nav-badge {
+    position: absolute;
+    z-index: 1;
+    top: 3px;
+    right: calc(50% - 22px);
+    display: grid;
+    place-items: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    background: #ef4444;
+    box-shadow: 0 0 0 2px var(--card, #fff);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  html body #root .page-shell > .content-shell {
+    padding-bottom: calc(105px + env(safe-area-inset-bottom)) !important;
+  }
+
+  [data-theme="dark"] #root .page-shell > .mobile-bottom-nav {
+    background: rgba(21, 31, 48, .97) !important;
+    border-color: #2f3e54 !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .28) !important;
+  }
+  [data-theme="dark"] #root .page-shell > .mobile-bottom-nav :is(a, button.mobile-nav-more.ui-button) {
+    color: #a5b1c6 !important;
+  }
+  [data-theme="dark"] #root .page-shell > .mobile-bottom-nav :is(a.active, button.mobile-nav-more.active.ui-button) {
+    color: #9eacff !important;
+    background: rgba(120, 140, 255, .16) !important;
+  }
+  [data-theme="dark"] #root .page-shell > .mobile-bottom-nav .mobile-nav-badge {
+    box-shadow: 0 0 0 2px #151f30;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .page-shell > .mobile-bottom-nav :is(a, button.mobile-nav-more.ui-button) {
+    transition: none !important;
+  }
+}
