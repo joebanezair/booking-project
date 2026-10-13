@@ -450,6 +450,7 @@ export default function SalesPage({ user, onLogout }) {
                 </DialogFooter>
               </form>
             : <div className="vendor-order-readonly">
+                <h3>Customer information</h3>
                 <dl className="vendor-order-details-grid">
                   <div><dt>Customer</dt><dd>{selectedOrder.customerName}</dd></div>
                   <div><dt>Contact</dt><dd>{selectedOrder.customerPhone}</dd></div>
@@ -470,7 +471,7 @@ export default function SalesPage({ user, onLogout }) {
                 <div className="vendor-order-total"><span>Order total</span><strong>{money(selectedOrder.total,selectedOrder.currency)}</strong></div>
               </div>}
           <div className="vendor-order-share">
-            <h3>Buyer status link</h3>
+            <h3><FiShare2 aria-hidden="true"/> Buyer status link</h3>
             <p className="muted">Share this private link with your buyer to view status and courier updates. No account is required.</p>
             {trackingLink&&<Input aria-label="Buyer tracking link" value={trackingLink} readOnly onFocus={e=>e.target.select()}/>}
             <div className="vendor-order-share-actions">

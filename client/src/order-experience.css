@@ -826,3 +826,314 @@ html body .vendor-order-dialog .vendor-order-feedback {
     width: 100%;
   }
 }
+
+
+/* Compact Order Details modal and 5px low-contrast scrollbar (2026-10). */
+html body .vendor-order-dialog.ui-dialog {
+  box-sizing: border-box;
+  width: min(640px, calc(100vw - 24px)) !important;
+  max-width: 640px !important;
+  max-height: min(88vh, 820px) !important;
+  max-height: min(88dvh, 820px) !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px !important;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--muted-foreground) 38%, transparent) transparent;
+  scrollbar-gutter: stable;
+}
+html body .vendor-order-dialog.ui-dialog::-webkit-scrollbar {
+  width: 5px;
+}
+html body .vendor-order-dialog.ui-dialog::-webkit-scrollbar-track {
+  background: transparent;
+}
+html body .vendor-order-dialog.ui-dialog::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--muted-foreground) 36%, transparent);
+}
+html body .vendor-order-dialog.ui-dialog::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--muted-foreground) 55%, transparent);
+}
+html body .vendor-order-dialog .vendor-order-dialog-content.ui-dialog-content {
+  display: grid;
+  min-width: 0;
+  gap: 14px !important;
+  padding: 20px !important;
+}
+html body .vendor-order-dialog .ui-dialog-header {
+  display: grid;
+  gap: 5px;
+  padding-bottom: 2px;
+}
+html body .vendor-order-dialog .ui-dialog-header .eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--primary);
+}
+html body .vendor-order-dialog .ui-dialog-title {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-size: 20px !important;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -.018em;
+}
+html body .vendor-order-dialog .ui-dialog-description {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.45;
+}
+html body .vendor-order-dialog .vendor-order-state-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  padding: 2px 0;
+}
+html body .vendor-order-dialog .vendor-order-state-row .vendor-order-status {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 11px;
+  border: 1px solid color-mix(in srgb, var(--primary) 15%, var(--border));
+  border-radius: 10px !important;
+  background: color-mix(in srgb, var(--primary) 9%, var(--card));
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+html body .vendor-order-dialog .vendor-order-state-row .ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  width: auto;
+  min-height: 36px;
+  padding: 7px 12px;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+html body .vendor-order-dialog .vendor-order-state-row .ui-button svg {
+  width: 15px;
+  height: 15px;
+}
+html body .vendor-order-dialog .vendor-order-status-editor {
+  display: grid;
+  min-width: 0;
+  gap: 12px !important;
+  padding: 15px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: color-mix(in srgb, var(--secondary) 35%, var(--card)) !important;
+  box-shadow: none !important;
+}
+html body .vendor-order-dialog .vendor-order-status-editor-heading {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+html body .vendor-order-dialog .vendor-order-status-editor-heading h3 {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+html body .vendor-order-dialog .vendor-order-status-editor-heading p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.4;
+}
+html body .vendor-order-dialog .vendor-order-status-editor-controls {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px !important;
+  min-width: 0;
+}
+html body .vendor-order-dialog .vendor-order-status-editor-controls .ui-select {
+  box-sizing: border-box;
+  flex: initial;
+  display: block;
+  width: 100% !important;
+  min-width: 0;
+  height: 42px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 8px 32px 8px 12px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background-color: var(--card) !important;
+  color: var(--foreground);
+  font-size: 13px;
+}
+html body .vendor-order-dialog .vendor-order-status-editor-controls .ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: auto !important;
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 8px 14px !important;
+  border-radius: 10px !important;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+}
+html body .vendor-order-dialog .vendor-order-status-editor-controls .ui-button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+html body .vendor-order-dialog .vendor-order-final-warning,
+html body .vendor-order-dialog .vendor-order-feedback {
+  font-size: 12px;
+  line-height: 1.5;
+}
+html body .vendor-order-dialog .vendor-order-final-warning {
+  padding: 10px 12px;
+  border-radius: 10px !important;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, #f59e0b 8%, var(--card));
+}
+html body .vendor-order-dialog .vendor-order-readonly {
+  display: grid;
+  min-width: 0;
+  gap: 9px !important;
+}
+html body .vendor-order-dialog .vendor-order-readonly > h3 {
+  margin: 6px 0 2px !important;
+  font-size: 13px;
+  font-weight: 650;
+}
+html body .vendor-order-dialog .vendor-order-readonly > .vendor-order-details-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  width: 100%;
+  margin: 0;
+}
+html body .vendor-order-dialog .vendor-order-readonly > .vendor-order-details-grid > div {
+  display: grid;
+  grid-template-columns: minmax(105px, 1fr) minmax(0, 1.7fr);
+  align-items: start;
+  gap: 12px;
+  padding: 7px 0;
+  min-width: 0;
+}
+html body .vendor-order-dialog .vendor-order-details-grid dt {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+html body .vendor-order-dialog .vendor-order-details-grid dd {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.5;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+html body .vendor-order-dialog .vendor-order-lines {
+  display: grid;
+  gap: 8px;
+}
+html body .vendor-order-dialog .vendor-order-lines > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+}
+html body .vendor-order-dialog .vendor-order-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 0;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+}
+html body .vendor-order-dialog .vendor-order-total strong {
+  font-size: 19px;
+  font-variant-numeric: tabular-nums;
+}
+html body .vendor-order-dialog .vendor-order-share {
+  display: grid;
+  gap: 9px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+html body .vendor-order-dialog .vendor-order-share h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 !important;
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 650;
+}
+html body .vendor-order-dialog .vendor-order-share h3 svg {
+  width: 16px;
+  height: 16px;
+  color: var(--primary);
+}
+html body .vendor-order-dialog .vendor-order-share > .ui-input {
+  border-radius: 10px !important;
+}
+html body .vendor-order-dialog .vendor-order-share-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+html body .vendor-order-dialog .vendor-order-share-actions :is(.ui-button, a.ui-button) {
+  min-height: 36px !important;
+  padding: 7px 11px !important;
+  border-radius: 10px !important;
+}
+html body .vendor-order-dialog .vendor-order-edit-form :is(.ui-input, .ui-select, .ui-textarea) {
+  border-radius: 10px !important;
+}
+@media (max-width: 640px) {
+  html body .vendor-order-dialog .vendor-order-dialog-content.ui-dialog-content {
+    gap: 12px !important;
+    padding: 15px !important;
+  }
+  html body .vendor-order-dialog .vendor-order-status-editor {
+    padding: 13px !important;
+  }
+  html body .vendor-order-dialog .vendor-order-status-editor-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  html body .vendor-order-dialog .vendor-order-status-editor-controls .ui-button {
+    width: 100% !important;
+  }
+}
+@media (max-width: 400px) {
+  html body .vendor-order-dialog .vendor-order-readonly > .vendor-order-details-grid > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+  html body .vendor-order-dialog .vendor-order-details-grid dd {
+    text-align: left;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body .vendor-order-dialog .vendor-order-status-editor-controls .ui-button {
+    transition: none !important;
+  }
+}
