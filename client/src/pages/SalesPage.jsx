@@ -67,7 +67,7 @@ export default function SalesPage({ user, onLogout }) {
   const [orderStatusBusy,setOrderStatusBusy]=useState("");
   const [orderStatusNotice,setOrderStatusNotice]=useState("");
   const [receipt,setReceipt]=useState(null);
-  const [historyExpanded,setHistoryExpanded]=useState(true);
+  const [historyExpanded,setHistoryExpanded]=useState(false);
 
   const offset = new Date().getTimezoneOffset();
 
@@ -338,12 +338,11 @@ export default function SalesPage({ user, onLogout }) {
       <section className="panel sales-records-panel">
         <div className="panel-title sales-records-heading">
           <div><p className="eyebrow">TRANSACTION HISTORY</p><h2>All sales</h2></div>
-          <Button type="button" variant="ghost" className="sales-records-toggle"
+          <Button type="button" variant="outline" className="sales-records-toggle"
             onClick={()=>setHistoryExpanded(value=>!value)}
             aria-expanded={historyExpanded}
-            aria-controls="sales-transactions-content"
-            aria-label={historyExpanded?"Collapse transaction history":"Expand transaction history"}>
-            <span>{unifiedTransactions.length} transaction{unifiedTransactions.length===1?"":"s"}</span>
+            aria-controls="sales-transactions-content">
+            <span>{historyExpanded ? "Hide transactions" : `Show ${unifiedTransactions.length} transaction${unifiedTransactions.length===1?"":"s"}`}</span>
             <FiChevronDown aria-hidden="true"/>
           </Button>
         </div>
