@@ -5,7 +5,7 @@ import { Select } from "../components/ui/select.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FiCalendar, FiCreditCard, FiDollarSign, FiDownload, FiFileText, FiPackage, FiPrinter, FiShoppingBag, FiTrendingUp, FiX } from "react-icons/fi";
+import { FiCalendar, FiCreditCard, FiDownload, FiFileText, FiInbox, FiPackage, FiPrinter, FiShoppingBag, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
@@ -93,41 +93,51 @@ export default function SalesPage({ user, onLogout }) {
       <div>
         <p className="eyebrow">SALES & ANALYTICS</p>
         <h1>Sales & analytics</h1>
-        <p className="muted">Review service, POS, and completed online-product sales. Product inventory and cashier checkout are managed from Products.</p>
+        <p className="muted">Track revenue, transactions, and sales performance.</p>
       </div>
-      <Button variant="plain" className="primary-button icon-link" disabled={!unifiedTransactions.length} onClick={() => exportSalesSpreadsheet(data, rangeLabel)}>
-        <FiDownload />Export spreadsheet
+      <Button variant="outline" className="sales-export-button icon-link" type="button" aria-label="Export spreadsheet" disabled={!unifiedTransactions.length} onClick={() => exportSalesSpreadsheet(data, rangeLabel)}>
+        <FiDownload aria-hidden="true"/>Export
       </Button>
     </header>
 
 
-    <section className="panel pos-history-panel"><div className="panel-title"><div><p className="eyebrow">ONLINE ORDERS</p><h2>Public product orders</h2></div><span className="muted">{orders.length} records</span></div>{!orders.length?<p className="muted">No public product orders yet.</p>:<div className="sales-table-wrap"><table className="sales-table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>{orders.map(order=><tr key={order._id}><td>{order.orderNumber}</td><td><strong>{order.customerName}</strong><small>{order.customerPhone}</small></td><td>{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</td><td>{money(order.total,order.currency)}</td><td><Select value={order.status} disabled={order.status==="completed"} onChange={e=>changeOrderStatus(order,e.target.value)}><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></Select></td></tr>)}</tbody></table></div>}</section>
-
-    <section className="panel analytics-controls">
-      <div className="filter-button-group" aria-label="Sales period">
-        {ranges.map(([value, label]) => <Button variant="plain" key={value} className={range === value ? "filter-chip active" : "filter-chip"} onClick={() => selectRange(value)}>{label}</Button>)}
+    <section className="panel analytics-controls sales-analytics-controls">
+      <div className="sales-period-row">
+        <div className="filter-button-group sales-period-buttons" role="group" aria-label="Sales period">
+          {ranges.map(([value, label]) => <Button variant="outline" type="button" key={value} aria-pressed={range===value} className={range === value ? "filter-chip active" : "filter-chip"} onClick={() => selectRange(value)}>{label}</Button>)}
+        </div>
+        <label className="sales-group-control">
+          <span>Group by</span>
+          <Select value={group} aria-label="Group chart by" onChange={e => setGroup(e.target.value)}>
+            {groups.map(([value,label]) => <option key={value} value={value}>{label}</option>)}
+          </Select>
+        </label>
       </div>
       {range === "custom" && <div className="custom-date-range">
         <Label>Start<Input type="date" value={custom.start} onChange={e => setCustom({ ...custom, start: e.target.value })} /></Label>
         <Label>End<Input type="date" value={custom.end} onChange={e => setCustom({ ...custom, end: e.target.value })} /></Label>
-        <Button variant="plain" className="secondary" disabled={!custom.start || !custom.end} onClick={() => load("custom", group, custom)}>Apply</Button>
+        <Button variant="outline" type="button" className="secondary" disabled={!custom.start || !custom.end} onClick={() => load("custom", group, custom)}>Apply</Button>
       </div>}
-      <div className="analytics-grouping">
-        <span>Group chart by</span>
-        <div className="filter-button-group">
-          {groups.map(([value, label]) => <Button variant="plain" key={value} className={group === value ? "filter-chip active" : "filter-chip"} onClick={() => setGroup(value)}>{label}</Button>)}
-        </div>
-      </div>
     </section>
 
     {error && <p className="error">{error}</p>}
     {loading && !data ? <section className="panel"><p>Loading sales analytics…</p></section> : <>
-      <section className="stats-grid sales-stats-grid">
-        <Card as="article" className="stat-card analytics-stat"><span><FiDollarSign />Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>Services {money(data?.serviceSalesTotal || 0, primaryCurrency)} · Products {money(data?.productSalesTotal || 0, primaryCurrency)}</small></Card>
-        <Card as="article" className="stat-card analytics-stat"><span><FiCalendar />Completed services</span><strong>{summary.completedServices || 0}</strong><small>Bookings recorded as sales</small></Card>
-        <Card as="article" className="stat-card analytics-stat"><span><FiTrendingUp />Average sale</span><strong>{money(summary.averageSale, primaryCurrency)}</strong><small>Average in primary currency</small></Card>
-        <Card as="article" className="stat-card analytics-stat"><span><FiPackage />Services sold</span><strong>{summary.servicesSold || 0}</strong><small>Distinct completed services</small></Card>
+      <section className="stats-grid sales-stats-grid sales-kpis" aria-label="Sales performance overview">
+        <Card as="article" className="stat-card analytics-stat"><span><FiCreditCard aria-hidden="true"/>Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>Services {money(data?.serviceSalesTotal || 0, primaryCurrency)} · Products {money(data?.productSalesTotal || 0, primaryCurrency)}</small></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiCalendar aria-hidden="true"/>Completed services</span><strong>{summary.completedServices || 0}</strong><small>Bookings recorded as sales</small></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiTrendingUp aria-hidden="true"/>Average sale</span><strong>{money(summary.averageSale, primaryCurrency)}</strong><small>Average in primary currency</small></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiPackage aria-hidden="true"/>Services sold</span><strong>{summary.servicesSold || 0}</strong><small>Distinct completed services</small></Card>
       </section>
+
+    <section className={"panel pos-history-panel sales-orders-panel" + (!orders.length ? " is-empty" : "")}>
+      <div className="panel-title sales-orders-head">
+        <div><p className="eyebrow">ONLINE ORDERS</p><h2>Public product orders</h2></div>
+        <span className="sales-orders-count">{orders.length} record{orders.length===1?"":"s"}</span>
+      </div>
+      {!orders.length
+        ? <div className="sales-orders-empty"><FiInbox aria-hidden="true"/><p className="muted">No public product orders yet.</p></div>
+        : <div className="sales-table-wrap"><table className="sales-table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>{orders.map(order=><tr key={order._id}><td>{order.orderNumber}</td><td><strong>{order.customerName}</strong><small>{order.customerPhone}</small></td><td>{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</td><td>{money(order.total,order.currency)}</td><td><Select value={order.status} disabled={order.status==="completed"} onChange={e=>changeOrderStatus(order,e.target.value)}><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></Select></td></tr>)}</tbody></table></div>}
+    </section>
 
       {data?.totalsByCurrency?.length > 1 && <section className="panel currency-summary">
         <div className="panel-title"><h2>Sales by currency</h2></div>
