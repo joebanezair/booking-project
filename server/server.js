@@ -85,6 +85,7 @@ app.use("/api/auth/login", sharedRateLimit({ max: 20 }));
 app.use("/api/auth/register", sharedRateLimit({ max: 10 }));
 app.use("/api/public/search", sharedRateLimit({ max: 120 }));
 app.use("/api/public/book", sharedRateLimit({ max: 60 }));
+app.use("/api/public/orders", sharedRateLimit({ max: 50 }));
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/messages", messageRoutes);

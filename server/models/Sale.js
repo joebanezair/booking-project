@@ -56,6 +56,9 @@ export const ProductOrder = mongoose.models.ProductOrder || mongoose.model("Prod
   paymentStatus:{type:String,enum:["unpaid","partially_paid","paid","partially_refunded","refunded","voided"],default:"unpaid",index:true},
   paymentMethod:{type:String,enum:["cash","gcash","maya","bank_transfer","other"],default:"cash"},
   amountPaid:{type:Number,min:0,default:0}, paymentReference:{type:String,trim:true,maxlength:120,default:""}, paymentNotes:{type:String,trim:true,maxlength:500,default:""}, paidAt:{type:Date,default:null},
+  courierName:{type:String,trim:true,maxlength:120,default:""},
+  trackingNumber:{type:String,trim:true,maxlength:120,default:""},
+  trackingUrl:{type:String,trim:true,maxlength:512,default:""},
   completedAt:{type:Date,default:null,index:true}, createdAt:{type:Date,default:Date.now,index:true}
 },{timestamps:true}));
 

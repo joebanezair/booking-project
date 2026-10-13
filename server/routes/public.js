@@ -9,6 +9,7 @@ import Comment from "../models/Comment.js";
 import Reaction from "../models/Reaction.js";
 import Review from "../models/Review.js";
 import { Product, ProductOrder } from "../models/Sale.js";
+import { orderTrackingToken, validOrderTrackingToken } from "../lib/orderTracking.js";
 import { notify } from "../lib/notifications.js";
 import optionalAuth from "../middleware/optionalAuth.js";
 import { reactionMap } from "../lib/emojiReactions.js";
@@ -557,8 +558,29 @@ router.post("/products/:userId/order", async (req, res) => {
     const orderNumber="BFO-"+new Date().getFullYear()+"-"+Date.now();
     const order=await ProductOrder.create({businessOwner:owner._id,orderNumber,items,total,currency,customerName,customerEmail,customerPhone,deliveryLocation,notes:String(req.body.notes||"").trim()});
     await notify(req,owner._id,{type:"booking",title:"New product order",body:customerName+" placed product order "+orderNumber+".",link:"/dashboard/sales"});
-    res.status(201).json({id:order._id,orderNumber,message:"Product order sent successfully."});
+    res.status(201).json({id:order._id,orderNumber,trackingToken:orderTrackingToken(order),message:"Product order sent successfully."});
   } catch(error){console.error(error);res.status(500).json({message:"Unable to place product order."});}
+});
+
+// Read-only guest status, authorized by a signed link instead of a buyer account.
+router.get("/orders/:id/status", async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.set("Referrer-Policy", "no-referrer");
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(404).json({message:"Order not found."});
+    const order = await ProductOrder.findById(req.params.id).lean();
+    if (!order || !validOrderTrackingToken(order, req.get("X-Order-Token"))) {
+      return res.status(404).json({message:"Order not found or tracking link invalid."});
+    }
+    res.json({
+      orderNumber:order.orderNumber,status:order.status,createdAt:order.createdAt,
+      updatedAt:order.updatedAt,completedAt:order.completedAt,
+      currency:order.currency,total:order.total,
+      items:(order.items||[]).map(item=>({name:item.name,quantity:item.quantity,lineTotal:item.lineTotal})),
+      courierName:order.courierName||"",trackingNumber:order.trackingNumber||"",
+      trackingUrl:order.trackingUrl||"",paymentStatus:order.paymentStatus||"unpaid"
+    });
+  } catch(error) { console.error(error); res.status(500).json({message:"Unable to load order status."}); }
 });
 
 export default router;

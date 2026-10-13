@@ -3,6 +3,7 @@ import Sale, { Product, PosSale, ProductOrder, InventoryMovement } from "../mode
 import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
 import { storeImageFields } from "../lib/mediaStore.js";
+import { orderTrackingToken } from "../lib/orderTracking.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
@@ -171,11 +172,21 @@ router.post("/pos", async(req,res) => {
 
 router.get("/inventory-history", async(req,res)=>{try{res.json(await InventoryMovement.find({businessOwner:req.user.id}).sort({createdAt:-1}).limit(300).lean());}catch(error){console.error(error);res.status(500).json({message:"Unable to load inventory history."});}});
 router.get("/orders", async(req,res)=>{try{res.json(await ProductOrder.find({businessOwner:req.user.id}).sort({createdAt:-1}).limit(200).lean());}catch(error){console.error(error);res.status(500).json({message:"Unable to load product orders."});}});
+router.get("/orders/:id/tracking", async (req,res) => {
+  try {
+    const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id}).select("_id orderNumber").lean();
+    if(!order)return res.status(404).json({message:"Order not found."});
+    res.set("Cache-Control","no-store");
+    res.json({id:order._id,orderNumber:order.orderNumber,trackingToken:orderTrackingToken(order)});
+  }catch(error){console.error(error);res.status(500).json({message:"Unable to create tracking link."});}
+});
+
 router.patch("/orders/:id/status", async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(order.status==="completed"&&status!=="completed")return res.status(409).json({message:"Completed orders cannot be reopened because inventory has already been recorded."});if(status==="completed"&&order.status!=="completed"){const deducted=await deductInventory(order.items,req.user.id);try{order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
 
 router.patch("/orders/:id/payment", async(req,res)=>{try{
   const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});
   if(!order)return res.status(404).json({message:"Order not found."});
+  if(order.status==="completed")return res.status(409).json({message:"Completed sales cannot be edited."});
   const method=String(req.body.paymentMethod||"cash");
   if(!["cash","gcash","maya","bank_transfer","other"].includes(method))return res.status(400).json({message:"Invalid payment method."});
   const amount=Math.max(0,Number(req.body.amountPaid||0));
@@ -184,6 +195,73 @@ router.patch("/orders/:id/payment", async(req,res)=>{try{
   order.paidAt=amount>0?new Date():null;
   await order.save(); res.json(order);
 }catch(error){console.error(error);res.status(500).json({message:"Unable to record payment."});}});
+
+
+/** Business edits only before a sale is completed. Never trust client totals or prices. */
+router.patch("/orders/:id", async(req,res)=>{
+  try {
+    const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});
+    if(!order)return res.status(404).json({message:"Order not found."});
+    if(["completed","cancelled"].includes(order.status))
+      return res.status(409).json({message:"Completed or cancelled orders cannot be edited."});
+    const customerName=String(req.body.customerName||"").trim();
+    const customerPhone=String(req.body.customerPhone||"").trim();
+    const customerEmail=String(req.body.customerEmail||"").trim().toLowerCase();
+    const deliveryLocation=String(req.body.deliveryLocation||"").trim();
+    const notes=String(req.body.notes||"").trim();
+    const courierName=String(req.body.courierName||"").trim();
+    const trackingNumber=String(req.body.trackingNumber||"").trim();
+    const trackingUrl=String(req.body.trackingUrl||"").trim();
+    let validUrl=!trackingUrl;
+    if(trackingUrl)try{
+      const parsed=new URL(trackingUrl);
+      validUrl=parsed.protocol==="https:" && Boolean(parsed.hostname) && !parsed.username && !parsed.password;
+    }catch{validUrl=false;}
+    if(!customerName||customerName.length>120||!customerPhone||customerPhone.length>30||
+      !deliveryLocation||deliveryLocation.length>250||customerEmail.length>150||
+      notes.length>500||courierName.length>120||trackingNumber.length>120||
+      trackingUrl.length>512||!validUrl||
+      (customerEmail&&!/^\S+@\S+\.\S+$/.test(customerEmail)))
+      return res.status(400).json({message:"Please enter valid customer, delivery and courier details. Tracking URLs must use HTTPS."});
+    const changes=Array.isArray(req.body.items)?req.body.items:[];
+    if(!changes.length||changes.length!==order.items.length)
+      return res.status(400).json({message:"Include every existing order item."});
+    const stock=await Product.find({_id:{$in:order.items.map(x=>x.product)},user:req.user.id})
+      .select("_id stock").lean();
+    const available=new Map(stock.map(x=>[String(x._id),Number(x.stock)]));
+    let total=0;
+    const items=[];
+    for(let i=0;i<changes.length;i++){
+      const original=order.items[i],input=changes[i];
+      const id=String(original.product),quantity=Number(input.quantity);
+      if(String(input.productId)!==id||!Number.isSafeInteger(quantity)||quantity<1||quantity>999)
+        return res.status(400).json({message:"Invalid product or quantity."});
+      if((available.get(id)??-1)<quantity)
+        return res.status(409).json({message:original.name+" has insufficient stock."});
+      const lineTotal=Number((Number(original.unitPrice||0)*quantity).toFixed(2));
+      items.push({product:original.product,name:original.name,sku:original.sku,
+        unitPrice:original.unitPrice,quantity,lineTotal});
+      total+=lineTotal;
+    }
+    total=Number(total.toFixed(2));
+    if(Number(order.amountPaid||0)>total)
+      return res.status(409).json({message:"New total is less than the amount already paid."});
+    const amount=Number(order.amountPaid||0);
+    const updated=await ProductOrder.findOneAndUpdate(
+      {_id:order._id,businessOwner:req.user.id,status:{$nin:["completed","cancelled"]}},
+      {$set:{customerName,customerPhone,customerEmail,deliveryLocation,notes,
+        courierName,trackingNumber,trackingUrl,items,total,
+        paymentStatus:amount===0?"unpaid":amount<total?"partially_paid":"paid"}},
+      {new:true,runValidators:true}
+    );
+    if(!updated)return res.status(409).json({message:"This order can no longer be edited."});
+    res.json(updated);
+  }catch(error){
+    console.error(error);
+    res.status(error.name==="ValidationError"||error.name==="CastError"?400:500)
+      .json({message:"Unable to update this order."});
+  }
+});
 
 router.get("/analytics", async (req, res) => {
   try {
