@@ -72,7 +72,7 @@ export default function ProductsPage({user,onLogout}){
   async function checkout(){if(checkoutLock.current)return;if(!cartLines.length)return setError("Add a product to your cart first.");checkoutLock.current=true;setCheckoutBusy(true);setError("");try{const sale=await api.sales.checkout({items:cartLines.map(p=>({productId:p._id,quantity:p.quantity})),paymentMethod,customerName});setCart({});setCustomerName("");setCartSearch("");setConfirmCheckout(false);await refresh();setMessage(`Checkout complete. Invoice ${sale.invoiceNumber} recorded in Sales.`);setError("");}catch(e){setError(e.message);}finally{checkoutLock.current=false;setCheckoutBusy(false);}}
 
   return <AppLayout user={user} onLogout={onLogout}>
-    <header className="topbar"><div><p className="eyebrow">PRODUCTS & POS</p><h1>Products</h1><p className="muted">Manage inventory, select products, add quantities to the cart, and check out in-store sales.</p></div><div className="cart-header-badge"><FiShoppingCart/><strong>{cartLines.reduce((s,x)=>s+x.quantity,0)}</strong><span>{money(cartTotal,currency)}</span></div></header>
+    <header className="topbar products-pos-header"><div><p className="eyebrow">PRODUCTS & POS</p><h1>Products</h1><p className="muted">Manage inventory, select products, add quantities to the cart, and check out in-store sales.</p></div><div className="cart-header-badge"><FiShoppingCart/><strong>{cartLines.reduce((s,x)=>s+x.quantity,0)}</strong><span>{money(cartTotal,currency)}</span></div></header>
     {error&&<p className="error">{error}</p>}{message&&<p className="success">{message}</p>}
 
     <div className="products-page-grid">
