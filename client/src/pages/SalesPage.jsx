@@ -288,7 +288,7 @@ export default function SalesPage({ user, onLogout }) {
                     </td>
                     <td data-label="Customer" className="sales-orders-customer">{order.customerName}</td>
                     <td data-label="Total" className="sales-orders-amount">{money(order.total,order.currency)}</td>
-                    <td data-label="Status"><span className={"sales-orders-status is-"+order.status}>{orderStatusLabel(order.status)}</span></td>
+                    <td data-label="Status" className="sales-orders-status-cell"><span className={"sales-orders-status is-"+order.status}>{orderStatusLabel(order.status)}</span></td>
                     <td data-label="Action" className="sales-orders-view-cell">
                       <Button type="button" size="sm" variant="outline" className="sales-orders-view"
                         aria-label={`View order details for ${order.orderNumber}`}
