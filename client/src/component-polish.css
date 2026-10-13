@@ -560,7 +560,7 @@ html body .order-actions > button.ui-button {
 /*
  * Services management status filters
  * Desktop: compact horizontal row, with content-sized controls.
- * Mobile: compact vertical column, with content-sized controls.
+ * Mobile: three equal-width columns, with readable stacked icon/label controls.
  * This deliberately overrides old .stats-grid and .stat-card !important rules
  * without affecting dashboard, booking or sales statistics.
  */
@@ -616,24 +616,53 @@ html body .order-actions > button.ui-button {
 }
 /* Keep the existing active/neutral color rules and aria-pressed behavior. */
 @media (max-width: 640px) {
+  /* Fit Total, Published and Drafts on a single mobile row. */
   #root .services-stats-grid.stats-grid {
-    flex-direction: column !important;
-    flex-wrap: nowrap !important;
-    align-items: flex-start !important;
-    width: fit-content !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    justify-content: stretch !important;
+    align-items: stretch !important;
+    width: 100% !important;
     max-width: 100% !important;
+    min-width: 0 !important;
     gap: 6px !important;
     overflow: visible !important;
   }
   #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button {
-    height: 34px !important;
-    min-height: 34px !important;
-    padding: 6px 8px !important;
-    gap: 6px !important;
-    flex: 0 0 auto !important;
-    align-self: flex-start !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: initial !important;
+    align-self: stretch !important;
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 66px !important;
+    min-height: 66px !important;
+    margin: 0 !important;
+    padding: 8px 4px !important;
+    gap: 5px !important;
+    border-radius: 10px !important;
   }
-  #root .services-stats-grid > button.service-stat-card > div {
+  #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button > svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex: 0 0 18px !important;
+  }
+  #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button > div {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
     gap: 4px !important;
+  }
+  #root .services-stats-grid.stats-grid > button.service-stat-card.ui-button :is(span, strong) {
+    font-size: 11px !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
   }
 }
