@@ -7,7 +7,7 @@ import { Label } from "./ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiAlertTriangle, FiCalendar, FiChevronDown, FiChevronUp, FiCheckCircle, FiClock, FiFilter, FiEdit2, FiEye, FiCheckSquare, FiGlobe, FiGrid, FiList, FiDownload, FiPlay, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTrash2, FiUserX, FiUsers, FiX } from "react-icons/fi";
+import { FiAlertTriangle, FiCalendar, FiChevronDown, FiChevronUp, FiCheckCircle, FiClock, FiFilter, FiEdit2, FiEye, FiCheckSquare, FiGlobe, FiGrid, FiList, FiDownload, FiPlay, FiPhone, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSlash, FiTag, FiTrash2, FiUser, FiUserX, FiUsers, FiWatch, FiX } from "react-icons/fi";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
 
@@ -17,6 +17,8 @@ const empty={contentId:"",guestName:"",guestEmail:"",guestPhone:"",locationLabel
 function money(value,currency="PHP"){try{return new Intl.NumberFormat(undefined,{style:"currency",currency,maximumFractionDigits:2}).format(value||0);}catch{return `${currency} ${Number(value||0).toLocaleString()}`;}}
 function localInput(value){if(!value)return"";const date=new Date(value);const offset=date.getTimezoneOffset()*60000;return new Date(date.getTime()-offset).toISOString().slice(0,16);}
 function bookingDateLabel(value){return new Date(value).toLocaleString(undefined,{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"});}
+function bookingDayLabel(value){return new Date(value).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});}
+function bookingTimeLabel(value){return new Date(value).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});}
 function customerKey(item){return String(item.guestEmail||"").toLowerCase()||String(item.guestPhone||"").replace(/\D/g,"")||String(item.guestName||"").toLowerCase();}
 
 export default function BookingManager({user}){
@@ -26,7 +28,7 @@ export default function BookingManager({user}){
   const [form,setForm]=useState(empty);
   const [editing,setEditing]=useState(null);
   const [view,setView]=useState("list");
-  const [bookingLayout,setBookingLayout]=useState("list");
+  const [bookingLayout,setBookingLayout]=useState("grid");
   const [search,setSearch]=useState("");
   const [statusFilter,setStatusFilter]=useState("");
   const [month,setMonth]=useState(()=>new Date().toISOString().slice(0,7));
@@ -373,15 +375,29 @@ export default function BookingManager({user}){
               const customer=customerMap.get(customerKey(booking));
               return <Card as="article" className="booking-card booking-lifecycle-card booking-compact-card" key={booking._id}>
                 <div className="booking-card-top">
-                  <div className="booking-main">
-                    <div className="booking-reference-line">{booking.bookingReference&&<span>{booking.bookingReference}</span>}{customer?.totalBookings>1&&<span className="returning-customer-badge">Returning · {customer.totalBookings}</span>}</div>
-                    <h3><Link className="entity-link" to={"/dashboard/bookings/"+booking._id}>{booking.service}</Link></h3>
-                    <p>{booking.guestName}{booking.guestPhone?" · "+booking.guestPhone:""}</p>
-                    <div className="booking-card-meta"><FiCalendar aria-hidden="true"/><span>{bookingDateLabel(booking.bookingDate)} · {booking.serviceDurationMinutes||60} min · {money(booking.servicePrice,booking.currency)}</span></div>
+                  <div className="booking-reference-line">
+                    {booking.bookingReference&&<span>{booking.bookingReference}</span>}
+                    {customer?.totalBookings>1&&<span className="returning-customer-badge">Returning · {customer.totalBookings}</span>}
                   </div>
-                  <span className={"status "+booking.status}>{statuses.find(([value])=>value===booking.status)?.[1]||booking.status}</span>
+                  <span className={"status "+booking.status}>
+                    {booking.status==="completed"?<FiCheckCircle aria-hidden="true"/>:booking.status==="no_show"?<FiUserX aria-hidden="true"/>:null}
+                    {statuses.find(([value])=>value===booking.status)?.[1]||booking.status}
+                  </span>
                 </div>
-                <div className="booking-card-footer">
+                <div className="booking-main">
+                  <h3><Link className="entity-link" to={"/dashboard/bookings/"+booking._id}>{booking.service}</Link></h3>
+                  <div className="booking-customer-meta">
+                    <span className="booking-meta-item"><FiUser aria-hidden="true"/><span>{booking.guestName}</span></span>
+                    {booking.guestPhone&&<span className="booking-meta-item"><FiPhone aria-hidden="true"/><span>{booking.guestPhone}</span></span>}
+                  </div>
+                  <div className="booking-card-meta">
+                    <span className="booking-meta-item"><FiCalendar aria-hidden="true"/><span>{bookingDayLabel(booking.bookingDate)}</span></span>
+                    <span className="booking-meta-item"><FiClock aria-hidden="true"/><span>{bookingTimeLabel(booking.bookingDate)}</span></span>
+                    <span className="booking-meta-item"><FiWatch aria-hidden="true"/><span>{booking.serviceDurationMinutes||60} min</span></span>
+                    <span className="booking-meta-item booking-price"><FiTag aria-hidden="true"/><span>{money(booking.servicePrice,booking.currency)}</span></span>
+                  </div>
+                </div>
+                <div className={"booking-card-footer"+(booking.status==="completed"?" is-completed":" has-actions")}>
                   {booking.status==="completed"?<span className="booking-sale-hint"><FiCheckCircle aria-hidden="true"/>Sale recorded when completed</span>:<span className="booking-card-spacer" aria-hidden="true"/>}
                   <div className="booking-card-actions">
                     <div className="row-actions booking-status-actions">{statusActions(booking)}</div>

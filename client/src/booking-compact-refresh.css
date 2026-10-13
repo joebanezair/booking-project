@@ -770,3 +770,197 @@ html body #root #bookings .booking-list-panel .booking-layout-grid .booking-empt
     justify-content: flex-start;
   }
 }
+
+
+/* Guest booking cards — refined shadcn-style layout.
+   Only affects the active Guest bookings panel; history and other pages are unchanged. */
+html body #root #bookings .booking-list-panel.booking-compact-panel {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root #bookings .booking-list-panel .booking-section-heading {
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+html body #root #bookings .booking-list-panel .booking-section-heading h2 {
+  font-size: 18px;
+  line-height: 1.3;
+  letter-spacing: -.025em;
+}
+html body #root #bookings .booking-list-panel .booking-section-heading p {
+  margin-top: 4px;
+  font-size: 13px;
+}
+html body #root #bookings .booking-list-panel .booking-total-pill {
+  padding: 7px 10px;
+  font-size: 11px;
+  border-radius: 9px !important;
+}
+html body #root #bookings .booking-list-panel .booking-controls {
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+html body #root #bookings .booking-list-panel .booking-inline-search,
+html body #root #bookings .booking-list-panel .booking-inline-select {
+  min-height: 40px;
+  border-radius: 10px !important;
+}
+html body #root #bookings .booking-list-panel .booking-inline-select { flex: 0 0 190px; }
+html body #root #bookings .booking-list-panel .booking-inline-search input.ui-input,
+html body #root #bookings .booking-list-panel .booking-inline-select select.ui-select {
+  height: 38px;
+  min-height: 38px;
+  font-size: 13px;
+}
+html body #root #bookings .booking-list-panel .booking-compact-list.booking-layout-grid {
+  gap: 12px !important;
+}
+html body #root #bookings .booking-list-panel .booking-compact-list .booking-compact-card {
+  justify-content: flex-start;
+  gap: 0 !important;
+  min-height: 0 !important;
+  padding: 15px 16px !important;
+  border-radius: 10px !important;
+  border-color: var(--border, #e2e8f0) !important;
+  box-shadow: 0 2px 10px rgba(15,23,42,.035) !important;
+}
+html body #root #bookings .booking-list-panel .booking-compact-list .booking-compact-card:hover {
+  border-color: color-mix(in srgb, var(--primary, #5d7cff) 30%, var(--border, #e2e8f0)) !important;
+  box-shadow: 0 3px 12px rgba(15,23,42,.055) !important;
+}
+html body #root #bookings .booking-list-panel .booking-card-top {
+  align-items: center;
+  gap: 10px;
+}
+html body #root #bookings .booking-list-panel .booking-reference-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+}
+html body #root #bookings .booking-list-panel .booking-reference-line > span:first-child,
+html body #root #bookings .booking-list-panel .booking-reference-line .returning-customer-badge {
+  padding: 5px 7px;
+  border-radius: 7px !important;
+  font-size: 11px;
+}
+html body #root #bookings .booking-list-panel .booking-compact-card > .booking-card-top > .status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 9px;
+  border-radius: 8px !important;
+  font-size: 11px;
+}
+html body #root #bookings .booking-list-panel .booking-card-top > .status svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+html body #root #bookings .booking-list-panel .booking-main {
+  min-width: 0;
+  margin-top: 11px;
+}
+html body #root #bookings .booking-list-panel .booking-compact-card h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+html body #root #bookings .booking-list-panel .booking-customer-meta,
+html body #root #bookings .booking-list-panel .booking-card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 15px;
+  row-gap: 6px;
+  min-width: 0;
+  color: var(--muted-foreground, #64748b);
+  font-size: 12px;
+  line-height: 1.4;
+}
+html body #root #bookings .booking-list-panel .booking-card-meta { margin-top: 10px; }
+html body #root #bookings .booking-list-panel .booking-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+html body #root #bookings .booking-list-panel .booking-meta-item svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+}
+html body #root #bookings .booking-list-panel .booking-price {
+  color: var(--foreground, #0f172a);
+  font-weight: 600;
+}
+html body #root #bookings .booking-list-panel .booking-card-footer {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+  margin-top: 14px !important;
+  padding-top: 10px;
+  border-top: 1px solid var(--border, #e2e8f0);
+}
+html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-card-spacer { display: none; }
+html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-card-actions {
+  width: 100%;
+  margin-left: 0;
+  justify-content: space-between;
+}
+html body #root #bookings .booking-list-panel .booking-sale-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+}
+html body #root #bookings .booking-list-panel .booking-card-actions { gap: 8px; }
+html body #root #bookings .booking-list-panel .booking-compact-card .booking-status-actions .ui-button {
+  min-height: 32px !important;
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  font-size: 12px;
+}
+html body #root #bookings .booking-list-panel .booking-compact-card .booking-secondary-actions .ui-button {
+  width: 32px !important;
+  min-width: 32px !important;
+  flex-basis: 32px;
+  height: 32px !important;
+  min-height: 32px !important;
+  border-radius: 8px !important;
+}
+html body #root #bookings .booking-list-panel .booking-compact-card .booking-secondary-actions .ui-button:hover {
+  border-color: var(--primary, #5d7cff) !important;
+  color: var(--primary, #5d7cff) !important;
+}
+html body #root #bookings .booking-list-panel .booking-compact-card .booking-secondary-actions .danger.ui-button:hover {
+  border-color: #dc2626 !important;
+  color: #b91c1c !important;
+}
+@media (max-width: 700px) {
+  html body #root #bookings .booking-list-panel .booking-controls { flex-wrap: wrap; }
+  html body #root #bookings .booking-list-panel .booking-controls .booking-inline-search,
+  html body #root #bookings .booking-list-panel .booking-controls .booking-inline-select { flex: 1 1 100%; }
+  html body #root #bookings .booking-list-panel .booking-compact-list .booking-compact-card { padding: 13px !important; }
+  html body #root #bookings .booking-list-panel .booking-card-top { align-items: flex-start; }
+  html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-card-actions { gap: 10px; }
+}
+@media (max-width: 420px) {
+  html body #root #bookings .booking-list-panel .booking-card-top { flex-wrap: wrap; }
+  html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-card-actions { justify-content: flex-start; }
+  html body #root #bookings .booking-list-panel .booking-card-footer.has-actions .booking-secondary-actions { margin-left: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root #bookings .booking-list-panel .booking-compact-card { transition: none !important; }
+}
