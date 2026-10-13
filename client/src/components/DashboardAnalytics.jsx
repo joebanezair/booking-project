@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiDollarSign,
+  FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar,
   FiTrendingUp
 } from "react-icons/fi";
 import { Button } from "./ui/button.jsx";
@@ -19,6 +19,16 @@ export const DASHBOARD_RANGES = [
 function currencyFormat(value, currency) {
   try { return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(Number(value || 0)); }
   catch { return `${currency} ${Number(value || 0).toLocaleString()}`; }
+}
+
+// Distinct gold coin for recorded sales; other summary metrics retain the blue accent.
+function GoldCoinIcon(props) {
+  return <svg viewBox="0 0 24 24" fill="none" {...props}>
+    <circle cx="12" cy="12" r="9.25" fill="#F7C85A" stroke="#B7791F" strokeWidth="1.4" />
+    <circle cx="12" cy="12" r="6.7" fill="#F5B93D" stroke="#FFF0B8" strokeWidth="1.1" />
+    <path d="M12 7.9l1.12 3.02L16.1 12l-2.98 1.08L12 16.1l-1.12-3.02L7.9 12l2.98-1.08L12 7.9Z"
+      fill="#A9680C" stroke="#FFE5A0" strokeWidth=".5" strokeLinejoin="round" />
+  </svg>;
 }
 
 function MetricSparkline({ points, tone }) {
@@ -122,7 +132,7 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
   const completedTrend = useMemo(() => completionTrend(data?.records, range, primaryCurrency), [data, range, primaryCurrency]);
   const salesTrend = data?.trend || [];
   const metrics = [
-    { key: "sales", label: "This period", value: summary ? currencyFormat(summary.totalSales, primaryCurrency) : "—", description: "Recorded service and product sales", icon: FiDollarSign, tone: "blue", series: salesTrend.map(item => item.revenue) },
+    { key: "sales", label: "This period", value: summary ? currencyFormat(summary.totalSales, primaryCurrency) : "—", description: "Recorded service and product sales", icon: GoldCoinIcon, tone: "blue", series: salesTrend.map(item => item.revenue) },
     { key: "completed", label: "Completed", value: summary?.completedServices ?? "—", description: "Services completed this period", icon: FiCalendar, tone: "blue", series: completedTrend.map(item => item.revenue) },
     { key: "average", label: "Average sale", value: summary ? currencyFormat(summary.averageSale, primaryCurrency) : "—", description: "Primary currency", icon: FiTrendingUp, tone: "blue", series: [] },
     { key: "services", label: "Services sold", value: summary?.servicesSold ?? "—", description: "Distinct services this period", icon: FiBriefcase, tone: "blue", series: [] }
@@ -132,7 +142,7 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
     <div className="dashboard-v2-stats">
       {metrics.map(({ icon: Icon, ...metric }) => <Card key={metric.key} as="article" className={`dashboard-v2-stat tone-${metric.tone}`}>
         <div className="dashboard-v2-stat-heading">
-          <span className="dashboard-v2-stat-icon"><Icon aria-hidden="true" /></span>
+          <span className="dashboard-v2-stat-icon" style={metric.key === "sales" ? { color: "#B7791F", background: "rgba(245, 158, 11, 0.13)" } : undefined}><Icon aria-hidden="true" /></span>
           <span className="dashboard-v2-stat-label">{metric.label === "This period" ? title : metric.label}</span>
         </div>
         <strong className="dashboard-v2-stat-number">{metric.value}</strong>
