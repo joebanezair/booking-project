@@ -4,7 +4,7 @@ import {
   FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar,
   FiTrendingUp
 } from "react-icons/fi";
-import { TbCoin } from "react-icons/tb";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { Button } from "./ui/button.jsx";
 import { Card } from "./ui/card.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "./SalesCharts.jsx";
@@ -123,7 +123,7 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
   const completedTrend = useMemo(() => completionTrend(data?.records, range, primaryCurrency), [data, range, primaryCurrency]);
   const salesTrend = data?.trend || [];
   const metrics = [
-    { key: "sales", label: "This period", value: summary ? currencyFormat(summary.totalSales, primaryCurrency) : "—", description: "Recorded service and product sales", icon: TbCoin, tone: "blue", series: salesTrend.map(item => item.revenue) },
+    { key: "sales", label: "This period", value: summary ? currencyFormat(summary.totalSales, primaryCurrency) : "—", description: "Recorded service and product sales", icon: FaMoneyBillTrendUp, tone: "blue", series: salesTrend.map(item => item.revenue) },
     { key: "completed", label: "Completed", value: summary?.completedServices ?? "—", description: "Services completed this period", icon: FiCalendar, tone: "blue", series: completedTrend.map(item => item.revenue) },
     { key: "average", label: "Average sale", value: summary ? currencyFormat(summary.averageSale, primaryCurrency) : "—", description: "Primary currency", icon: FiTrendingUp, tone: "blue", series: [] },
     { key: "services", label: "Services sold", value: summary?.servicesSold ?? "—", description: "Distinct services this period", icon: FiBriefcase, tone: "blue", series: [] }
