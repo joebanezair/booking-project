@@ -65,6 +65,7 @@ export default function SalesPage({ user, onLogout }) {
   const [trackingLink,setTrackingLink]=useState("");
   const [shareNotice,setShareNotice]=useState("");
   const [orderStatusBusy,setOrderStatusBusy]=useState("");
+  const [orderStatusNotice,setOrderStatusNotice]=useState("");
   const [receipt,setReceipt]=useState(null);
   const [historyExpanded,setHistoryExpanded]=useState(true);
 
@@ -117,7 +118,8 @@ export default function SalesPage({ user, onLogout }) {
   function openOrder(order) {
     setSelectedOrderId(order._id); setEditingOrder(false);
     setDraftOrderStatus(order.status);
-    setOrderModalError(""); setTrackingLink(""); setShareNotice("");
+    setOrderModalError(""); setOrderStatusNotice("");
+    setTrackingLink(""); setShareNotice("");
   }
   useEffect(()=>{
     if(!selectedOrderId)return;
@@ -145,6 +147,27 @@ export default function SalesPage({ user, onLogout }) {
     }
     await copyOrderLink();
   }
+  // Status changes use the dedicated route. They must not be blocked by unrelated
+  // customer fields, legacy delivery addresses or stock validation for edit forms.
+  async function saveOrderStatus() {
+    if(!selectedOrder || orderSaving || orderStatusBusy || editingOrder ||
+      ["completed","cancelled"].includes(selectedOrder.status) ||
+      draftOrderStatus===selectedOrder.status) return;
+    const id=selectedOrder._id;
+    const next=draftOrderStatus;
+    setOrderModalError(""); setOrderStatusNotice("");
+    setOrderStatusBusy(id);
+    try {
+      const updated=await api.sales.setOrderStatus(id,next);
+      setOrders(existing=>existing.map(order=>order._id===updated._id?updated:order));
+      setDraftOrderStatus(updated.status);
+      setOrderStatusNotice("Status updated to "+orderStatusLabel(updated.status)+". The buyer can see the change on their tracking page.");
+      if(updated.status==="completed")await load();
+    }catch(err){
+      setOrderModalError(err.message);
+    }finally{setOrderStatusBusy("");}
+  }
+
   async function saveOrderDetails(event) {
     event.preventDefault();
     if(!selectedOrder||orderSaving||["completed","cancelled"].includes(selectedOrder.status))return;
@@ -159,17 +182,8 @@ export default function SalesPage({ user, onLogout }) {
         items:selectedOrder.items.map((item,i)=>({productId:item.product,quantity:Number(form.get("quantity-"+i))}))
       });
       setOrders(existing=>existing.map(o=>o._id===updated._id?updated:o));
-      if(draftOrderStatus!==updated.status){
-        try {
-          const statusUpdated=await api.sales.setOrderStatus(updated._id,draftOrderStatus);
-          setOrders(existing=>existing.map(o=>o._id===statusUpdated._id?statusUpdated:o));
-          if(draftOrderStatus==="completed")await load();
-        } catch(statusError) {
-          setOrderModalError("Order details were saved, but the status change failed: "+statusError.message);
-          return;
-        }
-      }
       setEditingOrder(false);setError("");
+      setOrderStatusNotice("Order details saved.");
     }catch(e){setOrderModalError(e.message);}finally{setOrderSaving(false);}
   }
 
@@ -374,8 +388,8 @@ export default function SalesPage({ user, onLogout }) {
     </>}
 
     <Dialog open={Boolean(selectedOrder)} title="Order details" className="vendor-order-dialog"
-      dismissible={!orderSaving}
-      onOpenChange={open=>{if(!open&&!orderSaving){setSelectedOrderId(null);setEditingOrder(false);setOrderModalError("");}}}>
+      dismissible={!orderSaving&&!orderStatusBusy}
+      onOpenChange={open=>{if(!open&&!orderSaving&&!orderStatusBusy){setSelectedOrderId(null);setEditingOrder(false);setOrderModalError("");setOrderStatusNotice("");}}}>
       <DialogContent className="vendor-order-dialog-content">
         <DialogHeader>
           <p className="eyebrow">ORDER DETAILS</p>
@@ -388,19 +402,32 @@ export default function SalesPage({ user, onLogout }) {
             {["completed","cancelled"].includes(selectedOrder.status)
               ? <span className="muted">Read-only: this sale is {selectedOrder.status}.</span>
               : <Button type="button" variant="outline" size="sm" onClick={()=>{setEditingOrder(!editingOrder);setDraftOrderStatus(selectedOrder.status);setOrderModalError("");}}
-                  disabled={orderSaving}><FiEdit2 aria-hidden="true"/>{editingOrder?"Cancel editing":"Edit order"}</Button>}
+                  disabled={orderSaving||Boolean(orderStatusBusy)}><FiEdit2 aria-hidden="true"/>{editingOrder?"Cancel editing":"Edit order"}</Button>}
           </div>
+          {!(["completed","cancelled"].includes(selectedOrder.status)) && <div className="vendor-order-status-editor">
+            <div className="vendor-order-status-editor-heading">
+              <h3>Order status</h3>
+              <p className="muted">Update fulfillment without changing order details.</p>
+            </div>
+            <div className="vendor-order-status-editor-controls">
+              <Select aria-label="Edit order status" value={draftOrderStatus}
+                disabled={orderSaving||Boolean(orderStatusBusy)||editingOrder}
+                onChange={e=>{setDraftOrderStatus(e.target.value);setOrderModalError("");setOrderStatusNotice("");}}>
+                {orderStatuses.map(([value,label])=><option value={value} key={value}>{label}</option>)}
+              </Select>
+              <Button type="button" onClick={saveOrderStatus}
+                disabled={orderSaving||Boolean(orderStatusBusy)||editingOrder||draftOrderStatus===selectedOrder.status}>
+                {orderStatusBusy?"Updating...":draftOrderStatus==="completed"?"Complete sale":"Update status"}
+              </Button>
+            </div>
+            {draftOrderStatus==="completed" && draftOrderStatus!==selectedOrder.status &&
+              <p className="muted vendor-order-final-warning">Completing this sale records it and deducts inventory. This cannot be undone.</p>}
+            {editingOrder&&<p className="muted">Save or cancel your detail changes before changing the status.</p>}
+          </div>}
+          {orderModalError && <p className="error vendor-order-feedback" role="alert">{orderModalError}</p>}
+          {orderStatusNotice && <p className="success vendor-order-feedback" role="status">{orderStatusNotice}</p>}
           {editingOrder && !["completed","cancelled"].includes(selectedOrder.status)
             ? <form id="vendor-order-edit" key={selectedOrder._id} onSubmit={saveOrderDetails} className="vendor-order-edit-form">
-                <Label>Order status
-                  <Select value={draftOrderStatus} disabled={orderSaving} onChange={e=>setDraftOrderStatus(e.target.value)}
-                    aria-label="Edit order status">
-                    {orderStatuses.map(([value,label])=><option value={value} key={value}>{label}</option>)}
-                  </Select>
-                </Label>
-                {draftOrderStatus==="completed" && <p className="muted vendor-order-final-warning">
-                  Completing this order records the sale and deducts stock. Completed orders cannot be edited or reopened.
-                </p>}
                 <div className="vendor-order-form-grid">
                   <Label>Customer name<Input name="customerName" defaultValue={selectedOrder.customerName} required maxLength={120}/></Label>
                   <Label>Contact number<Input name="customerPhone" defaultValue={selectedOrder.customerPhone} required maxLength={30}/></Label>
@@ -420,9 +447,8 @@ export default function SalesPage({ user, onLogout }) {
                 </div>
                 <Label>Order notes<Textarea name="notes" defaultValue={selectedOrder.notes||""} maxLength={500} rows={2}/></Label>
                 <p className="muted">The total is recalculated automatically from product prices and quantities. Courier details are displayed on the buyer tracking page.</p>
-                {orderModalError&&<p className="error" role="alert">{orderModalError}</p>}
                 <DialogFooter>
-                  <Button type="button" variant="outline" disabled={orderSaving} onClick={()=>setEditingOrder(false)}>Cancel</Button>
+                  <Button type="button" variant="outline" disabled={orderSaving} onClick={()=>{setEditingOrder(false);setOrderModalError("");}}>Cancel</Button>
                   <Button type="submit" disabled={orderSaving}>{orderSaving?"Saving...":"Save changes"}</Button>
                 </DialogFooter>
               </form>
