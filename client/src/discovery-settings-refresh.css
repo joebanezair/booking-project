@@ -46,6 +46,23 @@ html body #root .bookflow-discover-v2 .browse-top .primary-button:hover {
   border-color: var(--primary) !important;
   color: var(--primary) !important;
 }
+/* Secondary Dashboard navigation action. Keep Sign in styling untouched. */
+html body #root .bookflow-discover-v2 .browse-top .ui-button-secondary {
+  min-height: 38px !important;
+  padding: 9px 13px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-discover-v2 .browse-top .ui-button-secondary svg {
+  color: inherit !important;
+}
+html body #root .bookflow-discover-v2 .browse-top .ui-button-secondary:hover {
+  background: color-mix(in srgb, var(--primary) 7%, var(--secondary)) !important;
+  border-color: color-mix(in srgb, var(--primary) 18%, var(--border)) !important;
+}
 html body #root .bookflow-discover-v2 .ui-discovery-filters {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) minmax(165px, 210px) minmax(142px, 180px) !important;
