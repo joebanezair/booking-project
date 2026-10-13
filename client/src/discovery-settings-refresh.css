@@ -128,7 +128,7 @@ html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button {
   padding: 9px 12px !important;
   border: 1px solid transparent !important;
   border-bottom: 2px solid transparent !important;
-  border-radius: 10px !important;
+  border-radius: 10px 10px 0 0 !important;
   background: transparent !important;
   box-shadow: none !important;
   color: var(--muted-foreground) !important;
@@ -139,7 +139,7 @@ html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button {
 html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button.active {
   border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--border)) !important;
   border-bottom: 2px solid var(--primary) !important;
-  border-radius: 10px !important;
+  border-radius: 10px 10px 0 0 !important;
   background: color-mix(in srgb, var(--primary) 6%, var(--card)) !important;
   color: var(--primary) !important;
 }
@@ -165,7 +165,7 @@ html body #root .bookflow-discover-v2 .discovery-tab-count {
   min-width: 18px;
   min-height: 18px;
   padding: 1px 4px;
-  border-radius: 6px;
+  border-radius: 9999px !important;
   background: var(--muted-bg);
   color: var(--muted-foreground);
   font-size: 10px;
