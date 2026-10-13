@@ -1,0 +1,435 @@
+/* BookFlow discovery + Settings refresh, scoped to two pages only.
+   Leaves search requests, category/rating filters, theme persistence and logout unchanged. */
+
+/* Discovery masthead and search filters */
+html body #root .public-page.bookflow-discover-v2 .public-top.browse-top {
+  max-width: 1160px;
+  box-sizing: border-box;
+  padding: 20px 22px 6px;
+}
+html body #root .public-page.bookflow-discover-v2 .bookflow-discover-content {
+  max-width: 1160px;
+  box-sizing: border-box;
+  padding: 22px 22px 56px;
+}
+html body #root .bookflow-discover-content .section-heading {
+  margin: 0 0 18px;
+  align-items: flex-start;
+}
+html body #root .bookflow-discover-content .section-heading h1 {
+  margin: 0 0 7px !important;
+  font-size: clamp(26px, 3vw, 34px) !important;
+  font-weight: 700;
+  letter-spacing: -.035em;
+  line-height: 1.2;
+}
+html body #root .bookflow-discover-content .section-heading .muted {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.55;
+}
+html body #root .bookflow-discover-v2 .browse-top .primary-button {
+  min-height: 38px !important;
+  padding: 9px 13px !important;
+  border-radius: 10px !important;
+}
+html body #root .bookflow-discover-v2 .ui-discovery-filters {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(165px, 210px) minmax(142px, 180px) !important;
+  align-items: center;
+  gap: 10px !important;
+  margin: 0 0 14px !important;
+}
+html body #root .bookflow-discover-v2 .ui-discovery-query,
+html body #root .bookflow-discover-v2 .bookflow-discover-filter {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  min-height: 42px !important;
+  height: 42px !important;
+  box-sizing: border-box;
+  padding: 0 11px !important;
+  gap: 8px;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-discover-v2 .bookflow-discover-filter > svg,
+html body #root .bookflow-discover-v2 .ui-discovery-query > svg {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--muted-foreground);
+}
+html body #root .bookflow-discover-v2 .bookflow-discover-filter > :is(input.ui-input, select.ui-select),
+html body #root .bookflow-discover-v2 .ui-discovery-query > input.ui-search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100% !important;
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--foreground);
+  font-size: 12px;
+}
+html body #root .bookflow-discover-v2 .ui-discovery-filters :is(.bookflow-discover-filter,.ui-discovery-query):focus-within {
+  border-color: var(--ring) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent) !important;
+}
+html body #root .bookflow-discover-v2 .ui-discovery-query button.ui-search-clear {
+  flex-shrink: 0;
+}
+/* Discovery navigation uses text tabs instead of high-contrast filled pills. */
+html body #root .bookflow-discover-v2 .bookflow-discover-tabs-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  min-height: 46px;
+  gap: 10px;
+  margin: 0 0 12px;
+  border-bottom: 1px solid var(--border);
+}
+html body #root .bookflow-discover-v2 .discovery-tabs {
+  display: flex !important;
+  flex: 0 1 auto;
+  gap: 4px !important;
+  align-items: center;
+  min-width: 0;
+  margin: 0 !important;
+}
+html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px !important;
+  min-width: 0;
+  min-height: 44px !important;
+  padding: 9px 12px !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--muted-foreground) !important;
+  font-size: 12px;
+  font-weight: 600 !important;
+  white-space: nowrap;
+}
+html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button.active {
+  border-bottom-color: var(--primary) !important;
+  background: transparent !important;
+  color: var(--primary) !important;
+}
+html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button.active svg {
+  color: var(--primary) !important;
+}
+html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button:hover {
+  color: var(--primary) !important;
+  background: color-mix(in srgb, var(--primary) 5%, transparent) !important;
+}
+html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button:focus-visible,
+html body #root .bookflow-discover-v2 .business-view-toggle button.ui-button:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px;
+}
+html body #root .bookflow-discover-v2 .discovery-tabs svg {
+  width: 16px;
+  height: 16px;
+}
+html body #root .bookflow-discover-v2 .discovery-tab-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  min-height: 18px;
+  padding: 1px 4px;
+  border-radius: 6px;
+  background: var(--muted-bg);
+  color: var(--muted-foreground);
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+html body #root .bookflow-discover-v2 .discovery-tabs .active .discovery-tab-count {
+  background: color-mix(in srgb, var(--primary) 11%, var(--card));
+  color: var(--primary);
+}
+html body #root .bookflow-discover-v2 .bookflow-business-view-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 4px;
+  justify-content: flex-end;
+  margin: 0 0 5px !important;
+}
+html body #root .bookflow-discover-v2 .bookflow-business-view-toggle button.ui-button {
+  min-height: 32px !important;
+  padding: 6px 9px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  background: var(--card) !important;
+  color: var(--muted-foreground) !important;
+  font-size: 11px;
+  font-weight: 600;
+}
+html body #root .bookflow-discover-v2 .bookflow-business-view-toggle button.ui-button.active {
+  border-color: color-mix(in srgb, var(--primary) 25%, var(--border)) !important;
+  background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+  color: var(--primary) !important;
+}
+html body #root .bookflow-discover-v2 .ui-search-results-status {
+  margin: 0 0 14px;
+  font-size: 12px;
+}
+
+/* Settings page: one cohesive surface with two clearly defined sections. */
+html body #root .bookflow-settings-v2 {
+  width: min(100%, 900px);
+  max-width: 900px;
+  box-sizing: border-box;
+  margin: 0 auto 32px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-header {
+  display: block;
+  max-width: none;
+  width: 100%;
+  margin: 0 0 18px;
+  padding: 0;
+}
+html body #root .bookflow-settings-v2 .settings-v2-header .eyebrow {
+  margin: 0 0 6px;
+  font-size: 11px;
+  letter-spacing: .065em;
+  color: var(--primary);
+}
+html body #root .bookflow-settings-v2 .settings-v2-header h1 {
+  margin: 0 0 5px;
+  font-size: clamp(26px, 3vw, 32px);
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+html body #root .bookflow-settings-v2 .settings-v2-header .muted {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+html body #root .bookflow-settings-v2 .settings-v2-panel.panel {
+  width: 100%;
+  max-width: none !important;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 22px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-section {
+  min-width: 0;
+}
+html body #root .bookflow-settings-v2 .settings-v2-section-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+html body #root .bookflow-settings-v2 .settings-v2-heading-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--secondary);
+  color: var(--muted-foreground);
+}
+html body #root .bookflow-settings-v2 .settings-v2-heading-icon svg {
+  width: 18px;
+  height: 18px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-section-title h2 {
+  margin: 0 0 3px;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+html body #root .bookflow-settings-v2 .settings-v2-section-title p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 5px;
+  flex: 1 1 auto;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 112px !important;
+  padding: 14px 16px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+  text-align: left;
+  white-space: normal;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button.active {
+  border: 2px solid var(--primary) !important;
+  padding: 13px 15px !important;
+  background: color-mix(in srgb, var(--primary) 4%, var(--card)) !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button:hover {
+  border-color: var(--primary) !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button:focus-visible,
+html body #root .bookflow-settings-v2 .settings-v2-signout.ui-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-icon {
+  width: 23px !important;
+  height: 23px !important;
+  margin-bottom: 7px;
+  color: var(--primary);
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-check {
+  position: absolute;
+  top: 12px;
+  right: 13px;
+  width: 17px !important;
+  height: 17px !important;
+  color: var(--primary);
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button strong {
+  font-size: 13px;
+  font-weight: 650;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button small {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+html body #root .bookflow-settings-v2 .settings-v2-autosave {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 13px 0 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-autosave svg {
+  width: 13px;
+  height: 13px;
+  color: #16a34a;
+}
+html body #root .bookflow-settings-v2 .settings-v2-divider {
+  height: 1px;
+  margin: 20px 0;
+  background: var(--border);
+}
+html body #root .bookflow-settings-v2 .settings-v2-account {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-signout.ui-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  min-height: 38px !important;
+  padding: 9px 14px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: none !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-signout.ui-button:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+@media (max-width: 760px) {
+  html body #root .bookflow-discover-v2 .ui-discovery-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  html body #root .bookflow-discover-v2 .ui-discovery-query {
+    grid-column: 1 / -1;
+  }
+  html body #root .bookflow-discover-content .section-heading h1 { font-size: 28px !important; }
+}
+@media (max-width: 560px) {
+  html body #root .public-page.bookflow-discover-v2 .public-top.browse-top {
+    padding: 14px 14px 6px;
+  }
+  html body #root .public-page.bookflow-discover-v2 .bookflow-discover-content {
+    padding: 16px 14px 36px;
+  }
+  html body #root .bookflow-discover-v2 .bookflow-discover-tabs-row {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  html body #root .bookflow-discover-v2 .discovery-tabs {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    flex: 1 1 100%;
+    width: 100%;
+    gap: 4px !important;
+  }
+  html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button {
+    width: 100% !important;
+    padding: 8px 5px !important;
+  }
+  html body #root .bookflow-discover-v2 .discovery-tab-label {
+    display: none;
+  }
+  html body #root .bookflow-discover-v2 .bookflow-business-view-toggle {
+    margin-left: auto !important;
+    margin-bottom: 5px !important;
+  }
+  html body #root .bookflow-settings-v2 .settings-v2-panel.panel { padding: 16px !important; }
+  html body #root .bookflow-settings-v2 .settings-v2-theme-grid { gap: 9px; margin-top: 16px; }
+  html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button {
+    min-height: 108px !important;
+    padding: 12px !important;
+  }
+  html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button.active { padding: 11px !important; }
+  html body #root .bookflow-settings-v2 .settings-v2-account { flex-wrap: wrap; }
+}
+@media (max-width: 380px) {
+  html body #root .bookflow-discover-v2 .bookflow-discover-filter { padding-inline: 8px !important; }
+  html body #root .bookflow-discover-v2 .bookflow-discover-filter > svg { display: none; }
+  html body #root .bookflow-settings-v2 .settings-v2-theme-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button { transition: none !important; }
+  html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button { transition: none !important; }
+}
