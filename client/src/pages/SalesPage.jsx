@@ -143,6 +143,11 @@ export default function SalesPage({ user, onLogout }) {
 
   const primaryCurrency = data?.primaryCurrency || "PHP";
   const summary = data?.summary || {};
+  // Analytics includes completed orders in the selected range; count online units only.
+  const onlineProductsSold = (data?.productRecords || []).reduce((total, record) =>
+    record.source === "online"
+      ? total + (record.items || []).reduce((units, item) => units + (Number(item.quantity) || 0), 0)
+      : total, 0);
   const unifiedTransactions = useMemo(() => [
     ...(data?.records || []).map(record => ({ id:`service-${record.id}`, type:"Service Sale", completedAt:record.completedAt, customer:record.guestName || "Guest", description:record.serviceName, amount:record.saleAmount, currency:record.currency || primaryCurrency, reference:`SALE-${String(record.id).slice(-8).toUpperCase()}`, status:record.status || "recorded" })),
     ...(data?.productRecords || []).map(record => ({ id:`${record.source}-${record.id}`, type:record.source === "pos" ? "POS Sale" : "Online Product Sale", completedAt:record.completedAt, customer:record.customerName || "Customer", description:record.description, items:record.items || [], amount:record.amount, currency:record.currency || primaryCurrency, reference:record.reference, status:record.status || "recorded" }))
@@ -186,7 +191,7 @@ export default function SalesPage({ user, onLogout }) {
         <Card as="article" className="stat-card analytics-stat"><span><FiCreditCard aria-hidden="true"/>Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>Services {money(data?.serviceSalesTotal || 0, primaryCurrency)} · Products {money(data?.productSalesTotal || 0, primaryCurrency)}</small></Card>
         <Card as="article" className="stat-card analytics-stat"><span><FiCalendar aria-hidden="true"/>Completed services</span><strong>{summary.completedServices || 0}</strong><small>Bookings recorded as sales</small></Card>
         <Card as="article" className="stat-card analytics-stat"><span><FiTrendingUp aria-hidden="true"/>Average sale</span><strong>{money(summary.averageSale, primaryCurrency)}</strong><small>Average in primary currency</small></Card>
-        <Card as="article" className="stat-card analytics-stat"><span><FiPackage aria-hidden="true"/>Services sold</span><strong>{summary.servicesSold || 0}</strong><small>Distinct completed services</small></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiPackage aria-hidden="true"/>Products sold online</span><strong>{onlineProductsSold}</strong><small>Units from completed online orders</small></Card>
       </section>
 
     <section className={"panel pos-history-panel sales-orders-panel" + (!orders.length ? " is-empty" : "")}>
