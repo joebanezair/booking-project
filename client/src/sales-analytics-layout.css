@@ -320,3 +320,65 @@ html body #root .page-shell > .content-shell:has(> .analytics-topbar) > :is(.ana
     padding: 14px !important;
   }
 }
+
+
+/* Collapsible Transaction History: table can be hidden without changing receipts. */
+html body #root .sales-records-panel .sales-records-heading.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px !important;
+}
+html body #root .sales-records-panel .sales-records-toggle.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto !important;
+  width: fit-content !important;
+  min-height: 36px !important;
+  padding: 7px 10px !important;
+  gap: 8px;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: var(--muted-foreground) !important;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: none !important;
+  white-space: nowrap;
+}
+html body #root .sales-records-panel .sales-records-toggle.ui-button:hover {
+  background: var(--secondary) !important;
+  color: var(--foreground) !important;
+}
+html body #root .sales-records-panel .sales-records-toggle.ui-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+html body #root .sales-records-panel .sales-records-toggle.ui-button svg {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  transition: transform .16s ease;
+}
+html body #root .sales-records-panel .sales-records-toggle.ui-button[aria-expanded="false"] svg {
+  transform: rotate(-90deg);
+}
+html body #root .sales-records-panel .sales-records-content[hidden] {
+  display: none !important;
+}
+html body #root .sales-records-panel:has(.sales-records-content[hidden]) .sales-records-heading.panel-title {
+  margin-bottom: 0 !important;
+}
+@media (max-width: 560px) {
+  html body #root .sales-records-panel .sales-records-toggle.ui-button {
+    gap: 5px;
+    padding: 6px 8px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .sales-records-panel .sales-records-toggle.ui-button svg {
+    transition: none;
+  }
+}

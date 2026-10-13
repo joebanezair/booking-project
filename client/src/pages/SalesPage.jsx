@@ -5,7 +5,7 @@ import { Select } from "../components/ui/select.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FiCalendar, FiCreditCard, FiDownload, FiFileText, FiInbox, FiPackage, FiPrinter, FiShoppingBag, FiTrendingUp, FiX } from "react-icons/fi";
+import { FiCalendar, FiChevronDown, FiCreditCard, FiDownload, FiFileText, FiInbox, FiPackage, FiPrinter, FiShoppingBag, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
@@ -44,6 +44,7 @@ export default function SalesPage({ user, onLogout }) {
   const [loading, setLoading] = useState(true);
   const [orders,setOrders]=useState([]);
   const [receipt,setReceipt]=useState(null);
+  const [historyExpanded,setHistoryExpanded]=useState(true);
 
   const offset = new Date().getTimezoneOffset();
 
@@ -179,8 +180,19 @@ export default function SalesPage({ user, onLogout }) {
       </section>}
 
       <section className="panel sales-records-panel">
-        <div className="panel-title"><div><p className="eyebrow">TRANSACTION HISTORY</p><h2>All sales</h2></div><span className="muted">{unifiedTransactions.length} transactions</span></div>
-        {!unifiedTransactions.length ? <p className="muted">No sales transactions in this period.</p> : <div className="sales-table-wrap">
+        <div className="panel-title sales-records-heading">
+          <div><p className="eyebrow">TRANSACTION HISTORY</p><h2>All sales</h2></div>
+          <Button type="button" variant="ghost" className="sales-records-toggle"
+            onClick={()=>setHistoryExpanded(value=>!value)}
+            aria-expanded={historyExpanded}
+            aria-controls="sales-transactions-content"
+            aria-label={historyExpanded?"Collapse transaction history":"Expand transaction history"}>
+            <span>{unifiedTransactions.length} transaction{unifiedTransactions.length===1?"":"s"}</span>
+            <FiChevronDown aria-hidden="true"/>
+          </Button>
+        </div>
+        <div id="sales-transactions-content" className="sales-records-content" hidden={!historyExpanded}>
+          {!unifiedTransactions.length ? <p className="muted">No sales transactions in this period.</p> : <div className="sales-table-wrap">
           <table className="sales-table">
             <thead><tr><th>Date</th><th>Type</th><th>Reference</th><th>Customer</th><th>Item / Service</th><th>Amount</th><th>Status</th></tr></thead>
             <tbody>{unifiedTransactions.map(record => <tr key={record.id} className="sales-receipt-row" tabIndex={0} role="button" aria-label={`View receipt ${record.reference || ""}`} onClick={()=>setReceipt(record)} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setReceipt(record);}}}>
@@ -194,6 +206,7 @@ export default function SalesPage({ user, onLogout }) {
             </tr>)}</tbody>
           </table>
         </div>}
+        </div>
       </section>
       {receipt&&createPortal(<div className="receipt-modal-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setReceipt(null);}}>
         <section className="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receipt-title">
