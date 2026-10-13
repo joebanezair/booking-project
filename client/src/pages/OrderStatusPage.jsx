@@ -44,9 +44,11 @@ export default function OrderStatusPage(){
         <Link className="brand-row" to="/"><span className="brand-mark">B</span><strong>BookFlow</strong></Link>
         <Button type="button" variant="outline" onClick={refresh} disabled={refreshing}><FiRefreshCw aria-hidden="true"/>{refreshing?"Refreshing...":"Refresh status"}</Button>
       </header>
-      <p className="eyebrow">MY ORDER</p>
-      <h1>Order status</h1>
-      <p className="muted">Check your order's progress, details, and courier updates.</p>
+      <div className="buyer-status-intro">
+        <p className="eyebrow">MY ORDER</p>
+        <h1>Order status</h1>
+        <p className="muted">Track your order, delivery, and courier updates in one place.</p>
+      </div>
       {loading&&!order&&<p role="status">Loading your order...</p>}
       {error&&<p role="alert" className="error">{error}</p>}
       {order&&<>
@@ -54,19 +56,27 @@ export default function OrderStatusPage(){
           <div><small>Order reference</small><strong>{order.orderNumber}</strong></div>
           <span className={"buyer-status-pill"+(cancelled?" cancelled":"")}>{names[order.status]||order.status}</span>
         </div>
-        <section className="buyer-order-section">
-          <h2>Order progress</h2>
+        <section className="buyer-order-section buyer-order-progress">
+          <div className="buyer-order-progress-head">
+            <h2>Order progress</h2>
+            {!cancelled && <span className="buyer-order-progress-count">{Math.max(0,current+1)} of {phases.length} steps</span>}
+          </div>
           {cancelled?<p className="buyer-order-cancelled">This order was cancelled. Contact the seller for more information.</p>:
-          <ol className="buyer-order-timeline">{phases.map((phase,index)=>{
+          <ol className="buyer-order-timeline" aria-label="Order fulfillment progress">{phases.map((phase,index)=>{
             const done=index<=current;
-            return <li key={phase} className={done?"is-done":""}>
-              <span className="buyer-order-phase-icon">{done?<FiCheck aria-hidden="true"/>:index+1}</span>
-              <div><strong>{names[phase]}</strong>{phase===order.status&&<small>Current status</small>}</div>
+            const isCurrent=phase===order.status;
+            return <li key={phase} className={isCurrent?"is-done is-current":done?"is-done":"is-upcoming"} aria-current={isCurrent?"step":undefined}>
+              <span className="buyer-order-phase-icon" aria-hidden="true">{done?<FiCheck/>:index+1}</span>
+              <div className="buyer-order-phase-text">
+                <strong>{names[phase]}</strong>
+                {isCurrent&&<small>Current status</small>}
+              </div>
             </li>;
           })}</ol>}
           <p className="muted buyer-order-updated">Last updated {new Date(order.updatedAt||order.createdAt).toLocaleString()}</p>
         </section>
-        <section className="buyer-order-section">
+        <div className="buyer-order-details-grid">
+        <section className="buyer-order-section buyer-order-details-panel">
           <h2><FiTruck aria-hidden="true"/> Courier details</h2>
           {order.courierName||order.trackingNumber||order.trackingUrl?
             <dl className="buyer-order-courier">
@@ -76,12 +86,13 @@ export default function OrderStatusPage(){
             </dl>
           :<p className="muted">The seller has not added courier details yet.</p>}
         </section>
-        <section className="buyer-order-section">
+        <section className="buyer-order-section buyer-order-details-panel">
           <h2><FiPackage aria-hidden="true"/> Order items</h2>
           <div className="buyer-order-items">{(order.items||[]).map((item,index)=>
             <div key={index}><span>{item.name} × {item.quantity}</span><strong>{money(item.lineTotal,order.currency)}</strong></div>)}</div>
           <div className="buyer-order-grand-total"><span>Total</span><strong>{money(order.total,order.currency)}</strong></div>
         </section>
+        </div>
         <p className="muted buyer-order-note">Keep this link private. Status refreshes every 30 seconds, or you can refresh it manually.</p>
       </>}
       <Link to="/search" className="buyer-order-back"><FiArrowLeft aria-hidden="true"/> Browse BookFlow</Link>

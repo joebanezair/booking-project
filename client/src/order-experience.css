@@ -78,3 +78,331 @@ html body .buyer-order-back {display:inline-flex;align-items:center;gap:6px;colo
   html body .buyer-status-card.public-card {padding:16px;}
   html body .buyer-order-summary {flex-wrap:wrap;}
 }
+
+
+/* Order Status page refinement: compact connected progress timeline and 10px cards. */
+html body #root main.buyer-order-status-page.public-shell {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0;
+  display: flex !important;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 28px 16px 48px !important;
+  background: var(--background, #f7f9fc) !important;
+}
+html body #root .buyer-order-status-page .buyer-status-card.public-card {
+  box-sizing: border-box;
+  display: block;
+  width: min(100%, 760px) !important;
+  max-width: 760px !important;
+  margin: 0 auto !important;
+  padding: 24px !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+html body #root .buyer-order-status-page .buyer-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 22px !important;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+html body #root .buyer-order-status-page .buyer-status-header .ui-button {
+  min-height: 36px;
+  padding: 7px 12px;
+  border-radius: 10px !important;
+  white-space: nowrap;
+}
+html body #root .buyer-order-status-page .buyer-status-intro {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 20px;
+}
+html body #root .buyer-order-status-page .buyer-status-intro .eyebrow {
+  margin: 0;
+  color: var(--primary);
+  font-size: 11px;
+  letter-spacing: .07em;
+  font-weight: 700;
+}
+html body #root .buyer-order-status-page .buyer-status-intro h1 {
+  margin: 0 !important;
+  font-size: clamp(23px, 3.5vw, 30px) !important;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -.025em;
+}
+html body #root .buyer-order-status-page .buyer-status-intro .muted {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.5;
+}
+html body #root .buyer-order-status-page .buyer-order-summary {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  margin: 0 0 20px !important;
+  padding: 15px 17px !important;
+  background: color-mix(in srgb, var(--secondary) 54%, var(--card)) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+}
+html body #root .buyer-order-status-page .buyer-order-summary > div {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+html body #root .buyer-order-status-page .buyer-order-summary small {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+html body #root .buyer-order-status-page .buyer-order-summary strong {
+  color: var(--foreground);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+html body #root .buyer-order-status-page .buyer-status-pill {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  padding: 7px 11px !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+  border-radius: 999px !important;
+  background: color-mix(in srgb, var(--primary) 10%, var(--card)) !important;
+  color: var(--primary) !important;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+html body #root .buyer-order-status-page .buyer-status-pill.cancelled {
+  border-color: color-mix(in srgb, var(--destructive) 20%, transparent);
+  background: color-mix(in srgb, var(--destructive) 10%, var(--card)) !important;
+  color: var(--destructive) !important;
+}
+html body #root .buyer-order-status-page .buyer-order-section.buyer-order-progress {
+  margin: 0 0 14px;
+  padding: 18px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card);
+}
+html body #root .buyer-order-status-page .buyer-order-progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+html body #root .buyer-order-status-page .buyer-order-progress-head h2 {
+  margin: 0 !important;
+  color: var(--foreground);
+  font-size: 15px;
+  font-weight: 700;
+}
+html body #root .buyer-order-status-page .buyer-order-progress-count {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+html body #root .buyer-order-status-page .buyer-order-timeline {
+  display: grid;
+  gap: 0 !important;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+html body #root .buyer-order-status-page .buyer-order-timeline > li {
+  position: relative;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  min-height: 48px !important;
+  padding: 0 0 12px;
+  color: var(--muted-foreground);
+}
+html body #root .buyer-order-status-page .buyer-order-timeline > li:last-child {
+  min-height: 28px !important;
+  padding-bottom: 0;
+}
+html body #root .buyer-order-status-page .buyer-order-timeline > li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 29px;
+  bottom: 1px;
+  left: 13px;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--border);
+}
+html body #root .buyer-order-status-page .buyer-order-timeline > li.is-done:not(.is-current)::after {
+  background: var(--primary);
+}
+html body #root .buyer-order-status-page .buyer-order-phase-icon {
+  z-index: 1;
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 28px !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--border) !important;
+  background: var(--card) !important;
+  color: var(--muted-foreground) !important;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+html body #root .buyer-order-status-page .buyer-order-phase-icon svg {
+  width: 14px;
+  height: 14px;
+}
+html body #root .buyer-order-status-page .buyer-order-timeline > li.is-done:not(.is-current) .buyer-order-phase-icon {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+html body #root .buyer-order-status-page .buyer-order-timeline > li.is-current .buyer-order-phase-icon {
+  border: 2px solid var(--primary) !important;
+  background: color-mix(in srgb, var(--primary) 10%, var(--card)) !important;
+  color: var(--primary) !important;
+}
+html body #root .buyer-order-status-page .buyer-order-phase-text {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  min-width: 0;
+  gap: 4px 9px;
+  padding-top: 4px;
+}
+html body #root .buyer-order-status-page .buyer-order-phase-text strong {
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+html body #root .buyer-order-status-page .buyer-order-timeline > li.is-done .buyer-order-phase-text strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+html body #root .buyer-order-status-page .buyer-order-timeline > li.is-current .buyer-order-phase-text strong {
+  color: var(--primary);
+}
+html body #root .buyer-order-status-page .buyer-order-phase-text small {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 9%, var(--card));
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+html body #root .buyer-order-status-page .buyer-order-updated {
+  margin: 14px 0 0 !important;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+html body #root .buyer-order-status-page .buyer-order-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+html body #root .buyer-order-status-page .buyer-order-section.buyer-order-details-panel {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 18px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card);
+}
+html body #root .buyer-order-status-page .buyer-order-details-panel h2 {
+  margin: 0 0 15px !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+}
+html body #root .buyer-order-status-page .buyer-order-details-panel h2 svg {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  color: var(--primary);
+}
+html body #root .buyer-order-status-page .buyer-order-courier {
+  gap: 13px;
+}
+html body #root .buyer-order-status-page .buyer-order-courier dt {
+  font-size: 11px;
+}
+html body #root .buyer-order-status-page .buyer-order-courier dd,
+html body #root .buyer-order-status-page .buyer-order-items {
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+html body #root .buyer-order-status-page .buyer-order-grand-total {
+  margin-top: 14px;
+  padding-top: 13px;
+}
+html body #root .buyer-order-status-page .buyer-order-grand-total strong {
+  font-size: 18px;
+}
+html body #root .buyer-order-status-page .buyer-order-note {
+  margin: 0 0 14px !important;
+  font-size: 11px;
+  line-height: 1.45;
+}
+html body #root .buyer-order-status-page .buyer-order-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  font-weight: 500;
+  font-size: 12px;
+  text-decoration: none;
+}
+html body #root .buyer-order-status-page .buyer-order-back:hover {
+  text-decoration: underline;
+}
+@media (max-width: 640px) {
+  html body #root main.buyer-order-status-page.public-shell {
+    padding: 12px !important;
+  }
+  html body #root .buyer-order-status-page .buyer-status-card.public-card {
+    padding: 16px !important;
+  }
+  html body #root .buyer-order-status-page .buyer-status-header {
+    margin-bottom: 18px !important;
+  }
+  html body #root .buyer-order-status-page .buyer-order-details-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  html body #root .buyer-order-status-page .buyer-order-section.buyer-order-progress,
+  html body #root .buyer-order-status-page .buyer-order-section.buyer-order-details-panel {
+    padding: 15px !important;
+  }
+  html body #root .buyer-order-status-page .buyer-order-summary {
+    align-items: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 13px !important;
+  }
+}
