@@ -276,20 +276,23 @@ export default function SalesPage({ user, onLogout }) {
             {filteredOrders.length===0 ? <p className="muted sales-orders-no-match" role="status">No matching orders. Adjust your search or status filter.</p> :
               <div className="sales-table-wrap sales-orders-table-wrap">
                 <table className="sales-table sales-orders-table">
-                  <thead><tr><th scope="col">Order / Customer</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">View</th></tr></thead>
+                  <thead><tr><th scope="col">Order</th><th scope="col">Product</th><th scope="col">Customer</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
                   <tbody>{filteredOrders.map(order=><tr key={order._id} className="sales-order-row"
                     onClick={()=>openOrder(order)}>
                     <td data-label="Order" className="sales-orders-ident">
-                      <button type="button" className="sales-orders-order-link" onClick={()=>openOrder(order)}>{order.orderNumber}</button>
-                      <span className="sales-orders-item">{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</span>
-                      <small>{order.customerName}</small>
+                      <button type="button" className="sales-orders-order-link" title={order.orderNumber}
+                        onClick={event=>{event.stopPropagation();openOrder(order);}}>{order.orderNumber}</button>
                     </td>
+                    <td data-label="Product" className="sales-orders-product">
+                      <span className="sales-orders-item">{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</span>
+                    </td>
+                    <td data-label="Customer" className="sales-orders-customer">{order.customerName}</td>
                     <td data-label="Total" className="sales-orders-amount">{money(order.total,order.currency)}</td>
                     <td data-label="Status"><span className={"sales-orders-status is-"+order.status}>{orderStatusLabel(order.status)}</span></td>
-                    <td data-label="View" className="sales-orders-view-cell">
-                      <Button type="button" size="icon" variant="outline" className="sales-orders-view"
+                    <td data-label="Action" className="sales-orders-view-cell">
+                      <Button type="button" size="sm" variant="outline" className="sales-orders-view"
                         aria-label={`View order details for ${order.orderNumber}`}
-                        onClick={event=>{event.stopPropagation();openOrder(order);}}><FiEye aria-hidden="true"/></Button>
+                        onClick={event=>{event.stopPropagation();openOrder(order);}}><FiEye aria-hidden="true"/><span>View</span></Button>
                     </td>
                   </tr>)}</tbody>
                 </table>
