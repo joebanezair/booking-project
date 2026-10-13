@@ -296,3 +296,11 @@ html body #root .page-shell > aside.sidebar .sidebar-footer-avatar > :is(.profil
     transition: none !important;
   }
 }
+
+
+/* Phone-only: hide workspace profile/search toolbar while keeping it on tablets. */
+@media (max-width: 640px) {
+  html body #root .page-shell > header.workspace-topbar {
+    display: none !important;
+  }
+}
