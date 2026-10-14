@@ -27,6 +27,7 @@ import "./sales-analytics-layout.css";
 import "./order-experience.css";
 import "./sales-mobile-refresh.css";
 import "./public-storefront.css";
+import "./online-orders-alignment.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>

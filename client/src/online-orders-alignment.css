@@ -1,0 +1,142 @@
+/*
+ * Dedicated Products > Online Orders page alignment.
+ * Keep the header, empty/loading states, and the orders table on one content rail.
+ * Scoped to ordersOnly mode so Sales & Analytics and POS are unaffected.
+ */
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) > :is(
+  .online-orders-page-header.topbar,
+  .sales-orders-panel.pos-history-panel.panel,
+  .sales-orders-loading.panel,
+  .error
+) {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 1360px !important;
+  min-width: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Headline and card share the same left edge and a predictable vertical rhythm. */
+html body #root .page-shell > .content-shell > .online-orders-page-header.topbar {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px;
+  padding: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 16px !important;
+}
+html body #root .online-orders-page-header > div {
+  min-width: 0;
+}
+html body #root .online-orders-page-header .eyebrow {
+  margin: 0 0 6px !important;
+}
+html body #root .online-orders-page-header h1 {
+  margin: 0 0 6px !important;
+  font-size: clamp(24px, 2.3vw, 30px);
+  line-height: 1.18;
+}
+html body #root .online-orders-page-header .muted {
+  margin: 0 !important;
+  max-width: 780px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Card header, filter bar, and table all use the card's exact inner edges. */
+html body #root .page-shell > .content-shell > .sales-orders-panel.pos-history-panel.panel:has(.sales-online-orders-content) {
+  padding: 16px !important;
+  margin-top: 0 !important;
+  margin-bottom: 20px !important;
+  border-radius: 10px !important;
+}
+html body #root .sales-orders-panel .sales-orders-head.panel-title {
+  margin: 0 0 14px !important;
+  align-items: center !important;
+}
+html body #root .sales-orders-panel .sales-orders-toolbar {
+  box-sizing: border-box;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 350px);
+  align-items: center;
+  gap: 12px !important;
+  width: 100%;
+  margin: 0 0 14px !important;
+}
+html body #root .sales-orders-panel .sales-orders-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px !important;
+  min-width: 0;
+}
+html body #root .sales-orders-panel .sales-orders-search {
+  box-sizing: border-box;
+  display: flex;
+  flex: none !important;
+  align-items: center;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  justify-self: end;
+}
+html body #root .sales-orders-panel .sales-orders-search input.ui-input {
+  display: block;
+  box-sizing: border-box;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+html body #root .sales-orders-panel .sales-orders-table-wrap.sales-table-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 !important;
+}
+/* Each header lines up with its own cell; numeric totals right aligned. */
+html body #root .sales-orders-panel .sales-orders-table.sales-table {
+  width: 100%;
+  table-layout: fixed;
+}
+html body #root .sales-orders-panel .sales-orders-table :is(th,td) {
+  vertical-align: middle;
+}
+html body #root .sales-orders-panel .sales-orders-table th:nth-child(1) {width:26%;}
+html body #root .sales-orders-panel .sales-orders-table th:nth-child(2) {width:30%;}
+html body #root .sales-orders-panel .sales-orders-table th:nth-child(3) {width:19%;}
+html body #root .sales-orders-panel .sales-orders-table th:nth-child(4) {width:12%;text-align:right;}
+html body #root .sales-orders-panel .sales-orders-table th:nth-child(5) {width:13%;}
+
+/* Narrow desktop and tablet: search moves below filters without breaking the rail. */
+@media (max-width: 1280px) {
+  html body #root .sales-orders-panel .sales-orders-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px !important;
+  }
+  html body #root .sales-orders-panel .sales-orders-search {
+    justify-self: stretch;
+  }
+}
+@media (max-width: 760px) {
+  html body #root .page-shell > .content-shell > .online-orders-page-header.topbar {
+    margin-bottom: 12px !important;
+  }
+  html body #root .page-shell > .content-shell > .sales-orders-panel.pos-history-panel.panel:has(.sales-online-orders-content) {
+    padding: 12px !important;
+  }
+  html body #root .sales-orders-panel .sales-orders-toolbar {
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  html body #root .sales-orders-panel .sales-orders-search {
+    order: -1;
+  }
+  /* Existing responsive order cards remain in control below this width. */
+}
