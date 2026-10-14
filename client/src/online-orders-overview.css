@@ -305,3 +305,34 @@ html:not([data-theme="dark"]) body #root .page-shell > .content-shell:has(> .onl
 html:not([data-theme="dark"]) body #root .online-order-overview .order-overview-stat {
   background: #ffffff !important;
 }
+
+
+/* Online Orders: consistent 3px corners throughout the page. */
+/* Apply to this dedicated page only. Keep the chart itself and status-color
+   dots circular; keep the separately portaled product/order modals untouched. */
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
+  > :is(.online-order-overview, .sales-orders-panel, .sales-orders-loading),
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
+  :is(
+    .order-overview-stat,
+    .order-overview-legend-item,
+    .order-overview-clear,
+    .sales-orders-collapse,
+    .sales-orders-filter,
+    .sales-orders-more-status,
+    .sales-orders-search .ui-input,
+    .sales-orders-table-wrap,
+    .sales-orders-status,
+    .sales-orders-view,
+    .sales-order-row,
+    .sales-orders-no-match,
+    .sales-orders-empty
+  ) {
+  border-radius: 3px !important;
+}
+
+/* Explicitly preserve the requested circular status colors. */
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
+  .order-overview-dot {
+  border-radius: 999px !important;
+}
