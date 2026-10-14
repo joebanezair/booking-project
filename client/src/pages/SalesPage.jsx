@@ -92,12 +92,13 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   useEffect(() => { if (!ordersOnly) load(); }, [range, group, ordersOnly]);
   const [ordersLoading, setOrdersLoading] = useState(true);
   useEffect(() => {
+    if (!ordersOnly) return;
     let mounted = true;
     api.sales.orders().then(items => { if (mounted) setOrders(items); })
       .catch(e => { if (mounted) setError(e.message); })
       .finally(() => { if (mounted) setOrdersLoading(false); });
     return () => { mounted = false; };
-  }, []);
+  }, [ordersOnly]);
 
   const rangeLabel = useMemo(() => {
     if (range === "custom" && custom.start && custom.end) return `${custom.start}_to_${custom.end}`;
@@ -258,7 +259,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     </>}
     {ordersOnly && error && <p className="error" role="alert">{error}</p>}
     {ordersOnly && ordersLoading && <section className="panel sales-orders-loading" role="status">Loading online orders…</section>}
-    <section className={"panel pos-history-panel sales-orders-panel"+(!orders.length?" is-empty":"")}>
+    {ordersOnly && <section className={"panel pos-history-panel sales-orders-panel"+(!orders.length?" is-empty":"")}>
       <div className="panel-title sales-orders-head">
         <div><p className="eyebrow">ONLINE ORDERS</p><h2>Public product orders</h2></div>
         <Button type="button" variant="outline" className="sales-orders-collapse" aria-expanded={ordersExpanded}
@@ -312,7 +313,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
               </div>}
           </>}
       </div>
-    </section>
+    </section>}
 
     {!ordersOnly && !loading && data && <>
       {data?.totalsByCurrency?.length > 1 && <section className="panel currency-summary">
