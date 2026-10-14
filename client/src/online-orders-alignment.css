@@ -50,17 +50,17 @@ html body #root .online-orders-page-header .muted {
 }
 
 /* Card header, filter bar, and table all use the card's exact inner edges. */
-html body #root .page-shell > .content-shell > .sales-orders-panel.pos-history-panel.panel:has(.sales-online-orders-content) {
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) > .sales-orders-panel.pos-history-panel.panel:has(.sales-online-orders-content) {
   padding: 16px !important;
   margin-top: 0 !important;
   margin-bottom: 20px !important;
   border-radius: 10px !important;
 }
-html body #root .sales-orders-panel .sales-orders-head.panel-title {
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-head.panel-title {
   margin: 0 0 14px !important;
   align-items: center !important;
 }
-html body #root .sales-orders-panel .sales-orders-toolbar {
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-toolbar {
   box-sizing: border-box;
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) minmax(250px, 350px);
@@ -69,14 +69,14 @@ html body #root .sales-orders-panel .sales-orders-toolbar {
   width: 100%;
   margin: 0 0 14px !important;
 }
-html body #root .sales-orders-panel .sales-orders-filters {
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-filters {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px !important;
   min-width: 0;
 }
-html body #root .sales-orders-panel .sales-orders-search {
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-search {
   box-sizing: border-box;
   display: flex;
   flex: none !important;
@@ -87,38 +87,38 @@ html body #root .sales-orders-panel .sales-orders-search {
   margin: 0 !important;
   justify-self: end;
 }
-html body #root .sales-orders-panel .sales-orders-search input.ui-input {
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-search input.ui-input {
   display: block;
   box-sizing: border-box;
   width: 100% !important;
   min-width: 0 !important;
 }
-html body #root .sales-orders-panel .sales-orders-table-wrap.sales-table-wrap {
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-table-wrap.sales-table-wrap {
   box-sizing: border-box;
   width: 100%;
   margin: 0 !important;
 }
 /* Each header lines up with its own cell; numeric totals right aligned. */
-html body #root .sales-orders-panel .sales-orders-table.sales-table {
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-table.sales-table {
   width: 100%;
   table-layout: fixed;
 }
-html body #root .sales-orders-panel .sales-orders-table :is(th,td) {
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-table :is(th,td) {
   vertical-align: middle;
 }
-html body #root .sales-orders-panel .sales-orders-table th:nth-child(1) {width:26%;}
-html body #root .sales-orders-panel .sales-orders-table th:nth-child(2) {width:30%;}
-html body #root .sales-orders-panel .sales-orders-table th:nth-child(3) {width:19%;}
-html body #root .sales-orders-panel .sales-orders-table th:nth-child(4) {width:12%;text-align:right;}
-html body #root .sales-orders-panel .sales-orders-table th:nth-child(5) {width:13%;}
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-table th:nth-child(1) {width:26%;}
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-table th:nth-child(2) {width:30%;}
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-table th:nth-child(3) {width:19%;}
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-table th:nth-child(4) {width:12%;text-align:right;}
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-table th:nth-child(5) {width:13%;}
 
 /* Narrow desktop and tablet: search moves below filters without breaking the rail. */
 @media (max-width: 1280px) {
-  html body #root .sales-orders-panel .sales-orders-toolbar {
+  html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-toolbar {
     grid-template-columns: minmax(0, 1fr);
     gap: 10px !important;
   }
-  html body #root .sales-orders-panel .sales-orders-search {
+  html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-search {
     justify-self: stretch;
   }
 }
@@ -126,16 +126,16 @@ html body #root .sales-orders-panel .sales-orders-table th:nth-child(5) {width:1
   html body #root .page-shell > .content-shell > .online-orders-page-header.topbar {
     margin-bottom: 12px !important;
   }
-  html body #root .page-shell > .content-shell > .sales-orders-panel.pos-history-panel.panel:has(.sales-online-orders-content) {
+  html body #root .page-shell > .content-shell:has(> .online-orders-page-header) > .sales-orders-panel.pos-history-panel.panel:has(.sales-online-orders-content) {
     padding: 12px !important;
   }
-  html body #root .sales-orders-panel .sales-orders-toolbar {
+  html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-toolbar {
     display: flex !important;
     flex-direction: column;
     align-items: stretch !important;
     gap: 10px !important;
   }
-  html body #root .sales-orders-panel .sales-orders-search {
+  html body #root .page-shell > .content-shell:has(> .online-orders-page-header) .sales-orders-panel .sales-orders-search {
     order: -1;
   }
   /* Existing responsive order cards remain in control below this width. */
