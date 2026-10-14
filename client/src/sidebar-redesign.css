@@ -257,3 +257,77 @@ html body .page-shell > aside.sidebar .sidebar-footer {
     transition: none !important;
   }
 }
+
+
+/* Products disclosure: POS + Online Orders. The rail stays icon-only on desktop,
+ * while the expanded sidebar and mobile drawer show indented accessible links. */
+html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-group {
+  display:flex;
+  flex-direction:column;
+  flex:0 0 auto;
+  min-width:0;
+  gap:2px;
+}
+html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-toggle.current-section {
+  color:#f2f5ff !important;
+  background:rgba(101,128,224,.16) !important;
+  font-weight:650 !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-links {
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+  padding:2px 0 3px 16px;
+}
+html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-links > a.sidebar-nav-link {
+  height:34px !important;
+  min-height:34px !important;
+  padding:7px 10px !important;
+  gap:9px !important;
+  font-size:12px !important;
+}
+html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-links > a.sidebar-nav-link.active {
+  box-shadow: inset 2px 0 0 #5d7cff !important;
+}
+@media(min-width:801px){
+  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) .sidebar-products-links {
+    display:none !important;
+  }
+}
+@media(max-width:800px){
+  html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-links {
+    padding-left:16px;
+  }
+  html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-links > a.sidebar-nav-link {
+    height:40px !important;
+    min-height:40px !important;
+    padding:9px 12px !important;
+  }
+}
+
+/* Dedicated Online Orders page reuses the same table and vendor modal. */
+html body #root .page-shell > .content-shell > .online-orders-page-header.topbar {
+  box-sizing:border-box;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  width:100%;
+  max-width:none !important;
+  margin:0 0 20px !important;
+  padding:0 !important;
+}
+html body #root .page-shell > .content-shell > .online-orders-page-header h1 {
+  margin:0 0 7px;
+  font-size:clamp(24px,2.5vw,30px);
+  letter-spacing:-.025em;
+}
+html body #root .page-shell > .content-shell > .online-orders-page-header .muted {
+  margin:0;
+  font-size:13px;
+}
+html body #root .page-shell > .content-shell > .sales-orders-loading {
+  margin:0 0 14px;
+  border-radius:10px;
+  font-size:13px;
+}

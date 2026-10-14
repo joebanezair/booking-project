@@ -1,6 +1,6 @@
 import { Button } from "./ui/button.jsx";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX, FiChevronDown, FiMoreHorizontal, FiLogOut, FiArrowRight } from "react-icons/fi";
+import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiShoppingCart, FiShoppingBag, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX, FiChevronDown, FiMoreHorizontal, FiLogOut, FiArrowRight } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
@@ -43,6 +43,10 @@ export default function AppLayout({ children, user, onLogout }) {
   const [unread, setUnread] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(true);
+  const [productsOpen, setProductsOpen] = useState(() =>
+    typeof window !== "undefined" &&
+    (isNestedRoute(window.location.pathname, "/dashboard/products") ||
+      isNestedRoute(window.location.pathname, "/dashboard/online-orders")));
   const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.matchMedia(mobileQuery).matches);
   const drawerRef = useRef(null);
   const menuTriggerRef = useRef(null);
@@ -101,6 +105,10 @@ export default function AppLayout({ children, user, onLogout }) {
   }, [pathname]);
 
   useEffect(() => { if (moreRoutePaths.some(path => isNestedRoute(pathname, path))) setMoreOpen(true); }, [pathname]);
+  useEffect(() => {
+    if (isNestedRoute(pathname, "/dashboard/products") ||
+        isNestedRoute(pathname, "/dashboard/online-orders")) setProductsOpen(true);
+  }, [pathname]);
   useEffect(() => { if (!isMobile) setMobileOpen(false); }, [isMobile]);
 
   const visibleNavigation = navigation.filter(item => {
@@ -113,6 +121,35 @@ export default function AppLayout({ children, user, onLogout }) {
   const activityNavigation = visibleNavigation.filter(item => activityLabels.has(item.label));
   const moreNavigation = visibleNavigation.filter(item => moreLabels.has(item.label));
   const moreActive = moreNavigation.some(item => isNestedRoute(pathname, item.to));
+  const productsActive = isNestedRoute(pathname, "/dashboard/products") ||
+    isNestedRoute(pathname, "/dashboard/online-orders");
+
+  function renderWorkspaceItem(item) {
+    if (item.label !== "Products") return renderSidebarLink(item);
+    return <div className="sidebar-products-group" key="products">
+      <Button type="button" variant="ghost"
+        className={"sidebar-nav-toggle sidebar-products-toggle" + (productsActive ? " current-section" : "")}
+        title="Products: POS and online orders"
+        aria-label={productsOpen ? "Collapse Products navigation" : "Expand Products navigation"}
+        aria-expanded={productsOpen}
+        aria-controls="sidebar-products-links"
+        onClick={() => setProductsOpen(value => !value)}>
+        <FiPackage aria-hidden="true"/>
+        <span>Products</span>
+        <FiChevronDown className="sidebar-nav-chevron" aria-hidden="true"/>
+      </Button>
+      {productsOpen && <div id="sidebar-products-links" className="sidebar-products-links">
+        <NavLink className="sidebar-nav-link" to="/dashboard/products" end
+          title="Point of Sale" onClick={() => closeMobileNavigation()}>
+          <FiShoppingCart aria-hidden="true"/><span>POS</span>
+        </NavLink>
+        <NavLink className="sidebar-nav-link" to="/dashboard/online-orders" end
+          title="Orders from online storefront" onClick={() => closeMobileNavigation()}>
+          <FiShoppingBag aria-hidden="true"/><span>Online Orders</span>
+        </NavLink>
+      </div>}
+    </div>;
+  }
 
   function renderSidebarLink({ to, label, icon: Icon, end }) {
     return <NavLink className="sidebar-nav-link" to={to} end={end} key={to} title={label}
@@ -189,7 +226,7 @@ export default function AppLayout({ children, user, onLogout }) {
         <nav className="sidebar-nav" aria-label="Dashboard navigation">
           <div className="sidebar-nav-group">
             <span className="sidebar-section-label" aria-hidden="true">WORKSPACE</span>
-            {workspaceNavigation.map(renderSidebarLink)}
+            {workspaceNavigation.map(renderWorkspaceItem)}
           </div>
           <div className="sidebar-nav-group sidebar-activity-group">
             <span className="sidebar-section-label" aria-hidden="true">ACTIVITY</span>

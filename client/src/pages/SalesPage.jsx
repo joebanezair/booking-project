@@ -46,7 +46,7 @@ function money(value, currency) {
   }
 }
 
-export default function SalesPage({ user, onLogout }) {
+export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   const [range, setRange] = useState("month");
   const [group, setGroup] = useState("daily");
   const [custom, setCustom] = useState({ start: "", end: "" });
@@ -89,8 +89,15 @@ export default function SalesPage({ user, onLogout }) {
     }
   }
 
-  useEffect(() => { load(); }, [range, group]);
-  useEffect(() => { api.sales.orders().then(setOrders).catch(e=>setError(e.message)); }, []);
+  useEffect(() => { if (!ordersOnly) load(); }, [range, group, ordersOnly]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  useEffect(() => {
+    let mounted = true;
+    api.sales.orders().then(items => { if (mounted) setOrders(items); })
+      .catch(e => { if (mounted) setError(e.message); })
+      .finally(() => { if (mounted) setOrdersLoading(false); });
+    return () => { mounted = false; };
+  }, []);
 
   const rangeLabel = useMemo(() => {
     if (range === "custom" && custom.start && custom.end) return `${custom.start}_to_${custom.end}`;
@@ -162,7 +169,7 @@ export default function SalesPage({ user, onLogout }) {
       setOrders(existing=>existing.map(order=>order._id===updated._id?updated:order));
       setDraftOrderStatus(updated.status);
       setOrderStatusNotice("Status updated to "+orderStatusLabel(updated.status)+". The buyer can see the change on their tracking page.");
-      if(updated.status==="completed")await load();
+      if(updated.status==="completed" && !ordersOnly)await load();
     }catch(err){
       setOrderModalError(err.message);
     }finally{setOrderStatusBusy("");}
@@ -200,6 +207,12 @@ export default function SalesPage({ user, onLogout }) {
   ].sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt)), [data, primaryCurrency]);
 
   return <AppLayout user={user} onLogout={onLogout}>
+    {ordersOnly ? <header className="topbar online-orders-page-header">
+      <div><p className="eyebrow">PRODUCTS / ONLINE ORDERS</p>
+        <h1>Online orders</h1>
+        <p className="muted">Manage orders from your public storefront, update fulfillment, and share buyer tracking links.</p>
+      </div>
+    </header> : <>
     <header className="topbar analytics-topbar">
       <div>
         <p className="eyebrow">SALES & ANALYTICS</p>
@@ -240,6 +253,11 @@ export default function SalesPage({ user, onLogout }) {
         <Card as="article" className="stat-card analytics-stat"><span><FiPackage aria-hidden="true"/>Products sold online</span><strong>{onlineProductsSold}</strong><small>Units from completed online orders</small></Card>
       </section>
 
+
+      </>}
+    </>}
+    {ordersOnly && error && <p className="error" role="alert">{error}</p>}
+    {ordersOnly && ordersLoading && <section className="panel sales-orders-loading" role="status">Loading online orders…</section>}
     <section className={"panel pos-history-panel sales-orders-panel"+(!orders.length?" is-empty":"")}>
       <div className="panel-title sales-orders-head">
         <div><p className="eyebrow">ONLINE ORDERS</p><h2>Public product orders</h2></div>
@@ -296,6 +314,7 @@ export default function SalesPage({ user, onLogout }) {
       </div>
     </section>
 
+    {!ordersOnly && !loading && data && <>
       {data?.totalsByCurrency?.length > 1 && <section className="panel currency-summary">
         <div className="panel-title"><h2>Sales by currency</h2></div>
         <div className="currency-total-list">{data.totalsByCurrency.map(item => <div key={item.currency}><strong>{item.currency}</strong><span>{money(item.totalSales, item.currency)}</span><small>{item.saleCount} completed sale{item.saleCount === 1 ? "" : "s"}</small></div>)}</div>
