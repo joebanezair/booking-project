@@ -1519,7 +1519,7 @@ html body .buyer-product-dialog .buyer-product-photo-controls {
   gap: 8px;
   padding: 5px;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 15px;
   background: var(--card);
   color: var(--foreground);
   font-size: 11px;
