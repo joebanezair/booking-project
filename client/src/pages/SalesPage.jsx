@@ -11,6 +11,7 @@ import { createPortal } from "react-dom";
 import { FiCalendar, FiChevronDown, FiChevronLeft, FiChevronRight, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
+import OnlineOrdersOverview from "../components/OnlineOrdersOverview.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
 import { api } from "../api.js";
 
@@ -296,6 +297,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
 
       </>}
     </>}
+    {ordersOnly && <OnlineOrdersOverview orders={orders} loading={ordersLoading}/>}
     {ordersOnly && error && <p className="error" role="alert">{error}</p>}
     {ordersOnly && ordersLoading && <section className="panel sales-orders-loading" role="status">Loading online orders…</section>}
     {ordersOnly && <section className={"panel pos-history-panel sales-orders-panel"+(!orders.length?" is-empty":"")}>
