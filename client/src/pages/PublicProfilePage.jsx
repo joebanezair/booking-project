@@ -175,8 +175,8 @@ export default function PublicProfilePage({ user }) {
     <nav className="storefront-section-nav" aria-label="Business profile sections">
       <div className="storefront-container storefront-section-links">
         <a href="#storefront-top">Overview</a>
-        <a href="#storefront-services">Services <span>{content.length}</span></a>
-        <a href="#storefront-products">Products <span>{products.length}</span></a>
+        <a href="#storefront-services" onClick={event=>{event.preventDefault();setCatalogType("services");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-services")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Services <span>{content.length}</span></a>
+        <a href="#storefront-products" onClick={event=>{event.preventDefault();setCatalogType("products");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-products")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Products <span>{products.length}</span></a>
         <a href="#storefront-reviews">Reviews <span>{reviews.length}</span></a>
       </div>
     </nav>
