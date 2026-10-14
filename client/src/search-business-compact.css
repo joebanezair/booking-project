@@ -83,3 +83,95 @@
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+
+/* Search Businesses: 20% wider / 20% shorter desktop cards (grid only). */
+/* Relative to the provided ~335x460px desktop screenshot: 400x368px.
+   Higher specificity intentionally wins over historical .user-results !important
+   rules. The list view remains completely unchanged. */
+html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 400px)) !important;
+  align-items: stretch !important;
+  justify-content: start !important;
+  gap: 16px !important;
+}
+html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) > .user-result {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  height: 368px !important;
+  padding: 0 16px 13px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  overflow: hidden;
+}
+html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) .business-card-cover {
+  width: calc(100% + 32px) !important;
+  margin: 0 -16px !important;
+  height: 86px !important;
+  min-height: 86px !important;
+  flex: 0 0 86px !important;
+}
+html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) .business-card-avatar {
+  margin-top: -40px !important;
+  margin-bottom: 7px !important;
+  flex: 0 0 auto;
+}
+html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) .business-card-avatar :is(.profile-avatar, img) {
+  width: 88px !important;
+  height: 88px !important;
+  border-radius: 50% !important;
+}
+html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) .business-card-info {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  width: 100%;
+  min-height: 0;
+  gap: 3px !important;
+}
+html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) .business-card-info h2 {
+  font-size: 17px !important;
+  line-height: 1.25 !important;
+}
+html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) .business-card-info > :is(p, small) {
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  margin-top: 2px !important;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) .business-card-info > strong {
+  font-size: 12px !important;
+}
+html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) .business-rating {
+  margin-top: auto !important;
+  padding-top: 9px !important;
+  gap: 6px !important;
+  width: 100% !important;
+  flex-shrink: 0;
+  font-size: 12px !important;
+}
+/* On tablets allow fluid columns without overflow; on phones keep a single
+   readable card and natural height for long business details. */
+@media (max-width: 900px) {
+  html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+    gap: 12px !important;
+  }
+  html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) > .user-result {
+    height: auto !important;
+    min-height: 300px !important;
+  }
+}
+@media (max-width: 560px) {
+  html body #root .public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
