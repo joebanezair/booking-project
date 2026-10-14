@@ -254,3 +254,39 @@ html body #root .online-order-overview .order-overview-clear:hover {
 @media (prefers-reduced-motion: reduce) {
   html body #root .online-order-overview .order-overview-clickable-arc {transition:none;}
 }
+
+
+/* Borderless order legend and fully rounded status color indicators. */
+/* Keep chart filters clickable, but remove the outlined-pill treatment. */
+html body #root .online-order-overview button.order-overview-legend-item,
+html body #root .online-order-overview button.order-overview-legend-item:hover,
+html body #root .online-order-overview button.order-overview-legend-item.selected {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline-offset: 2px;
+}
+html body #root .online-order-overview button.order-overview-legend-item {
+  background: transparent !important;
+  padding: 4px 8px !important;
+  border-radius: 9px !important;
+}
+html body #root .online-order-overview button.order-overview-legend-item:hover,
+html body #root .online-order-overview button.order-overview-legend-item.selected {
+  background: color-mix(in srgb, var(--primary) 8%, transparent) !important;
+}
+html body #root .online-order-overview .order-overview-legend-item .order-overview-dot {
+  display: inline-block !important;
+  flex: 0 0 10px !important;
+  width: 10px !important;
+  height: 10px !important;
+  min-width: 10px !important;
+  min-height: 10px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+html body #root .online-order-overview button.order-overview-clear,
+html body #root .online-order-overview button.order-overview-clear:hover {
+  border: 0 !important;
+  box-shadow: none !important;
+}
