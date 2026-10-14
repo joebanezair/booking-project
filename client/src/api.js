@@ -159,6 +159,7 @@ export const api = {
   sales: {
     analytics: params => request(`/sales/analytics?${new URLSearchParams(params)}`),
     products: () => request("/sales/products"),
+    productDetails: id => request(`/sales/products/${encodeURIComponent(id)}`),
     createProduct: async body => request("/sales/products", { method: "POST", body: JSON.stringify(await uploadedFields(body, ["image", "images"])) }),
     updateProduct: async (id, body) => request(`/sales/products/${id}`, { method: "PUT", body: JSON.stringify(await uploadedFields(body, ["image", "images"])) }),
     removeProduct: id => request(`/sales/products/${id}`, { method: "DELETE" }),

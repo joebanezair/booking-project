@@ -117,6 +117,20 @@ router.get("/products", async (req,res) => {
   try { res.json(await Product.find({user:req.user.id}).sort({updatedAt:-1})); }
   catch (error) { console.error(error); res.status(500).json({message:"Unable to load products."}); }
 });
+// Minimal catalog details for order-line previews. Only the owning business may read.
+router.get("/products/:id", async (req,res) => {
+  try {
+    const product=await Product.findOne({_id:req.params.id,user:req.user.id})
+      .select("name sku description image images price currency stock published").lean();
+    if(!product)return res.status(404).json({message:"Product no longer exists in this business catalog."});
+    res.set("Cache-Control","no-store");
+    res.json(product);
+  }catch(error){
+    if(error.name==="CastError")return res.status(404).json({message:"Product not found."});
+    console.error(error);res.status(500).json({message:"Unable to load product details."});
+  }
+});
+
 router.post("/products", async (req,res) => {
   try {
     const name=String(req.body.name||"").trim();

@@ -5,9 +5,10 @@ import { Select } from "../components/ui/select.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog.jsx";
 import { Textarea } from "../components/ui/textarea.jsx";
-import { useEffect, useMemo, useState } from "react";
+import { Image } from "../components/ui/image.jsx";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { FiCalendar, FiChevronDown, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
+import { FiCalendar, FiChevronDown, FiChevronLeft, FiChevronRight, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
@@ -59,6 +60,10 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   const [orderSearch,setOrderSearch]=useState("");
   const [draftOrderStatus,setDraftOrderStatus]=useState("pending");
   const [selectedOrderId,setSelectedOrderId]=useState(null);
+  const [expandedOrderProduct,setExpandedOrderProduct]=useState(null);
+  const [orderedProductPreview,setOrderedProductPreview]=useState({loading:false,data:null,error:""});
+  const [orderedProductImageIndex,setOrderedProductImageIndex]=useState(0);
+  const productPreviewRequest=useRef(0);
   const [editingOrder,setEditingOrder]=useState(false);
   const [orderSaving,setOrderSaving]=useState(false);
   const [orderModalError,setOrderModalError]=useState("");
@@ -124,6 +129,10 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   const selectedOrder = orders.find(o=>o._id===selectedOrderId) || null;
 
   function openOrder(order) {
+    productPreviewRequest.current += 1;
+    setExpandedOrderProduct(null);
+    setOrderedProductPreview({loading:false,data:null,error:""});
+    setOrderedProductImageIndex(0);
     setSelectedOrderId(order._id); setEditingOrder(false);
     setDraftOrderStatus(order.status);
     setOrderModalError(""); setOrderStatusNotice("");
@@ -137,6 +146,32 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     }).catch(e=>{if(active)setShareNotice(e.message);});
     return ()=>{active=false;};
   },[selectedOrderId]);
+
+  async function toggleOrderedProduct(item, index) {
+    if(expandedOrderProduct===index) {
+      productPreviewRequest.current += 1;
+      setExpandedOrderProduct(null);
+      setOrderedProductPreview({loading:false,data:null,error:""});
+      setOrderedProductImageIndex(0);
+      return;
+    }
+    const requestId=++productPreviewRequest.current;
+    setExpandedOrderProduct(index);
+    setOrderedProductImageIndex(0);
+    setOrderedProductPreview({loading:true,data:null,error:""});
+    if(!item.product) {
+      setOrderedProductPreview({loading:false,data:null,error:"No catalog details are linked to this order item."});
+      return;
+    }
+    try {
+      const product=await api.sales.productDetails(String(item.product));
+      if(productPreviewRequest.current===requestId)
+        setOrderedProductPreview({loading:false,data:product,error:""});
+    }catch(err) {
+      if(productPreviewRequest.current===requestId)
+        setOrderedProductPreview({loading:false,data:null,error:err.message||"Product details unavailable."});
+    }
+  }
 
   async function copyOrderLink() {
     if(!trackingLink)return;
@@ -406,7 +441,12 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
 
     <Dialog open={Boolean(selectedOrder)} title="Order details" className="vendor-order-dialog"
       dismissible={!orderSaving&&!orderStatusBusy}
-      onOpenChange={open=>{if(!open&&!orderSaving&&!orderStatusBusy){setSelectedOrderId(null);setEditingOrder(false);setOrderModalError("");setOrderStatusNotice("");}}}>
+      onOpenChange={open=>{if(!open&&!orderSaving&&!orderStatusBusy){
+        productPreviewRequest.current+=1;setExpandedOrderProduct(null);
+        setOrderedProductPreview({loading:false,data:null,error:""});
+        setOrderedProductImageIndex(0);
+        setSelectedOrderId(null);setEditingOrder(false);setOrderModalError("");setOrderStatusNotice("");
+      }}}>
       <DialogContent className="vendor-order-dialog-content">
         <DialogHeader>
           <p className="eyebrow">ORDER DETAILS</p>
@@ -478,9 +518,59 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
                   <div><dt>Delivery location</dt><dd>{selectedOrder.deliveryLocation}</dd></div>
                 </dl>
                 <h3>Ordered products</h3>
-                <div className="vendor-order-lines">{selectedOrder.items.map((item,i)=><div key={String(item.product)+"-"+i}>
-                  <span>{item.name} × {item.quantity}</span><strong>{money(item.lineTotal,selectedOrder.currency)}</strong>
-                </div>)}</div>
+                <p className="muted vendor-order-product-hint">Select a product to view its description and images.</p>
+                <div className="vendor-order-product-list">
+                  {selectedOrder.items.map((item,i)=>{
+                    const isOpen=expandedOrderProduct===i;
+                    const catalog=isOpen?orderedProductPreview.data:null;
+                    const gallery=catalog ? (Array.isArray(catalog.images)&&catalog.images.length?catalog.images:(catalog.image?[catalog.image]:[])) : [];
+                    const imageIndex=Math.min(orderedProductImageIndex,Math.max(0,gallery.length-1));
+                    return <div key={String(item.product)+"-"+i} className={"vendor-order-product-item"+(isOpen?" expanded":"")}>
+                      <button type="button" className="vendor-order-product-trigger"
+                        aria-expanded={isOpen} aria-controls={"vendor-order-product-detail-"+i}
+                        onClick={()=>toggleOrderedProduct(item,i)}>
+                        <span className="vendor-order-product-name"><FiPackage aria-hidden="true"/><span>{item.name} <small>× {item.quantity}</small></span></span>
+                        <span className="vendor-order-product-end"><strong>{money(item.lineTotal,selectedOrder.currency)}</strong><FiChevronDown className="vendor-order-product-chevron" aria-hidden="true"/></span>
+                      </button>
+                      {isOpen && <div id={"vendor-order-product-detail-"+i} className="vendor-order-product-detail">
+                        {orderedProductPreview.loading?<p role="status" className="muted">Loading product details and images…</p>:
+                        <>
+                          {catalog ? <>
+                            <div className="vendor-order-product-gallery">
+                              <div className="vendor-order-product-photo">
+                                {gallery.length?<Image src={gallery[imageIndex]} alt={catalog.name+" image "+(imageIndex+1)} loading="lazy"/>:
+                                  <span className="vendor-order-product-no-image"><FiPackage aria-hidden="true"/>No product images available</span>}
+                                {gallery.length>1&&<div className="vendor-order-product-gallery-controls">
+                                  <Button variant="outline" size="icon" type="button" aria-label="Previous product image"
+                                    onClick={()=>setOrderedProductImageIndex(n=>(n+gallery.length-1)%gallery.length)}><FiChevronLeft aria-hidden="true"/></Button>
+                                  <span aria-live="polite">{imageIndex+1} / {gallery.length}</span>
+                                  <Button variant="outline" size="icon" type="button" aria-label="Next product image"
+                                    onClick={()=>setOrderedProductImageIndex(n=>(n+1)%gallery.length)}><FiChevronRight aria-hidden="true"/></Button>
+                                </div>}
+                              </div>
+                              {gallery.length>1&&<div className="vendor-order-product-thumbnails" aria-label="Product images">
+                                {gallery.map((src,n)=><button type="button" key={n} aria-label={"View product image "+(n+1)}
+                                  aria-pressed={imageIndex===n} onClick={()=>setOrderedProductImageIndex(n)}>
+                                  <Image src={src} alt="" loading="lazy"/>
+                                </button>)}
+                              </div>}
+                            </div>
+                            {catalog.description&&<p className="vendor-order-product-description">{catalog.description}</p>}
+                          </>:<p className="muted vendor-order-product-unavailable" role="status">
+                            {orderedProductPreview.error||"Catalog details and images are not available. The order record is still preserved."}
+                          </p>}
+                          <dl className="vendor-order-product-facts">
+                            {item.sku&&<div><dt>SKU</dt><dd>{item.sku}</dd></div>}
+                            <div><dt>Ordered quantity</dt><dd>{item.quantity}</dd></div>
+                            <div><dt>Unit price at order</dt><dd>{money(item.unitPrice,selectedOrder.currency)}</dd></div>
+                            <div><dt>Line total</dt><dd>{money(item.lineTotal,selectedOrder.currency)}</dd></div>
+                            {catalog&&<div><dt>Current catalog stock</dt><dd>{catalog.stock}</dd></div>}
+                          </dl>
+                        </>}
+                      </div>}
+                    </div>;
+                  })}
+                </div>
                 <h3><FiTruck aria-hidden="true"/> Courier information</h3>
                 <dl className="vendor-order-details-grid">
                   <div><dt>Courier</dt><dd>{selectedOrder.courierName||"Not assigned yet"}</dd></div>

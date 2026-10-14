@@ -1137,3 +1137,226 @@ html body .vendor-order-dialog .vendor-order-edit-form :is(.ui-input, .ui-select
     transition: none !important;
   }
 }
+
+
+/* Ordered-product preview inside the existing vendor order modal.
+   Catalog data is read-only; order snapshot prices remain authoritative. */
+html body .vendor-order-dialog .vendor-order-product-hint {
+  margin: -3px 0 0 !important;
+  font-size: 11px;
+  line-height: 1.45;
+}
+html body .vendor-order-dialog .vendor-order-product-list {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+html body .vendor-order-dialog .vendor-order-product-item {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+html body .vendor-order-dialog .vendor-order-product-item.expanded {
+  border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+}
+html body .vendor-order-dialog button.vendor-order-product-trigger {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: 10px 12px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--foreground);
+  text-align: left;
+  cursor: pointer;
+}
+html body .vendor-order-dialog button.vendor-order-product-trigger:hover,
+html body .vendor-order-dialog button.vendor-order-product-trigger:focus-visible {
+  background: color-mix(in srgb, var(--primary) 5%, var(--card)) !important;
+}
+html body .vendor-order-dialog button.vendor-order-product-trigger:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+html body .vendor-order-dialog .vendor-order-product-name,
+html body .vendor-order-dialog .vendor-order-product-end {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 9px;
+  font-size: 12px;
+}
+html body .vendor-order-dialog .vendor-order-product-name > svg {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  color: var(--primary);
+}
+html body .vendor-order-dialog .vendor-order-product-name > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+html body .vendor-order-dialog .vendor-order-product-name small {
+  color: var(--muted-foreground);
+  font-weight: 500;
+  white-space: nowrap;
+}
+html body .vendor-order-dialog .vendor-order-product-end {
+  flex: 0 0 auto;
+  gap: 8px;
+  white-space: nowrap;
+}
+html body .vendor-order-dialog .vendor-order-product-end strong {
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+html body .vendor-order-dialog .vendor-order-product-chevron {
+  width: 15px;
+  height: 15px;
+  color: var(--muted-foreground);
+  transition: transform .16s ease;
+}
+html body .vendor-order-dialog button.vendor-order-product-trigger[aria-expanded="true"] .vendor-order-product-chevron {
+  transform: rotate(180deg);
+}
+html body .vendor-order-dialog .vendor-order-product-detail {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+html body .vendor-order-dialog .vendor-order-product-detail > .muted { margin: 0; font-size: 12px; }
+html body .vendor-order-dialog .vendor-order-product-gallery {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+html body .vendor-order-dialog .vendor-order-product-photo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 180px;
+  max-height: 280px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--secondary);
+}
+html body .vendor-order-dialog .vendor-order-product-photo > .ui-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  aspect-ratio: 16/9;
+  object-fit: contain;
+}
+html body .vendor-order-dialog .vendor-order-product-no-image {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  padding: 20px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  text-align: center;
+}
+html body .vendor-order-dialog .vendor-order-product-no-image svg { width: 26px; height: 26px; }
+html body .vendor-order-dialog .vendor-order-product-gallery-controls {
+  position: absolute;
+  inset: auto 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: max-content;
+  max-width: calc(100% - 20px);
+  margin: auto;
+  padding: 4px 7px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+html body .vendor-order-dialog .vendor-order-product-gallery-controls .ui-button {
+  display: grid;
+  place-items: center;
+  width: 26px !important;
+  height: 26px !important;
+  min-height: 26px !important;
+  padding: 0 !important;
+  border-radius: 7px !important;
+}
+html body .vendor-order-dialog .vendor-order-product-thumbnails {
+  display: flex;
+  gap: 6px;
+  max-width: 100%;
+  padding: 2px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+html body .vendor-order-dialog .vendor-order-product-thumbnails > button {
+  flex: 0 0 56px;
+  box-sizing: border-box;
+  width: 56px;
+  height: 48px;
+  min-height: 48px;
+  padding: 2px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  background: var(--card);
+  cursor: pointer;
+}
+html body .vendor-order-dialog .vendor-order-product-thumbnails > button[aria-pressed="true"] {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 1px var(--primary) !important;
+}
+html body .vendor-order-dialog .vendor-order-product-thumbnails .ui-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  object-fit: cover;
+}
+html body .vendor-order-dialog .vendor-order-product-description {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.55;
+  white-space: pre-line;
+}
+html body .vendor-order-dialog .vendor-order-product-facts {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+html body .vendor-order-dialog .vendor-order-product-facts > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 12px;
+}
+html body .vendor-order-dialog .vendor-order-product-facts dt { color: var(--muted-foreground); }
+html body .vendor-order-dialog .vendor-order-product-facts dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 480px) {
+  html body .vendor-order-dialog .vendor-order-product-name,
+  html body .vendor-order-dialog .vendor-order-product-end { font-size: 11px; }
+  html body .vendor-order-dialog button.vendor-order-product-trigger { gap: 8px; padding: 9px !important; }
+  html body .vendor-order-dialog .vendor-order-product-photo { min-height: 150px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body .vendor-order-dialog .vendor-order-product-chevron { transition: none; }
+}
