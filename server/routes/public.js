@@ -572,11 +572,27 @@ router.get("/orders/:id/status", async (req, res) => {
     if (!order || !validOrderTrackingToken(order, req.get("X-Order-Token"))) {
       return res.status(404).json({message:"Order not found or tracking link invalid."});
     }
+    // Only expose catalog media and descriptions for products already in this
+    // verified order and owned by its vendor. Keep historical order prices.
+    const productIds=(order.items||[]).map(item=>item.product).filter(Boolean);
+    const products=productIds.length
+      ? await Product.find({_id:{$in:productIds},user:order.businessOwner})
+          .select("_id description images image").lean()
+      : [];
+    const productMap=new Map(products.map(product=>[String(product._id),product]));
     res.json({
       orderNumber:order.orderNumber,status:order.status,createdAt:order.createdAt,
       updatedAt:order.updatedAt,completedAt:order.completedAt,
       currency:order.currency,total:order.total,
-      items:(order.items||[]).map(item=>({name:item.name,quantity:item.quantity,lineTotal:item.lineTotal})),
+      items:(order.items||[]).map(item=>{
+        const product=productMap.get(String(item.product));
+        const images=product
+          ? [...new Set([...(product.images||[]),product.image].filter(Boolean))].slice(0,8)
+          : [];
+        return {name:item.name,sku:item.sku||"",quantity:item.quantity,
+          unitPrice:item.unitPrice,lineTotal:item.lineTotal,
+          description:product?.description||"",images};
+      }),
       courierName:order.courierName||"",trackingNumber:order.trackingNumber||"",
       trackingUrl:order.trackingUrl||"",paymentStatus:order.paymentStatus||"unpaid"
     });
