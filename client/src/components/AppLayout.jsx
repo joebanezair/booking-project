@@ -25,7 +25,6 @@ const navigation = [
 const workspaceLabels = new Set(["Dashboard", "Services", "Bookings", "Sales", "Products", "Businesses"]);
 const activityLabels = new Set(["Messages", "Notifications"]);
 const moreLabels = new Set(["Profile", "Forum", "Settings", "Search"]);
-const moreRoutePaths = ["/dashboard/profile", "/forum", "/dashboard/settings", "/search"];
 function isNestedRoute(pathname, base) {
   return pathname === base || pathname.startsWith(base + "/");
 }
@@ -42,7 +41,7 @@ export default function AppLayout({ children, user, onLogout }) {
   const profileMenuRef = useRef(null);
   const [unread, setUnread] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(true);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [productsOpen, setProductsOpen] = useState(() =>
     typeof window !== "undefined" &&
     (isNestedRoute(window.location.pathname, "/dashboard/products") ||
@@ -104,7 +103,6 @@ export default function AppLayout({ children, user, onLogout }) {
     if (profileMenuRef.current) profileMenuRef.current.open = false;
   }, [pathname]);
 
-  useEffect(() => { if (moreRoutePaths.some(path => isNestedRoute(pathname, path))) setMoreOpen(true); }, [pathname]);
   useEffect(() => {
     if (isNestedRoute(pathname, "/dashboard/products") ||
         isNestedRoute(pathname, "/dashboard/online-orders")) setProductsOpen(true);
