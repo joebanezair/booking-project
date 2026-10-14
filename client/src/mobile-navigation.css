@@ -55,6 +55,11 @@
     height: 42px;
   }
 
+  /* Borderless X control inside the mobile/tablet navigation drawer. */
+  html body #root .page-shell > aside.sidebar button.mobile-drawer-close.ui-button {
+    border: 0 !important;
+  }
+
   html body .page-shell > .sidebar .sidebar-nav {
     display: flex !important;
     flex: 1 1 auto;
