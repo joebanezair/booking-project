@@ -147,12 +147,16 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     return ()=>{active=false;};
   },[selectedOrderId]);
 
+  function closeOrderedProduct() {
+    productPreviewRequest.current += 1;
+    setExpandedOrderProduct(null);
+    setOrderedProductPreview({loading:false,data:null,error:""});
+    setOrderedProductImageIndex(0);
+  }
+
   async function toggleOrderedProduct(item, index) {
     if(expandedOrderProduct===index) {
-      productPreviewRequest.current += 1;
-      setExpandedOrderProduct(null);
-      setOrderedProductPreview({loading:false,data:null,error:""});
-      setOrderedProductImageIndex(0);
+      closeOrderedProduct();
       return;
     }
     const requestId=++productPreviewRequest.current;
@@ -520,56 +524,21 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
                 <h3>Ordered products</h3>
                 <p className="muted vendor-order-product-hint">Select a product to view its description and images.</p>
                 <div className="vendor-order-product-list">
-                  {selectedOrder.items.map((item,i)=>{
-                    const isOpen=expandedOrderProduct===i;
-                    const catalog=isOpen?orderedProductPreview.data:null;
-                    const gallery=catalog ? (Array.isArray(catalog.images)&&catalog.images.length?catalog.images:(catalog.image?[catalog.image]:[])) : [];
-                    const imageIndex=Math.min(orderedProductImageIndex,Math.max(0,gallery.length-1));
-                    return <div key={String(item.product)+"-"+i} className={"vendor-order-product-item"+(isOpen?" expanded":"")}>
+                  {selectedOrder.items.map((item,i)=>
+                    <div key={String(item.product)+"-"+i} className="vendor-order-product-item">
                       <button type="button" className="vendor-order-product-trigger"
-                        aria-expanded={isOpen} aria-controls={"vendor-order-product-detail-"+i}
+                        aria-haspopup="dialog" aria-label={"View details and images for "+item.name}
                         onClick={()=>toggleOrderedProduct(item,i)}>
-                        <span className="vendor-order-product-name"><FiPackage aria-hidden="true"/><span>{item.name} <small>× {item.quantity}</small></span></span>
-                        <span className="vendor-order-product-end"><strong>{money(item.lineTotal,selectedOrder.currency)}</strong><FiChevronDown className="vendor-order-product-chevron" aria-hidden="true"/></span>
+                        <span className="vendor-order-product-name">
+                          <FiPackage aria-hidden="true"/><span>{item.name} <small>× {item.quantity}</small></span>
+                        </span>
+                        <span className="vendor-order-product-end">
+                          <strong>{money(item.lineTotal,selectedOrder.currency)}</strong>
+                          <FiExternalLink className="vendor-order-product-chevron" aria-hidden="true"/>
+                        </span>
                       </button>
-                      {isOpen && <div id={"vendor-order-product-detail-"+i} className="vendor-order-product-detail">
-                        {orderedProductPreview.loading?<p role="status" className="muted">Loading product details and images…</p>:
-                        <>
-                          {catalog ? <>
-                            <div className="vendor-order-product-gallery">
-                              <div className="vendor-order-product-photo">
-                                {gallery.length?<Image src={gallery[imageIndex]} alt={catalog.name+" image "+(imageIndex+1)} loading="lazy"/>:
-                                  <span className="vendor-order-product-no-image"><FiPackage aria-hidden="true"/>No product images available</span>}
-                                {gallery.length>1&&<div className="vendor-order-product-gallery-controls">
-                                  <Button variant="outline" size="icon" type="button" aria-label="Previous product image"
-                                    onClick={()=>setOrderedProductImageIndex(n=>(n+gallery.length-1)%gallery.length)}><FiChevronLeft aria-hidden="true"/></Button>
-                                  <span aria-live="polite">{imageIndex+1} / {gallery.length}</span>
-                                  <Button variant="outline" size="icon" type="button" aria-label="Next product image"
-                                    onClick={()=>setOrderedProductImageIndex(n=>(n+1)%gallery.length)}><FiChevronRight aria-hidden="true"/></Button>
-                                </div>}
-                              </div>
-                              {gallery.length>1&&<div className="vendor-order-product-thumbnails" aria-label="Product images">
-                                {gallery.map((src,n)=><button type="button" key={n} aria-label={"View product image "+(n+1)}
-                                  aria-pressed={imageIndex===n} onClick={()=>setOrderedProductImageIndex(n)}>
-                                  <Image src={src} alt="" loading="lazy"/>
-                                </button>)}
-                              </div>}
-                            </div>
-                            {catalog.description&&<p className="vendor-order-product-description">{catalog.description}</p>}
-                          </>:<p className="muted vendor-order-product-unavailable" role="status">
-                            {orderedProductPreview.error||"Catalog details and images are not available. The order record is still preserved."}
-                          </p>}
-                          <dl className="vendor-order-product-facts">
-                            {item.sku&&<div><dt>SKU</dt><dd>{item.sku}</dd></div>}
-                            <div><dt>Ordered quantity</dt><dd>{item.quantity}</dd></div>
-                            <div><dt>Unit price at order</dt><dd>{money(item.unitPrice,selectedOrder.currency)}</dd></div>
-                            <div><dt>Line total</dt><dd>{money(item.lineTotal,selectedOrder.currency)}</dd></div>
-                            {catalog&&<div><dt>Current catalog stock</dt><dd>{catalog.stock}</dd></div>}
-                          </dl>
-                        </>}
-                      </div>}
-                    </div>;
-                  })}
+                    </div>
+                  )}
                 </div>
                 <h3><FiTruck aria-hidden="true"/> Courier information</h3>
                 <dl className="vendor-order-details-grid">
@@ -592,6 +561,80 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
             {shareNotice&&<p className="muted" role="status">{shareNotice}</p>}
           </div>
         </>}
+      </DialogContent>
+    </Dialog>
+
+    <Dialog
+      open={Boolean(selectedOrder && expandedOrderProduct!==null)}
+      onOpenChange={open=>{if(!open)closeOrderedProduct();}}
+      title="Ordered product details"
+      className="vendor-order-dialog vendor-order-product-modal">
+      <DialogContent className="vendor-order-product-modal-content">
+        {selectedOrder && expandedOrderProduct!==null && selectedOrder.items[expandedOrderProduct] && (()=>{
+          const item=selectedOrder.items[expandedOrderProduct];
+          const catalog=orderedProductPreview.data;
+          const gallery=catalog ? (Array.isArray(catalog.images)&&catalog.images.length?catalog.images:(catalog.image?[catalog.image]:[])) : [];
+          const imageIndex=Math.min(orderedProductImageIndex,Math.max(0,gallery.length-1));
+          return <>
+            <div className="vendor-order-product-modal-heading">
+              <div>
+                <p className="eyebrow">PRODUCT DETAILS</p>
+                <DialogTitle>{item.name}</DialogTitle>
+                <DialogDescription>
+                  Purchased item from order {selectedOrder.orderNumber}
+                </DialogDescription>
+              </div>
+              <Button variant="outline" size="icon" type="button"
+                aria-label="Close product details" onClick={closeOrderedProduct}>
+                <FiX aria-hidden="true"/>
+              </Button>
+            </div>
+            <div className="vendor-order-product-detail">
+              {orderedProductPreview.loading?
+                <p role="status" className="muted">Loading product details and images…</p>:
+                <>
+                  {catalog?<>
+                    <div className="vendor-order-product-gallery">
+                      <div className="vendor-order-product-photo">
+                        {gallery.length?
+                          <Image src={gallery[imageIndex]} alt={catalog.name+" image "+(imageIndex+1)} loading="lazy"/>:
+                          <span className="vendor-order-product-no-image"><FiPackage aria-hidden="true"/>No product images available</span>}
+                        {gallery.length>1&&<div className="vendor-order-product-gallery-controls">
+                          <Button variant="outline" size="icon" type="button"
+                            aria-label="Previous product image" onClick={()=>setOrderedProductImageIndex(n=>(n+gallery.length-1)%gallery.length)}>
+                            <FiChevronLeft aria-hidden="true"/>
+                          </Button>
+                          <span aria-live="polite">{imageIndex+1} / {gallery.length}</span>
+                          <Button variant="outline" size="icon" type="button"
+                            aria-label="Next product image" onClick={()=>setOrderedProductImageIndex(n=>(n+1)%gallery.length)}>
+                            <FiChevronRight aria-hidden="true"/>
+                          </Button>
+                        </div>}
+                      </div>
+                      {gallery.length>1&&<div className="vendor-order-product-thumbnails" aria-label="Product images">
+                        {gallery.map((src,n)=><button type="button" key={n}
+                          aria-label={"View product image "+(n+1)}
+                          aria-pressed={imageIndex===n}
+                          onClick={()=>setOrderedProductImageIndex(n)}>
+                          <Image src={src} alt="" loading="lazy"/>
+                        </button>)}
+                      </div>}
+                    </div>
+                    {catalog.description&&<p className="vendor-order-product-description">{catalog.description}</p>}
+                  </>:<p className="muted vendor-order-product-unavailable" role="status">
+                    {orderedProductPreview.error||"Catalog details and images are unavailable. Your order record remains intact."}
+                  </p>}
+                  <dl className="vendor-order-product-facts">
+                    {item.sku&&<div><dt>SKU</dt><dd>{item.sku}</dd></div>}
+                    <div><dt>Ordered quantity</dt><dd>{item.quantity}</dd></div>
+                    <div><dt>Unit price at order</dt><dd>{money(item.unitPrice,selectedOrder.currency)}</dd></div>
+                    <div><dt>Line total</dt><dd>{money(item.lineTotal,selectedOrder.currency)}</dd></div>
+                    {catalog&&<div><dt>Current catalog stock</dt><dd>{catalog.stock}</dd></div>}
+                  </dl>
+                </>}
+            </div>
+          </>;
+        })()}
       </DialogContent>
     </Dialog>
   </AppLayout>;

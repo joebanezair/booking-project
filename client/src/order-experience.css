@@ -1610,3 +1610,112 @@ html body .buyer-product-dialog .ui-dialog-footer { padding-top: 2px; }
   html body .buyer-product-dialog .buyer-product-photo { aspect-ratio: 1 / 1; }
   html body .buyer-product-dialog .buyer-product-dialog-heading .ui-dialog-title { font-size: 18px; }
 }
+
+
+/* Ordered product details: stand-alone 15px-radius modal (not inline accordion). */
+html body .vendor-order-dialog.vendor-order-product-modal.ui-dialog {
+  box-sizing: border-box;
+  width: min(600px, calc(100vw - 24px)) !important;
+  max-width: 600px !important;
+  max-height: min(90dvh, 860px) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 15px !important;
+  background: var(--card) !important;
+  scrollbar-width: thin;
+}
+html body .vendor-order-dialog.vendor-order-product-modal .vendor-order-product-modal-content.ui-dialog-content {
+  box-sizing: border-box;
+  display: grid;
+  gap: 16px !important;
+  min-width: 0;
+  padding: 18px !important;
+}
+html body .vendor-order-product-modal .vendor-order-product-modal-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+html body .vendor-order-product-modal .vendor-order-product-modal-heading > div {
+  min-width: 0;
+}
+html body .vendor-order-product-modal .vendor-order-product-modal-heading .eyebrow {
+  margin: 0 0 5px !important;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+html body .vendor-order-product-modal .vendor-order-product-modal-heading .ui-dialog-title {
+  margin: 0 0 5px !important;
+  font-size: 18px !important;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+html body .vendor-order-product-modal .vendor-order-product-modal-heading .ui-dialog-description {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted-foreground);
+}
+html body .vendor-order-product-modal .vendor-order-product-modal-heading > .ui-button {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+}
+html body .vendor-order-product-modal .vendor-order-product-detail {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 0;
+  border-top: 0;
+}
+html body .vendor-order-product-modal .vendor-order-product-photo {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 15px !important;
+}
+html body .vendor-order-product-modal .vendor-order-product-photo > .ui-image {
+  border-radius: 15px !important;
+}
+html body .vendor-order-product-modal .vendor-order-product-gallery-controls {
+  border-radius: 15px !important;
+}
+html body .vendor-order-product-modal .vendor-order-product-thumbnails > button {
+  border-radius: 15px !important;
+  overflow: hidden;
+}
+html body .vendor-order-product-modal .vendor-order-product-thumbnails .ui-image {
+  border-radius: 11px !important;
+}
+html body .vendor-order-product-modal .vendor-order-product-facts {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--secondary) 25%, var(--card));
+}
+html body .vendor-order-dialog .vendor-order-product-list > .vendor-order-product-item {
+  border-radius: 15px !important;
+}
+html body .vendor-order-dialog .vendor-order-product-list .vendor-order-product-trigger {
+  border-radius: 15px !important;
+}
+@media (max-width: 560px) {
+  html body .vendor-order-dialog.vendor-order-product-modal .vendor-order-product-modal-content.ui-dialog-content {
+    padding: 14px !important;
+    gap: 12px !important;
+  }
+  html body .vendor-order-product-modal .vendor-order-product-photo {
+    min-height: 150px;
+  }
+}
