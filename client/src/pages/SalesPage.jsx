@@ -297,7 +297,13 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
 
       </>}
     </>}
-    {ordersOnly && <OnlineOrdersOverview orders={orders} loading={ordersLoading}/>}
+    {ordersOnly && <OnlineOrdersOverview orders={orders} loading={ordersLoading}
+      activeStatus={orderFilter}
+      onStatusFilter={status=>{
+        setOrderFilter(current=>status==="all"?"all":current===status?"all":status);
+        setOrderSearch("");
+        setOrdersExpanded(true);
+      }}/>}
     {ordersOnly && error && <p className="error" role="alert">{error}</p>}
     {ordersOnly && ordersLoading && <section className="panel sales-orders-loading" role="status">Loading online orders…</section>}
     {ordersOnly && <section className={"panel pos-history-panel sales-orders-panel"+(!orders.length?" is-empty":"")}>

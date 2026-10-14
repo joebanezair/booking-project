@@ -45,11 +45,14 @@ function Revenue({ orders, loading }) {
  * Read-only compact overview. All numbers come from the same orders
  * collection as the current storefront orders table.
  */
-export default function OnlineOrdersOverview({ orders = [], loading = false }) {
+export default function OnlineOrdersOverview({ orders = [], loading = false, activeStatus = "all", onStatusFilter = () => {} }) {
   const total = orders.length;
   const counts = Object.fromEntries(statusTypes.map(({key})=>[key,0]));
   for (const order of orders) if (order.status in counts) counts[order.status] += 1;
-  const segments = statusTypes.filter(({key})=>counts[key]>0);
+  const segments = statusTypes.filter(({key})=>counts[key]>0).map(segment=>({
+    ...segment, count: counts[segment.key],
+    percent: total ? Math.round(counts[segment.key] / total * 100) : 0
+  }));
   let offset = 0;
   const arcs = segments.map(segment=>{
     const length = total ? counts[segment.key] / total * circumference : 0;
@@ -57,6 +60,8 @@ export default function OnlineOrdersOverview({ orders = [], loading = false }) {
     offset += length;
     return arc;
   });
+  const activeSegment = segments.find(item=>item.key===activeStatus);
+  const applyFilter = key => { if (!loading) onStatusFilter(key); };
   const statCards = [
     { label: "Total orders", value: total, note: "All orders", Icon: FiShoppingBag },
     { label: "Pending", value: counts.pending, note: "Awaiting action", Icon: FiClock },
@@ -78,23 +83,41 @@ export default function OnlineOrdersOverview({ orders = [], loading = false }) {
           <circle cx="90" cy="83" r={circleRadius} fill="none" stroke="currentColor" strokeWidth="18" className="order-overview-track" />
           {!loading && arcs.map(arc=>
             <circle key={arc.key} cx="90" cy="83" r={circleRadius} fill="none"
+              className={"order-overview-clickable-arc"+(activeStatus===arc.key?" selected":"")}
               stroke={arc.color} strokeWidth="18"
-              strokeDasharray={`${arc.length} ${circumference - arc.length}`}
+              strokeDasharray={`${arc.length} ${Math.max(0,circumference - arc.length)}`}
               strokeDashoffset={-arc.offset}
-              transform="rotate(-90 90 83)" />
+              transform="rotate(-90 90 83)"
+              role="button" tabIndex={0} aria-pressed={activeStatus===arc.key}
+              aria-label={`Filter by ${arc.label}: ${arc.count} orders, ${arc.percent}%`}
+              onClick={()=>applyFilter(arc.key)}
+              onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();applyFilter(arc.key);}}}>
+              <title>{arc.label}: {arc.count} orders ({arc.percent}%). Click to filter.</title>
+            </circle>
           )}
-          <text x="90" y="85" className="order-overview-donut-number" textAnchor="middle">
-            {loading ? "—" : total}
-          </text>
-          <text x="90" y="106" className="order-overview-donut-label" textAnchor="middle">orders</text>
+          <g className="order-overview-donut-reset" role="button" tabIndex={0}
+            aria-label="Show all online orders" onClick={()=>applyFilter("all")}
+            onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();applyFilter("all");}}}>
+            <circle cx="90" cy="83" r="37" fill="transparent"/>
+            <text x="90" y="85" className="order-overview-donut-number" textAnchor="middle">
+              {loading ? "—" : activeSegment?.count ?? total}
+            </text>
+            <text x="90" y="106" className="order-overview-donut-label" textAnchor="middle">
+              {activeSegment ? activeSegment.label : "orders"}
+            </text>
+          </g>
         </svg>
         <div className="order-overview-legend">
           {!loading && segments.length ? segments.map(arc=>
-            <div className="order-overview-legend-item" key={arc.key}>
+            <button type="button" key={arc.key}
+              className={"order-overview-legend-item"+(activeStatus===arc.key?" selected":"")}
+              aria-pressed={activeStatus===arc.key} onClick={()=>applyFilter(arc.key)}>
               <span className="order-overview-dot" style={{background:arc.color}} aria-hidden="true"/>
-              <span>{arc.label} {Math.round(arc.count / total * 100)}%</span>
-            </div>) : <span className="order-overview-empty-label">{loading ? "Loading orders…" : "No orders yet"}</span>}
+              <span>{arc.label} <strong>{arc.count}</strong> · {arc.percent}%</span>
+            </button>) : <span className="order-overview-empty-label">{loading ? "Loading orders…" : "No orders yet"}</span>}
         </div>
+        {activeStatus !== "all" && <button type="button" className="order-overview-clear"
+          onClick={()=>applyFilter("all")}>Clear chart filter</button>}
       </div>
       <div className="order-overview-stats">
         {statCards.map(({label,value,note,Icon,revenue})=>

@@ -171,3 +171,86 @@ html body #root .online-order-overview .order-overview-stat small {
     grid-template-rows: auto;
   }
 }
+
+
+/* Order overview: genuinely rounded cards and clickable filterable donut. */
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) > .online-order-overview {
+  border-radius: 15px !important;
+  overflow: hidden;
+}
+html body #root .online-order-overview .order-overview-stat {
+  border-radius: 12px !important;
+}
+html body #root .online-order-overview .order-overview-clickable-arc {
+  cursor: pointer;
+  pointer-events: stroke;
+  transition: stroke-width .15s ease, opacity .15s ease;
+  outline: none;
+}
+html body #root .online-order-overview .order-overview-clickable-arc:hover,
+html body #root .online-order-overview .order-overview-clickable-arc:focus-visible,
+html body #root .online-order-overview .order-overview-clickable-arc.selected {
+  stroke-width: 23;
+  filter: drop-shadow(0 0 2px color-mix(in srgb,var(--primary) 35%,transparent));
+}
+html body #root .online-order-overview .order-overview-donut-reset {
+  cursor: pointer;
+  outline: none;
+}
+html body #root .online-order-overview .order-overview-donut-reset:focus-visible circle {
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+html body #root .online-order-overview .order-overview-donut-reset text {pointer-events:none;}
+html body #root .online-order-overview .order-overview-donut-label {
+  font-size: 11px;
+}
+html body #root .online-order-overview button.order-overview-legend-item {
+  box-sizing: border-box;
+  appearance: none;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 26px;
+  margin: 0;
+  padding: 3px 7px;
+  border: 1px solid transparent;
+  border-radius: 999px !important;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+html body #root .online-order-overview button.order-overview-legend-item strong {
+  color: var(--foreground);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+html body #root .online-order-overview button.order-overview-legend-item:hover,
+html body #root .online-order-overview button.order-overview-legend-item.selected {
+  border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+  background: color-mix(in srgb, var(--primary) 8%, var(--card));
+}
+html body #root .online-order-overview button.order-overview-legend-item:focus-visible,
+html body #root .online-order-overview .order-overview-clear:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+html body #root .online-order-overview .order-overview-clear {
+  margin: 1px 0 0;
+  padding: 5px 9px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--primary);
+  font-size: 11px;
+  cursor: pointer;
+}
+html body #root .online-order-overview .order-overview-clear:hover {
+  background: color-mix(in srgb, var(--primary) 8%, var(--card));
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .online-order-overview .order-overview-clickable-arc {transition:none;}
+}
