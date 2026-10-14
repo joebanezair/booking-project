@@ -290,3 +290,18 @@ html body #root .online-order-overview button.order-overview-clear:hover {
   border: 0 !important;
   box-shadow: none !important;
 }
+
+
+/* Order overview: 3px card corners and a white light-theme background. */
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header) > .online-order-overview {
+  border-radius: 3px !important;
+}
+html body #root .online-order-overview .order-overview-stat {
+  border-radius: 3px !important;
+}
+html:not([data-theme="dark"]) body #root .page-shell > .content-shell:has(> .online-orders-page-header) > .online-order-overview {
+  background: #ffffff !important;
+}
+html:not([data-theme="dark"]) body #root .online-order-overview .order-overview-stat {
+  background: #ffffff !important;
+}
