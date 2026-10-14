@@ -526,3 +526,19 @@
     transition: none !important;
   }
 }
+
+
+/* Sales & Analytics: consistent 8px spacing between card containers. */
+/* Keep control and card interiors unchanged; normalize only outer section and card-grid spacing. */
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .analytics-topbar.topbar,
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-analytics-controls.analytics-controls.panel,
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-kpis.sales-stats-grid.stats-grid,
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .analytics-grid,
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .currency-summary {
+  margin-bottom: 8px !important;
+}
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-kpis.sales-stats-grid.stats-grid,
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .analytics-grid,
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) .currency-total-list {
+  gap: 8px !important;
+}
