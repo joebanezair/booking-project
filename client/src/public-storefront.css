@@ -19,41 +19,6 @@ html body #root .bookflow-storefront .storefront-container {
   padding-left: 20px !important;
   padding-right: 20px !important;
 }
-/* Header stays above an edge-to-edge cover. */
-html body #root .bookflow-storefront .public-top.storefront-topbar {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border-bottom: 1px solid var(--border);
-  background: var(--card);
-}
-html body #root .bookflow-storefront .storefront-topbar-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 68px;
-  gap: 16px;
-}
-html body #root .bookflow-storefront .storefront-top-links {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-html body #root .bookflow-storefront .storefront-top-links a {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--muted-foreground);
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none;
-}
-html body #root .bookflow-storefront .storefront-top-links a:hover {
-  color: var(--primary);
-}
-html body #root .bookflow-storefront .storefront-top-links svg {width: 15px;height: 15px;}
 /* Full-bleed business cover, deliberately independent of the content column. */
 html body #root .bookflow-storefront .public-profile-hero.storefront-hero {
   display: block !important;
@@ -96,6 +61,53 @@ html body #root .bookflow-storefront .storefront-cover-placeholder {
   height: 100%;
   background: var(--secondary);
 }
+
+/* Brand logo overlay on full-width public cover (public profile only). */
+html body #root .bookflow-storefront .storefront-cover-brand {
+  position: absolute;
+  z-index: 5;
+  top: 20px;
+  left: max(20px, calc((100vw - 1200px) / 2));
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 13px 7px 7px;
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.75);
+  color: #172033;
+  background: rgba(255,255,255,.93);
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(15,23,42,.14);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+html body #root .bookflow-storefront .storefront-cover-brand:hover {background:#fff;color:#172033;}
+html body #root .bookflow-storefront .storefront-cover-brand:focus-visible {outline:2px solid var(--ring);outline-offset:3px;}
+html body #root .bookflow-storefront .storefront-cover-brand .brand-mark.small {
+  flex:0 0 34px;
+  display:inline-grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  border-radius:7px;
+  background:#5974f6;
+  color:#fff;
+  font-weight:750;
+  font-size:17px;
+  line-height:1;
+}
+html body #root .bookflow-storefront .storefront-cover-brand strong {
+  color:#172033;
+  font-size:13px;
+  font-weight:700;
+  line-height:1;
+}
+@media(max-width:560px){
+  html body #root .bookflow-storefront .storefront-cover-brand {top:14px;left:14px;min-height:40px;padding:6px 10px 6px 6px;gap:8px;}
+  html body #root .bookflow-storefront .storefront-cover-brand .brand-mark.small {flex-basis:30px;width:30px;height:30px;font-size:15px;}
+}
+
 /* Avatar visibly bridges the cover and white details area, not the cover text. */
 html body #root .bookflow-storefront .storefront-hero .public-profile-info.storefront-profile-info,
 html body #root .bookflow-storefront .storefront-hero.has-cover .public-profile-info.storefront-profile-info {
@@ -584,8 +596,7 @@ html body #root .bookflow-storefront .storefront-footer-inner > small {
     padding-left: 14px !important;
     padding-right: 14px !important;
   }
-  html body #root .bookflow-storefront .storefront-topbar-inner {min-height: 60px;}
-  html body #root .bookflow-storefront .storefront-top-links {gap: 12px;}
+
   html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
     height: 180px !important;
     min-height: 180px !important;

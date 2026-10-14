@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { FiCalendar, FiCheckCircle, FiChevronLeft, FiChevronRight, FiMapPin, FiMessageSquare, FiSearch, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiCalendar, FiCheckCircle, FiChevronLeft, FiChevronRight, FiMapPin, FiMessageSquare, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import ContentCard from "../components/ContentCard.jsx";
@@ -113,19 +113,14 @@ export default function PublicProfilePage({ user }) {
     (catalogType === "products" || !normalizedSearch || visibleProducts.length > 0);
 
   return <main className="public-page bookflow-storefront" id="storefront-top">
-    <header className="public-top storefront-topbar">
-      <div className="storefront-container storefront-topbar-inner">
-        <Link className="brand-row" to="/search"><span className="brand-mark small">B</span><strong>BookFlow</strong></Link>
-        <nav className="storefront-top-links" aria-label="Site navigation">
-          <Link to="/search"><FiSearch aria-hidden="true"/> Explore</Link>
-          <Link to={user?"/dashboard":"/login"}>{user?"Dashboard":"Sign in"}</Link>
-        </nav>
-      </div>
-    </header>
     {error && <p className="error" role="alert">{error}</p>}
 
     <section className={`public-profile-hero storefront-hero ${profile.coverImage ? "has-cover" : ""}`} aria-label={profile.name+" business profile"}>
       <div className={`public-cover storefront-cover${profile.coverImage?"":" storefront-cover-empty"}`}>
+        <Link to="/search" className="storefront-cover-brand" aria-label="BookFlow home">
+          <span className="brand-mark small">B</span>
+          <strong>BookFlow</strong>
+        </Link>
         {profile.coverImage ? <Image className="ui-profile-cover-image" src={profile.coverImage} alt={profile.name+" cover photo"} decoding="async"/> : <div className="storefront-cover-placeholder" aria-hidden="true"/>}
       </div>
       <div className="public-profile-info storefront-profile-info storefront-container">
