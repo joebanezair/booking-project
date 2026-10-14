@@ -117,9 +117,8 @@ export default function PublicProfilePage({ user }) {
 
     <section className={`public-profile-hero storefront-hero ${profile.coverImage ? "has-cover" : ""}`} aria-label={profile.name+" business profile"}>
       <div className={`public-cover storefront-cover${profile.coverImage?"":" storefront-cover-empty"}`}>
-        <Link to="/search" className="storefront-cover-brand" aria-label="BookFlow home">
-          <span className="brand-mark small">B</span>
-          <strong>BookFlow</strong>
+        <Link to="/search" className="storefront-cover-brand" aria-label="BookFlow home" title="BookFlow home">
+          <span className="brand-mark small" aria-hidden="true">B</span>
         </Link>
         {profile.coverImage ? <Image className="ui-profile-cover-image" src={profile.coverImage} alt={profile.name+" cover photo"} decoding="async"/> : <div className="storefront-cover-placeholder" aria-hidden="true"/>}
       </div>
