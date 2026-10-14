@@ -1,0 +1,620 @@
+/* Public business storefront /profile/:username only.
+   The cover is full viewport width; all content underneath is centered.
+   Keeps existing BookFlow data, booking, messaging, ratings, filters and product order flows. */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html body #root main.public-page.bookflow-storefront {
+  min-width: 0;
+  min-height: 100vh;
+  padding: 0 !important;
+  background: var(--background) !important;
+  color: var(--foreground);
+}
+html body #root .bookflow-storefront .storefront-container {
+  box-sizing: border-box;
+  width: min(100%, 1240px) !important;
+  max-width: 1240px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+/* Header stays above an edge-to-edge cover. */
+html body #root .bookflow-storefront .public-top.storefront-topbar {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+html body #root .bookflow-storefront .storefront-topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 68px;
+  gap: 16px;
+}
+html body #root .bookflow-storefront .storefront-top-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+html body #root .bookflow-storefront .storefront-top-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+html body #root .bookflow-storefront .storefront-top-links a:hover {
+  color: var(--primary);
+}
+html body #root .bookflow-storefront .storefront-top-links svg {width: 15px;height: 15px;}
+/* Full-bleed business cover, deliberately independent of the content column. */
+html body #root .bookflow-storefront .public-profile-hero.storefront-hero {
+  display: block !important;
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: none !important;
+  height: 320px !important;
+  min-height: 320px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: 0 !important;
+  background: var(--secondary);
+}
+html body #root .bookflow-storefront .storefront-hero > .storefront-cover .ui-profile-cover-image {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: center center;
+  border-radius: 0 !important;
+}
+html body #root .bookflow-storefront .storefront-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--secondary);
+}
+/* Avatar visibly bridges the cover and white details area, not the cover text. */
+html body #root .bookflow-storefront .storefront-hero .public-profile-info.storefront-profile-info,
+html body #root .bookflow-storefront .storefront-hero.has-cover .public-profile-info.storefront-profile-info {
+  position: relative;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 20px !important;
+  box-sizing: border-box;
+  margin: 0 auto !important;
+  padding-top: 0 !important;
+  padding-bottom: 28px !important;
+  border: 0;
+  background: var(--card);
+}
+html body #root .bookflow-storefront .storefront-hero .storefront-profile-info > .profile-avatar,
+html body #root .bookflow-storefront .storefront-hero.has-cover .storefront-profile-info > .profile-avatar {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  z-index: 2;
+  display: block;
+  box-sizing: border-box;
+  flex: 0 0 112px !important;
+  width: 112px !important;
+  height: 112px !important;
+  min-width: 112px !important;
+  margin: -54px 0 0 !important;
+  border: 4px solid var(--card) !important;
+  border-radius: 50% !important;
+  object-fit: cover;
+  box-shadow: 0 4px 15px rgba(15, 23, 42, .11);
+}
+html body #root .bookflow-storefront .storefront-profile-info .public-profile-copy {
+  box-sizing: border-box;
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0;
+  margin: 17px 0 0 !important;
+  padding: 0 !important;
+}
+html body #root .bookflow-storefront .storefront-profile-info .profile-title-row.storefront-title-row {
+  display: flex;
+  align-items: flex-start !important;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  width: 100%;
+}
+html body #root .bookflow-storefront .storefront-name-block {display:grid;gap:5px;min-width:0;}
+html body #root .bookflow-storefront .storefront-name-block h1 {
+  margin: 0 !important;
+  font-size: clamp(24px, 3.3vw, 36px) !important;
+  font-weight: 750;
+  letter-spacing: -.035em;
+  line-height: 1.16 !important;
+  overflow-wrap: anywhere;
+}
+html body #root .bookflow-storefront .storefront-handle {
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 550;
+  color: var(--primary);
+  overflow-wrap: anywhere;
+}
+html body #root .bookflow-storefront .storefront-owner-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+html body #root .bookflow-storefront .storefront-owner-actions .public-profile-actions,
+html body #root .bookflow-storefront .storefront-hero.has-cover .public-profile-actions {
+  position: static !important;
+  inset: auto !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 !important;
+  transform: none !important;
+}
+html body #root .bookflow-storefront .storefront-owner-actions .ui-button,
+html body #root .bookflow-storefront .storefront-owner-actions .public-book-session-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px !important;
+  padding: 8px 13px !important;
+  border-radius: 10px !important;
+  font-size: 12px;
+  font-weight: 500 !important;
+  text-decoration: none;
+  white-space: nowrap;
+}
+html body #root .bookflow-storefront .storefront-owner-actions .public-book-session-button {
+  border: 1px solid var(--primary);
+  color: var(--primary-foreground) !important;
+  background: var(--primary) !important;
+}
+html body #root .bookflow-storefront .storefront-owner-actions .public-book-session-button svg {width:16px;height:16px;}
+html body #root .bookflow-storefront .storefront-profile-info .profile-headline {
+  margin: 9px 0 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 550;
+  color: var(--muted-foreground);
+}
+html body #root .bookflow-storefront .storefront-profile-info .storefront-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+html body #root .bookflow-storefront .storefront-meta span {
+  display: inline-flex;align-items:center;gap:6px;
+}
+html body #root .bookflow-storefront .storefront-meta svg {width:15px;height:15px;}
+html body #root .bookflow-storefront .storefront-profile-info .public-bio {
+  max-width: 900px;
+  margin: 12px 0 0;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+  font-size: 13px;
+}
+html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-panel {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  align-items: center;
+  width: 100%;
+  max-width: none;
+  margin: 14px 0 0 !important;
+  padding: 0 !important;
+}
+html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 9px;
+  margin: 0;
+  padding: 0;
+}
+html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-title {
+  font-size: 12px;
+  font-weight: 650;
+}
+html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-subtitle {
+  font-size: 10px;
+}
+html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-row .rating-summary {
+  gap: 5px;
+  font-size: 12px;
+}
+html body #root .bookflow-storefront .storefront-profile-info .business-rating-card {
+  flex: 1 1 100%;
+  max-width: 540px;
+}
+/* Full width section navigation, inner links align with the same content width. */
+html body #root .bookflow-storefront .storefront-section-nav {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+html body #root .bookflow-storefront .storefront-section-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  min-height: 51px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+html body #root .bookflow-storefront .storefront-section-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: stretch;
+  padding-top: 2px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted-foreground);
+  font-weight: 550;
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+html body #root .bookflow-storefront .storefront-section-links a:hover,
+html body #root .bookflow-storefront .storefront-section-links a:focus-visible {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+html body #root .bookflow-storefront .storefront-section-links a span {
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+/* Unified centered content width, independent of original section padding. */
+html body #root .bookflow-storefront .public-content-section.storefront-container {
+  box-sizing: border-box;
+  width: min(100%, 1240px) !important;
+  max-width: 1240px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+html body #root .bookflow-storefront .storefront-filter-section {
+  margin-top: 24px !important;
+  margin-bottom: 30px !important;
+}
+html body #root .bookflow-storefront .storefront-filter-section .profile-catalog-search {
+  box-sizing: border-box;
+  margin: 0 !important;
+  padding: 14px !important;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+html body #root .bookflow-storefront .storefront-filter-section .profile-catalog-search :is(.ui-input, .ui-search-field) {
+  border-radius: 10px !important;
+}
+html body #root .bookflow-storefront .storefront-offerings-section,
+html body #root .bookflow-storefront .storefront-reviews {
+  margin-top: 0 !important;
+  margin-bottom: 38px !important;
+  scroll-margin-top: 18px;
+}
+html body #root .bookflow-storefront .storefront-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  max-width: none !important;
+  margin: 0 0 17px !important;
+}
+html body #root .bookflow-storefront .storefront-section-heading .eyebrow {
+  margin: 0 0 7px;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+}
+html body #root .bookflow-storefront .storefront-section-heading h2 {
+  margin: 0 0 5px;
+  font-size: clamp(19px, 2vw, 24px);
+  line-height: 1.25;
+  font-weight: 700;
+}
+html body #root .bookflow-storefront .storefront-section-description {
+  margin: 0 !important;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+html body #root .bookflow-storefront .storefront-section-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+html body #root .bookflow-storefront .storefront-section-count svg {width:13px;height:13px;}
+/* Service and product listings: four aligned cards at desktop widths. */
+html body #root .bookflow-storefront .storefront-services .public-services-grid,
+html body #root .bookflow-storefront .storefront-products .content-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  align-items: stretch;
+  gap: 14px !important;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid > .content-card-link {
+  min-width: 0;
+  height: 100%;
+  text-decoration: none;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid .public-content-card,
+html body #root .bookflow-storefront .storefront-products .public-product-card {
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid .public-content-card:hover,
+html body #root .bookflow-storefront .storefront-products .public-product-card:hover {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, .06) !important;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid .public-content-card > :is(img, .content-placeholder),
+html body #root .bookflow-storefront .storefront-products .public-product-card > .public-product-media {
+  box-sizing: border-box;
+  display: block;
+  width: 100% !important;
+  height: 158px !important;
+  min-height: 158px !important;
+  flex: 0 0 158px !important;
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid .public-content-card > .content-placeholder {
+  display: grid;
+  place-items: center;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid .public-content-card > img,
+html body #root .bookflow-storefront .storefront-products .public-product-media img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: 0 !important;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid .public-content-card-body,
+html body #root .bookflow-storefront .storefront-products .public-product-body {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  gap: 7px;
+  padding: 13px !important;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid .public-content-card-body h3,
+html body #root .bookflow-storefront .storefront-products .public-product-body h3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin: 0 !important;
+  font-size: 14px !important;
+  font-weight: 650;
+  line-height: 1.4;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid .public-content-card-body p,
+html body #root .bookflow-storefront .storefront-products .public-product-body p {
+  min-height: 0 !important;
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.45;
+  -webkit-line-clamp: 2;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid .public-content-card-body > strong,
+html body #root .bookflow-storefront .storefront-products .public-product-body > strong {
+  margin-top: auto !important;
+  padding-top: 5px;
+  font-size: 15px !important;
+  font-weight: 700;
+}
+html body #root .bookflow-storefront .storefront-services .public-services-grid .rating-summary {
+  margin: 0 !important;
+  padding-top: 4px !important;
+  font-size: 11px;
+}
+html body #root .bookflow-storefront .storefront-products .public-product-card > .public-order-button {
+  box-sizing: border-box;
+  align-self: stretch !important;
+  width: calc(100% - 26px) !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  margin: 0 13px 13px !important;
+  border-radius: 10px !important;
+  font-size: 12px;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-list {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  align-items: stretch;
+  gap: 14px !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 138px;
+  gap: 9px;
+  padding: 16px !important;
+  border: 1px solid var(--border);
+  border-radius: 10px !important;
+  background: var(--card);
+  box-shadow: none;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card small {
+  margin-top: auto;
+  font-size: 11px;
+}
+html body #root .bookflow-storefront .storefront-footer {
+  border-top: 1px solid var(--border);
+  background: var(--card);
+}
+html body #root .bookflow-storefront .storefront-footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+  min-height: 124px;
+  padding-top: 22px !important;
+  padding-bottom: 22px !important;
+}
+html body #root .bookflow-storefront .storefront-footer-brand {display:grid;gap:7px;}
+html body #root .bookflow-storefront .storefront-footer-brand p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+html body #root .bookflow-storefront .storefront-footer-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+html body #root .bookflow-storefront .storefront-footer-links a {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  text-decoration: none;
+}
+html body #root .bookflow-storefront .storefront-footer-links a:hover {color:var(--primary);}
+html body #root .bookflow-storefront .storefront-footer-inner > small {
+  flex: 1 0 100%;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+@media (max-width: 960px) {
+  html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
+    height: 240px !important;
+    min-height: 240px !important;
+  }
+  html body #root .bookflow-storefront .storefront-services .public-services-grid,
+  html body #root .bookflow-storefront .storefront-products .content-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  html body #root .bookflow-storefront .storefront-reviews .verified-review-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 680px) {
+  html body #root .bookflow-storefront .storefront-profile-info .profile-title-row.storefront-title-row {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  html body #root .bookflow-storefront .storefront-owner-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  html body #root .bookflow-storefront .storefront-hero .public-profile-info.storefront-profile-info,
+  html body #root .bookflow-storefront .storefront-hero.has-cover .public-profile-info.storefront-profile-info {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 2px !important;
+  }
+  html body #root .bookflow-storefront .storefront-profile-info .public-profile-copy {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-panel {
+    gap: 11px 15px;
+  }
+}
+@media (max-width: 560px) {
+  html body #root .bookflow-storefront .storefront-container,
+  html body #root .bookflow-storefront .public-content-section.storefront-container {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+  html body #root .bookflow-storefront .storefront-topbar-inner {min-height: 60px;}
+  html body #root .bookflow-storefront .storefront-top-links {gap: 12px;}
+  html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
+    height: 180px !important;
+    min-height: 180px !important;
+  }
+  html body #root .bookflow-storefront .storefront-hero .storefront-profile-info > .profile-avatar,
+  html body #root .bookflow-storefront .storefront-hero.has-cover .storefront-profile-info > .profile-avatar {
+    flex-basis: 92px !important;
+    width: 92px !important;
+    height: 92px !important;
+    min-width: 92px !important;
+    margin-top: -46px !important;
+  }
+  html body #root .bookflow-storefront .storefront-owner-actions .storefront-book-button {
+    flex: 1 1 auto;
+  }
+  html body #root .bookflow-storefront .storefront-filter-section {margin-top:16px !important;margin-bottom:25px !important;}
+  html body #root .bookflow-storefront .storefront-filter-section .profile-catalog-search {padding: 11px !important;}
+  html body #root .bookflow-storefront .storefront-section-links {gap:20px;}
+  html body #root .bookflow-storefront .storefront-section-heading {align-items:flex-start;}
+  html body #root .bookflow-storefront .storefront-section-heading h2 {font-size:19px;}
+  html body #root .bookflow-storefront .storefront-services .public-services-grid,
+  html body #root .bookflow-storefront .storefront-products .content-grid,
+  html body #root .bookflow-storefront .storefront-reviews .verified-review-list {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  html body #root .bookflow-storefront .storefront-services .public-services-grid .public-content-card > :is(img, .content-placeholder),
+  html body #root .bookflow-storefront .storefront-products .public-product-card > .public-product-media {
+    height: 182px !important;
+    min-height: 182px !important;
+    flex-basis: 182px !important;
+  }
+}
