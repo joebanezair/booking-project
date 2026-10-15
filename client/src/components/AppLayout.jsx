@@ -9,7 +9,6 @@ import ProfileAvatar from "./ProfileAvatar.jsx";
 const navigation = [
   { to: "/dashboard", label: "Dashboard", icon: FiHome, end: true },
   { to: "/dashboard/services", label: "Services", icon: FiBriefcase, businessOnly: true },
-  { to: "/dashboard/bookings", label: "Bookings", icon: FiCalendar, businessOnly: true },
   { to: "/dashboard/sales", label: "Sales", icon: FiBarChart2, businessOnly: true },
   { to: "/dashboard/products", label: "Products", icon: FiPackage, businessOnly: true },
   { to: "/dashboard/businesses", label: "Businesses", icon: FiUsers, adminOnly: true },
@@ -22,7 +21,7 @@ const navigation = [
 ];
 
 // Keep every route; secondary destinations live in an accessible disclosure.
-const workspaceLabels = new Set(["Dashboard", "Services", "Bookings", "Sales", "Products", "Businesses"]);
+const workspaceLabels = new Set(["Dashboard", "Services", "Sales", "Products", "Businesses"]);
 const activityLabels = new Set(["Messages", "Notifications"]);
 const moreLabels = new Set(["Profile", "Forum", "Settings", "Search"]);
 function isNestedRoute(pathname, base) {
@@ -42,6 +41,10 @@ export default function AppLayout({ children, user, onLogout }) {
   const [unread, setUnread] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(() =>
+    typeof window !== "undefined" &&
+    (isNestedRoute(window.location.pathname, "/dashboard/services") ||
+      isNestedRoute(window.location.pathname, "/dashboard/bookings")));
   const [productsOpen, setProductsOpen] = useState(() =>
     typeof window !== "undefined" &&
     (isNestedRoute(window.location.pathname, "/dashboard/products") ||
@@ -104,6 +107,10 @@ export default function AppLayout({ children, user, onLogout }) {
   }, [pathname]);
 
   useEffect(() => {
+    if (isNestedRoute(pathname, "/dashboard/services") ||
+        isNestedRoute(pathname, "/dashboard/bookings")) setServicesOpen(true);
+  }, [pathname]);
+  useEffect(() => {
     if (isNestedRoute(pathname, "/dashboard/products") ||
         isNestedRoute(pathname, "/dashboard/online-orders")) setProductsOpen(true);
   }, [pathname]);
@@ -119,10 +126,35 @@ export default function AppLayout({ children, user, onLogout }) {
   const activityNavigation = visibleNavigation.filter(item => activityLabels.has(item.label));
   const moreNavigation = visibleNavigation.filter(item => moreLabels.has(item.label));
   const moreActive = moreNavigation.some(item => isNestedRoute(pathname, item.to));
+  const servicesActive = isNestedRoute(pathname, "/dashboard/services") ||
+    isNestedRoute(pathname, "/dashboard/bookings");
   const productsActive = isNestedRoute(pathname, "/dashboard/products") ||
     isNestedRoute(pathname, "/dashboard/online-orders");
 
   function renderWorkspaceItem(item) {
+    if (item.label === "Services") return <div className="sidebar-services-group" key="services">
+      <Button type="button" variant="ghost"
+        className={"sidebar-nav-toggle sidebar-services-toggle" + (servicesActive ? " current-section" : "")}
+        title="Services: My Services and My Bookings"
+        aria-label={servicesOpen ? "Collapse Services navigation" : "Expand Services navigation"}
+        aria-expanded={servicesOpen}
+        aria-controls="sidebar-services-links"
+        onClick={() => setServicesOpen(value => !value)}>
+        <FiBriefcase aria-hidden="true"/>
+        <span>Services</span>
+        <FiChevronDown className="sidebar-nav-chevron" aria-hidden="true"/>
+      </Button>
+      {servicesOpen && <div id="sidebar-services-links" className="sidebar-services-links">
+        <NavLink className="sidebar-nav-link" to="/dashboard/services"
+          title="Manage your services" onClick={() => closeMobileNavigation()}>
+          <FiBriefcase aria-hidden="true"/><span>My Services</span>
+        </NavLink>
+        <NavLink className="sidebar-nav-link" to="/dashboard/bookings"
+          title="Manage your bookings" onClick={() => closeMobileNavigation()}>
+          <FiCalendar aria-hidden="true"/><span>My Bookings</span>
+        </NavLink>
+      </div>}
+    </div>;
     if (item.label !== "Products") return renderSidebarLink(item);
     return <div className="sidebar-products-group" key="products">
       <Button type="button" variant="ghost"
@@ -160,7 +192,7 @@ export default function AppLayout({ children, user, onLogout }) {
 
   const mobilePaths = user?.role === "admin"
     ? ["/dashboard", "/dashboard/businesses", "/dashboard/messages", "/search"]
-    : ["/dashboard", "/dashboard/bookings", "/dashboard/messages", "/search"];
+    : ["/dashboard", "/dashboard/services", "/dashboard/messages", "/search"];
   const mobileShortcuts = mobilePaths
     .map(path => visibleNavigation.find(item => item.to === path))
     .filter(Boolean);
