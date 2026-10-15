@@ -8,9 +8,9 @@ import ProfileAvatar from "./ProfileAvatar.jsx";
 
 const navigation = [
   { to: "/dashboard", label: "Dashboard", icon: FiHome, end: true },
+  { to: "/dashboard/products", label: "Products", icon: FiPackage, businessOnly: true },
   { to: "/dashboard/services", label: "Services", icon: FiBriefcase, businessOnly: true },
   { to: "/dashboard/sales", label: "Sales", icon: FiBarChart2, businessOnly: true },
-  { to: "/dashboard/products", label: "Products", icon: FiPackage, businessOnly: true },
   { to: "/dashboard/businesses", label: "Businesses", icon: FiUsers, adminOnly: true },
   { to: "/dashboard/messages", label: "Messages", icon: FiMessageSquare },
   { to: "/dashboard/profile", label: "Profile", icon: FiUser, businessOnly: true },
