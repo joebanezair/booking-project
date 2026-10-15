@@ -392,7 +392,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
               </div>
             </div>;
           })}
-          {(data?.byPaymentMethod || []).map(item => <div className="sales-channel-breakdown-card" key={"payment-"+item.method}>
+          {(data?.byPaymentMethod || []).filter(item => String(item.method || "").trim().toLowerCase() !== "cash").map(item => <div className="sales-channel-breakdown-card" key={"payment-"+item.method}>
             <div className="sales-channel-breakdown-label"><span className="sales-channel-breakdown-icon"><FiCreditCard aria-hidden="true"/></span><strong>POS · {item.method.toUpperCase()}</strong></div>
             <div className="sales-channel-breakdown-details">
               <span className="sales-channel-breakdown-amount">{money(item.revenue, primaryCurrency)}</span>
