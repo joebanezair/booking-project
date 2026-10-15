@@ -736,3 +736,27 @@ html body .checkout-success-dismiss.ui-button.ui-button-ghost svg {
   width: 16px;
   height: 16px;
 }
+
+/* Products & POS: compact, icon-led success notices instead of full-width bars. */
+html body #root .products-pos-success.success {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: 9999px !important;
+  font-size: 0.9em;
+  line-height: 1.35;
+}
+html body #root .products-pos-success.success svg {
+  display: block;
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+}
+html body #root .products-pos-success.success span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
