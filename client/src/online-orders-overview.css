@@ -307,14 +307,16 @@ html:not([data-theme="dark"]) body #root .online-order-overview .order-overview-
 }
 
 
-/* Online Orders: 15px card corners while keeping compact controls unchanged. */
+/* Online Orders: 15px card and order-table corners; compact controls unchanged. */
 /* Scope these styles to this dedicated page; product/order modals stay untouched. */
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   > :is(.online-order-overview, .sales-orders-panel, .sales-orders-loading),
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   .order-overview-stat,
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
-  > .sales-orders-panel.pos-history-panel.panel:has(.sales-online-orders-content) {
+  > .sales-orders-panel.pos-history-panel.panel:has(.sales-online-orders-content),
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
+  .sales-orders-panel .sales-orders-table-wrap.sales-table-wrap {
   border-radius: 15px !important;
 }
 
@@ -327,7 +329,6 @@ html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
     .sales-orders-filter,
     .sales-orders-more-status,
     .sales-orders-search .ui-input,
-    .sales-orders-table-wrap,
     .sales-orders-status,
     .sales-orders-view,
     .sales-order-row,
