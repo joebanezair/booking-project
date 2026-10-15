@@ -259,47 +259,47 @@ html body .page-shell > aside.sidebar .sidebar-footer {
 }
 
 
-/* Products disclosure: POS + Online Orders. The rail stays icon-only on desktop,
- * while the expanded sidebar and mobile drawer show indented accessible links. */
-html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-group {
+/* Services (My Services + My Bookings) and Products (POS + Online Orders) disclosures.
+ * The collapsed desktop rail stays icon-only; expanded and mobile views show indented links. */
+html body .page-shell > aside.sidebar .sidebar-nav :is(.sidebar-products-group, .sidebar-services-group) {
   display:flex;
   flex-direction:column;
   flex:0 0 auto;
   min-width:0;
   gap:2px;
 }
-html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-toggle.current-section {
+html body .page-shell > aside.sidebar .sidebar-nav :is(.sidebar-products-toggle, .sidebar-services-toggle).current-section {
   color:#f2f5ff !important;
   background:rgba(101,128,224,.16) !important;
   font-weight:650 !important;
 }
-html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-links {
+html body .page-shell > aside.sidebar .sidebar-nav :is(.sidebar-products-links, .sidebar-services-links) {
   display:flex;
   flex-direction:column;
   gap:2px;
   min-width:0;
   padding:2px 0 3px 16px;
 }
-html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-links > a.sidebar-nav-link {
+html body .page-shell > aside.sidebar .sidebar-nav :is(.sidebar-products-links, .sidebar-services-links) > a.sidebar-nav-link {
   height:34px !important;
   min-height:34px !important;
   padding:7px 10px !important;
   gap:9px !important;
   font-size:12px !important;
 }
-html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-links > a.sidebar-nav-link.active {
+html body .page-shell > aside.sidebar .sidebar-nav :is(.sidebar-products-links, .sidebar-services-links) > a.sidebar-nav-link.active {
   box-shadow: inset 2px 0 0 #5d7cff !important;
 }
 @media(min-width:801px){
-  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) .sidebar-products-links {
+  html body .page-shell > aside.sidebar:not(:hover):not(:focus-within) :is(.sidebar-products-links, .sidebar-services-links) {
     display:none !important;
   }
 }
 @media(max-width:800px){
-  html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-links {
+  html body .page-shell > aside.sidebar .sidebar-nav :is(.sidebar-products-links, .sidebar-services-links) {
     padding-left:16px;
   }
-  html body .page-shell > aside.sidebar .sidebar-nav .sidebar-products-links > a.sidebar-nav-link {
+  html body .page-shell > aside.sidebar .sidebar-nav :is(.sidebar-products-links, .sidebar-services-links) > a.sidebar-nav-link {
     height:40px !important;
     min-height:40px !important;
     padding:9px 12px !important;
