@@ -1568,6 +1568,31 @@ Caching should speed up repeated **public, read-only** requests without exposing
 4. **Invalidate immediately after successful writes** that affect cached public data; include event-driven invalidation or versioned keys when multiple API instances are added. Test publish/edit/delete, permissions, and concurrent updates; TTL expiry is only a fallback, not a correctness guarantee.
 5. **Monitor and roll out gradually.** Track hit/miss rate, latency (p50/p95), DB load, Redis memory/evictions, cache-related errors, and stale-data regressions. Disable or shorten TTLs if freshness or security cannot be verified. Do not introduce an offline/service-worker cache for authenticated pages or transactional data without an explicit invalidation and privacy design.
 
+##### First-phase Redis cache-aside implementation checklist (proposed)
+
+Start with **`GET /api/public/browse`** and carefully selected, non-personalized results from **`GET /api/public/search`** in `server/routes/public.js`. These already query MongoDB; the cache should sit around successful public-read responses, not around booking, checkout, stock, or permission checks. This is an implementation plan, **not code currently enabled** on `betta-vone`.
+
+1. **Run the optional Redis service securely.** Create `infrastructure/.env` locally with a strong `REDIS_PASSWORD` (do not commit it), then start only the Redis service from the repository root:
+
+   ```bash
+   docker compose --env-file infrastructure/.env -f infrastructure/compose.services.yml up -d redis
+   ```
+
+   The supplied Compose example binds port 6379 to host loopback. Use private networking and authentication in deployment; do not expose Redis publicly.
+2. **Install and configure the server Redis client.** In `server/`, run `npm install redis`; add a `REDIS_URL` setting to the **server's** environment (not any `VITE_*` frontend variable). Example for a host-run API with Redis bound to host loopback:
+
+   ```dotenv
+   REDIS_URL=redis://:URL_ENCODED_PASSWORD@127.0.0.1:6379
+   ```
+
+   URL-encode special characters in the password. A containerized API needs a reachable **private** Redis address instead of its own `127.0.0.1`. Add connection timeouts and handle Redis unavailability without blocking public reads.
+3. **Implement cache-aside on public GET handlers.** Normalize allowed query arguments; build versioned cache keys containing query, category, rating, and page (plus locale/tenant if applicable); check Redis; on a hit return the cached response; on a miss query MongoDB, return the result, and optionally store successful public responses using a short expiration (`EX`). Suggested starting TTLs: `/api/public/browse` **30 seconds**, public `/api/public/search` **30–60 seconds**. Add small TTL jitter and bounded payload sizes. Do not cache errors or sensitive/personalized responses.
+4. **Keep all writes database-first.** Create/update/delete a service or product in MongoDB first; only after MongoDB confirms the write, invalidate affected public-listing/search cache keys (prefer versioned namespaces or a controlled key index over unrestricted Redis `KEYS`). Profile changes, publication changes, visibility changes, and account-status changes may also affect discovery results. Multi-instance deployments need shared invalidation. An invalidation failure must be logged/retried and may leave public listings stale until TTL expiry; **never** allow a cached value to authorize checkout, a booking, or a stock decrement.
+5. **Fail open for the cache, not for the database.** When Redis is down or a key expires, query MongoDB directly. If MongoDB cannot save a booking/order, return an error rather than claiming success. Redis eviction/restart must not delete a confirmed MongoDB record; do not implement write-behind or cache-only order storage.
+6. **Verify rollout in staging before enabling in production.** Test cache miss → hit, expiry, concurrent requests, edit/publish/unpublish invalidation, Redis shutdown/restart, cross-business isolation, and freshness of orders/slots/inventory. Measure cache hits, p95 latency, MongoDB load, Redis memory/evictions, and invalidation failures. Keep a configuration switch to disable caching quickly.
+
+**Safety invariant:** `MongoDB write succeeds → invalidate affected cache → respond according to the committed result`. A read cache can be discarded at any time without losing permanent data. The checkout/booking workflow must continue to read and validate authoritative MongoDB state, and cache invalidation should never be mistaken for a database commit.
+
 See also recommendation **19** (Redis TTL/invalidation) and **21** (Nginx public-media caching) below. Neither is currently fully deployed as a general application cache.
 
 ### 4. Remaining priority upgrades (not implemented yet)
