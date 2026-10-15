@@ -8,7 +8,7 @@ import { Textarea } from "../components/ui/textarea.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FiCheckCircle, FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiArrowRight, FiCheckCircle, FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
 
@@ -126,7 +126,7 @@ export default function ProductsPage({user,onLogout}){
         <span className="checkout-success-icon"><FiCheckCircle aria-hidden="true"/></span>
         <h2>Checkout complete</h2>
         <p>Invoice <strong>{checkoutSuccess.invoiceNumber}</strong> recorded in Sales.</p>
-        <Button variant="plain" type="button" className="primary-button checkout-success-dismiss" onClick={()=>setCheckoutSuccess(null)}>Done</Button>
+        <Button variant="ghost" type="button" className="checkout-success-dismiss" onClick={()=>setCheckoutSuccess(null)}>Done <FiArrowRight aria-hidden="true"/></Button>
       </DialogContent>
     </Dialog>}
 
