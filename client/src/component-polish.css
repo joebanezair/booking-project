@@ -667,3 +667,51 @@ html body .order-actions > button.ui-button {
     white-space: nowrap !important;
   }
 }
+
+/* Products & POS: confirmation shown immediately after a successful checkout. */
+html body .ui-dialog.checkout-success-dialog {
+  width: min(420px, calc(100vw - 32px));
+  max-width: min(420px, calc(100vw - 32px));
+  border-radius: 15px !important;
+}
+html body .checkout-success-content.ui-dialog-content {
+  justify-items: center;
+  gap: 12px;
+  padding: 26px 22px;
+  text-align: center;
+}
+html body .checkout-success-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: #15803d;
+  background: color-mix(in srgb, #16a34a 12%, var(--card));
+}
+html body .checkout-success-icon svg {
+  width: 29px;
+  height: 29px;
+}
+html body .checkout-success-content h2 {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 21px;
+  line-height: 1.25;
+}
+html body .checkout-success-content p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+html body .checkout-success-content p strong {
+  color: var(--foreground);
+}
+html body .checkout-success-dismiss.ui-button {
+  justify-self: center;
+  min-width: 138px;
+  margin-top: 8px;
+  border-radius: 10px !important;
+}
