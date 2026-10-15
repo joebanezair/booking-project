@@ -173,13 +173,13 @@ html body #root .online-order-overview .order-overview-stat small {
 }
 
 
-/* Order overview: genuinely rounded cards and clickable filterable donut. */
+/* Order overview: consistently rounded cards and clickable filterable donut. */
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header) > .online-order-overview {
-  border-radius: 15px !important;
+  border-radius: 10px !important;
   overflow: hidden;
 }
 html body #root .online-order-overview .order-overview-stat {
-  border-radius: 15px !important;
+  border-radius: 10px !important;
 }
 html body #root .online-order-overview .order-overview-clickable-arc {
   cursor: pointer;
@@ -215,7 +215,7 @@ html body #root .online-order-overview button.order-overview-legend-item {
   margin: 0;
   padding: 3px 7px;
   border: 1px solid transparent;
-  border-radius: 999px !important;
+  border-radius: 10px !important;
   background: transparent;
   color: var(--muted-foreground);
   font: inherit;
@@ -242,7 +242,7 @@ html body #root .online-order-overview .order-overview-clear {
   margin: 1px 0 0;
   padding: 5px 9px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   background: transparent;
   color: var(--primary);
   font-size: 11px;
@@ -256,7 +256,7 @@ html body #root .online-order-overview .order-overview-clear:hover {
 }
 
 
-/* Borderless order legend and fully rounded status color indicators. */
+/* Borderless order legend with 10px buttons and circular status color indicators. */
 /* Keep chart filters clickable, but remove the outlined-pill treatment. */
 html body #root .online-order-overview button.order-overview-legend-item,
 html body #root .online-order-overview button.order-overview-legend-item:hover,
@@ -268,7 +268,7 @@ html body #root .online-order-overview button.order-overview-legend-item.selecte
 html body #root .online-order-overview button.order-overview-legend-item {
   background: transparent !important;
   padding: 4px 8px !important;
-  border-radius: 9px !important;
+  border-radius: 10px !important;
 }
 html body #root .online-order-overview button.order-overview-legend-item:hover,
 html body #root .online-order-overview button.order-overview-legend-item.selected {
@@ -292,12 +292,12 @@ html body #root .online-order-overview button.order-overview-clear:hover {
 }
 
 
-/* Order overview: 15px card corners and a white light-theme background. */
+/* Order overview: 10px card corners and a white light-theme background. */
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header) > .online-order-overview {
-  border-radius: 15px !important;
+  border-radius: 10px !important;
 }
 html body #root .online-order-overview .order-overview-stat {
-  border-radius: 15px !important;
+  border-radius: 10px !important;
 }
 html:not([data-theme="dark"]) body #root .page-shell > .content-shell:has(> .online-orders-page-header) > .online-order-overview {
   background: #ffffff !important;
@@ -307,7 +307,7 @@ html:not([data-theme="dark"]) body #root .online-order-overview .order-overview-
 }
 
 
-/* Online Orders: 15px card, order-table, and toolbar-control corners. */
+/* Online Orders: 10px card, order-table, and toolbar-control corners. */
 /* Scope these styles to this dedicated page; product/order modals stay untouched. */
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   > :is(.online-order-overview, .sales-orders-panel, .sales-orders-loading),
@@ -317,10 +317,10 @@ html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   > .sales-orders-panel.pos-history-panel.panel:has(.sales-online-orders-content),
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   .sales-orders-panel .sales-orders-table-wrap.sales-table-wrap {
-  border-radius: 15px !important;
+  border-radius: 10px !important;
 }
 
-/* Online Orders: 15px corners for the order count, status filters,
+/* Online Orders: 10px corners for the order count, status filters,
  * More statuses dropdown, and search input shown above the orders table. */
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   :is(
@@ -329,10 +329,10 @@ html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
     .sales-orders-more-status,
     .sales-orders-search .ui-input
   ) {
-  border-radius: 15px !important;
+  border-radius: 10px !important;
 }
 
-/* Keep the compact shape of non-toolbar order details unchanged. */
+/* Apply the same 10px corners to non-toolbar order elements. */
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   :is(
     .order-overview-legend-item,
@@ -343,7 +343,7 @@ html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
     .sales-orders-no-match,
     .sales-orders-empty
   ) {
-  border-radius: 3px !important;
+  border-radius: 10px !important;
 }
 
 /* Explicitly preserve the requested circular status colors. */
