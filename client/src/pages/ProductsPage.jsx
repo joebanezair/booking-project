@@ -96,7 +96,7 @@ export default function ProductsPage({user,onLogout}){
 
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar products-pos-header"><div><p className="eyebrow">PRODUCTS & POS</p><h1>Products</h1><p className="muted">Manage inventory, select products, add quantities to the cart, and check out in-store sales.</p></div><div className="cart-header-badge"><FiShoppingCart/><strong>{cartLines.reduce((s,x)=>s+x.quantity,0)}</strong><span>{money(cartTotal,currency)}</span></div></header>
-    {error&&<p className="error">{error}</p>}{message&&<p className="success">{message}</p>}
+    {error&&<p className="error">{error}</p>}{message&&<p className="success products-pos-success" role="status"><FiCheckCircle aria-hidden="true"/><span>{message}</span></p>}
 
     <div className="products-page-grid">
       <section className="panel">
