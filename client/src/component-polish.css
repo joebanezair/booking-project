@@ -668,30 +668,34 @@ html body .order-actions > button.ui-button {
   }
 }
 
-/* Products & POS: confirmation shown immediately after a successful checkout. */
+/* Products & POS: minimal success modal with shadcn ghost dismissal. */
 html body .ui-dialog.checkout-success-dialog {
   width: min(420px, calc(100vw - 32px));
   max-width: min(420px, calc(100vw - 32px));
-  border-radius: 15px !important;
+  border-radius: 20px !important;
+  overflow: hidden;
 }
 html body .checkout-success-content.ui-dialog-content {
   justify-items: center;
   gap: 12px;
-  padding: 26px 22px;
+  padding: 28px 24px 24px;
   text-align: center;
 }
 html body .checkout-success-icon {
   display: grid;
   place-items: center;
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
   border-radius: 50%;
   color: #15803d;
-  background: color-mix(in srgb, #16a34a 12%, var(--card));
+  background: transparent !important;
+  box-shadow: none;
 }
 html body .checkout-success-icon svg {
-  width: 29px;
-  height: 29px;
+  width: 40px;
+  height: 40px;
 }
 html body .checkout-success-content h2 {
   margin: 0;
@@ -709,9 +713,26 @@ html body .checkout-success-content p {
 html body .checkout-success-content p strong {
   color: var(--foreground);
 }
-html body .checkout-success-dismiss.ui-button {
+html body .checkout-success-dismiss.ui-button.ui-button-ghost {
   justify-self: center;
-  min-width: 138px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 116px;
+  min-height: 38px;
   margin-top: 8px;
+  padding: 8px 14px;
+  border: 1px solid transparent !important;
   border-radius: 10px !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+html body .checkout-success-dismiss.ui-button.ui-button-ghost:hover {
+  background: var(--secondary) !important;
+}
+html body .checkout-success-dismiss.ui-button.ui-button-ghost svg {
+  width: 16px;
+  height: 16px;
 }
