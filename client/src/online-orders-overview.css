@@ -179,7 +179,7 @@ html body #root .page-shell > .content-shell:has(> .online-orders-page-header) >
   overflow: hidden;
 }
 html body #root .online-order-overview .order-overview-stat {
-  border-radius: 12px !important;
+  border-radius: 15px !important;
 }
 html body #root .online-order-overview .order-overview-clickable-arc {
   cursor: pointer;
@@ -292,12 +292,12 @@ html body #root .online-order-overview button.order-overview-clear:hover {
 }
 
 
-/* Order overview: 3px card corners and a white light-theme background. */
+/* Order overview: 15px card corners and a white light-theme background. */
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header) > .online-order-overview {
-  border-radius: 3px !important;
+  border-radius: 15px !important;
 }
 html body #root .online-order-overview .order-overview-stat {
-  border-radius: 3px !important;
+  border-radius: 15px !important;
 }
 html:not([data-theme="dark"]) body #root .page-shell > .content-shell:has(> .online-orders-page-header) > .online-order-overview {
   background: #ffffff !important;
@@ -307,14 +307,20 @@ html:not([data-theme="dark"]) body #root .online-order-overview .order-overview-
 }
 
 
-/* Online Orders: consistent 3px corners throughout the page. */
-/* Apply to this dedicated page only. Keep the chart itself and status-color
-   dots circular; keep the separately portaled product/order modals untouched. */
+/* Online Orders: 15px card corners while keeping compact controls unchanged. */
+/* Scope these styles to this dedicated page; product/order modals stay untouched. */
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   > :is(.online-order-overview, .sales-orders-panel, .sales-orders-loading),
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
+  .order-overview-stat,
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
+  > .sales-orders-panel.pos-history-panel.panel:has(.sales-online-orders-content) {
+  border-radius: 15px !important;
+}
+
+/* Preserve the existing compact shape of table controls and filter buttons. */
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   :is(
-    .order-overview-stat,
     .order-overview-legend-item,
     .order-overview-clear,
     .sales-orders-collapse,
