@@ -1546,6 +1546,30 @@ VPS costs still apply; RabbitMQ Community Edition software itself does not requi
 - `infrastructure/nginx-media-cache.conf` is a sample Nginx block; configure HTTPS, origin proxying, request limits, cache zone, and monitoring for your actual VPS.
 - Database availability, migrations, backups, logs, alerting, CDN-equivalent cache efficiency, multiple API instances, and the Socket.IO Redis adapter are **not automatically configured** by the code changes.
 
+#### Recommended caching strategy (planned; not deployed)
+
+Caching should speed up repeated **public, read-only** requests without exposing private data or making bookings, orders, prices, or inventory stale. The policies below are **recommendations**, not enabled merely by this README update. Current code sets `Cache-Control: public, max-age=86400, immutable` for GridFS public media, `private, no-store` for private media, and `no-store` for order-tracking responses. Redis is only an optional Compose service; the Nginx media cache is an example configuration, not a confirmed deployment.
+
+| Resource | Recommended policy | Correctness and invalidation |
+| --- | --- | --- |
+| Production JS/CSS/images with content-hashed filenames | Browser/CDN: `public, max-age=31536000, immutable` **only** for fingerprinted assets | New builds must publish new asset URLs; do not apply this to `index.html` or assets overwritten at the same URL. |
+| `index.html` / application shell | `no-cache, must-revalidate` so clients check for a new build on navigation | Ensure updates appear after deployment; verify the actual hosting platform's response headers. |
+| Public GridFS images (`/api/media/public/:id`) | Keep the existing 24-hour browser cache; optionally enable Nginx/CDN caching for this route | Only cache images intended to be public. Use new IDs/URLs or explicit purges when images change; monitor `X-Cache`/hit rates if Nginx is enabled. |
+| Public search, categories, and published business/service summaries | **Proposed:** Redis cache-aside with a short 30–60-second TTL for non-personalized, non-availability data | Invalidate on publish/edit/unpublish/delete. Include tenant/business, normalized query, filters, page, language, and API version in cache keys. Never share personalized responses. |
+| More stable public profile descriptions and business metadata | **Proposed:** 1–5-minute TTL **only** for fields that do not affect checkout, pricing, availability, or authorization | Invalidate on profile changes. Keep live stock/prices and booking availability out of this cache. |
+| Bookings, appointment slots, product stock, checkout, order status, sales, authentication, messages, and admin/account data | Do **not** use shared/public caching; use `Cache-Control: no-store` for sensitive or fast-changing responses | Read authoritative data for writes and decisions. Always validate stock, price, booking capacity, and permissions on the server. Do not cache mutations. |
+| Private media/attachments (`/api/media/private/:id`) | Keep `private, no-store`; never put signed private responses in a CDN/shared cache | Preserve authorization/signature checks and short-lived download links. |
+
+**Implementation order and safeguards:**
+
+1. **Audit current behavior first.** Inspect browser DevTools and response headers in staging/production, including deployment CDN behavior; Vite development behavior is not proof of production caching. Record baseline latency, DB query rates, and stale-content incidents.
+2. **Configure browser/CDN assets and public image caching.** Use fingerprinted build assets, revalidated HTML, and the sample `infrastructure/nginx-media-cache.conf` only after adapting it for the actual HTTPS proxy and proving private endpoints cannot enter the cache.
+3. **Introduce opt-in Redis cache-aside for measured public read hotspots.** Start with discovery listings (not orders or booking availability); bound entry size/memory, set TTLs with jitter, enforce tenant-safe keys, and handle Redis outages as normal uncached requests. Never use cached values as an authoritative write precondition.
+4. **Invalidate immediately after successful writes** that affect cached public data; include event-driven invalidation or versioned keys when multiple API instances are added. Test publish/edit/delete, permissions, and concurrent updates; TTL expiry is only a fallback, not a correctness guarantee.
+5. **Monitor and roll out gradually.** Track hit/miss rate, latency (p50/p95), DB load, Redis memory/evictions, cache-related errors, and stale-data regressions. Disable or shorten TTLs if freshness or security cannot be verified. Do not introduce an offline/service-worker cache for authenticated pages or transactional data without an explicit invalidation and privacy design.
+
+See also recommendation **19** (Redis TTL/invalidation) and **21** (Nginx public-media caching) below. Neither is currently fully deployed as a general application cache.
+
 ### 4. Remaining priority upgrades (not implemented yet)
 
 1. **Booking concurrency:** a shared MongoDB mutation lease now serializes normal app booking writes across replicas, and reopening schedulable bookings rechecks capacity. Add truly atomic capacity claims, lease-expiry protection, and race tests before advertising zero double-bookings.
