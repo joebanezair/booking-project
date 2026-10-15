@@ -24,7 +24,7 @@ html body #root .sales-channel-breakdown .sales-channel-breakdown-description {
 }
 html body #root .sales-channel-breakdown .sales-channel-breakdown-grid.currency-total-list {
   display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   align-items: stretch;
   gap: 8px !important;
 }
