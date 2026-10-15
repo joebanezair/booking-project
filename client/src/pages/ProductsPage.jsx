@@ -8,7 +8,7 @@ import { Textarea } from "../components/ui/textarea.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiCheckCircle, FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
 
@@ -29,6 +29,7 @@ export default function ProductsPage({user,onLogout}){
   const [customerName,setCustomerName]=useState("");
   const [error,setError]=useState("");
   const [message,setMessage]=useState("");
+  const [checkoutSuccess,setCheckoutSuccess]=useState(null);
   const [search,setSearch]=useState("");
   const [cartSearch,setCartSearch]=useState("");
   const [cartOpen,setCartOpen]=useState(true);
@@ -69,7 +70,29 @@ export default function ProductsPage({user,onLogout}){
   const currency=cartLines[0]?.currency||"PHP";
   const cartTotal=cartLines.reduce((sum,p)=>sum+Number(p.price||0)*p.quantity,0);
 
-  async function checkout(){if(checkoutLock.current)return;if(!cartLines.length)return setError("Add a product to your cart first.");checkoutLock.current=true;setCheckoutBusy(true);setError("");try{const sale=await api.sales.checkout({items:cartLines.map(p=>({productId:p._id,quantity:p.quantity})),paymentMethod,customerName});setCart({});setCustomerName("");setCartSearch("");setConfirmCheckout(false);await refresh();setMessage(`Checkout complete. Invoice ${sale.invoiceNumber} recorded in Sales.`);setError("");}catch(e){setError(e.message);}finally{checkoutLock.current=false;setCheckoutBusy(false);}}
+  async function checkout(){
+    if(checkoutLock.current)return;
+    if(!cartLines.length)return setError("Add a product to your cart first.");
+    checkoutLock.current=true;
+    setCheckoutBusy(true);
+    setError("");
+    try{
+      const sale=await api.sales.checkout({items:cartLines.map(p=>({productId:p._id,quantity:p.quantity})),paymentMethod,customerName});
+      setCart({});
+      setCustomerName("");
+      setCartSearch("");
+      setConfirmCheckout(false);
+      setMessage("");
+      setCheckoutSuccess({invoiceNumber:sale.invoiceNumber});
+      // Show the success dialog immediately; refresh inventory without delaying it.
+      void refresh().catch(()=>setError("Checkout succeeded, but inventory could not be refreshed. Please reload the page."));
+    }catch(e){
+      setError(e.message);
+    }finally{
+      checkoutLock.current=false;
+      setCheckoutBusy(false);
+    }
+  }
 
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar products-pos-header"><div><p className="eyebrow">PRODUCTS & POS</p><h1>Products</h1><p className="muted">Manage inventory, select products, add quantities to the cart, and check out in-store sales.</p></div><div className="cart-header-badge"><FiShoppingCart/><strong>{cartLines.reduce((s,x)=>s+x.quantity,0)}</strong><span>{money(cartTotal,currency)}</span></div></header>
@@ -97,6 +120,15 @@ export default function ProductsPage({user,onLogout}){
 
     {deleteTarget&&<Dialog open={Boolean(deleteTarget)} title="Delete product" onOpenChange={open=>{if(!open)setDeleteTarget(null);}}><DialogContent className="ui-product-confirm"><div className="panel-title"><div><p className="eyebrow">DELETE PRODUCT</p><h2 id="delete-product-title">Delete {deleteTarget.name}?</h2></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close delete confirmation" data-tooltip="Close" onClick={()=>setDeleteTarget(null)}><FiX/></Button></div><p className="muted">This product will be permanently removed from your inventory. This action cannot be undone.</p><div className="delete-product-actions"><Button variant="plain" type="button" className="secondary" onClick={()=>setDeleteTarget(null)}>Cancel</Button><Button variant="plain" type="button" className="danger" onClick={()=>removeProduct(deleteTarget)}><FiTrash2/>Delete product</Button></div></DialogContent></Dialog>}
       {confirmCheckout&&<Dialog open={confirmCheckout} title="Confirm checkout" dismissible={!checkoutBusy} onOpenChange={open=>{if(!open&&!checkoutBusy)setConfirmCheckout(false);}}><DialogContent className="ui-product-confirm"><div className="panel-title"><div><p className="eyebrow">FINAL CHECK</p><h2>Confirm checkout</h2></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close checkout confirmation" onClick={()=>setConfirmCheckout(false)}><FiX/></Button></div><p className="muted">Review this sale before completing the transaction.</p><div className="checkout-confirm-summary"><div><span>Customer</span><strong>{customerName.trim()||"Walk-in"}</strong></div><div><span>Payment</span><strong>{paymentMethod.charAt(0).toUpperCase()+paymentMethod.slice(1)}</strong></div><div><span>Items</span><strong>{cartLines.reduce((s,x)=>s+x.quantity,0)}</strong></div></div><div className="checkout-confirm-items">{cartLines.map(item=><div key={item._id}><span>{item.name} × {item.quantity}</span><strong>{money(item.price*item.quantity,item.currency)}</strong></div>)}</div><div className="pos-total"><span>Total</span><strong>{money(cartTotal,currency)}</strong></div><div className="checkout-confirm-actions"><Button variant="plain" type="button" className="secondary" onClick={()=>setConfirmCheckout(false)}>Cancel</Button>{error&&<p className="error" role="alert">{error}</p>}<Button variant="plain" type="button" className="primary-button" disabled={checkoutBusy} onClick={checkout}>{checkoutBusy?"Processing checkout…":"Confirm checkout"}</Button></div></DialogContent></Dialog>}
+
+    {checkoutSuccess&&<Dialog open={Boolean(checkoutSuccess)} title="Checkout complete" className="checkout-success-dialog" onOpenChange={open=>{if(!open)setCheckoutSuccess(null);}}>
+      <DialogContent className="checkout-success-content">
+        <span className="checkout-success-icon"><FiCheckCircle aria-hidden="true"/></span>
+        <h2>Checkout complete</h2>
+        <p>Invoice <strong>{checkoutSuccess.invoiceNumber}</strong> recorded in Sales.</p>
+        <Button variant="plain" type="button" className="primary-button checkout-success-dismiss" onClick={()=>setCheckoutSuccess(null)}>Done</Button>
+      </DialogContent>
+    </Dialog>}
 
     {creating && <Dialog open={creating} title="Add new product" dismissible={!creatingBusy}
       className="product-create-dialog"
