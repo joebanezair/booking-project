@@ -307,7 +307,7 @@ html:not([data-theme="dark"]) body #root .online-order-overview .order-overview-
 }
 
 
-/* Online Orders: 15px card and order-table corners; compact controls unchanged. */
+/* Online Orders: 15px card, order-table, and toolbar-control corners. */
 /* Scope these styles to this dedicated page; product/order modals stay untouched. */
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   > :is(.online-order-overview, .sales-orders-panel, .sales-orders-loading),
@@ -320,15 +320,23 @@ html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   border-radius: 15px !important;
 }
 
-/* Preserve the existing compact shape of table controls and filter buttons. */
+/* Online Orders: 15px corners for the order count, status filters,
+ * More statuses dropdown, and search input shown above the orders table. */
+html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
+  :is(
+    .sales-orders-collapse,
+    .sales-orders-filter,
+    .sales-orders-more-status,
+    .sales-orders-search .ui-input
+  ) {
+  border-radius: 15px !important;
+}
+
+/* Keep the compact shape of non-toolbar order details unchanged. */
 html body #root .page-shell > .content-shell:has(> .online-orders-page-header)
   :is(
     .order-overview-legend-item,
     .order-overview-clear,
-    .sales-orders-collapse,
-    .sales-orders-filter,
-    .sales-orders-more-status,
-    .sales-orders-search .ui-input,
     .sales-orders-status,
     .sales-orders-view,
     .sales-order-row,
