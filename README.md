@@ -172,6 +172,29 @@ Read [the detailed button audit and manual QA checklist](docs/button-audit.md).
 
 The code connects to Redis when `REDIS_URL` is configured. It uses a shared cache for anonymous public GETs that explicitly have caching middleware, and the Socket.IO Redis adapter for cross-process broadcasts/rooms. With `REDIS_URL` unset the single-server development setup continues working as before.
 
+### October 18, 2026 implementation summary
+
+| Workstream | Current state | Relevant code |
+| --- | --- | --- |
+| Shared public cache | Opt-in Redis-backed JSON cache, with a local-memory fallback when `REDIS_URL` is unset | `server/middleware/publicJsonCache.js`, `server/lib/distributedRedis.js` |
+| Forum invalidation | Redis namespace version changes on successful post/reply; local cache cleared in the current process | `server/routes/forum.js` |
+| Socket.IO multi-server fanout | Redis adapter initialized on backend startup when configured; shutdown closes Redis clients | `server/server.js`, `server/lib/distributedRedis.js` |
+| POS repeated-SKU handling | Quantities are grouped per product before conditional stock deduction | `server/routes/sales.js` |
+| Booking concurrency | Existing MongoDB per-business mutation lease audited; lease expiry/fencing remain risks | `server/middleware/bookingMutationGuard.js` |
+| Inventory atomicity | Audit documented; multi-product transactions and one-time order completion are **not yet implemented** | `docs/concurrency-audit-betta-vol1.md` |
+| Validation | Code committed; Redis integration, cross-replica messaging, and high-concurrency transaction tests **not yet verified** | `server/tests/publicJsonCache.test.js`, `scripts/load-smoke.mjs` |
+
+**Before running with Redis:** install `redis` and `@socket.io/redis-adapter` into `server/`, commit both npm dependency manifests/lockfile, provision Redis privately, and configure `REDIS_URL` in the untracked `server/.env`. Existing Redis Compose configuration is optional infrastructure and does not automatically activate these integrations.
+
+**Local checks** after the backend is configured:
+
+```bash
+node --test server/tests/publicJsonCache.test.js
+node scripts/load-smoke.mjs http://127.0.0.1:5000 10 200
+```
+
+These checks do **not** prove suitability for 100,000 simultaneous users. Before scaling, resolve order-completion double-deduction, inventory multi-document consistency, booking lease expiry/overlap, and idempotent retries; then perform representative integration, stress, and failure testing.
+
 ### Enable Redis in a development environment
 
 1. Install the required npm packages and **commit the updated `server/package.json` and `server/package-lock.json`** to your deployment branch. They are not yet included in the committed lockfile:
