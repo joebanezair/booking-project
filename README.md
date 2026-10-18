@@ -166,6 +166,36 @@ Read [the detailed button audit and manual QA checklist](docs/button-audit.md).
 
 **Scope:** This is a **static code audit**, not proof that every rendered button works. Login, data persistence, modal focus/keyboard access, server validation, permission states and interactions under network errors still require a browser-based end-to-end test run.
 
+## 100K+ user scaling readiness — betta-vol1
+
+**Target is not yet validated.** 100,000 registered users, daily active users, and simultaneous connections imply radically different workloads. No 100K-user capacity claim should be made before representative benchmarks.
+
+### Implemented groundwork
+
+- Existing bounded public browse (15-second) and forum (5-second) in-memory caches. Global `CACHE_PUBLIC_TTL_MS` may shorten either TTL or disable it with `0`, but may not extend a route past its configured ceiling.
+- The forum feed cache is invalidated after successful posts/replies in that *same* Node process. This is **not distributed invalidation**; do not run forum caching across replicas without a shared cache/invalidation layer.
+- `/api/ready` now returns not-ready while the process is shutting down, suitable for load balancer draining decisions.
+- A bounded **localhost-only** request probe at `scripts/load-smoke.mjs`. For development only; **not** a 100K-user stress test.
+
+```bash
+# From repo root, after starting API and MongoDB:
+node scripts/load-smoke.mjs http://127.0.0.1:5000 10 200
+node --test server/tests/publicJsonCache.test.js
+```
+
+The probe prints HTTP status totals and observed p50/p95/p99 latencies. It is restricted to 50 concurrency and 5,000 requests and only exercises public browse. Test authentication, booking writes, POS, media and Socket.IO separately in an authorized staging environment, with test data.
+
+### Before a multi-replica production rollout
+
+1. **Booking/stock correctness:** verify database-enforced booking conflict prevention, atomic inventory decrement, idempotency for checkout/payment retries, and transaction rollback under parallel requests. These are release blockers.
+2. **Shared Redis:** replace process-local cache and rate-limit state with shared Redis adapters; use explicit invalidation on service/profile/publication changes. Do not cache booking slot authority, payment decisions, or stock quantities.
+3. **Socket.IO scale-out:** configure a compatible inter-node adapter, authentication, load-balancer WebSocket support, and any required session affinity for polling. Current socket rooms are per-process.
+4. **MongoDB capacity:** profile actual query plans with `explain`, verify compound indexes, constrain pagination and connection pools per API replica, and provision high availability and backups. A MongoDB replica set provides resilience, not automatic unlimited write scaling.
+5. **Media and asynchronous work:** CDN/object storage for high-read assets where practical; durable queues, bounded consumers and idempotent notification workers.
+6. **Production operations:** front-end CDN, TLS/load balancing, health probes, traces, error budgets, centralized logging, backup/restore drills, rolling deployments, load and soak tests.
+
+Do not scale by simply starting many Node.js instances yet: this branch currently has single-process cache invalidation and Socket.IO room state, and has not passed the required transactional concurrency audits.
+
 ## Feature caching policy — betta-vol1
 
 This inventory identifies user-facing features and how their API data should be handled. **Caching is selective, not universal**: transactional endpoints must always validate against MongoDB, and writing to a cache is not writing to MongoDB.
