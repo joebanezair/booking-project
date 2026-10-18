@@ -166,6 +166,37 @@ Read [the detailed button audit and manual QA checklist](docs/button-audit.md).
 
 **Scope:** This is a **static code audit**, not proof that every rendered button works. Login, data persistence, modal focus/keyboard access, server validation, permission states and interactions under network errors still require a browser-based end-to-end test run.
 
+## Feature caching policy — betta-vol1
+
+This inventory identifies user-facing features and how their API data should be handled. **Caching is selective, not universal**: transactional endpoints must always validate against MongoDB, and writing to a cache is not writing to MongoDB.
+
+| Feature | Current caching policy |
+| --- | --- |
+| Public service browse | **Enabled:** 15-second in-process TTL, max 100 URLs |
+| Public forum feed | **Enabled:** 5-second in-process TTL, max 50 URLs; immediately cleared on successful new posts or replies within this server process |
+| Business/service/product search | **Live:** search can expose inventory and rapidly changing publication/account status |
+| Public business profiles and service detail | **Live:** personalized ratings/reactions and potentially changing product stock |
+| Business profile/settings and scheduling | **Live:** owner-specific and availability-affecting |
+| Authentication, registration and permissions | **Never cache:** security-critical |
+| Service management and publishing | **Live:** changes to public listings |
+| Guest bookings, slots and appointment management | **Never cache availability or writes:** prevent double booking or stale status |
+| Product management, stock and inventory history | **Live:** protect available quantities |
+| POS, checkout, product orders and payment status | **Never cache:** transactional amounts, payments, and inventory |
+| Sales dashboards and analytics | **Live for now:** financial correctness and timely updates |
+| Messages, friends and chat | **Live:** private and real-time |
+| Notifications | **Live:** private, time-sensitive |
+| Reviews, ratings, comments and reactions | **Live:** user-specific and moderation-sensitive |
+| Admin overview, business controls and password operations | **Never shared-cache:** private/security-sensitive |
+| Images and media uploads | Browser/network caching should be addressed separately; no new shared cache added to the media API |
+
+The middleware `server/middleware/publicJsonCache.js` caches only anonymous GET requests, sets `X-Cache: HIT/MISS`, does not cache non-200 responses, and uses `Cache-Control: no-store` to avoid browser/proxy copies. It is bounded and lost at process restart; it is **not Redis** and does not persist to either MongoDB container. Writes remain database-backed. For multiple Node.js workers or servers, use shared invalidation (e.g., Redis) before expecting immediate consistency across instances. A service-browse listing can still remain stale for up to 15 seconds.
+
+**Run caching tests** from repository root:
+
+```bash
+node --test server/tests/publicJsonCache.test.js
+```
+
 ## Public browse cache — betta-vol1
 
 The `betta-vol1` branch implements a **bounded, in-memory TTL response cache** for `GET /api/public/browse` (public service discovery only). It is not a database and does not persist records to MongoDB.
