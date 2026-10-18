@@ -81,6 +81,20 @@ function groupMeta(date, group, offset) {
 
 
 async function deductInventory(lines, userId) {
+  // Aggregate duplicate product lines before testing/decrementing stock.
+  // Otherwise two lines for one SKU can each pass a stale preflight check.
+  const grouped = new Map();
+  for (const line of lines) {
+    const key = String(line.product);
+    const quantity = Number(line.quantity);
+    if (!Number.isSafeInteger(quantity) || quantity < 1) {
+      throw Object.assign(new Error("Invalid product quantity."), { statusCode: 400 });
+    }
+    const previous = grouped.get(key);
+    if (previous) previous.quantity += quantity;
+    else grouped.set(key, { ...line, quantity });
+  }
+  lines = [...grouped.values()];
   const deducted = [];
   try {
     for (const line of lines) {
