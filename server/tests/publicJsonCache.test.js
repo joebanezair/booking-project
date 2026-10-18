@@ -49,3 +49,11 @@ test("disabled cache always bypasses", () => {
   const middleware = publicJsonCache({ ttlMs: 0 });
   assert.equal(invoke(middleware).headers["x-cache"], undefined);
 });
+
+test("explicit cache invalidation removes stale forum entries", () => {
+  const middleware = publicJsonCache({ ttlMs: 5000 });
+  assert.equal(invoke(middleware).headers["x-cache"], "MISS");
+  assert.equal(invoke(middleware).headers["x-cache"], "HIT");
+  middleware.clear();
+  assert.equal(invoke(middleware).headers["x-cache"], "MISS");
+});
