@@ -4,7 +4,7 @@ export function publicJsonCache({ ttlMs = 15_000, maxEntries = 100 } = {}) {
   const cache = new Map();
   const middleware = (req, res, next) => {
     const configuredTtl = process.env.CACHE_PUBLIC_TTL_MS;
-    const ttl = configuredTtl === undefined ? ttlMs : Number(configuredTtl);
+    const ttl = configuredTtl === undefined ? ttlMs : Math.min(ttlMs, Number(configuredTtl));
     if (req.method !== "GET" || !Number.isFinite(ttl) || ttl <= 0 ||
         req.headers?.authorization || req.headers?.cookie) return next();
 
