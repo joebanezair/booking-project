@@ -166,6 +166,33 @@ Read [the detailed button audit and manual QA checklist](docs/button-audit.md).
 
 **Scope:** This is a **static code audit**, not proof that every rendered button works. Login, data persistence, modal focus/keyboard access, server validation, permission states and interactions under network errors still require a browser-based end-to-end test run.
 
+## Redis / multi-server Socket.IO setup — betta-vol1
+
+**Status: opt-in integration committed; external packages and transactional concurrency fixes still required.**
+
+The code connects to Redis when `REDIS_URL` is configured. It uses a shared cache for anonymous public GETs that explicitly have caching middleware, and the Socket.IO Redis adapter for cross-process broadcasts/rooms. With `REDIS_URL` unset the single-server development setup continues working as before.
+
+### Enable Redis in a development environment
+
+1. Install the required npm packages and **commit the updated `server/package.json` and `server/package-lock.json`** to your deployment branch. They are not yet included in the committed lockfile:
+
+```bash
+cd server
+npm install redis @socket.io/redis-adapter
+```
+
+2. Start a password-protected Redis instance, for example using the existing optional Docker Compose configuration in `infrastructure/compose.services.yml` with credentials supplied in an untracked environment file. Do not publish Redis port 6379 to the internet.
+3. Set a valid `REDIS_URL` in the backend environment (for example `redis://:<password>@127.0.0.1:6379`, replacing the password with the real secret). Never commit credentials or paste them into source control.
+4. Restart the API and inspect its startup logs. An unavailable Redis connection with `REDIS_URL` configured prevents API startup rather than silently running multiple incompatible Socket.IO instances.
+
+Public browse uses a 15-second TTL, forum 5 seconds. Redis cache entries are keyed by URL, namespace and version; forum posts/replies increment a shared version so other replicas stop using prior forum results. A failed Redis read bypasses the cache. Writes to MongoDB do **not** flow through Redis; Redis is strictly optional short-lived response storage. **Do not cache payment, booking availability, or stock authority.**
+
+The Socket.IO Redis adapter broadcasts between server processes, but you still need a load balancer and either sticky routing for HTTP long polling or a websocket-only client/server transport configuration. This integration does not itself provision servers, a load balancer, or a CDN.
+
+### Booking and inventory audit
+
+See [Concurrency audit: booking leases, stock deductions, and release blockers](docs/concurrency-audit-betta-vol1.md). The audit identified that cross-product inventory decrement/restore is not transactional, order completion may double-deduct under concurrent requests, and booking leases have fixed expiry without fencing. The duplicate-SKU deduction path is improved, but the remaining issues must be fixed and tested before treating the system as 100K-concurrent-ready.
+
 ## 100K+ user scaling readiness — betta-vol1
 
 **Target is not yet validated.** 100,000 registered users, daily active users, and simultaneous connections imply radically different workloads. No 100K-user capacity claim should be made before representative benchmarks.
