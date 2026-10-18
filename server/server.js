@@ -29,6 +29,7 @@ import { calculateBookingEndsAt, makeBookingReference } from "./lib/scheduling.j
 import { connectMediaStore, closeMediaStore, mediaEnabled } from "./lib/mediaStore.js";
 import mediaRoutes from "./routes/media.js";
 import { sharedRateLimit } from "./middleware/sharedRateLimit.js";
+import { startRedis, stopRedis } from "./lib/distributedRedis.js";
 
 dotenv.config();
 const app = express();
@@ -277,6 +278,7 @@ async function start() {
     await backfillCompletedSales();
   }
 
+  await startRedis(io);
   httpServer.listen(PORT, () => console.log(`API and WebSocket server listening on http://localhost:${PORT}`));
 }
 
@@ -290,7 +292,7 @@ async function stop(signal) {
   try {
     await new Promise(resolve => io.close(resolve));
     if (httpServer.listening) await new Promise(resolve => httpServer.close(resolve));
-    await Promise.allSettled([closeMediaStore(), mongoose.disconnect()]);
+    await Promise.allSettled([stopRedis(), closeMediaStore(), mongoose.disconnect()]);
     clearTimeout(deadline);
     process.exit(0);
   } catch (error) {
