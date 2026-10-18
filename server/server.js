@@ -71,7 +71,7 @@ app.use(express.json({ limit: "20mb" }));
 
 app.get("/api/live", (_req, res) => res.json({ ok: true }));
 app.get("/api/ready", (_req, res) => {
-  const ok = mongoose.connection.readyState === 1 && (!process.env.MEDIA_MONGO_URI || mediaEnabled());
+  const ok = !shuttingDown && mongoose.connection.readyState === 1 && (!process.env.MEDIA_MONGO_URI || mediaEnabled());
   res.status(ok ? 200 : 503).json({ ok });
 });
 app.get("/api/health", (_req, res) => {
