@@ -166,6 +166,27 @@ Read [the detailed button audit and manual QA checklist](docs/button-audit.md).
 
 **Scope:** This is a **static code audit**, not proof that every rendered button works. Login, data persistence, modal focus/keyboard access, server validation, permission states and interactions under network errors still require a browser-based end-to-end test run.
 
+## Public browse cache — betta-vol1
+
+The `betta-vol1` branch implements a **bounded, in-memory TTL response cache** for `GET /api/public/browse` (public service discovery only). It is not a database and does not persist records to MongoDB.
+
+- Default TTL: **15 seconds**; override using `CACHE_PUBLIC_TTL_MS` in `server/.env` (milliseconds, `0` disables caching). No Redis or extra Docker container is required.
+- Maximum **100** cached URL responses per Node.js process; expired/oldest entries are removed as requests arrive.
+- `X-Cache: MISS` on a normal first request and `X-Cache: HIT` on repeated requests within the TTL. `Cache-Control: no-store` prevents separate browser/proxy persistence.
+- Requests containing authorization or cookies bypass the cache. Failed responses, writes and other endpoints do not get cached.
+- **Not cached:** bookings, appointment availability, checkout, stock/inventory, sales, user/admin dashboards and all other personalized or transactional data. MongoDB remains the source of truth and writes still go to MongoDB.
+- Public browse updates can appear up to 15 seconds later; cache entries also disappear on backend restart and are not shared between multiple server processes. For immediate invalidation or distributed caching, implement explicit write invalidation or Redis before increasing the TTL.
+
+To verify after the backend is running:
+
+```bash
+curl -i http://localhost:5000/api/public/browse
+curl -i http://localhost:5000/api/public/browse
+node --test server/tests/publicJsonCache.test.js
+```
+
+Read `X-Cache` in the response headers; the second anonymous request should normally be a HIT within 15 seconds. Do not treat cached content as proof that a record has been committed to MongoDB.
+
 ## Run the project — Betta V1
 
 **Use this guide for the latest [`betta-vone` branch](https://github.com/joebanezair/booking-project/tree/betta-vone).** You can run the application with only Node.js and the **main MongoDB** database. RabbitMQ, Redis, a second GridFS MongoDB, and Nginx are **optional** and are **not needed** for basic signup, browsing, booking, messaging, or development. Running these containers does not automatically turn on the related application features.
