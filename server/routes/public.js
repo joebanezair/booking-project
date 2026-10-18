@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { publicJsonCache } from "../middleware/publicJsonCache.js";
 import mongoose from "mongoose";
 import Booking from "../models/Booking.js";
 import Business from "../models/Business.js";
@@ -190,7 +191,7 @@ router.get("/content/:contentId", optionalAuth, async (req, res) => {
   }
 });
 
-router.get("/browse", async (_req, res) => {
+router.get("/browse", publicJsonCache(), async (_req, res) => {
   try {
     const items = await Content.aggregate([
       { $match: { published: true, visibility: { $ne: "private" } } },
