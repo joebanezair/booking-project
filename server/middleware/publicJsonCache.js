@@ -2,7 +2,7 @@
 // Never use for bookings, stock, sales, authenticated responses, or writes.
 export function publicJsonCache({ ttlMs = 15_000, maxEntries = 100 } = {}) {
   const cache = new Map();
-  return (req, res, next) => {
+  const middleware = (req, res, next) => {
     const configuredTtl = process.env.CACHE_PUBLIC_TTL_MS;
     const ttl = configuredTtl === undefined ? ttlMs : Number(configuredTtl);
     if (req.method !== "GET" || !Number.isFinite(ttl) || ttl <= 0 ||
@@ -35,4 +35,6 @@ export function publicJsonCache({ ttlMs = 15_000, maxEntries = 100 } = {}) {
     };
     next();
   };
+  middleware.clear = () => cache.clear();
+  return middleware;
 }
