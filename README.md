@@ -170,6 +170,46 @@ Read [the detailed button audit and manual QA checklist](docs/button-audit.md).
 
 **Use this guide for the latest [`betta-vone` branch](https://github.com/joebanezair/booking-project/tree/betta-vone).** You can run the application with only Node.js and the **main MongoDB** database. RabbitMQ, Redis, a second GridFS MongoDB, and Nginx are **optional** and are **not needed** for basic signup, browsing, booking, messaging, or development. Running these containers does not automatically turn on the related application features.
 
+### MongoDB Docker containers — Codespaces quick reference
+
+The `betta-vone` setup uses two persistent MongoDB containers for distinct purposes:
+
+| MongoDB container | Local port | Purpose |
+| --- | --- | --- |
+| `booking-mongodb` | `127.0.0.1:27017` | Main application database: users, bookings, products, sales, and services |
+| `booking-media-mongodb` | `127.0.0.1:27018` | Media database: images, photos, and file attachments (GridFS) |
+
+Both databases use Docker volumes, so data normally survives container restarts. They run as separate containers on the same Codespaces host—not separate physical servers.
+
+**1. Start or reuse the containers and configure the backend environment.** From the project root in Codespaces:
+
+```bash
+cd /workspaces/codespaces-blank/booking-project
+node scripts/setup-codespaces.mjs
+```
+
+The script is designed to reuse existing MongoDB containers, configure `server/.env`, and avoid destroying existing database volumes. If your Codespace uses a different checkout path, `cd` to that repository root instead.
+
+**2. Inspect all containers**, including stopped ones:
+
+```bash
+docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"
+```
+
+**3. Inspect database volumes:**
+
+```bash
+docker volume ls
+```
+
+**4. Check the database connections and API readiness:**
+
+```bash
+node scripts/setup-codespaces.mjs --check
+```
+
+**Troubleshooting and data safety:** If Docker reports a `RWLayer` error or another container-startup failure, first inspect the container status and Docker logs. The setup script cannot necessarily repair a damaged Docker storage layer. Do **not** delete either MongoDB container or its volumes while diagnosing the problem; they may hold irreplaceable application data. You do **not** need another `docker run` if the named containers already exist. If `docker ps -a` lists three or more MongoDB containers, compare their names, ports, and mounts before deciding which belong to this project.
+
 ### Codespaces automatic environment fix (recommended)
 
 When `server/.env` is missing, contains sample secrets, or your second MongoDB has not been configured, run this **from your existing checkout's root**:
