@@ -6,6 +6,7 @@ import { storeImageFields } from "../lib/mediaStore.js";
 import { orderTrackingToken } from "../lib/orderTracking.js";
 import { bookingMutationGuard } from "../middleware/bookingMutationGuard.js";
 import { resolveOrderedProduct, exactInventoryPattern } from "../lib/resolveOrderedProduct.js";
+import { addInventoryDeductionLine } from "../lib/inventoryDeductionLines.js";
 import { databaseFingerprint } from "../lib/databaseFingerprint.js";
 
 const router = Router();
@@ -100,18 +101,11 @@ async function deductInventory(lines, userId) {
       byName: name => Product.find({ user: userId, name: exactInventoryPattern(name) })
         .select("_id name sku").limit(10).lean()
     });
+    // Preserve the reconciled reference in the order and explicitly copy
+    // the product ID into the deduction row. Mongoose subdocument spreading
+    // ({ ...line }) loses schema paths and previously caused false HTTP 409s.
     line.product = linked._id;
-    const key = String(linked._id);
-    const quantity = Number(line.quantity);
-    if (!Number.isSafeInteger(quantity) || quantity < 1) {
-      throw Object.assign(new Error("Invalid product quantity."), { statusCode: 400 });
-    }
-    const previous = grouped.get(key);
-    if (previous) {
-      if(!Number.isSafeInteger(previous.quantity + quantity)) throw Object.assign(new Error("Product quantity is too large."), { statusCode: 400 });
-      previous.quantity += quantity;
-    }
-    else grouped.set(key, { ...line, quantity });
+    addInventoryDeductionLine(grouped, line, linked);
   }
   lines = [...grouped.values()];
   const deducted = [];
