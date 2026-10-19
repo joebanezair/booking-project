@@ -70,6 +70,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   const [orderModalError,setOrderModalError]=useState("");
   const [inventoryChoices,setInventoryChoices]=useState([]);
   const [relinkSelection,setRelinkSelection]=useState({});
+  const [inventoryCheck,setInventoryCheck]=useState(null);
   const [trackingLink,setTrackingLink]=useState("");
   const [shareNotice,setShareNotice]=useState("");
   const [orderStatusBusy,setOrderStatusBusy]=useState("");
@@ -208,6 +209,18 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     setOrderModalError(""); setOrderStatusNotice("");
     setOrderStatusBusy(id);
     try {
+      if (next === "completed") {
+        const check = await api.sales.checkOrderInventory(id);
+        setInventoryCheck(check);
+        if (!check.ready) {
+          const broken = check.items.filter(item => !item.sufficient);
+          throw new Error(broken.map(item => item.name + ": " +
+            (!item.linked ? "inventory product link missing" :
+            !item.validQuantity ? "invalid quantity" :
+            "available " + item.available + ", required " + item.required)).join("; ") +
+            ". Open Edit order to repair the product link before completing.");
+        }
+      }
       const updated=await api.sales.setOrderStatus(id,next);
       setOrders(existing=>existing.map(order=>order._id===updated._id?updated:order));
       setDraftOrderStatus(updated.status);
@@ -221,6 +234,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   async function openOrderEditor() {
     if (editingOrder) { setEditingOrder(false); return; }
     setEditingOrder(true);
+    setInventoryCheck(null);
     setOrderModalError("");
     try { setInventoryChoices(await api.sales.products()); }
     catch (error) { setOrderModalError("Unable to load inventory products: " + error.message); }
@@ -519,6 +533,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
             {editingOrder&&<p className="muted">Save or cancel your detail changes before changing the status.</p>}
           </div>}
           {orderModalError && <p className="error vendor-order-feedback" role="alert">{orderModalError}</p>}
+          {inventoryCheck && !inventoryCheck.ready && <p className="muted vendor-order-feedback">Affected items: {inventoryCheck.items.filter(item=>!item.sufficient).map(item=>item.name).join(", ")}. Use Edit order → Repair product link.</p>}
           {orderStatusNotice && <p className="success vendor-order-feedback" role="status">{orderStatusNotice}</p>}
           {editingOrder && !["completed","cancelled"].includes(selectedOrder.status)
             ? <form id="vendor-order-edit" key={selectedOrder._id} onSubmit={saveOrderDetails} className="vendor-order-edit-form">
