@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import jwt from "jsonwebtoken";
 import { Server } from "socket.io";
@@ -31,7 +32,10 @@ import mediaRoutes from "./routes/media.js";
 import { sharedRateLimit } from "./middleware/sharedRateLimit.js";
 import { startRedis, stopRedis } from "./lib/distributedRedis.js";
 
-dotenv.config();
+// Always resolve credentials relative to the backend source, not process.cwd().
+ // Codespaces, npm scripts and workflow runners can otherwise select different
+ // .env files and point API requests at an unrelated MongoDB instance.
+dotenv.config({ path: fileURLToPath(new URL("./.env", import.meta.url)) });
 const app = express();
 app.disable("x-powered-by");
 const PORT = process.env.PORT || 5000;
@@ -280,7 +284,22 @@ async function start() {
   }
 
   await startRedis(io);
-  httpServer.listen(PORT, () => console.log(`API and WebSocket server listening on http://localhost:${PORT}`));
+  try {
+    await new Promise((resolve, reject) => {
+      const onError = error => { httpServer.off("listening", onListening); reject(error); };
+      const onListening = () => { httpServer.off("error", onError); resolve(); };
+      httpServer.once("error", onError);
+      httpServer.once("listening", onListening);
+      httpServer.listen(PORT);
+    });
+    console.log(`API and WebSocket server listening on http://localhost:${PORT}`);
+    console.log(`MongoDB database: ${mongoose.connection.name} (backend PID ${process.pid})`);
+  } catch (error) {
+    if (error?.code === "EADDRINUSE") {
+      console.error(`Port ${PORT} is already occupied. Stop the older BookFlow API process before starting this one; otherwise the frontend will keep reaching the older server.`);
+    }
+    throw error;
+  }
 }
 
 let shuttingDown = false;
