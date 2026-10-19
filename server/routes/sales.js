@@ -6,6 +6,7 @@ import { storeImageFields } from "../lib/mediaStore.js";
 import { orderTrackingToken } from "../lib/orderTracking.js";
 import { bookingMutationGuard } from "../middleware/bookingMutationGuard.js";
 import { resolveOrderedProduct, exactInventoryPattern } from "../lib/resolveOrderedProduct.js";
+import { databaseFingerprint } from "../lib/databaseFingerprint.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
@@ -299,6 +300,7 @@ router.get("/orders/:id/inventory-diagnostics", async (req, res) => {
     }
     res.set("Cache-Control", "no-store");
     return res.json({ orderNumber: order.orderNumber, status: order.status,
+      database: { name: ProductOrder.db.name, fingerprint: databaseFingerprint() },
       ready: items.length > 0 && items.every(item => item.enoughStock), items });
   } catch (error) {
     console.error("Inventory diagnostic error", error);
