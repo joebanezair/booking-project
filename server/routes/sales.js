@@ -254,6 +254,41 @@ router.get("/orders/:id/tracking", async (req,res) => {
 
 // Serialize completion and other order status writes across API instances for the same business.
 // This is interim protection, not a substitute for MongoDB transactions.
+// Explicitly repair an order line whose product has been removed or changed.
+// The business must select a real inventory product; historical order prices remain unchanged.
+router.patch("/orders/:id/items/:index/product", bookingMutationGuard(req => req.user.id), async (req, res) => {
+  try {
+    const index = Number(req.params.index);
+    const id = String(req.body.productId || "");
+    if (!Number.isSafeInteger(index) || index < 0 || !/^[a-fA-F0-9]{24}$/.test(id)) {
+      return res.status(400).json({ message: "Select a valid inventory product and order item." });
+    }
+    const order = await ProductOrder.findOne({ _id: req.params.id, businessOwner: req.user.id });
+    if (!order) return res.status(404).json({ message: "Order not found." });
+    if (["completed", "cancelled"].includes(order.status)) {
+      return res.status(409).json({ message: "Completed or cancelled orders cannot be relinked." });
+    }
+    if (index >= order.items.length) return res.status(404).json({ message: "Order item not found." });
+    const product = await Product.findOne({ _id: id, user: req.user.id }).select("_id name sku stock");
+    if (!product) return res.status(404).json({ message: "This inventory product is unavailable." });
+    const item = order.items[index];
+    const needed = order.items.reduce((sum, line, position) => 
+      sum + (position === index || String(line.product) === id ? Number(line.quantity) : 0), 0);
+    if (!Number.isSafeInteger(needed) || needed < 1 || product.stock < needed) {
+      return res.status(409).json({ message: "Insufficient stock for the selected product and quantity." });
+    }
+    item.product = product._id;
+    item.name = product.name;
+    item.sku = product.sku;
+    // Preserve the customer's agreed unit price and total; do not silently reprice an existing order.
+    await order.save();
+    res.json(order);
+  } catch (error) {
+    console.error(error);
+    res.status(error.name === "CastError" ? 400 : 500).json({ message: "Unable to relink the order item." });
+  }
+});
+
 router.patch("/orders/:id/status", bookingMutationGuard(req => req.user.id), async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(["completed","cancelled"].includes(order.status)&&status!==order.status)return res.status(409).json({message:"Completed or cancelled orders cannot be reopened."});if(status==="completed"&&order.status!=="completed"){const deducted=await deductInventory(order.items,req.user.id);try{order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
 
 router.patch("/orders/:id/payment", bookingMutationGuard(req => req.user.id), async(req,res)=>{try{
