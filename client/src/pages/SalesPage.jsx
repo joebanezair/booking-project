@@ -222,7 +222,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         const live=apiVersion.status==="fulfilled" ? apiVersion.value : null;
         const details=inventory.status==="fulfilled" ? inventory.value : null;
         if (live && live.inventoryFlowVersion!=="betta-vol1-auto-stock-20261019") {
-          message="Your browser is connected to an older API process on port 5000. Stop the old backend, start the updated betta-vol1 server, then retry. No stock was deducted by this failed request.";
+          message="Your browser is connected to an older API process on port 5000. Stop the old backend, start the updated betta-vol1 server, then retry after checking the order status and stock. Do not create a duplicate order.";
         } else if (details) {
           if (!details.ready) {
             const problem=details.items.filter(item=>!item.enoughStock)
