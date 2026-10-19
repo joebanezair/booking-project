@@ -1,3 +1,10 @@
+## betta-vol1 incremental sales concurrency hardening — October 19, 2026
+
+- POS rejects non-integer, non-positive and greater-than-999 item quantities instead of silently clamping malformed input. Repeated SKU quantities are checked for safe-integer overflow.
+- POS checkout, order status/payment/details updates, and product edit/deletion now share the existing MongoDB per-business booking mutation lease. This reduces overlapping writes among participating routes across API replicas that share a MongoDB primary. The lease is temporary (120 seconds), has no renewal/fencing, and is **not** a transaction or crash-safe inventory reservation.
+- CI now runs for direct pushes to `betta-vol1` in addition to the pre-existing branches.
+- Remaining release blockers: move stock updates, movement history, and POS/order persistence into MongoDB multi-document transactions on a replica set; add durable idempotency/unique request keys and atomic order state transitions; add coverage for crashes, retries and multiple API replicas. Redis dependencies/lockfile and real load testing still need completion. Do not claim 100K concurrent-user readiness.
+
 # BookFlow — Business Booking and Service Platform
 
 BookFlow is a full-stack MERN application for service businesses. The account model is intentionally simple:
