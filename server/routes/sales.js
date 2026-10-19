@@ -86,7 +86,29 @@ async function deductInventory(lines, userId) {
   // Otherwise two lines for one SKU can each pass a stale preflight check.
   const grouped = new Map();
   for (const line of lines) {
-    const key = String(line.product);
+    // Older orders may contain a deleted/stale product ObjectId. Reconcile
+    // only when an exact SKU (or name for SKU-less records) identifies one
+    // inventory product owned by this business. Never guess by price alone.
+    let linked = line.product
+      ? await Product.findOne({ _id: line.product, user: userId }).select("_id name sku").lean()
+      : null;
+    if (!linked) {
+      const sku = String(line.sku || "").trim();
+      const name = String(line.name || "").trim();
+      const query = sku ? { sku } : name ? { name } : null;
+      if (!query) {
+        throw Object.assign(new Error("This order item has no valid product reference, SKU or name. It cannot be matched safely to inventory."), { statusCode: 409 });
+      }
+      const candidates = await Product.find({ user: userId, ...query }).select("_id name sku").limit(2).lean();
+      if (candidates.length !== 1) {
+        throw Object.assign(new Error(
+          (name || sku || "This order item") + (candidates.length ? " matches multiple inventory products. Resolve the product link manually." : " is no longer linked to a matching inventory product.")
+        ), { statusCode: 409 });
+      }
+      linked = candidates[0];
+      line.product = linked._id;
+    }
+    const key = String(linked._id);
     const quantity = Number(line.quantity);
     if (!Number.isSafeInteger(quantity) || quantity < 1) {
       throw Object.assign(new Error("Invalid product quantity."), { statusCode: 400 });
