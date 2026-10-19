@@ -68,9 +68,6 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   const [editingOrder,setEditingOrder]=useState(false);
   const [orderSaving,setOrderSaving]=useState(false);
   const [orderModalError,setOrderModalError]=useState("");
-  const [inventoryChoices,setInventoryChoices]=useState([]);
-  const [relinkSelection,setRelinkSelection]=useState({});
-  const [inventoryCheck,setInventoryCheck]=useState(null);
   const [trackingLink,setTrackingLink]=useState("");
   const [shareNotice,setShareNotice]=useState("");
   const [orderStatusBusy,setOrderStatusBusy]=useState("");
@@ -217,30 +214,6 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     }catch(err){
       setOrderModalError(err.message);
     }finally{setOrderStatusBusy("");}
-  }
-
-  async function openOrderEditor() {
-    if (editingOrder) { setEditingOrder(false); return; }
-    setEditingOrder(true);
-    setInventoryCheck(null);
-    setOrderModalError("");
-    try { setInventoryChoices(await api.sales.products()); }
-    catch (error) { setOrderModalError("Unable to load inventory products: " + error.message); }
-  }
-
-  async function relinkOrderLine(index) {
-    if (!selectedOrder || orderSaving) return;
-    const productId = relinkSelection[index];
-    if (!productId) { setOrderModalError("Choose the replacement inventory product first."); return; }
-    setOrderSaving(true);
-    setOrderModalError("");
-    try {
-      const updated = await api.sales.relinkOrderItem(selectedOrder._id, index, productId);
-      setOrders(existing => existing.map(order => order._id === updated._id ? updated : order));
-      setOrderStatusNotice("Product link repaired. Verify the item and quantity before completing the sale.");
-      setEditingOrder(false);
-    } catch (error) { setOrderModalError(error.message); }
-    finally { setOrderSaving(false); }
   }
 
   async function saveOrderDetails(event) {
@@ -497,7 +470,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
             <span className="vendor-order-status">{orderStatusLabel(selectedOrder.status)}</span>
             {["completed","cancelled"].includes(selectedOrder.status)
               ? <span className="muted">Read-only: this sale is {selectedOrder.status}.</span>
-              : <Button type="button" variant="outline" size="sm" onClick={()=>{void openOrderEditor();setDraftOrderStatus(selectedOrder.status);}}
+              : <Button type="button" variant="outline" size="sm" onClick={()=>{setEditingOrder(!editingOrder);setDraftOrderStatus(selectedOrder.status);setOrderModalError("");}}
                   disabled={orderSaving||Boolean(orderStatusBusy)}><FiEdit2 aria-hidden="true"/>{editingOrder?"Cancel editing":"Edit order"}</Button>}
           </div>
           {!(["completed","cancelled"].includes(selectedOrder.status)) && <div className="vendor-order-status-editor">
@@ -521,7 +494,6 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
             {editingOrder&&<p className="muted">Save or cancel your detail changes before changing the status.</p>}
           </div>}
           {orderModalError && <p className="error vendor-order-feedback" role="alert">{orderModalError}</p>}
-          {inventoryCheck && !inventoryCheck.ready && <p className="muted vendor-order-feedback">Affected items: {inventoryCheck.items.filter(item=>!item.sufficient).map(item=>item.name).join(", ")}. Use Edit order → Repair product link.</p>}
           {orderStatusNotice && <p className="success vendor-order-feedback" role="status">{orderStatusNotice}</p>}
           {editingOrder && !["completed","cancelled"].includes(selectedOrder.status)
             ? <form id="vendor-order-edit" key={selectedOrder._id} onSubmit={saveOrderDetails} className="vendor-order-edit-form">
@@ -535,16 +507,6 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
                 {selectedOrder.items.map((item,i)=><div className="vendor-order-edit-item" key={String(item.product)+"-"+i}>
                   <div><strong>{item.name}</strong><small>{money(item.unitPrice,selectedOrder.currency)} each</small></div>
                   <Label>Quantity<Input name={"quantity-"+i} type="number" min="1" max="999" step="1" required defaultValue={item.quantity}/></Label>
-                  <div>
-                    <Label>Repair product link (if the original product is missing)
-                      <Select value={relinkSelection[i] || ""} onChange={e=>setRelinkSelection(previous=>({...previous,[i]:e.target.value}))}>
-                        <option value="">Choose inventory product</option>
-                        {inventoryChoices.map(product=><option key={product._id} value={product._id}>{product.name} — stock {product.stock}</option>)}
-                      </Select>
-                    </Label>
-                    <Button type="button" variant="outline" size="sm" disabled={!relinkSelection[i] || orderSaving}
-                      onClick={()=>void relinkOrderLine(i)}>Link selected product</Button>
-                  </div>
                 </div>)}
                 <h3>Courier information</h3>
                 <div className="vendor-order-form-grid">
