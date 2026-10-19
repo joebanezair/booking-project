@@ -94,6 +94,7 @@ async function uploadedFields(body, fields) {
 }
 
 export const api = {
+  live: () => request("/live"),
   register: body => request("/auth/register", { method: "POST", body: JSON.stringify(body) }),
   inviteAdmin: (inviteKey, body) => request(`/auth/register/admin/${encodeURIComponent(inviteKey)}`, { method: "POST", body: JSON.stringify(body) }),
   login: body => request("/auth/login", { method: "POST", body: JSON.stringify(body) }),
@@ -168,6 +169,7 @@ export const api = {
     orders: () => request("/sales/orders"),
     updateOrder: (id, body) => request(`/sales/orders/${encodeURIComponent(id)}`, {method:"PATCH",body:JSON.stringify(body)}),
     orderTracking: id => request(`/sales/orders/${encodeURIComponent(id)}/tracking`),
+    orderInventoryDiagnostics: id => request(`/sales/orders/${encodeURIComponent(id)}/inventory-diagnostics`),
     setOrderStatus: (id, status) => request(`/sales/orders/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }),
     recordOrderPayment: (id, body) => request(`/sales/orders/${id}/payment`, { method: "PATCH", body: JSON.stringify(body) }),
     inventoryHistory: () => request("/sales/inventory-history")
