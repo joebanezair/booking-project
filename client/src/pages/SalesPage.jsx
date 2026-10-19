@@ -212,7 +212,35 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
       setOrderStatusNotice(updated.status === "completed" ? "Sale completed. Product quantities were deducted from inventory." : "Status updated to "+orderStatusLabel(updated.status)+". The buyer can see the change on their tracking page.");
       if(updated.status==="completed" && !ordersOnly)await load();
     }catch(err){
-      setOrderModalError(err.message);
+      let message=err.message;
+      if (next==="completed" && err.status===409) {
+        // Diagnose the SAME order ID through the SAME API that rejected the write.
+        // Do not retry a stock deduction or claim inventory changed.
+        const [apiVersion, inventory] = await Promise.allSettled([
+          api.live(), api.sales.orderInventoryDiagnostics(id)
+        ]);
+        const live=apiVersion.status==="fulfilled" ? apiVersion.value : null;
+        const details=inventory.status==="fulfilled" ? inventory.value : null;
+        if (live && live.inventoryFlowVersion!=="betta-vol1-auto-stock-20261019") {
+          message="Your browser is connected to an older API process on port 5000. Stop the old backend, start the updated betta-vol1 server, then retry. No stock was deducted by this failed request.";
+        } else if (details) {
+          if (!details.ready) {
+            const problem=details.items.filter(item=>!item.enoughStock)
+              .map(item=>item.name + ": " + (item.issue ||
+                (!item.resolvedProductId ? "inventory record not found in this API database" :
+                "available " + item.availableStock + ", required " + item.requiredFromInventory)))
+              .join("; ");
+            message="The running API sees a different inventory state for order " +
+              details.orderNumber + " (" + id + "): " + problem +
+              ". Check that this backend points to the same MongoDB as your order diagnostic.";
+          } else {
+            message="The running API confirms enough stock for order " + details.orderNumber +
+              " (" + id + "), but completion still returned 409: " + err.message +
+              ". Check the backend terminal for a conflicting operation or concurrent update.";
+          }
+        }
+      }
+      setOrderModalError(message);
     }finally{setOrderStatusBusy("");}
   }
 
