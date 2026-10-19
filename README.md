@@ -1,3 +1,21 @@
+## Fixed: false 409 when completing online orders with sufficient stock (October 19, 2026)
+
+**Root cause:** `order.items` is an array of Mongoose subdocuments. The stock-deduction aggregator previously used `{ ...line, quantity }`, but spreading a Mongoose subdocument does not copy schema fields such as `product`. The subsequent conditional `Product.findOneAndUpdate` received a missing product ID, produced no update, then incorrectly reported that the item was no longer linked to inventory—even when the original product ID and stock were valid. This was a server-side object-shape bug, **not a Redis cache or low-stock bug**.
+
+**Fix:** `server/lib/inventoryDeductionLines.js` now constructs explicit rows with `product: linked._id`, `name`, `sku`, and `quantity`; `server/routes/sales.js` uses it for online order completion and POS sales. Duplicate product lines are still summed and safety-checked. `server/tests/inventoryDeductionLines.test.js` contains Mongoose subdocument regression cases. The live API marker is `betta-vol1-deduction-subdoc-fix-20261019`.
+
+**Deploy and confirm on Codespaces:**
+
+```bash
+git switch betta-vol1 && git pull origin betta-vol1
+bash scripts/restart-bookflow-api.sh
+# In a separate terminal:
+curl -s http://127.0.0.1:5000/api/live
+cd server && node --test tests/inventoryDeductionLines.test.js
+```
+
+After verifying the live API marker, refresh the browser and complete the existing pending order **once**. Stock should decrease by the ordered quantity and the order should become Completed. If retrying any order after an earlier error, verify its live status and stock first; do not create a duplicate order or manually edit product IDs. This code change does not replace multi-document MongoDB transaction/idempotency hardening, which is still needed for crash-safe operation.
+
 ## Cache isolation and inventory 409 diagnosis — October 19, 2026
 
 Caching on `betta-vol1` is intentionally limited to **anonymous GET /api/public/browse** (service discovery) and forum reads. Inventory, customer order status, checkout and sales do **not** use `publicJsonCache` and never read or write Redis inventory values. The order completion handler reads MongoDB directly and conditionally decrements stock.
