@@ -107,6 +107,8 @@ async function deductInventory(lines, userId) {
       }
       linked = candidates[0];
       line.product = linked._id;
+      // When processing an online order this also updates its persisted subdocument
+      // after order.save(), avoiding another reconciliation on future reads.
     }
     const key = String(linked._id);
     const quantity = Number(line.quantity);
