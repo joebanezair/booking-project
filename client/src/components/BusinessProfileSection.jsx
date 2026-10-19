@@ -1,6 +1,7 @@
 import { Button } from "./ui/button.jsx";
 import { Input } from "./ui/input.jsx";
 import { Textarea } from "./ui/textarea.jsx";
+import { Image } from "./ui/image.jsx";
 import { Label } from "./ui/label.jsx";
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
@@ -60,6 +61,7 @@ export default function BusinessProfileSection({user,onUserUpdate}){
 
       <p className="muted">Booking schedule, timezone, slot interval, notice period, and blackout dates are managed from <strong>Bookings → Availability</strong>.</p>
 
+      {form.logo && <div className="business-logo-preview" style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}><Image src={form.logo} alt={`${form.name || "Business"} logo preview`} style={{width:96,height:96,objectFit:"contain",borderRadius:10,border:"1px solid var(--border)",background:"var(--card)"}}/><div><strong>Business logo</strong><p className="muted" style={{margin:"4px 0 0"}}>Current logo preview</p></div></div>}
       <div className="image-actions"><Label className="upload-button">Choose business logo<Input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>chooseLogo(e.target.files?.[0])}/></Label>{form.logo&&<Button variant="plain" type="button" className="danger" onClick={()=>setForm({...form,logo:""})}>Remove logo</Button>}</div>
       {error&&<p className="error">{error}</p>}{message&&<p className="success">{message}</p>}
       <Button variant="plain" className="primary-button">Save business details</Button>
