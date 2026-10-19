@@ -1,3 +1,7 @@
+### Repairing missing inventory links in online orders
+
+If completing an online order reports that an item is no longer linked to inventory, open **Online Orders → Order details → Edit order**, select the correct existing product under **Repair product link**, and choose **Link selected product**. The repair requires a product in the same business inventory with sufficient stock and preserves the customer's original agreed unit price. Check the updated item and quantity before retrying **Complete sale**. Closed orders cannot be relinked. Never relink to a different product without confirming it is what the buyer ordered. No product is created automatically.
+
 ## betta-vol1 incremental sales concurrency hardening — October 19, 2026
 
 - POS rejects non-integer, non-positive and greater-than-999 item quantities instead of silently clamping malformed input. Repeated SKU quantities are checked for safe-integer overflow.
