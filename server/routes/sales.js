@@ -9,6 +9,8 @@ import { resolveOrderedProduct, exactInventoryPattern } from "../lib/resolveOrde
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
+// Stock, orders, payments and sales are never HTTP/browser/proxy cacheable.
+router.use((_req, res, next) => { res.set("Cache-Control", "no-store"); next(); });
 router.use(storeImageFields(["images", "image"]));
 
 function productImages(body){return (Array.isArray(body.images)?body.images:[]).map(value=>String(value||"").trim()).filter(Boolean).slice(0,8);}
