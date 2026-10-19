@@ -167,6 +167,7 @@ export const api = {
     checkout: body => request("/sales/pos", { method: "POST", body: JSON.stringify(body) }),
     orders: () => request("/sales/orders"),
     updateOrder: (id, body) => request(`/sales/orders/${encodeURIComponent(id)}`, {method:"PATCH",body:JSON.stringify(body)}),
+    relinkOrderItem: (id, index, productId) => request(`/sales/orders/${encodeURIComponent(id)}/items/${index}/product`, {method:"PATCH",body:JSON.stringify({productId})}),
     orderTracking: id => request(`/sales/orders/${encodeURIComponent(id)}/tracking`),
     setOrderStatus: (id, status) => request(`/sales/orders/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }),
     recordOrderPayment: (id, body) => request(`/sales/orders/${id}/payment`, { method: "PATCH", body: JSON.stringify(body) }),
