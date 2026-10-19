@@ -107,7 +107,23 @@ async function deductInventory(lines, userId) {
         { $inc: { stock: -line.quantity } },
         { new: true }
       );
-      if (!changed) throw Object.assign(new Error(line.name + " has insufficient stock."), { statusCode: 409 });
+      if (!changed) {
+        // A failed conditional stock update can mean a stale/missing product
+        // reference, wrong business ownership, or genuinely low inventory.
+        const product = await Product.findOne({ _id: line.product, user: userId })
+          .select("name sku stock").lean();
+        const label = product?.name || line.name || line.sku || "This product";
+        if (!product) {
+          throw Object.assign(
+            new Error("Order item " + label + " is no longer linked to a product in your inventory. Check the order's product reference before completing the sale."),
+            { statusCode: 409 }
+          );
+        }
+        throw Object.assign(
+          new Error(label + " has insufficient stock. Available: " + product.stock + "; required: " + line.quantity + "."),
+          { statusCode: 409 }
+        );
+      }
       deducted.push(line);
       await InventoryMovement.create({businessOwner:userId,product:changed._id,productName:changed.name,type:"sale",quantity:-line.quantity,stockAfter:changed.stock,reference:"checkout"});
     }
