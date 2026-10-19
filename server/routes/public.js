@@ -47,6 +47,7 @@ async function verifiedReviewSummary(businessId) {
 }
 
 router.get("/profile/:username", optionalAuth, async (req, res) => {
+  res.set("Cache-Control", "no-store");
   try {
     const user = await User.findOne({
       username: String(req.params.username).toLowerCase(),
@@ -544,6 +545,7 @@ router.post("/book/:userId", bookingMutationGuard(req => req.params.userId), asy
 });
 
 router.post("/products/:userId/order", async (req, res) => {
+  res.set("Cache-Control", "no-store");
   try {
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Business not found." });
     const owner = await User.findOne({ _id:req.params.userId, role:"business", accountStatus:"active" }).select("_id");
