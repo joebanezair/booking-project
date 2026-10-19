@@ -1,3 +1,17 @@
+## Cache isolation and inventory 409 diagnosis — October 19, 2026
+
+Caching on `betta-vol1` is intentionally limited to **anonymous GET /api/public/browse** (service discovery) and forum reads. Inventory, customer order status, checkout and sales do **not** use `publicJsonCache` and never read or write Redis inventory values. The order completion handler reads MongoDB directly and conditionally decrements stock.
+
+**Cache hardening:** all authenticated sales routes now set `Cache-Control: no-store`; storefront business profile (which includes current product stock) and public order submission also send `no-store`. The frontend bypasses its browser HTTP cache for sales, product profiles and order-status API calls. Regression guards under `server/tests/inventoryCacheIsolation.test.js` enforce these boundaries.
+
+**If stock shows enough but completion still returns 409:**
+1. Make sure Codespaces port 5000 serves the updated backend: `curl -s http://127.0.0.1:5000/api/live`. Stop stale processes safely with `bash scripts/restart-bookflow-api.sh` after pulling `betta-vol1`.
+2. The order dialog now requests an authenticated, read-only `/api/sales/orders/:id/inventory-diagnostics` from the **same API** that returned 409; its response includes a credential-safe database fingerprint.
+3. From the same repository checkout, run `cd server && node scripts/diagnose-order-inventory.mjs BFO-2026-1792414125425`. Compare its `databaseFingerprint` with the API fingerprint. If they differ, the server and CLI are using different database credentials/targets or JWT secrets, even if both databases are named `booking_app`. Never log or share raw `MONGO_URI` values.
+4. For an isolated, **temporary** cache A/B test, set `CACHE_PUBLIC_TTL_MS=0` in `server/.env` and restart the backend. This disables cached public discovery/forum JSON without modifying database records or disabling Redis-backed Socket.IO. It does **not** repair a missing product reference, and normal cache TTLs can be restored after testing.
+
+Do not re-create orders, manually force stock or consider this fixed until the order is completed against the running MongoDB. MongoDB multi-document transactions remain a production correctness requirement.
+
 ## Codespaces: resolve online order 409 with correct running API
 
 If a read-only script confirms stock exists but **Complete sale** returns HTTP 409, first check the API actually serving the browser (the Vite `/api` proxy points to localhost port 5000). A stale process can keep serving an old checkout after `git pull`, and a second `npm run dev` fails with `EADDRINUSE`.
