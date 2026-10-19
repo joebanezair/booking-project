@@ -206,7 +206,16 @@ router.put("/products/:id", bookingMutationGuard(req => req.user.id), async (req
   } catch(error){console.error(error);res.status(500).json({message:"Unable to update product."});}
 });
 router.delete("/products/:id", bookingMutationGuard(req => req.user.id), async(req,res) => {
-  try { const product=await Product.findOneAndDelete({_id:req.params.id,user:req.user.id}); if(!product)return res.status(404).json({message:"Product not found."}); res.status(204).end(); }
+  try {
+    const activeOrders = await ProductOrder.countDocuments({
+      businessOwner: req.user.id,
+      status: { $nin: ["completed", "cancelled"] },
+      "items.product": req.params.id
+    });
+    if (activeOrders) return res.status(409).json({
+      message: "This product belongs to " + activeOrders + " active online order(s). Complete or cancel those orders before deleting it."
+    });
+    const product=await Product.findOneAndDelete({_id:req.params.id,user:req.user.id}); if(!product)return res.status(404).json({message:"Product not found."}); res.status(204).end(); }
   catch(error){console.error(error);res.status(500).json({message:"Unable to delete product."});}
 });
 router.get("/pos", async(req,res) => {
@@ -286,6 +295,39 @@ router.patch("/orders/:id/items/:index/product", bookingMutationGuard(req => req
   } catch (error) {
     console.error(error);
     res.status(error.name === "CastError" ? 400 : 500).json({ message: "Unable to relink the order item." });
+  }
+});
+
+// Diagnose order links without changing stock or prices. Intended for order editor.
+router.get("/orders/:id/inventory-check", async (req, res) => {
+  try {
+    const order = await ProductOrder.findOne({ _id: req.params.id, businessOwner: req.user.id }).lean();
+    if (!order) return res.status(404).json({ message: "Order not found." });
+    const ids = (order.items || []).map(item => item.product).filter(Boolean);
+    const matches = await Product.find({ user: req.user.id, _id: { $in: ids } })
+      .select("_id name sku stock").lean();
+    const byId = new Map(matches.map(product => [String(product._id), product]));
+    const totals = new Map();
+    for (const item of order.items || []) {
+      const id = String(item.product || "");
+      totals.set(id, (totals.get(id) || 0) + Number(item.quantity || 0));
+    }
+    const items = (order.items || []).map((item, index) => {
+      const product = byId.get(String(item.product || ""));
+      const required = totals.get(String(item.product || "")) || 0;
+      return {
+        index, name: item.name || "Unnamed item", sku: item.sku || "",
+        productId: item.product ? String(item.product) : null,
+        linked: Boolean(product), available: product ? Number(product.stock) : null,
+        required, validQuantity: Number.isSafeInteger(required) && required > 0,
+        sufficient: Boolean(product && Number.isSafeInteger(required) && required > 0 && product.stock >= required)
+      };
+    });
+    res.set("Cache-Control", "no-store");
+    res.json({ ready: items.every(item => item.linked && item.sufficient), items });
+  } catch (error) {
+    console.error(error);
+    res.status(error.name === "CastError" ? 400 : 500).json({ message: "Unable to check order inventory." });
   }
 });
 
