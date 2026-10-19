@@ -158,7 +158,7 @@ router.post("/products", async (req,res) => {
   } catch(error) { console.error(error); res.status(500).json({message:"Unable to create product."}); }
 });
 
-router.put("/products/:id", async (req,res) => {
+router.put("/products/:id", bookingMutationGuard(req => req.user.id), async (req,res) => {
   try {
     const name=String(req.body.name||"").trim();
     if(!name) return res.status(400).json({message:"Product name is required."});
@@ -167,7 +167,7 @@ router.put("/products/:id", async (req,res) => {
     res.json(product);
   } catch(error){console.error(error);res.status(500).json({message:"Unable to update product."});}
 });
-router.delete("/products/:id", async(req,res) => {
+router.delete("/products/:id", bookingMutationGuard(req => req.user.id), async(req,res) => {
   try { const product=await Product.findOneAndDelete({_id:req.params.id,user:req.user.id}); if(!product)return res.status(404).json({message:"Product not found."}); res.status(204).end(); }
   catch(error){console.error(error);res.status(500).json({message:"Unable to delete product."});}
 });
@@ -218,7 +218,7 @@ router.get("/orders/:id/tracking", async (req,res) => {
 // This is interim protection, not a substitute for MongoDB transactions.
 router.patch("/orders/:id/status", bookingMutationGuard(req => req.user.id), async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(["completed","cancelled"].includes(order.status)&&status!==order.status)return res.status(409).json({message:"Completed or cancelled orders cannot be reopened."});if(status==="completed"&&order.status!=="completed"){const deducted=await deductInventory(order.items,req.user.id);try{order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
 
-router.patch("/orders/:id/payment", async(req,res)=>{try{
+router.patch("/orders/:id/payment", bookingMutationGuard(req => req.user.id), async(req,res)=>{try{
   const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});
   if(!order)return res.status(404).json({message:"Order not found."});
   if(order.status==="completed")return res.status(409).json({message:"Completed sales cannot be edited."});
@@ -233,7 +233,7 @@ router.patch("/orders/:id/payment", async(req,res)=>{try{
 
 
 /** Business edits only before a sale is completed. Never trust client totals or prices. */
-router.patch("/orders/:id", async(req,res)=>{
+router.patch("/orders/:id", bookingMutationGuard(req => req.user.id), async(req,res)=>{
   try {
     const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});
     if(!order)return res.status(404).json({message:"Order not found."});
