@@ -107,8 +107,6 @@ async function deductInventory(lines, userId) {
       }
       linked = candidates[0];
       line.product = linked._id;
-      // When processing an online order this also updates its persisted subdocument
-      // after order.save(), avoiding another reconciliation on future reads.
     }
     const key = String(linked._id);
     const quantity = Number(line.quantity);
@@ -333,7 +331,7 @@ router.get("/orders/:id/inventory-check", async (req, res) => {
   }
 });
 
-router.patch("/orders/:id/status", bookingMutationGuard(req => req.user.id), async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(["completed","cancelled"].includes(order.status)&&status!==order.status)return res.status(409).json({message:"Completed or cancelled orders cannot be reopened."});if(status==="completed"&&order.status!=="completed"){const deducted=await deductInventory(order.items,req.user.id);try{order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
+router.patch("/orders/:id/status", bookingMutationGuard(req => req.user.id), async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(["completed","cancelled"].includes(order.status)&&status!==order.status)return res.status(409).json({message:"Completed or cancelled orders cannot be reopened."});if(status==="completed"&&order.status!=="completed"){if(!order.items?.length)return res.status(409).json({message:"This order has no products to deduct."});const deducted=await deductInventory(order.items,req.user.id);try{order.markModified("items");order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
 
 router.patch("/orders/:id/payment", bookingMutationGuard(req => req.user.id), async(req,res)=>{try{
   const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});
