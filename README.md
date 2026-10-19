@@ -1,3 +1,9 @@
+## Automatic inventory deduction on online order completion
+
+The storefront saves each ordered product's inventory ObjectId. **Complete sale** invokes the backend checkout logic, which atomically decrements each matching inventory product by its purchased quantity (including duplicate-line aggregation), logs an inventory movement, and marks the online order completed. The frontend no longer blocks completion with a separate link-only check: older orders may automatically reconcile against a unique exact business-owned SKU, or a unique exact name if they have no SKU. The reconciled product reference is then saved with the completed order. No manual product linking is required for valid orders or unambiguous legacy matches.
+
+Missing/deleted products or ambiguous matches are **not** substituted automatically; stock remains protected and a 409 error explains why completion cannot proceed. Stock is not reserved or deducted when the guest initially submits an online order. Multi-product operations are still not crash-atomic; MongoDB transactions are a remaining release blocker. Run CI and an end-to-end order test after deployment before relying on the change.
+
 ### Repairing missing inventory links in online orders
 
 If completing an online order reports that an item is no longer linked to inventory, open **Online Orders → Order details → Edit order**, select the correct existing product under **Repair product link**, and choose **Link selected product**. The repair requires a product in the same business inventory with sufficient stock and preserves the customer's original agreed unit price. Check the updated item and quantity before retrying **Complete sale**. Closed orders cannot be relinked. Never relink to a different product without confirming it is what the buyer ordered. No product is created automatically.
