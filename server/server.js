@@ -70,7 +70,8 @@ if (process.env.TRUST_PROXY === "1") app.set("trust proxy", 1);
 app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
 app.use(express.json({ limit: "20mb" }));
 
-app.get("/api/live", (_req, res) => res.json({ ok: true }));
+// Non-sensitive version marker to distinguish a stale backend process from this inventory fix.
+app.get("/api/live", (_req, res) => res.json({ ok: true, inventoryFlowVersion: "betta-vol1-auto-stock-20261019" }));
 app.get("/api/ready", (_req, res) => {
   const ok = !shuttingDown && mongoose.connection.readyState === 1 && (!process.env.MEDIA_MONGO_URI || mediaEnabled());
   res.status(ok ? 200 : 503).json({ ok });
