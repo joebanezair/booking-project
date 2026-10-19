@@ -4,6 +4,7 @@ import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
 import { storeImageFields } from "../lib/mediaStore.js";
 import { orderTrackingToken } from "../lib/orderTracking.js";
+import { bookingMutationGuard } from "../middleware/bookingMutationGuard.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
@@ -91,7 +92,10 @@ async function deductInventory(lines, userId) {
       throw Object.assign(new Error("Invalid product quantity."), { statusCode: 400 });
     }
     const previous = grouped.get(key);
-    if (previous) previous.quantity += quantity;
+    if (previous) {
+      if(!Number.isSafeInteger(previous.quantity + quantity)) throw Object.assign(new Error("Product quantity is too large."), { statusCode: 400 });
+      previous.quantity += quantity;
+    }
     else grouped.set(key, { ...line, quantity });
   }
   lines = [...grouped.values()];
@@ -171,7 +175,7 @@ router.get("/pos", async(req,res) => {
   try { res.json(await PosSale.find({businessOwner:req.user.id}).sort({soldAt:-1}).limit(200).lean()); }
   catch(error){console.error(error);res.status(500).json({message:"Unable to load POS sales."});}
 });
-router.post("/pos", async(req,res) => {
+router.post("/pos", bookingMutationGuard(req => req.user.id), async(req,res) => {
   try {
     const rows=Array.isArray(req.body.items)?req.body.items:[];
     if(!rows.length)return res.status(400).json({message:"Add at least one product."});
@@ -179,7 +183,8 @@ router.post("/pos", async(req,res) => {
     const productMap=new Map(products.map(product=>[String(product._id),product]));
     const lines=[]; let total=0; let currency="PHP";
     for(const row of rows){
-      const product=productMap.get(String(row.productId)); const quantity=Math.max(1,Math.floor(Number(row.quantity||1)));
+      const product=productMap.get(String(row.productId)); const quantity=Number(row.quantity);
+      if(!Number.isSafeInteger(quantity)||quantity<1||quantity>999)return res.status(400).json({message:"Quantity must be a whole number between 1 and 999."});
       if(!product)return res.status(404).json({message:"Product not found."});
       if(product.stock<quantity)return res.status(409).json({message:product.name+" has insufficient stock."});
       const lineTotal=Number(product.price||0)*quantity;
@@ -209,7 +214,9 @@ router.get("/orders/:id/tracking", async (req,res) => {
   }catch(error){console.error(error);res.status(500).json({message:"Unable to create tracking link."});}
 });
 
-router.patch("/orders/:id/status", async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(["completed","cancelled"].includes(order.status)&&status!==order.status)return res.status(409).json({message:"Completed or cancelled orders cannot be reopened."});if(status==="completed"&&order.status!=="completed"){const deducted=await deductInventory(order.items,req.user.id);try{order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
+// Serialize completion and other order status writes across API instances for the same business.
+// This is interim protection, not a substitute for MongoDB transactions.
+router.patch("/orders/:id/status", bookingMutationGuard(req => req.user.id), async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(["completed","cancelled"].includes(order.status)&&status!==order.status)return res.status(409).json({message:"Completed or cancelled orders cannot be reopened."});if(status==="completed"&&order.status!=="completed"){const deducted=await deductInventory(order.items,req.user.id);try{order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
 
 router.patch("/orders/:id/payment", async(req,res)=>{try{
   const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});
