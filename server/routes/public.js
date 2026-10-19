@@ -555,7 +555,22 @@ router.post("/products/:userId/order", async (req, res) => {
     if(customerEmail && !/^\S+@\S+\.\S+$/.test(customerEmail)) return res.status(400).json({message:"Enter a valid email address."});
     const products=await Product.find({_id:{$in:rows.map(x=>x.productId)},user:owner._id,published:true});
     const map=new Map(products.map(p=>[String(p._id),p])); const items=[]; let total=0,currency="PHP";
-    for(const row of rows){const p=map.get(String(row.productId));const quantity=Math.max(1,Math.floor(Number(row.quantity||1)));if(!p)return res.status(404).json({message:"A selected product is unavailable."});if(p.stock<quantity)return res.status(409).json({message:p.name+" has insufficient stock."});const lineTotal=Number(p.price||0)*quantity;items.push({product:p._id,name:p.name,sku:p.sku,quantity,unitPrice:p.price,lineTotal});total+=lineTotal;currency=p.currency||currency;}
+    const quantities=new Map();
+    for(const row of rows){
+      const id=String(row.productId||"");
+      const quantity=Number(row.quantity);
+      if(!mongoose.isValidObjectId(id)||!Number.isSafeInteger(quantity)||quantity<1||quantity>999)
+        return res.status(400).json({message:"Each product must have a valid inventory ID and whole-number quantity (1–999)."});
+      quantities.set(id,(quantities.get(id)||0)+quantity);
+    }
+    for(const [id,quantity] of quantities){
+      const p=map.get(id);
+      if(!p)return res.status(404).json({message:"A selected product is unavailable in this business inventory."});
+      if(p.stock<quantity)return res.status(409).json({message:p.name+" has insufficient stock. Available: "+p.stock+"; ordered: "+quantity+"."});
+      const lineTotal=Number(p.price||0)*quantity;
+      items.push({product:p._id,name:p.name,sku:p.sku,quantity,unitPrice:p.price,lineTotal});
+      total+=lineTotal;currency=p.currency||currency;
+    }
     const orderNumber="BFO-"+new Date().getFullYear()+"-"+Date.now();
     const order=await ProductOrder.create({businessOwner:owner._id,orderNumber,items,total,currency,customerName,customerEmail,customerPhone,deliveryLocation,notes:String(req.body.notes||"").trim()});
     await notify(req,owner._id,{type:"booking",title:"New product order",body:customerName+" placed product order "+orderNumber+".",link:"/dashboard/sales"});
