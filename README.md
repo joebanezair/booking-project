@@ -1,3 +1,14 @@
+## Codespaces: resolve online order 409 with correct running API
+
+If a read-only script confirms stock exists but **Complete sale** returns HTTP 409, first check the API actually serving the browser (the Vite `/api` proxy points to localhost port 5000). A stale process can keep serving an old checkout after `git pull`, and a second `npm run dev` fails with `EADDRINUSE`.
+
+1. Update `betta-vol1` and restart only this checkout's stale API: `git switch betta-vol1 && git pull origin betta-vol1 && bash scripts/restart-bookflow-api.sh` (requires `lsof` in Codespaces). The script refuses to kill unrelated listeners.
+2. Check `curl http://127.0.0.1:5000/api/live` returns `inventoryFlowVersion: betta-vol1-auto-stock-20261019`.
+3. Reopen the order and try **Complete sale** once. On 409, the updated UI fetches inventory diagnostics through **the same API and exact order ID** that failed. It distinguishes an outdated server, missing inventory in the running API's database, and failures despite available stock.
+4. Do not increase stock, recreate the order, or manually link it based on a 409 alone. If CLI lookup of an order number and API lookup of an order ID disagree, inspect `MONGO_URI`, active port 5000 server, and whether distinct databases contain duplicate order numbers. The diagnostics are read-only.
+
+The backend now resolves `server/.env` relative to `server/server.js` rather than a launch directory. The currently running process **must still be restarted** for that change to take effect. Completing a sale automatically decrements inventory from the recorded product, but MongoDB transactions remain a separate correctness task.
+
 ## Online orders automatically use inventory and deduct stock on completion — October 19, 2026
 
 When customers order online, the storefront records the actual business-owned inventory product ObjectId and purchased quantity. Businesses **do not select or link products again** in the Online Orders editor. Upon **Complete sale**, the backend resolves the saved reference, checks total quantity across duplicate lines, conditionally decrements the current stock, writes an inventory movement, then marks the order completed. The selected product and original sale price are not changed by the operator.
