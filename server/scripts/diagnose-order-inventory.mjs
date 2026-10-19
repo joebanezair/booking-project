@@ -6,6 +6,7 @@ import { config } from "dotenv";
 import mongoose from "mongoose";
 import { Product, ProductOrder } from "../models/Sale.js";
 import { resolveOrderedProduct, exactInventoryPattern } from "../lib/resolveOrderedProduct.js";
+import { databaseFingerprint } from "../lib/databaseFingerprint.js";
 
 config({ path: fileURLToPath(new URL("../.env", import.meta.url)) });
 const number = process.argv[2];
@@ -23,7 +24,7 @@ try {
     .select("orderNumber status businessOwner items").lean();
   if (!order) {
     console.log(JSON.stringify({
-      orderNumber: number, database: mongoose.connection.name, found: false,
+      orderNumber: number, database: mongoose.connection.name, databaseFingerprint: databaseFingerprint(), found: false,
       explanation: "Order not found in this database. Check which MONGO_URI the running API actually uses."
     }, null, 2));
   } else {
@@ -66,7 +67,7 @@ try {
         : Number.isSafeInteger(needed) && needed > 0 && row.inventoryStock >= needed;
     }
     console.log(JSON.stringify({
-      orderNumber: number, database: mongoose.connection.name, found: true,
+      orderNumber: number, database: mongoose.connection.name, databaseFingerprint: databaseFingerprint(), found: true,
       status: order.status, readyToComplete: rows.length > 0 && rows.every(row => row.enoughStockNow),
       items: rows
     }, null, 2));
