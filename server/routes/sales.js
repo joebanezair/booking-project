@@ -253,6 +253,57 @@ router.get("/orders/:id/tracking", async (req,res) => {
 
 // Online order completion uses the automatically saved product reference (or a safe legacy match).
 // The shared write guard reduces duplicate completion races across API instances.
+// Read-only diagnostic against the exact MongoDB connection used by the API.
+// Business-scoped; returns no buyer personal data or database credentials.
+router.get("/orders/:id/inventory-diagnostics", async (req, res) => {
+  try {
+    const order = await ProductOrder.findOne({ _id: req.params.id, businessOwner: req.user.id })
+      .select("orderNumber status items").lean();
+    if (!order) return res.status(404).json({ message: "Order not found in this API database." });
+    const needed = new Map();
+    const items = [];
+    for (const line of order.items || []) {
+      const storedId = String(line.product || "");
+      const stored = storedId && /^[a-f0-9]{24}$/i.test(storedId)
+        ? await Product.findOne({ _id: storedId, user: req.user.id }).select("_id stock name sku").lean()
+        : null;
+      let linked = null, issue = null;
+      try {
+        linked = await resolveOrderedProduct(line, {
+          byId: id => Product.findOne({ _id: id, user: req.user.id }).select("_id stock name sku").lean(),
+          bySku: sku => Product.find({ user: req.user.id, sku: exactInventoryPattern(sku) })
+            .select("_id stock name sku").limit(10).lean(),
+          byName: name => Product.find({ user: req.user.id, name: exactInventoryPattern(name) })
+            .select("_id stock name sku").limit(10).lean()
+        });
+      } catch (error) { issue = error.message; }
+      const productId = linked ? String(linked._id) : null;
+      const quantity = Number(line.quantity);
+      if (productId) needed.set(productId, (needed.get(productId) || 0) + quantity);
+      items.push({
+        name: line.name || line.sku || "Unnamed item",
+        storedProductId: storedId || null,
+        storedProductFound: Boolean(stored),
+        resolvedProductId: productId,
+        availableStock: linked ? Number(linked.stock) : null,
+        quantity, issue
+      });
+    }
+    for (const item of items) {
+      const required = item.resolvedProductId ? needed.get(item.resolvedProductId) : null;
+      item.requiredFromInventory = required;
+      item.enoughStock = required !== null && Number.isSafeInteger(required) &&
+        required > 0 && item.availableStock >= required;
+    }
+    res.set("Cache-Control", "no-store");
+    return res.json({ orderNumber: order.orderNumber, status: order.status,
+      ready: items.length > 0 && items.every(item => item.enoughStock), items });
+  } catch (error) {
+    console.error("Inventory diagnostic error", error);
+    return res.status(error.name === "CastError" ? 400 : 500).json({ message: "Unable to inspect inventory." });
+  }
+});
+
 router.patch("/orders/:id/status", bookingMutationGuard(req => req.user.id), async(req,res)=>{try{const status=String(req.body.status||"");if(!["pending","confirmed","processing","ready","out_for_delivery","completed","cancelled"].includes(status))return res.status(400).json({message:"Invalid order status."});const order=await ProductOrder.findOne({_id:req.params.id,businessOwner:req.user.id});if(!order)return res.status(404).json({message:"Order not found."});if(["completed","cancelled"].includes(order.status)&&status!==order.status)return res.status(409).json({message:"Completed or cancelled orders cannot be reopened."});if(status==="completed"&&order.status!=="completed"){if(!order.items?.length)return res.status(409).json({message:"This order has no products to deduct."});const deducted=await deductInventory(order.items,req.user.id);try{order.markModified("items");order.completedAt=new Date();order.status=status;await order.save();}catch(error){await restoreInventory(deducted,req.user.id);throw error;}return res.json(order);}order.status=status;await order.save();res.json(order);}catch(error){console.error(error);res.status(error.statusCode||500).json({message:error.statusCode?error.message:"Unable to update order."});}});
 
 router.patch("/orders/:id/payment", bookingMutationGuard(req => req.user.id), async(req,res)=>{try{
