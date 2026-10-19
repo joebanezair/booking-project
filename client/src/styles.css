@@ -7425,3 +7425,9 @@ td,th{
   .product-gallery-refined .public-product-body > strong { font-size: 18px; }
   .product-gallery-refined .public-gallery-footer { bottom: -14px; }
 }
+
+/* Rounded product image in the public product gallery. */
+.product-gallery-refined .public-gallery-stage,
+.product-gallery-refined .public-gallery-stage > .ui-image {
+  border-radius: 15px !important;
+}
