@@ -224,6 +224,9 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         if (live && live.inventoryFlowVersion!=="betta-vol1-auto-stock-20261019") {
           message="Your browser is connected to an older API process on port 5000. Stop the old backend, start the updated betta-vol1 server, then retry after checking the order status and stock. Do not create a duplicate order.";
         } else if (details) {
+          const databaseLabel = details.database?.fingerprint
+            ? " API database fingerprint: " + details.database.fingerprint + ". Compare it with the read-only order diagnostic output."
+            : "";
           if (!details.ready) {
             const problem=details.items.filter(item=>!item.enoughStock)
               .map(item=>item.name + ": " + (item.issue ||
@@ -232,11 +235,11 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
               .join("; ");
             message="The running API sees a different inventory state for order " +
               details.orderNumber + " (" + id + "): " + problem +
-              ". Check that this backend points to the same MongoDB as your order diagnostic.";
+              ". Check that this backend points to the same MongoDB as your order diagnostic." + databaseLabel;
           } else {
             message="The running API confirms enough stock for order " + details.orderNumber +
               " (" + id + "), but completion still returned 409: " + err.message +
-              ". Check the backend terminal for a conflicting operation or concurrent update.";
+              ". Check the backend terminal for a conflicting operation or concurrent update." + databaseLabel;
           }
         }
       }
