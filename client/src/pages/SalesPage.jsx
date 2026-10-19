@@ -209,22 +209,10 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     setOrderModalError(""); setOrderStatusNotice("");
     setOrderStatusBusy(id);
     try {
-      if (next === "completed") {
-        const check = await api.sales.checkOrderInventory(id);
-        setInventoryCheck(check);
-        if (!check.ready) {
-          const broken = check.items.filter(item => !item.sufficient);
-          throw new Error(broken.map(item => item.name + ": " +
-            (!item.linked ? "inventory product link missing" :
-            !item.validQuantity ? "invalid quantity" :
-            "available " + item.available + ", required " + item.required)).join("; ") +
-            ". Open Edit order to repair the product link before completing.");
-        }
-      }
       const updated=await api.sales.setOrderStatus(id,next);
       setOrders(existing=>existing.map(order=>order._id===updated._id?updated:order));
       setDraftOrderStatus(updated.status);
-      setOrderStatusNotice("Status updated to "+orderStatusLabel(updated.status)+". The buyer can see the change on their tracking page.");
+      setOrderStatusNotice(updated.status === "completed" ? "Sale completed. Product quantities were deducted from inventory." : "Status updated to "+orderStatusLabel(updated.status)+". The buyer can see the change on their tracking page.");
       if(updated.status==="completed" && !ordersOnly)await load();
     }catch(err){
       setOrderModalError(err.message);
