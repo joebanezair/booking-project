@@ -30,6 +30,7 @@ import "./public-storefront.css";
 import "./online-orders-alignment.css";
 import "./online-orders-overview.css";
 import "./profile-edit-clean.css";
+import "./messages-clean.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
