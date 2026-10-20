@@ -192,11 +192,15 @@ export default function BusinessProfileSection({ user, onUserUpdate }) {
           </div>
         </div>
         <div className="business-logo-upload-card">
-          <span className="business-logo-upload-icon" aria-hidden="true"><FiUploadCloud /></span>
+          <div className="business-brand-preview" aria-label={hasLogo ? "Current logo preview" : "No business logo uploaded"}>
+            {hasLogo
+              ? <Image src={logoSrc} alt={`${form.name || "Business"} logo preview`} onError={() => setLogoLoadFailed(true)} />
+              : <FiImage aria-hidden="true" />}
+          </div>
           <div className="business-logo-upload-copy">
-            <strong>{form.logo ? "Change your business logo" : "Add a business logo"}</strong>
+            <strong>{form.logo ? "Your business logo" : "Add your business logo"}</strong>
             <p>JPEG, PNG, WebP or GIF · Max 2 MB</p>
-            <p className="business-logo-subtle">Your logo appears at the top of this page.</p>
+            <p className="business-logo-subtle">Preview your logo here before saving changes.</p>
           </div>
           <div className="business-logo-actions">
             <Label className="upload-button business-upload-button">
