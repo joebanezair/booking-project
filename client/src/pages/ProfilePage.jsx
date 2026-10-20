@@ -60,14 +60,14 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
   const publicPath = profile?.username ? "/profile/" + profile.username : "";
 
   return <AppLayout user={user} onLogout={onLogout}>
-    <div className="profile-page-redesign">
+    <div className="profile-page-redesign profile-overview-clean">
     <header className="topbar profile-page-topbar">
       <div><p className="eyebrow">PROFILE</p><h1>Your profile</h1><p className="muted">Manage how your account appears across BookFlow.</p></div>
       <Button asChild variant="default"><Link  className="primary-button button-link icon-link" to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit profile</Link></Button>
     </header>
 
     {!profile ? <p>{error || "Loading..."}</p> : <>
-      <Card as="section" className="panel profile-overview-card">
+      <Card as="section" className="panel profile-overview-card profile-home-panel">
         <ProfileMediaHeader
           profile={profile}
           disabled={saving}
@@ -93,26 +93,19 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
           {profile.bio && <p className="profile-overview-bio">{profile.bio}</p>}
           {profile.website && <a className="profile-website-link" href={profile.website} target="_blank" rel="noreferrer">{profile.website}</a>}
         </div>
+        <nav className="profile-home-actions" aria-label="Manage your profile and business">
+          <Link className="profile-business-link" to="/dashboard/profile/business">
+            <span className="profile-business-icon" aria-hidden="true"><FiBriefcase /></span>
+            <span className="profile-business-copy">
+              <strong>Business Page</strong>
+              <small>Manage your business name, description, contact information and logo.</small>
+            </span>
+            <FiArrowUpRight className="profile-business-arrow" aria-hidden="true" />
+          </Link>
+        </nav>
+
+        <BookingQrCard bookingUrl={window.location.origin + "/b/" + (user.id || user._id)} businessName={profile.name} />
       </Card>
-
-      <section className="profile-hub-grid" aria-label="Manage your profile">
-        <Card as="article" className="profile-hub-card">
-          <Link className="profile-hub-action" to="/dashboard/profile/edit">
-            <span className="profile-hub-icon" aria-hidden="true"><FiEdit3 /></span>
-            <FiArrowUpRight className="profile-hub-arrow" aria-hidden="true" />
-            <span className="profile-hub-copy"><strong>Edit Profile</strong><small>Update your name, username, bio, headline, location, website, and profile media.</small></span>
-          </Link>
-        </Card>
-        <Card as="article" className="profile-hub-card">
-          <Link className="profile-hub-action" to="/dashboard/profile/business">
-            <span className="profile-hub-icon" aria-hidden="true"><FiBriefcase /></span>
-            <FiArrowUpRight className="profile-hub-arrow" aria-hidden="true" />
-            <span className="profile-hub-copy"><strong>Business Page</strong><small>Manage your business name, category, description, contact information, website, and logo.</small></span>
-          </Link>
-        </Card>
-      </section>
-
-      <BookingQrCard bookingUrl={window.location.origin + "/b/" + (user.id || user._id)} businessName={profile.name} />
 
       {error && <p className="error profile-feedback">{error}</p>}
       {message && <p className="success profile-feedback">{message}</p>}
