@@ -1,69 +1,87 @@
-/* Business settings page. All rules are scoped to avoid changing other pages. */
-.business-page-shell {
-  max-width: 1100px;
-  margin: 0 auto;
-}
+/* Business Page — one primary card, simple divided sections, 15px corners.
+   Intentionally scoped so other BookFlow pages retain their own design. */
+.business-page-shell,
 .business-page-topbar {
   max-width: 1100px;
-  margin-bottom: 22px !important;
+  margin-left: auto;
+  margin-right: auto;
 }
-.business-page-topbar h1 { letter-spacing: -.035em; }
-.business-page-topbar .muted { font-size: 13px; line-height: 1.6; }
+.business-page-topbar {
+  margin-bottom: 20px !important;
+}
+.business-page-topbar h1 {
+  letter-spacing: -.035em;
+}
+.business-page-topbar .muted {
+  max-width: 600px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+html body .business-page-topbar .ui-button,
+html body .business-page-topbar .button-link {
+  border-radius: 15px !important;
+  min-height: 42px;
+  padding-inline: 16px;
+}
 
+/* The only full-page card. */
 html body .business-page-shell .business-profile-redesign {
   padding: 0 !important;
   overflow: hidden;
   border: 1px solid var(--border) !important;
   border-radius: 15px !important;
   background: var(--card);
-  box-shadow: 0 8px 32px rgba(20, 35, 68, .035) !important;
+  box-shadow: 0 6px 24px rgba(20, 35, 68, .035) !important;
 }
-
 .business-profile-redesign .business-loading {
   padding: 30px;
   margin: 0;
   color: var(--muted-foreground);
 }
 
-/* Storefront identity */
+/* Identity and logo header */
 .business-profile-redesign .business-identity-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding: 27px 32px;
+  gap: 22px;
+  padding: 26px 32px;
   border-bottom: 1px solid var(--border);
-  background: linear-gradient(120deg,
-    color-mix(in srgb, var(--accent) 68%, var(--card)) 0%,
-    var(--card) 72%);
+  background: linear-gradient(110deg,
+    color-mix(in srgb, var(--accent) 56%, var(--card)),
+    var(--card) 82%);
 }
 .business-profile-redesign .business-identity-main {
   display: flex;
   align-items: center;
   min-width: 0;
-  gap: 19px;
+  gap: 18px;
 }
 .business-profile-redesign .business-logo-image {
   display: grid;
   place-items: center;
-  flex: 0 0 88px;
-  width: 88px;
-  height: 88px;
+  flex: 0 0 80px;
+  width: 80px;
+  height: 80px;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 15px !important;
   background: var(--card);
   color: var(--muted-foreground);
-  box-shadow: 0 3px 12px rgba(20, 35, 68, .08);
 }
-.business-profile-redesign .business-logo-image .ui-image {
+.business-profile-redesign .business-logo-image > .ui-image,
+.business-profile-redesign .business-brand-preview > .ui-image {
   display: block;
   width: 100%;
   height: 100%;
+  max-width: 100%;
   object-fit: contain;
   border-radius: 15px !important;
 }
-.business-profile-redesign .business-logo-image > svg { width: 30px; height: 30px; }
+.business-profile-redesign .business-logo-image > svg {
+  width: 27px;
+  height: 27px;
+}
 .business-profile-redesign .business-identity-text { min-width: 0; }
 .business-profile-redesign .business-identity-kicker {
   display: inline-flex;
@@ -76,95 +94,109 @@ html body .business-page-shell .business-profile-redesign {
   letter-spacing: .075em;
   text-transform: uppercase;
 }
-.business-profile-redesign .business-identity-kicker svg { width: 14px; height: 14px; }
+.business-profile-redesign .business-identity-kicker svg {
+  width: 14px;
+  height: 14px;
+}
 .business-profile-redesign .business-identity-text h2 {
   margin: 0 0 6px;
   color: var(--foreground);
-  font-size: clamp(19px, 2.3vw, 23px);
+  font-size: clamp(20px, 2.4vw, 24px);
   font-weight: 750;
-  line-height: 1.2;
+  line-height: 1.25;
   letter-spacing: -.025em;
   overflow-wrap: anywhere;
 }
 .business-profile-redesign .business-identity-text p {
   margin: 0;
-  max-width: 480px;
+  max-width: 540px;
+  color: var(--muted-foreground);
   font-size: 13px;
   line-height: 1.6;
-  color: var(--muted-foreground);
 }
 .business-profile-redesign .business-account-status {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   padding: 7px 11px;
-  border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
   border-radius: 15px !important;
   white-space: nowrap;
-  letter-spacing: .045em;
+  letter-spacing: .04em;
 }
 .business-profile-redesign .business-status-dot {
-  display: inline-block;
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: currentColor;
 }
-.business-profile-redesign .business-account-warning { margin: 18px 32px 0; }
+.business-profile-redesign .business-account-warning {
+  margin: 20px 32px 0;
+  border-radius: 15px !important;
+}
 
-/* Form structure */
+/* No nested cards: just section dividers inside the single parent panel. */
 .business-profile-redesign .business-settings-form {
   display: block;
   margin: 0;
+  background: var(--card);
 }
 .business-profile-redesign .business-settings-section {
-  padding: 26px 32px 29px;
+  margin: 0;
+  padding: 27px 32px 30px;
+  border: 0;
   border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .business-profile-redesign .business-section-heading {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 20px;
+  margin: 0 0 21px;
 }
 .business-profile-redesign .business-section-icon {
   display: grid;
   place-items: center;
-  flex: 0 0 35px;
-  width: 35px;
-  height: 35px;
-  border: 1px solid color-mix(in srgb, var(--primary) 12%, var(--border));
-  border-radius: 15px;
-  background: var(--accent);
+  flex: 0 0 26px;
+  width: 26px;
+  height: 27px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
   color: var(--primary);
 }
-.business-profile-redesign .business-section-icon svg { width: 17px; height: 17px; }
+.business-profile-redesign .business-section-icon svg {
+  width: 19px;
+  height: 19px;
+}
 .business-profile-redesign .business-section-heading h3 {
-  margin: 1px 0 4px;
+  margin: 0 0 4px;
   color: var(--foreground);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 750;
-  line-height: 1.35;
   letter-spacing: -.01em;
+  line-height: 1.35;
 }
 .business-profile-redesign .business-section-heading p {
   margin: 0;
   color: var(--muted-foreground);
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 .business-profile-redesign .business-fields-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 19px 22px;
+  gap: 20px 22px;
 }
 .business-profile-redesign .business-fields-grid .ui-label {
   display: grid;
   align-content: start;
   min-width: 0;
-  gap: 7px;
+  gap: 8px;
   color: var(--foreground);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.5;
 }
@@ -184,21 +216,21 @@ html body .business-page-shell .business-profile-redesign {
   box-shadow: none;
 }
 .business-profile-redesign .business-fields-grid .ui-input {
-  min-height: 42px;
-  padding: 10px 12px;
+  min-height: 44px;
+  padding: 11px 14px;
 }
 .business-profile-redesign .business-fields-grid .ui-textarea {
   min-height: 105px;
-  padding: 12px;
+  padding: 12px 14px;
   resize: vertical;
-  line-height: 1.65;
+  line-height: 1.6;
 }
 .business-profile-redesign .business-fields-grid :is(.ui-input, .ui-textarea)::placeholder {
-  color: color-mix(in srgb, var(--muted-foreground) 75%, transparent);
+  color: color-mix(in srgb, var(--muted-foreground) 72%, transparent);
 }
 .business-profile-redesign .business-fields-grid :is(.ui-input, .ui-textarea):focus-visible {
   border-color: var(--ring);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 15%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 16%, transparent);
 }
 .business-profile-redesign .business-field-hint {
   justify-self: end;
@@ -208,29 +240,34 @@ html body .business-page-shell .business-profile-redesign {
   font-weight: 400;
 }
 
-/* Logo controls */
-.business-profile-redesign .business-brand-section { padding-bottom: 25px; }
+/* Logo editor is a simple row, not a second bordered panel. */
+.business-profile-redesign .business-brand-section { padding-bottom: 29px; }
 .business-profile-redesign .business-logo-upload-card {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 18px 20px;
-  border: 1px dashed color-mix(in srgb, var(--primary) 25%, var(--border));
-  border-radius: 15px;
-  background: var(--muted-bg);
+  gap: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
-.business-profile-redesign .business-logo-upload-icon {
+.business-profile-redesign .business-brand-preview {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
-  border-radius: 15px;
-  background: var(--card);
+  flex: 0 0 72px;
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
   border: 1px solid var(--border);
-  color: var(--primary);
+  border-radius: 15px !important;
+  background: var(--muted-bg);
+  color: var(--muted-foreground);
 }
-.business-profile-redesign .business-logo-upload-icon svg { width: 20px; height: 20px; }
+.business-profile-redesign .business-brand-preview > svg {
+  width: 26px;
+  height: 26px;
+}
 .business-profile-redesign .business-logo-upload-copy {
   min-width: 0;
   flex: 1 1 auto;
@@ -258,25 +295,28 @@ html body .business-page-shell .business-profile-redesign {
   flex-wrap: wrap;
   gap: 8px;
 }
-.business-profile-redesign .business-upload-button {
-  position: relative;
+.business-profile-redesign .business-upload-button,
+.business-profile-redesign .business-remove-logo {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 38px;
+  min-height: 40px;
   width: auto;
-  padding: 9px 13px;
+  padding: 10px 15px;
   margin: 0;
   border: 1px solid var(--border);
   border-radius: 15px !important;
   background: var(--card);
   color: var(--foreground);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 700 !important;
   line-height: 1;
-  white-space: nowrap;
   cursor: pointer;
+  white-space: nowrap;
+}
+.business-profile-redesign .business-upload-button {
+  position: relative;
 }
 .business-profile-redesign .business-upload-button:hover {
   border-color: var(--primary);
@@ -286,7 +326,10 @@ html body .business-page-shell .business-profile-redesign {
   outline: 3px solid color-mix(in srgb, var(--ring) 24%, transparent);
   outline-offset: 2px;
 }
-.business-profile-redesign .business-upload-button svg { width: 15px; height: 15px; }
+.business-profile-redesign .business-upload-button svg {
+  width: 15px;
+  height: 15px;
+}
 .business-profile-redesign .business-upload-button .business-logo-file-input {
   position: absolute;
   display: block;
@@ -300,34 +343,32 @@ html body .business-page-shell .business-profile-redesign {
   clip-path: inset(50%);
 }
 .business-profile-redesign .business-remove-logo {
-  min-height: 38px;
-  padding: 9px 13px;
-  border-radius: 15px !important;
-  background: transparent;
   color: var(--destructive);
-  font-size: 12px;
 }
 .business-profile-redesign .business-remove-logo:hover {
-  background: color-mix(in srgb, var(--destructive) 8%, transparent);
-  border-color: color-mix(in srgb, var(--destructive) 30%, var(--border));
+  background: color-mix(in srgb, var(--destructive) 7%, var(--card));
 }
-.business-profile-redesign .business-logo-error { margin: 12px 0 0; }
+.business-profile-redesign .business-logo-error {
+  margin: 12px 0 0;
+  border-radius: 15px !important;
+}
 
-/* Booking information, feedback and save affordance */
+/* Booking notice is text, not a bordered card. */
 .business-profile-redesign .business-schedule-note {
   display: flex;
   align-items: flex-start;
-  gap: 11px;
-  margin: 24px 32px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: 15px;
-  background: var(--muted-bg);
+  gap: 10px;
+  margin: 0;
+  padding: 16px 32px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
 }
 .business-profile-redesign .business-schedule-note > svg {
-  width: 17px;
-  height: 17px;
-  flex: 0 0 17px;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
   margin-top: 2px;
   color: var(--primary);
 }
@@ -341,20 +382,29 @@ html body .business-page-shell .business-profile-redesign {
   color: var(--foreground);
   font-weight: 700;
 }
-.business-profile-redesign .business-feedback { padding: 0 32px 14px; }
+.business-profile-redesign .business-feedback {
+  padding: 15px 32px 0;
+}
 .business-profile-redesign .business-feedback p { margin: 0 0 6px; }
 .business-profile-redesign .business-feedback .success {
   display: flex;
   align-items: center;
   gap: 8px;
+  border-radius: 15px !important;
 }
+.business-profile-redesign .business-feedback .error {
+  border-radius: 15px !important;
+}
+
+/* Save stays within the main panel, without another enclosing card. */
 .business-profile-redesign .business-save-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 18px;
-  padding: 19px 32px;
-  border-top: 1px solid var(--border);
+  padding: 20px 32px 24px;
+  border: 0;
+  border-radius: 0;
   background: var(--card);
 }
 .business-profile-redesign .business-save-footer p {
@@ -382,223 +432,75 @@ html body .business-page-shell .business-profile-redesign {
   font-weight: 700 !important;
   white-space: nowrap;
 }
-.business-profile-redesign .business-save-button svg { width: 16px; height: 16px; }
+.business-profile-redesign .business-save-button svg {
+  width: 16px;
+  height: 16px;
+}
 .business-profile-redesign .business-save-button:disabled {
   cursor: wait;
   opacity: .7;
 }
 
-/* Responsive: form remains readable and action buttons stay accessible. */
+/* Small screen: same single card, stacked fields and logo buttons. */
 @media (max-width: 760px) {
   .business-profile-redesign .business-identity-banner {
-    align-items: flex-start;
     flex-wrap: wrap;
+    align-items: flex-start;
     padding: 23px;
   }
-  .business-profile-redesign .business-settings-section { padding: 23px; }
-  .business-profile-redesign .business-schedule-note { margin: 18px 23px; }
-  .business-profile-redesign .business-feedback { padding: 0 23px 12px; }
-  .business-profile-redesign .business-save-footer { padding: 18px 23px; }
-  .business-profile-redesign .business-logo-upload-card { flex-wrap: wrap; }
+  .business-profile-redesign .business-settings-section {
+    padding: 23px;
+  }
+  .business-profile-redesign .business-schedule-note {
+    padding: 17px 23px;
+  }
+  .business-profile-redesign .business-feedback {
+    padding: 15px 23px 0;
+  }
+  .business-profile-redesign .business-save-footer {
+    padding: 18px 23px 22px;
+  }
+  .business-profile-redesign .business-logo-upload-card {
+    flex-wrap: wrap;
+  }
   .business-profile-redesign .business-logo-actions {
-    margin-left: 57px;
+    margin-left: 88px;
   }
 }
 @media (max-width: 560px) {
   .business-profile-redesign .business-identity-main { gap: 13px; }
   .business-profile-redesign .business-logo-image {
-    width: 68px; height: 68px; flex-basis: 68px; border-radius: 15px !important;
+    width: 66px;
+    height: 66px;
+    flex-basis: 66px;
   }
-  .business-profile-redesign .business-logo-image .ui-image { border-radius: 15px !important; }
-  .business-profile-redesign .business-identity-text h2 { font-size: 18px; }
-  .business-profile-redesign .business-identity-text p { font-size: 12px; }
-  .business-profile-redesign .business-fields-grid { grid-template-columns: 1fr; gap: 16px; }
-  .business-profile-redesign .business-logo-upload-card { padding: 14px; gap: 11px; }
-  .business-profile-redesign .business-logo-actions { width: 100%; margin-left: 0; }
-  .business-profile-redesign .business-save-footer { align-items: stretch; flex-direction: column; }
-  .business-profile-redesign .business-save-button { width: 100%; }
-}
-
-
-/* Business Page revision: quiet section cards, improved logo editing,
-   and one 15px radius for all business settings controls/surfaces. */
-html body .business-page-topbar .ui-button,
-html body .business-page-topbar .button-link {
-  border-radius: 15px !important;
-  min-height: 42px;
-  padding-inline: 17px;
-}
-html body .business-page-shell .business-profile-redesign {
-  border-radius: 15px !important;
-  overflow: hidden;
-  background: var(--muted-bg);
-  border-color: var(--border) !important;
-}
-.business-profile-redesign .business-identity-banner {
-  padding: 30px 35px;
-  border-radius: 15px 15px 0 0;
-  background: linear-gradient(110deg,
-    color-mix(in srgb, var(--accent) 85%, var(--card)) 0%,
-    var(--card) 83%);
-}
-.business-profile-redesign .business-identity-text h2 {
-  font-size: clamp(20px, 2.5vw, 25px);
-}
-.business-profile-redesign .business-identity-text p {
-  max-width: 545px;
-}
-.business-profile-redesign .business-settings-form {
-  padding: 20px 24px 24px;
-  background: var(--muted-bg);
-}
-.business-profile-redesign .business-settings-section {
-  margin: 0 0 16px;
-  padding: 25px 28px 27px;
-  border: 1px solid var(--border);
-  border-radius: 15px !important;
-  background: var(--card);
-  box-shadow: 0 2px 10px rgba(20, 35, 68, .025);
-}
-.business-profile-redesign .business-section-heading {
-  align-items: center;
-  margin: 0 0 22px;
-  padding: 0 0 16px;
-  border-bottom: 1px solid var(--border);
-}
-.business-profile-redesign .business-section-heading h3 {
-  font-size: 16px;
-}
-.business-profile-redesign .business-section-icon {
-  width: 39px;
-  height: 39px;
-  flex-basis: 39px;
-  border-radius: 15px !important;
-}
-.business-profile-redesign .business-fields-grid {
-  gap: 20px 22px;
-}
-.business-profile-redesign .business-fields-grid .ui-label {
-  font-size: 13px;
-  gap: 8px;
-}
-.business-profile-redesign .business-fields-grid :is(.ui-input, .ui-textarea) {
-  border-radius: 15px !important;
-  min-height: 44px;
-  padding: 12px 15px;
-  transition: border-color .16s ease, box-shadow .16s ease;
-}
-.business-profile-redesign .business-fields-grid .ui-textarea {
-  min-height: 112px;
-  line-height: 1.6;
-}
-.business-profile-redesign .business-logo-upload-card {
-  padding: 19px;
-  border: 1px dashed color-mix(in srgb, var(--primary) 24%, var(--border));
-  border-radius: 15px !important;
-  background: color-mix(in srgb, var(--accent) 42%, var(--card));
-}
-.business-profile-redesign .business-brand-preview {
-  display: grid;
-  place-items: center;
-  width: 76px;
-  height: 76px;
-  flex: 0 0 76px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 15px !important;
-  background: var(--card);
-  color: var(--muted-foreground);
-  box-shadow: 0 1px 7px rgba(20, 35, 68, .04);
-}
-.business-profile-redesign .business-brand-preview > .ui-image,
-.business-profile-redesign .business-logo-image > .ui-image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 15px !important;
-}
-.business-profile-redesign .business-brand-preview > svg {
-  width: 27px;
-  height: 27px;
-}
-.business-profile-redesign .business-logo-upload-copy strong {
-  font-size: 14px;
-}
-.business-profile-redesign .business-upload-button,
-.business-profile-redesign .business-remove-logo,
-.business-profile-redesign .business-save-button {
-  border-radius: 15px !important;
-  min-height: 42px;
-  padding: 11px 17px;
-  font-weight: 700 !important;
-}
-.business-profile-redesign .business-upload-button {
-  background: var(--card);
-  box-shadow: 0 1px 3px rgba(20, 35, 68, .035);
-}
-.business-profile-redesign .business-schedule-note {
-  margin: 0 0 16px;
-  padding: 17px 19px;
-  border-radius: 15px !important;
-  background: var(--card);
-}
-.business-profile-redesign .business-feedback {
-  padding: 0 0 12px;
-}
-.business-profile-redesign .business-feedback :is(.success, .error),
-.business-profile-redesign .business-account-warning,
-.business-profile-redesign .business-logo-error {
-  border-radius: 15px !important;
-}
-.business-profile-redesign .business-save-footer {
-  padding: 18px 23px;
-  border: 1px solid var(--border);
-  border-radius: 15px !important;
-  background: var(--card);
-}
-.business-profile-redesign .business-logo-image,
-.business-profile-redesign .business-account-status {
-  border-radius: 15px !important;
-}
-.business-profile-redesign .business-section-heading p {
-  font-size: 13px;
-}
-@media (max-width: 760px) {
-  .business-profile-redesign .business-identity-banner {
-    padding: 22px;
+  .business-profile-redesign .business-identity-text h2 {
+    font-size: 18px;
   }
-  .business-profile-redesign .business-settings-form {
-    padding: 14px;
+  .business-profile-redesign .business-identity-text p {
+    font-size: 12px;
   }
-  .business-profile-redesign .business-settings-section {
-    padding: 21px;
-    margin-bottom: 13px;
+  .business-profile-redesign .business-fields-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
-  .business-profile-redesign .business-save-footer {
-    padding: 17px;
-  }
-}
-@media (max-width: 560px) {
   .business-profile-redesign .business-logo-upload-card {
-    padding: 15px;
-    gap: 13px;
+    gap: 12px;
   }
   .business-profile-redesign .business-brand-preview {
-    width: 64px;
-    height: 64px;
-    flex-basis: 64px;
+    flex-basis: 62px;
+    width: 62px;
+    height: 62px;
   }
   .business-profile-redesign .business-logo-actions {
     margin-left: 0;
     width: 100%;
   }
-  .business-profile-redesign .business-upload-button,
-  .business-profile-redesign .business-remove-logo {
-    flex: 1 1 auto;
-  }
   .business-profile-redesign .business-save-footer {
     flex-direction: column;
     align-items: stretch;
+  }
+  .business-profile-redesign .business-save-button {
+    width: 100%;
   }
 }
