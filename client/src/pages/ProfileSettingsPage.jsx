@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiCheck, FiInfo, FiSave, FiUser } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileMediaHeader from "../components/ProfileMediaHeader.jsx";
 import { fileToDataUrl } from "../lib.js";
@@ -15,6 +15,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
   const [form, setForm] = useState(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
   const [repositionOpen, setRepositionOpen] = useState(false);
   const photoDrag = useRef(null);
   const location = useLocation();
@@ -88,17 +89,21 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
 
   async function save(e) {
     e.preventDefault();
+    if (saving) return;
     setError("");
     setMessage("");
+    setSaving(true);
     try {
       const updated = await api.profile.update(form);
       setForm(updated);
       const next = { ...user, name: updated.name, username: updated.username };
       localStorage.setItem("booking_user", JSON.stringify(next));
-      onUserUpdate(next);
+      onUserUpdate?.(next);
       setMessage("Profile updated.");
     } catch (e) {
       setError(e.message);
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -117,20 +122,31 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
   }
 
   return <AppLayout user={user} onLogout={onLogout}>
-    <header className="topbar">
-      <div><p className="eyebrow">PROFILE · EDIT PROFILE</p><h1>Edit Profile</h1><p className="muted">Update your profile information and profile media.</p></div>
-      <Button asChild variant="outline"><Link  className="secondary button-link icon-link" to="/dashboard/profile"><FiArrowLeft aria-hidden="true" />Back to Profile</Link></Button>
-    </header>
+    <div className="profile-edit-shell">
+      <header className="topbar profile-edit-topbar">
+        <div>
+          <p className="eyebrow">PROFILE · EDIT PROFILE</p>
+          <h1>Edit Profile</h1>
+          <p className="muted">Manage your profile details, cover photo and avatar.</p>
+        </div>
+        <Button asChild variant="outline">
+          <Link className="secondary button-link icon-link" to="/dashboard/profile">
+            <FiArrowLeft aria-hidden="true" />Back to Profile
+          </Link>
+        </Button>
+      </header>
 
-    {!form ? <p>{error || "Loading..."}</p> : <form className="panel standalone-form profile-edit-form" onSubmit={save}>
-      <ProfileMediaHeader
-        profile={form}
-        onCoverFile={file => chooseImage("coverImage", file)}
-        onRemoveCover={removeCover}
-        onProfileFile={file => chooseImage("profileImage", file)}
-        onRemoveProfile={removeProfile}
-        onReposition={showReposition}
-      />
+      {!form ? <p role="status" className="profile-edit-loading">{error || "Loading profile…"}</p> :
+        <form className="panel standalone-form profile-edit-form profile-edit-clean" onSubmit={save}>
+          <ProfileMediaHeader
+            profile={form}
+            disabled={saving}
+            onCoverFile={file => chooseImage("coverImage", file)}
+            onRemoveCover={removeCover}
+            onProfileFile={file => chooseImage("profileImage", file)}
+            onRemoveProfile={removeProfile}
+            onReposition={showReposition}
+          />
 
       {form.profileImage && repositionOpen && <div className="photo-position-modal" role="dialog" aria-modal="true" aria-label="Reposition profile photo" onClick={() => setRepositionOpen(false)}><section className="profile-photo-editor linked-media-reposition" id="profile-photo-position" onClick={e => e.stopPropagation()}><div className="profile-position-title"><div><p className="eyebrow">EDIT IMAGE</p><h2>Reposition profile photo</h2></div><Button variant="plain" type="button" className="secondary" onClick={() => setRepositionOpen(false)}>Done</Button></div>
         <div className="profile-editor-head">
@@ -161,20 +177,50 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
         </div>
       </section></div>}
 
-      <div className="two-col">
-        <Label>Name<Input value={form.name || ""} onChange={e => setForm({ ...form, name: e.target.value })} required /></Label>
-        <Label>Username<Input value={form.username || ""} onChange={e => setForm({ ...form, username: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })} required /></Label>
-      </div>
-      <Label>Bio<Textarea rows="5" maxLength="1000" value={form.bio || ""} onChange={e => setForm({ ...form, bio: e.target.value })} /></Label>
-      <div className="two-col">
-        <Label>Headline<Input value={form.headline || ""} onChange={e => setForm({ ...form, headline: e.target.value })} /></Label>
-        <Label>Location<Input value={form.location || ""} onChange={e => setForm({ ...form, location: e.target.value })} /></Label>
-      </div>
-      <Label>Website<Input type="url" placeholder="https://..." value={form.website || ""} onChange={e => setForm({ ...form, website: e.target.value })} /></Label>
 
-      {error && <p className="error">{error}</p>}
-      {message && <p className="success">{message}</p>}
-      <Button variant="plain" className="primary-button">Save profile</Button>
-    </form>}
+          <section className="profile-edit-details" aria-labelledby="profile-edit-details-heading">
+            <div className="profile-edit-section-heading">
+              <FiUser aria-hidden="true" />
+              <div>
+                <h2 id="profile-edit-details-heading">Profile information</h2>
+                <p>Your public name, introduction and contact details.</p>
+              </div>
+            </div>
+            <div className="profile-edit-fields">
+              <Label>Name
+                <Input value={form.name || ""} onChange={e => setForm({ ...form, name: e.target.value })} autoComplete="name" required />
+              </Label>
+              <Label>Username
+                <Input value={form.username || ""} onChange={e => setForm({ ...form, username: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })} autoComplete="username" required />
+              </Label>
+              <Label className="profile-edit-wide-field">Bio
+                <Textarea rows="4" maxLength="1000" value={form.bio || ""} onChange={e => setForm({ ...form, bio: e.target.value })} placeholder="A short introduction about yourself" />
+                <span className="profile-edit-char-count">{(form.bio || "").length} / 1,000 characters</span>
+              </Label>
+              <Label>Headline
+                <Input value={form.headline || ""} onChange={e => setForm({ ...form, headline: e.target.value })} placeholder="What you do or offer" />
+              </Label>
+              <Label>Location
+                <Input value={form.location || ""} onChange={e => setForm({ ...form, location: e.target.value })} placeholder="City or location" />
+              </Label>
+              <Label className="profile-edit-wide-field">Website
+                <Input type="url" placeholder="https://example.com" value={form.website || ""} onChange={e => setForm({ ...form, website: e.target.value })} />
+              </Label>
+            </div>
+          </section>
+
+          {(error || message) && <div className="profile-edit-feedback" aria-live="polite">
+            {error && <p className="error" role="alert">{error}</p>}
+            {message && <p className="success" role="status"><FiCheck aria-hidden="true" /> {message}</p>}
+          </div>}
+
+          <footer className="profile-edit-save-footer">
+            <p><FiInfo aria-hidden="true" /> Changes appear on your profile after saving.</p>
+            <Button type="submit" disabled={saving} className="primary-button profile-edit-save-button">
+              <FiSave aria-hidden="true" /> {saving ? "Saving…" : "Save profile"}
+            </Button>
+          </footer>
+        </form>}
+    </div>
   </AppLayout>;
 }
