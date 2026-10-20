@@ -6,8 +6,20 @@ import { Label } from "./ui/label.jsx";
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { fileToDataUrl } from "../lib.js";
+import { FiImage } from "react-icons/fi";
+import "../business-logo-preview.css";
 
 const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+// A saved GridFS logo may be a relative /api/media URL even when the API is
+// hosted on another origin (VITE_API_URL). Resolve it against the API host.
+function businessLogoUrl(value) {
+  const logo = String(value || "").trim();
+  const apiBase = String(import.meta.env.VITE_API_URL || "/api");
+  if (logo.startsWith("/api/media/") && /^https?:\/\//i.test(apiBase)) {
+    try { return new URL(logo, apiBase).href; } catch { return logo; }
+  }
+  return logo;
+}
 const defaultHours=()=>days.map((_,day)=>({day,enabled:day>=1&&day<=5,start:"09:00",end:"17:00"}));
 const empty={
   name:"",category:"General",description:"",location:"",email:"",phone:"",website:"",logo:"",
@@ -19,6 +31,8 @@ export default function BusinessProfileSection({user,onUserUpdate}){
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState("");
   const [message,setMessage]=useState("");
+  const [logoLoadFailed,setLogoLoadFailed]=useState(false);
+  useEffect(()=>setLogoLoadFailed(false),[form.logo]);
 
   useEffect(()=>{
     api.business.mine().then(data=>{
@@ -31,7 +45,7 @@ export default function BusinessProfileSection({user,onUserUpdate}){
 
   async function chooseLogo(file){
     if(!file)return;
-    try{const logo=await fileToDataUrl(file);setForm(v=>({...v,logo}));setError("");}catch(e){setError(e.message);}
+    try{const logo=await fileToDataUrl(file);setLogoLoadFailed(false);setForm(v=>({...v,logo}));setError("");setMessage("");}catch(e){setError(e.message);}
   }
 
   function patchHours(day,patch){
@@ -50,8 +64,24 @@ export default function BusinessProfileSection({user,onUserUpdate}){
 
   if(loading)return <section className="panel business-account-panel"><p>Loading business profile…</p></section>;
 
+  const logoSrc=businessLogoUrl(form.logo);
+
   return <section className="panel business-account-panel">
-    <div className="panel-title"><div><p className="eyebrow">BUSINESS DETAILS</p><h2>{form.name||"Business profile"}</h2></div><span className={`status ${user.accountStatus||"active"}`}>{user.accountStatus||"active"}</span></div>
+    <div className="panel-title">
+      <div className="business-logo-heading">
+        <div className="business-logo-image" aria-label={form.logo && !logoLoadFailed ? "Business logo" : "Business logo unavailable"}>
+          {form.logo && !logoLoadFailed
+            ? <Image src={logoSrc} alt={`${form.name || "Business"} logo`} onError={()=>setLogoLoadFailed(true)} />
+            : <FiImage aria-hidden="true" />}
+        </div>
+        <div>
+          <p className="eyebrow">BUSINESS DETAILS</p>
+          <h2>{form.name||"Business profile"}</h2>
+          <p className="muted business-logo-caption">{form.logo ? (logoLoadFailed ? "Logo could not be loaded" : "Business logo") : "No business logo uploaded"}</p>
+        </div>
+      </div>
+      <span className={`status ${user.accountStatus||"active"}`}>{user.accountStatus||"active"}</span>
+    </div>
     {user.accountStatus==="paused"&&<p className="warning-note">Your business is paused. You can edit your profile and manage existing bookings, but you cannot publish services or receive new bookings until an admin reactivates it.</p>}
     <form onSubmit={save}>
       <div className="two-col"><Label>Business name<Input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></Label><Label>Category<Input value={form.category} onChange={e=>setForm({...form,category:e.target.value})} placeholder="General"/></Label></div>
@@ -61,8 +91,17 @@ export default function BusinessProfileSection({user,onUserUpdate}){
 
       <p className="muted">Booking schedule, timezone, slot interval, notice period, and blackout dates are managed from <strong>Bookings → Availability</strong>.</p>
 
-      {form.logo && <div className="business-logo-preview" style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}><Image src={form.logo} alt={`${form.name || "Business"} logo preview`} style={{width:96,height:96,objectFit:"contain",borderRadius:10,border:"1px solid var(--border)",background:"var(--card)"}}/><div><strong>Business logo</strong><p className="muted" style={{margin:"4px 0 0"}}>Current logo preview</p></div></div>}
-      <div className="image-actions"><Label className="upload-button">Choose business logo<Input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>chooseLogo(e.target.files?.[0])}/></Label>{form.logo&&<Button variant="plain" type="button" className="danger" onClick={()=>setForm({...form,logo:""})}>Remove logo</Button>}</div>
+      <div className="business-logo-controls">
+        <div>
+          <strong>Business logo</strong>
+          <p className="muted business-logo-help">JPEG, PNG, WebP, or GIF, up to 2 MB. The preview appears beside your business name.</p>
+        </div>
+        <div className="image-actions">
+          <Label className="upload-button">Choose business logo<Input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>chooseLogo(e.target.files?.[0])}/></Label>
+          {form.logo&&<Button variant="plain" type="button" className="danger" onClick={()=>setForm(v=>({...v,logo:""}))}>Remove logo</Button>}
+        </div>
+      </div>
+      {form.logo && logoLoadFailed && <p role="alert" className="warning-note business-logo-error">Your saved logo could not be displayed. Choose a new image and save again. If it still fails, check that the media database and /api/media/public endpoint are available.</p>}
       {error&&<p className="error">{error}</p>}{message&&<p className="success">{message}</p>}
       <Button variant="plain" className="primary-button">Save business details</Button>
     </form>
