@@ -26,6 +26,7 @@ export default function PublicProfilePage({ user }) {
   const [orderForm,setOrderForm]=useState({quantity:1,customerName:"",customerEmail:"",customerPhone:"",deliveryLocation:"",notes:""});
   const [orderSuccess,setOrderSuccess]=useState(null);
   const [trackingCopied,setTrackingCopied]=useState(false);
+  const [orderNumberCopied,setOrderNumberCopied]=useState(false);
   const [trackingCopyError,setTrackingCopyError]=useState("");
   const [orderBusy,setOrderBusy]=useState(false);
   const orderLock=useRef(false);
@@ -83,6 +84,7 @@ export default function PublicProfilePage({ user }) {
         notes: orderForm.notes
       });
       setTrackingCopied(false);
+      setOrderNumberCopied(false);
       setTrackingCopyError("");
       setOrderSuccess({
         orderNumber: result.orderNumber,
@@ -104,7 +106,19 @@ export default function PublicProfilePage({ user }) {
   function dismissOrderSuccess() {
     setOrderSuccess(null);
     setTrackingCopied(false);
+    setOrderNumberCopied(false);
     setTrackingCopyError("");
+  }
+
+  async function copyOrderNumber() {
+    if (!orderSuccess?.orderNumber) return;
+    try {
+      await navigator.clipboard.writeText(String(orderSuccess.orderNumber));
+      setOrderNumberCopied(true);
+      setTrackingCopyError("");
+    } catch {
+      setTrackingCopyError("Unable to copy the order number automatically.");
+    }
   }
 
   async function copyOrderTrackingLink() {
@@ -274,14 +288,33 @@ export default function PublicProfilePage({ user }) {
           <Button type="button" variant="ghost" size="icon" className="order-confirmation-close" aria-label="Close order confirmation" onClick={dismissOrderSuccess}>
             <FiX aria-hidden="true" />
           </Button>
-          <span className="order-confirmation-icon" aria-hidden="true"><FiCheckCircle /></span>
+          <div className="order-confirmation-success" aria-hidden="true">
+            <span className="order-confirmation-icon"><FiCheckCircle /></span>
+            <span className="order-confirmation-spark order-confirmation-spark-one" />
+            <span className="order-confirmation-spark order-confirmation-spark-two" />
+            <span className="order-confirmation-spark order-confirmation-spark-three" />
+            <span className="order-confirmation-spark order-confirmation-spark-four" />
+          </div>
           <DialogHeader className="order-confirmation-header">
             <DialogTitle>Order placed successfully!</DialogTitle>
             <DialogDescription>Your order has been sent to the seller.</DialogDescription>
           </DialogHeader>
           <div className="order-confirmation-reference">
-            <span>Order number</span>
-            <strong>{orderSuccess?.orderNumber}</strong>
+            <div className="order-confirmation-reference-copy">
+              <span>ORDER NUMBER</span>
+              <strong>{orderSuccess?.orderNumber}</strong>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="order-confirmation-number-copy"
+              aria-label={orderNumberCopied ? "Order number copied" : "Copy order number"}
+              title={orderNumberCopied ? "Order number copied" : "Copy order number"}
+              onClick={copyOrderNumber}
+            >
+              {orderNumberCopied ? <FiCheckCircle aria-hidden="true" /> : <FiCopy aria-hidden="true" />}
+            </Button>
           </div>
           {orderSuccess?.trackingLink && (
             <>
