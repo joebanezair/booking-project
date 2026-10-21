@@ -191,6 +191,9 @@ export default function BusinessManagementPage({ user, onLogout }) {
                 const reviewCount = Number(item.reviewSummary?.count || 0);
                 const averageRating = Number(item.reviewSummary?.averageRating || 0).toFixed(1);
                 return <Card as="article" className="business-admin-row" key={id}>
+                  <Link className="business-admin-card-hit" to={`/dashboard/businesses/${id}`}
+                    aria-label={`View business statistics for ${name}`}
+                    title={`View ${name} business statistics`} />
                   {viewMode === "grid" && <div className="business-admin-cover" aria-hidden="true">
                     {item.coverImage && <Image src={item.coverImage} alt="" loading="lazy" />}
                   </div>}
