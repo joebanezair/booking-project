@@ -51,24 +51,24 @@
 .business-admin-empty .ui-button{margin-top:5px}
 @media(max-width:1200px){
  .business-admin-columns{display:none}
- .business-admin-row.ui-card{grid-template-columns:minmax(200px,1fr) auto auto;grid-template-areas:"identity status actions" "identity metrics actions";row-gap:8px}
+ .business-admin-row.ui-card{grid-template-columns:minmax(180px,2fr) minmax(62px,.65fr) minmax(62px,.65fr) minmax(85px,.85fr) minmax(145px,1fr);grid-template-areas:"identity services bookings reviews actions" "identity status status status actions";row-gap:8px}
  .business-admin-identity{grid-area:identity}
- .business-admin-account-status{grid-area:status;justify-self:start}
- .business-admin-metric{grid-row:2}
- .business-admin-metric:nth-of-type(3){grid-column:2}
- .business-admin-metric:nth-of-type(4){grid-column:2;margin-left:85px}
- .business-admin-metric:nth-of-type(5){grid-column:2;margin-left:162px}
- .business-admin-actions{grid-area:actions;align-self:center}
+ .business-admin-account-status{grid-area:status}
+ .business-admin-metric:nth-of-type(3){grid-area:services}
+ .business-admin-metric:nth-of-type(4){grid-area:bookings}
+ .business-admin-metric:nth-of-type(5){grid-area:reviews}
+ .business-admin-actions{grid-area:actions}
 }
 @media(max-width:900px){
  .business-admin-header{align-items:flex-start}
- .business-admin-row.ui-card{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"identity status" "metrics metrics" "actions actions";row-gap:13px}
+ .business-admin-row.ui-card{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"identity identity status" "services bookings reviews" "actions actions actions";row-gap:13px}
  .business-admin-identity{grid-area:identity}
- .business-admin-account-status{grid-area:status;align-self:start}
- .business-admin-metric:nth-of-type(3),.business-admin-metric:nth-of-type(4),.business-admin-metric:nth-of-type(5){grid-row:2;grid-column:auto;margin:0}
- .business-admin-row.ui-card{column-gap:12px}
- .business-admin-row .business-admin-metric{grid-area:auto}
+ .business-admin-account-status{grid-area:status;justify-self:end;align-self:start}
+ .business-admin-metric:nth-of-type(3){grid-area:services}
+ .business-admin-metric:nth-of-type(4){grid-area:bookings}
+ .business-admin-metric:nth-of-type(5){grid-area:reviews}
  .business-admin-actions{grid-area:actions;justify-content:flex-end;border-top:1px solid var(--border,#e4e8ef);padding-top:10px}
+ .business-admin-metric{display:flex;flex-wrap:wrap;align-content:center}
  .business-admin-metric::before{content:attr(data-label) ": ";font-size:11px;color:var(--muted-foreground,#64748b)}
 }
 @media(max-width:600px){
@@ -87,7 +87,6 @@
  .business-admin-row.ui-card{padding:12px;grid-template-columns:minmax(0,1fr) auto;column-gap:8px}
  .business-admin-identity-text strong{font-size:12px}
  .business-admin-status.status{font-size:9px;padding:5px 7px}
- .business-admin-metric:nth-of-type(3),.business-admin-metric:nth-of-type(4),.business-admin-metric:nth-of-type(5){grid-row:auto;grid-column:auto}
  .business-admin-metric{font-size:11px;gap:5px;flex-wrap:wrap}
  .business-admin-metric::before{font-size:10px}
  .business-admin-actions>.ui-button{flex:1;justify-content:center}
