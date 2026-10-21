@@ -143,13 +143,13 @@ html body .business-admin-list--grid .business-admin-row.ui-card {
   position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-rows: 145px auto auto minmax(60px, auto) auto;
+  grid-template-rows: 175px auto auto minmax(60px, auto) auto;
   grid-template-areas: none;
   align-content: start;
   align-items: stretch;
   gap: 0;
   min-width: 0;
-  min-height: 510px;
+  min-height: 600px;
   padding: 0 !important;
   border: 1px solid var(--border, #dfe6f2) !important;
   border-radius: 10px !important;
@@ -167,7 +167,7 @@ html body .business-admin-list--grid .business-admin-row.ui-card:hover {
 .business-admin-list--grid .business-admin-cover {
   position: relative;
   grid-area: 1 / 1 / 2 / 4;
-  min-height: 145px;
+  min-height: 175px;
   overflow: hidden;
   border-radius: 10px 10px 0 0 !important;
   background: linear-gradient(130deg, #2b4cc4, #5379fc 70%, #90a8ff);
@@ -215,7 +215,7 @@ html body .business-admin-list--grid .business-admin-row.ui-card:hover {
   align-items: center;
   justify-content: start;
   gap: 11px;
-  margin-top: -63px;
+  margin-top: -86px;
   padding: 0 22px 16px;
   min-width: 0;
   text-align: center;
@@ -224,20 +224,20 @@ html body .business-admin-list--grid .business-admin-identity > .profile-avatar 
   box-sizing: border-box;
   display: grid;
   place-items: center;
-  flex: 0 0 130px;
-  width: 130px !important;
-  height: 130px !important;
-  min-width: 130px !important;
-  min-height: 130px !important;
-  max-width: 130px !important;
-  max-height: 130px !important;
+  flex: 0 0 190px;
+  width: 190px !important;
+  height: 190px !important;
+  min-width: 190px !important;
+  min-height: 190px !important;
+  max-width: 190px !important;
+  max-height: 190px !important;
   object-fit: cover;
   border: 5px solid var(--card, #fff) !important;
   border-radius: 14px !important;
   background: linear-gradient(140deg, #4664df, #7693ff);
   box-shadow: 0 6px 19px rgba(29, 50, 100, .12);
   color: #fff;
-  font-size: 42px;
+  font-size: 55px;
   font-weight: 700;
 }
 .business-admin-list--grid .business-admin-identity-text {
@@ -251,7 +251,7 @@ html body .business-admin-list--grid .business-admin-identity > .profile-avatar 
 .business-admin-list--grid .business-admin-identity-text > strong {
   max-width: 100%;
   color: var(--foreground, #17233f);
-  font-size: clamp(17px, 1.7vw, 22px);
+  font-size: clamp(19px, 1.9vw, 24px);
   font-weight: 800;
   letter-spacing: -.035em;
   line-height: 1.28;
