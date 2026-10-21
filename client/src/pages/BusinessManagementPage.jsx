@@ -23,16 +23,16 @@ export default function BusinessManagementPage({ user, onLogout }) {
   const [isLoading,setIsLoading] = useState(true);
   const [query,setQuery] = useState("");
   const [statusFilter,setStatusFilter] = useState("all");
-  const [viewMode,setViewMode] = useState(() => {
-    try { return localStorage.getItem("bookflow-admin-business-view") === "list" ? "list" : "grid"; }
-    catch { return "grid"; }
-  });
+  // Always enter Business Management in the approved grid layout.
+  // The list/grid buttons still switch views for the current visit.
+  const [viewMode,setViewMode] = useState("grid");
   const [openActions,setOpenActions] = useState(null);
 
   useEffect(() => {
-    try { localStorage.setItem("bookflow-admin-business-view", viewMode); }
-    catch { /* Local storage blocked: toggle still works for this session. */ }
-  }, [viewMode]);
+    // Drop the legacy persisted list preference that overrode the new grid default.
+    try { localStorage.removeItem("bookflow-admin-business-view"); }
+    catch { /* Storage can be blocked; the local view switch remains functional. */ }
+  }, []);
 
   const activeCount = items.filter(item => (item.accountStatus || "active") === "active").length;
   const pausedCount = items.filter(item => item.accountStatus === "paused").length;
