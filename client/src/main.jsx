@@ -32,6 +32,7 @@ import "./online-orders-overview.css";
 import "./profile-edit-clean.css";
 import "./messages-clean.css";
 import "./forum-refresh.css";
+import "./business-management-refresh.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
