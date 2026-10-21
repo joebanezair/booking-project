@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  FiArrowLeft,
   FiArrowRight,
+  FiCheckCircle,
+  FiCompass,
   FiEdit3,
+  FiGrid,
   FiMessageCircle,
   FiMessageSquare,
-  FiPlus,
   FiSearch,
   FiSend,
+  FiTag,
   FiUsers,
   FiX
 } from "react-icons/fi";
@@ -138,22 +140,20 @@ export default function ForumPage({ user }) {
           <strong>BookFlow <span>Forum</span></strong>
         </Link>
         <nav className="forum-nav" aria-label="Forum navigation">
-          <Link className="forum-back-link" to="/"><FiArrowLeft aria-hidden="true" /> Explore</Link>
+          <Link className="forum-back-link" to="/" aria-label="Explore BookFlow"><FiCompass aria-hidden="true" /><span>Explore</span></Link>
           <Button asChild variant="default" className="forum-dashboard-link">
-            <Link to={user ? "/dashboard" : "/login"}>{user ? "Dashboard" : "Sign in"} <FiArrowRight aria-hidden="true" /></Link>
+            <Link to={user ? "/dashboard" : "/login"}><FiGrid aria-hidden="true" /> {user ? "Dashboard" : "Sign in"} <FiArrowRight className="forum-dashboard-arrow" aria-hidden="true" /></Link>
           </Button>
         </nav>
       </header>
 
       <section className="forum-shell">
         <div className="forum-hero">
-          <span className="forum-kicker"><FiUsers aria-hidden="true" /> THE BOOKFLOW COMMUNITY</span>
-          <h1>Community discussions<span className="forum-title-dot">.</span></h1>
-          <p>Ask questions, exchange ideas, and learn from a community of people and service providers.</p>
-          <div className="forum-hero-caption">
-            <FiMessageCircle aria-hidden="true" />
-            A space for helpful conversations
+          <div className="forum-hero-heading">
+            <FiUsers aria-hidden="true" />
+            <h1>Community discussions</h1>
           </div>
+          <p>Ask questions, share ideas, and connect with the community.</p>
         </div>
 
         <div className="forum-main">
@@ -163,7 +163,6 @@ export default function ForumPage({ user }) {
                 <span className="forum-icon-tile"><FiEdit3 aria-hidden="true" /></span>
                 <div>
                   <h2 id="forum-composer-title">Start a discussion</h2>
-                  <p>Have a question or idea? Share it with the community.</p>
                 </div>
               </div>
               <form className="forum-form" onSubmit={create}>
@@ -179,7 +178,7 @@ export default function ForumPage({ user }) {
                     />
                   </label>
                   <label className="forum-field">
-                    <span>Category</span>
+                    <span className="forum-field-label"><FiTag aria-hidden="true" /> Category</span>
                     <Input
                       value={form.category}
                       onChange={event => setForm(current => ({ ...current, category: event.target.value }))}
@@ -196,7 +195,7 @@ export default function ForumPage({ user }) {
                   <span>Your message</span>
                   <Textarea
                     rows={4}
-                    placeholder="Write your question, experience, or idea here..."
+                    placeholder="Write your question or idea..."
                     value={form.body}
                     onChange={event => setForm(current => ({ ...current, body: event.target.value }))}
                     maxLength={5000}
@@ -204,9 +203,8 @@ export default function ForumPage({ user }) {
                   />
                 </label>
                 <div className="forum-form-footer">
-                  <span className="forum-form-tip">Keep it kind, clear, and constructive.</span>
                   <Button type="submit" className="forum-primary-action" disabled={isPublishing || !form.title.trim() || !form.body.trim()}>
-                    <FiPlus aria-hidden="true" /> {isPublishing ? "Publishing..." : "Publish discussion"}
+                    <FiSend aria-hidden="true" /> {isPublishing ? "Publishing..." : "Publish discussion"}
                   </Button>
                 </div>
               </form>
@@ -223,15 +221,11 @@ export default function ForumPage({ user }) {
           )}
 
           {error && <p className="error forum-message" role="alert">{error}</p>}
-          {notice && <p className="forum-success forum-message" role="status">{notice}</p>}
+          {notice && <p className="forum-success forum-message" role="status"><FiCheckCircle aria-hidden="true" /> {notice}</p>}
 
           <section className="forum-feed" id="discussions" aria-labelledby="forum-feed-title">
             <div className="forum-feed-heading">
-              <div>
-                <span className="forum-feed-kicker">THE CONVERSATION</span>
-                <h2 id="forum-feed-title">Recent discussions <span className="forum-post-count">{posts.length}</span></h2>
-                <p>See what people are sharing and join in.</p>
-              </div>
+              <h2 id="forum-feed-title"><FiMessageCircle aria-hidden="true" /> Recent discussions <span className="forum-post-count">{posts.length}</span></h2>
             </div>
             <div className="forum-toolbar">
               <div className="forum-search">
@@ -239,7 +233,7 @@ export default function ForumPage({ user }) {
                 <Input
                   type="search"
                   aria-label="Search recent discussions"
-                  placeholder="Search recent discussions..."
+                  placeholder="Search discussions..."
                   value={query}
                   onChange={event => setQuery(event.target.value)}
                 />
@@ -305,7 +299,7 @@ export default function ForumPage({ user }) {
                       <form className="forum-reply-form" onSubmit={event => { event.preventDefault(); sendReply(post._id); }}>
                         <Input
                           aria-label={"Reply to " + post.title}
-                          placeholder="Write a helpful reply..."
+                          placeholder="Write a reply..."
                           value={replies[post._id] || ""}
                           maxLength={2000}
                           onChange={event => setReplies(current => ({ ...current, [post._id]: event.target.value }))}
@@ -319,9 +313,7 @@ export default function ForumPage({ user }) {
                 ))}
               </div>
             )}
-            {!isLoading && posts.length === 20 && (
-              <p className="forum-list-footnote">Showing the 20 most recent discussions.</p>
-            )}
+            
           </section>
         </div>
       </section>
