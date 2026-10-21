@@ -45,6 +45,9 @@ export const PosSale = mongoose.models.PosSale || mongoose.model("PosSale", new 
   status:{type:String,enum:["recorded","voided"],default:"recorded",index:true}
 },{timestamps:true}));
 
+// Owner- and status-scoped admin reporting uses this compound index.
+PosSale.schema.index({ businessOwner: 1, status: 1, soldAt: -1 });
+
 export const ProductOrder = mongoose.models.ProductOrder || mongoose.model("ProductOrder", new mongoose.Schema({
   businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   orderNumber:{type:String,required:true,unique:true,index:true},
@@ -61,6 +64,9 @@ export const ProductOrder = mongoose.models.ProductOrder || mongoose.model("Prod
   trackingUrl:{type:String,trim:true,maxlength:512,default:""},
   completedAt:{type:Date,default:null,index:true}, createdAt:{type:Date,default:Date.now,index:true}
 },{timestamps:true}));
+
+// Completed product order totals are aggregated per business, not loaded into memory.
+ProductOrder.schema.index({ businessOwner: 1, status: 1, completedAt: -1 });
 
 export default mongoose.model("Sale", saleSchema);
 
