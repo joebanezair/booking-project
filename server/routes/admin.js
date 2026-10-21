@@ -6,7 +6,7 @@ import Business from "../models/Business.js";
 import Booking from "../models/Booking.js";
 import Content from "../models/Content.js";
 import Review from "../models/Review.js";
-import Sale from "../models/Sale.js";
+import Sale, { PosSale, ProductOrder } from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireAdmin } from "../middleware/requireRole.js";
 import { notify } from "../lib/notifications.js";
@@ -120,7 +120,25 @@ router.get("/businesses/:id", async (req, res) => {
       .lean();
     if (!user) return res.status(404).json({ message: "Business account not found." });
 
-    const [business, services, recentBookings, reviewRows, saleRows] = await Promise.all([
+    const since30Days = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    // Each source is aggregated in MongoDB, not loaded as a full collection.
+    // Keep currencies separate: adding USD and PHP without conversion is invalid.
+    const sourceTotals = (match, amountField, dateField) => [
+      { $match: match },
+      { $group: {
+        _id: { $ifNull: ["$currency", "PHP"] },
+        gross: { $sum: { $ifNull: [amountField, 0] } },
+        count: { $sum: 1 },
+        last30Days: { $sum: { $cond: [
+          { $gte: [dateField, since30Days] },
+          { $ifNull: [amountField, 0] }, 0
+        ] } }
+      } },
+      { $sort: { gross: -1 } }
+    ];
+
+    const [business, services, recentBookings, reviewRows, saleRows,
+      serviceCounts, bookingStatuses, serviceRevenue, posRevenue, onlineRevenue] = await Promise.all([
       Business.findOne({ owner: user._id }).lean(),
       Content.find({ user: user._id }).select("title published visibility category price currency updatedAt").sort({ updatedAt: -1 }).limit(50).lean(),
       Booking.find({ user: user._id }).select("guestName guestEmail guestPhone service servicePrice currency bookingDate completedAt status source").sort({ createdAt: -1 }).limit(20).lean(),
@@ -129,16 +147,62 @@ router.get("/businesses/:id", async (req, res) => {
         { $match: { businessOwner: user._id, status: "recorded" } },
         { $group: { _id: "$currency", total: { $sum: "$saleAmount" }, count: { $sum: 1 } } },
         { $sort: { count: -1, total: -1 } }
-      ])
+      ]),
+      Content.countDocuments({ user: user._id }),
+      Booking.aggregate([
+        { $match: { user: user._id } },
+        { $group: { _id: "$status", count: { $sum: 1 } } }
+      ]),
+      Sale.aggregate(sourceTotals(
+        { businessOwner: user._id, status: "recorded" }, "$saleAmount", "$completedAt"
+      )),
+      PosSale.aggregate(sourceTotals(
+        { businessOwner: user._id, status: "recorded" }, "$total", "$soldAt"
+      )),
+      // This is completed order *value*, not a verified amount paid to the business.
+      // Exclude explicitly fully-refunded or voided orders from the operational gross.
+      ProductOrder.aggregate(sourceTotals(
+        { businessOwner: user._id, status: "completed", paymentStatus: { $nin: ["refunded", "voided"] } },
+        "$total", "$completedAt"
+      ))
     ]);
     if (!business) return res.status(404).json({ message: "Business profile not found." });
     const review = reviewRows[0] || {};
+    const bookingStatusCounts = Object.fromEntries(bookingStatuses.map(row => [row._id, row.count]));
+    const bookingsTotal = bookingStatuses.reduce((sum, row) => sum + row.count, 0);
+    const byCurrency = new Map();
+    for (const [channel, rows] of [
+      ["services", serviceRevenue], ["pos", posRevenue], ["online", onlineRevenue]
+    ]) {
+      for (const row of rows) {
+        const currency = row._id || "PHP";
+        if (!byCurrency.has(currency)) {
+          byCurrency.set(currency, {
+            currency, gross: 0, last30Days: 0, transactions: 0,
+            services: 0, pos: 0, online: 0
+          });
+        }
+        const entry = byCurrency.get(currency);
+        entry[channel] += Number(row.gross || 0);
+        entry.gross += Number(row.gross || 0);
+        entry.last30Days += Number(row.last30Days || 0);
+        entry.transactions += row.count || 0;
+      }
+    }
 
+    res.set("Cache-Control", "no-store");
     res.json({
       user: { ...user, accountStatus: user.accountStatus || "active" },
       business,
       services,
       recentBookings,
+      serviceCount: serviceCounts,
+      bookingSummary: { total: bookingsTotal, statuses: bookingStatusCounts },
+      financialSummary: {
+        since: since30Days.toISOString(),
+        totalsByCurrency: [...byCurrency.values()].sort((a, b) => b.gross - a.gross)
+      },
+      // Legacy field kept for existing clients that only show service sales.
       salesSummary: {
         recorded: saleRows.reduce((sum, row) => sum + row.count, 0),
         totalsByCurrency: saleRows.map(row => ({ currency: row._id || "PHP", total: row.total, count: row.count }))
