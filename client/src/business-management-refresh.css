@@ -1022,73 +1022,84 @@ html body .business-admin-list--grid .business-admin-row.ui-card:hover {
 
 
 /* Approved minimal Business Management toolbar — borderless icon-only views */
-/* Search and status keep a soft neutral surface; list/grid controls are icons only. */
+/* Reference: pale pill search/filter/refresh, transparent list and grid icons. */
 .business-admin-page {
-  --admin-toolbar-surface: var(--secondary, #f3f6fa);
-  --admin-toolbar-idle: var(--muted-foreground, #78849a);
-  --admin-toolbar-active: #4968e8;
+  --admin-toolbar-surface: color-mix(in srgb, var(--card, #fff) 65%, var(--secondary, #f2f5fa) 35%);
+  --admin-toolbar-idle: var(--muted-foreground, #74819a);
+  --admin-toolbar-active: #4b64ea;
+  --admin-toolbar-height: 48px;
 }
 .business-admin-page .business-admin-controls {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-wrap: nowrap;
+  gap: 14px;
+  min-width: 0;
 }
 .business-admin-page .business-admin-search {
-  width: clamp(220px, 27vw, 355px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: clamp(235px, 25vw, 370px);
   min-width: 0;
 }
 html body .business-admin-page .business-admin-search input.ui-input {
-  min-height: 42px !important;
-  height: 42px !important;
-  padding: 0 15px 0 42px !important;
+  width: 100%;
+  min-height: var(--admin-toolbar-height) !important;
+  height: var(--admin-toolbar-height) !important;
+  padding: 0 18px 0 48px !important;
   border: 0 !important;
-  border-radius: 15px !important;
-  outline: none;
+  border-radius: 999px !important;
   background: var(--admin-toolbar-surface) !important;
-  box-shadow: none !important;
-  color: var(--foreground, #17233b);
-  font-size: 13px !important;
+  box-shadow: 0 1px 3px rgba(33, 47, 78, .025) !important;
+  outline: none;
+  color: var(--foreground, #1d2b46);
+  font-size: 14px !important;
   font-weight: 400;
 }
 .business-admin-page .business-admin-search > svg {
-  left: 14px;
-  width: 17px;
-  height: 17px;
+  position: absolute;
+  left: 17px;
+  width: 20px;
+  height: 20px;
   color: var(--admin-toolbar-idle);
+  pointer-events: none;
 }
 .business-admin-page .business-admin-search input::placeholder {
   color: var(--admin-toolbar-idle);
   opacity: 1;
 }
-html body .business-admin-page .business-admin-filter select {
-  min-height: 42px !important;
-  height: 42px !important;
-  width: 165px;
-  max-width: 165px;
-  padding: 0 30px 0 14px;
-  border: 0 !important;
-  border-radius: 15px !important;
-  outline: none;
-  background-color: var(--admin-toolbar-surface) !important;
-  box-shadow: none !important;
-  color: var(--foreground, #17233b);
-  font-size: 13px !important;
-  font-weight: 400;
+.business-admin-page .business-admin-filter {
+  flex: 0 0 auto;
 }
-/* Important: neither selected nor idle list/grid icons have a button fill,
-   container border, shadow, or colored background. */
+html body .business-admin-page .business-admin-filter select {
+  width: 168px;
+  max-width: 168px;
+  min-height: var(--admin-toolbar-height) !important;
+  height: var(--admin-toolbar-height) !important;
+  padding: 0 35px 0 20px;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background-color: var(--admin-toolbar-surface) !important;
+  box-shadow: 0 1px 3px rgba(33, 47, 78, .025) !important;
+  color: var(--foreground, #1d2b46);
+  font-size: 14px !important;
+  font-weight: 400;
+  outline: none;
+}
+/* View mode toggles must be icon-only, with no fill or border in any state. */
 html body .business-admin-page .business-admin-view-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  flex-shrink: 0;
-  min-height: 42px;
+  gap: 12px;
+  flex: 0 0 auto;
+  min-height: var(--admin-toolbar-height);
   padding: 0;
+  margin: 0;
   border: 0 !important;
-  border-radius: 15px !important;
+  border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
 }
@@ -1096,14 +1107,14 @@ html body .business-admin-page .business-admin-view-toggle > .ui-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 30px;
-  width: 30px !important;
-  min-width: 30px !important;
-  height: 34px !important;
-  min-height: 34px !important;
+  flex: 0 0 31px;
+  width: 31px !important;
+  min-width: 31px !important;
+  height: 38px !important;
+  min-height: 38px !important;
   padding: 0 !important;
   border: 0 !important;
-  border-radius: 15px !important;
+  border-radius: 0 !important;
   outline: none;
   background: transparent !important;
   box-shadow: none !important;
@@ -1111,22 +1122,54 @@ html body .business-admin-page .business-admin-view-toggle > .ui-button {
   font-weight: 400 !important;
 }
 html body .business-admin-page .business-admin-view-toggle > .ui-button svg {
-  width: 19px;
-  height: 19px;
+  width: 22px;
+  height: 22px;
+  stroke-width: 2;
   color: currentColor !important;
   stroke: currentColor;
 }
-html body .business-admin-page .business-admin-view-toggle > .ui-button.is-selected {
+html body .business-admin-page .business-admin-view-toggle > .ui-button.is-selected,
+html body .business-admin-page .business-admin-view-toggle > .ui-button:not(.is-selected):hover {
   border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
   color: var(--admin-toolbar-active) !important;
 }
-html body .business-admin-page .business-admin-view-toggle > .ui-button:not(.is-selected):hover {
-  color: var(--admin-toolbar-active) !important;
+html body .business-admin-page .business-admin-refresh.ui-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: 10px;
+  height: var(--admin-toolbar-height) !important;
+  min-height: var(--admin-toolbar-height) !important;
+  margin: 0 0 0 18px;
+  padding: 0 19px !important;
   border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  border-radius: 999px !important;
+  background: var(--admin-toolbar-surface) !important;
+  box-shadow: 0 1px 3px rgba(33, 47, 78, .025) !important;
+  color: var(--foreground, #1d2b46) !important;
+  font-size: 14px !important;
+  font-weight: 400;
+}
+html body .business-admin-page .business-admin-refresh.ui-button::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: -17px;
+  width: 1px;
+  height: 28px;
+  background: var(--border, #dbe2ed);
+}
+.business-admin-page .business-admin-refresh.ui-button svg {
+  width: 20px;
+  height: 20px;
+  color: var(--admin-toolbar-idle);
+}
+html body .business-admin-page .business-admin-refresh.ui-button:hover {
+  background: color-mix(in srgb, var(--admin-toolbar-surface) 91%, var(--primary, #5267d7)) !important;
 }
 html body .business-admin-page .business-admin-view-toggle > .ui-button:focus-visible,
 html body .business-admin-page .business-admin-search input:focus-visible,
@@ -1135,57 +1178,25 @@ html body .business-admin-page .business-admin-refresh.ui-button:focus-visible {
   outline: 2px solid var(--ring, #7086ea) !important;
   outline-offset: 3px;
 }
-html body .business-admin-page .business-admin-refresh.ui-button {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  min-height: 42px !important;
-  height: 42px !important;
-  margin-left: 17px;
-  padding: 8px 15px !important;
-  border: 0 !important;
-  border-radius: 15px !important;
-  background: var(--admin-toolbar-surface) !important;
-  box-shadow: none !important;
-  color: var(--foreground, #17233b) !important;
-  font-size: 13px !important;
-  font-weight: 500;
+@media(max-width:1370px) {
+  .business-admin-page .business-admin-controls { gap: 10px; }
+  .business-admin-page .business-admin-search { width: clamp(205px, 23vw, 340px); }
 }
-html body .business-admin-page .business-admin-refresh.ui-button::before {
-  content: "";
-  position: absolute;
-  top: 8px;
-  left: -16px;
-  width: 1px;
-  height: 26px;
-  background: var(--border,#dce3ed);
+@media(max-width:1150px) {
+  .business-admin-page .business-admin-toolbar { align-items: flex-start; }
+  .business-admin-page .business-admin-controls { flex-wrap: wrap; justify-content: flex-start; }
 }
-html body .business-admin-page .business-admin-refresh.ui-button:hover {
-  background: color-mix(in srgb, var(--admin-toolbar-surface) 88%, var(--primary,#5267d7)) !important;
-}
-.business-admin-page .business-admin-refresh.ui-button svg {
-  width: 18px;
-  height: 18px;
-  color: var(--admin-toolbar-idle);
-}
-@media (max-width: 1370px) {
-  .business-admin-page .business-admin-search { width: clamp(205px, 24vw, 325px); }
-  .business-admin-page .business-admin-controls { gap: 9px; }
-}
-@media (max-width: 760px) {
+@media(max-width:760px) {
   .business-admin-page .business-admin-controls {
-    justify-content: flex-start;
     width: 100%;
-    gap: 10px;
+    gap: 11px;
   }
   .business-admin-page .business-admin-search {
-    flex: 1 1 220px;
+    flex: 1 1 260px;
     width: auto;
   }
 }
-@media (max-width: 600px) {
+@media(max-width:600px) {
   .business-admin-page .business-admin-controls {
     display: grid;
     grid-template-columns: minmax(0,1fr) auto auto;
@@ -1196,31 +1207,31 @@ html body .business-admin-page .business-admin-refresh.ui-button:hover {
     width: 100%;
     min-width: 0;
   }
+  .business-admin-page .business-admin-filter { min-width: 0; }
   html body .business-admin-page .business-admin-filter select {
     width: 100%;
     max-width: none;
+    padding-left: 15px;
+    font-size: 12px !important;
   }
-  html body .business-admin-page .business-admin-view-toggle {
-    min-height: 40px;
-    gap: 8px;
+  html body .business-admin-page .business-admin-view-toggle { gap: 6px; }
+  html body .business-admin-page .business-admin-view-toggle > .ui-button {
+    width: 28px !important;
+    min-width: 28px !important;
+    flex-basis: 28px;
   }
   html body .business-admin-page .business-admin-refresh.ui-button {
-    margin-left: 9px;
-    width: 40px;
-    min-width: 40px;
-    padding: 6px !important;
+    margin-left: 8px;
+    width: 46px;
+    min-width: 46px;
+    padding: 0 !important;
   }
   html body .business-admin-page .business-admin-refresh.ui-button::before {
     left: -10px;
-    height: 24px;
   }
-  html body .business-admin-page .business-admin-refresh.ui-button span {
-    display: none;
-  }
+  html body .business-admin-page .business-admin-refresh.ui-button span { display:none; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .business-admin-page .business-admin-view-toggle .ui-button,
-  .business-admin-page .business-admin-refresh.ui-button {
-    transition: none !important;
-  }
+@media(prefers-reduced-motion:reduce) {
+  .business-admin-page .business-admin-view-toggle > .ui-button,
+  .business-admin-page .business-admin-refresh.ui-button { transition: none !important; }
 }
