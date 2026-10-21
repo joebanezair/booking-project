@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { FiArrowRight, FiCalendar, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiLock, FiMapPin, FiMessageSquare, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiArrowRight, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiLock, FiMapPin, FiMessageSquare, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
@@ -289,7 +289,7 @@ export default function PublicProfilePage({ user }) {
             <FiX aria-hidden="true" />
           </Button>
           <div className="order-confirmation-success" aria-hidden="true">
-            <span className="order-confirmation-icon"><FiCheckCircle /></span>
+            <span className="order-confirmation-icon"><FiCheck /></span>
             <span className="order-confirmation-spark order-confirmation-spark-one" />
             <span className="order-confirmation-spark order-confirmation-spark-two" />
             <span className="order-confirmation-spark order-confirmation-spark-three" />
