@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBriefcase, FiCalendar, FiEye, FiKey, FiMoreHorizontal, FiPause, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
+import { FiBriefcase, FiCalendar, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { api } from "../api.js";
@@ -22,7 +22,16 @@ export default function BusinessManagementPage({ user, onLogout }) {
   const [isLoading,setIsLoading] = useState(true);
   const [query,setQuery] = useState("");
   const [statusFilter,setStatusFilter] = useState("all");
+  const [viewMode,setViewMode] = useState(() => {
+    try { return localStorage.getItem("bookflow-admin-business-view") === "list" ? "list" : "grid"; }
+    catch { return "grid"; }
+  });
   const [openActions,setOpenActions] = useState(null);
+
+  useEffect(() => {
+    try { localStorage.setItem("bookflow-admin-business-view", viewMode); }
+    catch { /* Local storage blocked: toggle still works for this session. */ }
+  }, [viewMode]);
 
   const activeCount = items.filter(item => (item.accountStatus || "active") === "active").length;
   const pausedCount = items.filter(item => item.accountStatus === "paused").length;
@@ -113,21 +122,34 @@ export default function BusinessManagementPage({ user, onLogout }) {
             <span aria-live="polite">{filteredItems.length} of {items.length} businesses</span>
           </div>
           <div className="business-admin-controls">
-            <label className="business-admin-search">
+            <div className="business-admin-search">
               <FiSearch aria-hidden="true" />
-              <span className="sr-only">Search businesses</span>
-              <Input type="search" placeholder="Search name, email, category..." value={query}
-                onChange={event => setQuery(event.target.value)} />
-            </label>
-            <label className="business-admin-filter">
-              <span className="sr-only">Filter businesses by status</span>
-              <select value={statusFilter} onChange={event => setStatusFilter(event.target.value)}>
+              <Input type="search" aria-label="Search businesses" placeholder="Search name, email, category..."
+                value={query} onChange={event => setQuery(event.target.value)} />
+            </div>
+            <div className="business-admin-filter">
+              <select aria-label="Filter businesses by status" value={statusFilter}
+                onChange={event => setStatusFilter(event.target.value)}>
                 <option value="all">All statuses</option>
                 <option value="active">Active</option>
                 <option value="paused">Paused</option>
                 <option value="disabled">Disabled</option>
               </select>
-            </label>
+            </div>
+            <div className="business-admin-view-toggle" role="group" aria-label="Business directory display">
+              <Button type="button" size="icon-sm" variant="ghost"
+                className={viewMode === "list" ? "is-selected" : ""}
+                aria-label="List view" aria-pressed={viewMode === "list"} title="List view"
+                onClick={() => { setViewMode("list"); setOpenActions(null); }}>
+                <FiList aria-hidden="true" />
+              </Button>
+              <Button type="button" size="icon-sm" variant="ghost"
+                className={viewMode === "grid" ? "is-selected" : ""}
+                aria-label="Grid view" aria-pressed={viewMode === "grid"} title="Grid view"
+                onClick={() => { setViewMode("grid"); setOpenActions(null); }}>
+                <FiGrid aria-hidden="true" />
+              </Button>
+            </div>
             <Button type="button" variant="outline" size="sm" disabled={isLoading}
               className="business-admin-refresh" onClick={load} title="Refresh business accounts">
               <FiRefreshCw aria-hidden="true" /><span>Refresh</span>
@@ -135,11 +157,11 @@ export default function BusinessManagementPage({ user, onLogout }) {
           </div>
         </div>
 
-        <div className="business-admin-columns" aria-hidden="true">
+        {viewMode === "list" && <div className="business-admin-columns" aria-hidden="true">
           <span>Business</span><span>Status</span><span>Services</span>
           <span>Bookings</span><span>Reviews</span><span>Actions</span>
-        </div>
-        <div className="business-admin-list">
+        </div>}
+        <div className={"business-admin-list" + (viewMode === "grid" ? " business-admin-list--grid" : "")}>
           {isLoading && items.length === 0 ? <p className="business-admin-empty" role="status">Loading businesses...</p> :
             filteredItems.length === 0 ?
               <div className="business-admin-empty">
