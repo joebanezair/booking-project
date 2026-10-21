@@ -35,7 +35,7 @@ export const Product = mongoose.models.Product || mongoose.model("Product", new 
 
 Product.schema.index({ user: 1, published: 1, updatedAt: -1 });
 
-export const PosSale = mongoose.models.PosSale || mongoose.model("PosSale", new mongoose.Schema({
+const posSaleSchema = new mongoose.Schema({
   businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   invoiceNumber:{type:String,required:true,unique:true,index:true},
   items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number}],
@@ -43,12 +43,13 @@ export const PosSale = mongoose.models.PosSale || mongoose.model("PosSale", new 
   paymentMethod:{type:String,enum:["cash","gcash","maya","card","other"],default:"cash"},
   customerName:{type:String,trim:true,maxlength:120,default:""}, soldAt:{type:Date,default:Date.now,index:true},
   status:{type:String,enum:["recorded","voided"],default:"recorded",index:true}
-},{timestamps:true}));
+},{timestamps:true});
 
 // Owner- and status-scoped admin reporting uses this compound index.
-PosSale.schema.index({ businessOwner: 1, status: 1, soldAt: -1 });
+posSaleSchema.index({ businessOwner: 1, status: 1, soldAt: -1 });
+export const PosSale = mongoose.models.PosSale || mongoose.model("PosSale", posSaleSchema);
 
-export const ProductOrder = mongoose.models.ProductOrder || mongoose.model("ProductOrder", new mongoose.Schema({
+const productOrderSchema = new mongoose.Schema({
   businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   orderNumber:{type:String,required:true,unique:true,index:true},
   items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number}],
@@ -63,10 +64,11 @@ export const ProductOrder = mongoose.models.ProductOrder || mongoose.model("Prod
   trackingNumber:{type:String,trim:true,maxlength:120,default:""},
   trackingUrl:{type:String,trim:true,maxlength:512,default:""},
   completedAt:{type:Date,default:null,index:true}, createdAt:{type:Date,default:Date.now,index:true}
-},{timestamps:true}));
+},{timestamps:true});
 
 // Completed product order totals are aggregated per business, not loaded into memory.
-ProductOrder.schema.index({ businessOwner: 1, status: 1, completedAt: -1 });
+productOrderSchema.index({ businessOwner: 1, status: 1, completedAt: -1 });
+export const ProductOrder = mongoose.models.ProductOrder || mongoose.model("ProductOrder", productOrderSchema);
 
 export default mongoose.model("Sale", saleSchema);
 
