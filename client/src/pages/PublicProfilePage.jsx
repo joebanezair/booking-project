@@ -5,7 +5,8 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { FiCalendar, FiCheckCircle, FiChevronLeft, FiChevronRight, FiMapPin, FiMessageSquare, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiArrowRight, FiCalendar, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiLock, FiMapPin, FiMessageSquare, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import ContentCard from "../components/ContentCard.jsx";
@@ -23,8 +24,9 @@ export default function PublicProfilePage({ user }) {
   const [friendBusy, setFriendBusy] = useState(false);
   const [orderProduct,setOrderProduct]=useState(null);
   const [orderForm,setOrderForm]=useState({quantity:1,customerName:"",customerEmail:"",customerPhone:"",deliveryLocation:"",notes:""});
-  const [orderMessage,setOrderMessage]=useState("");
-  const [orderTrackingLink,setOrderTrackingLink]=useState("");
+  const [orderSuccess,setOrderSuccess]=useState(null);
+  const [trackingCopied,setTrackingCopied]=useState(false);
+  const [trackingCopyError,setTrackingCopyError]=useState("");
   const [orderBusy,setOrderBusy]=useState(false);
   const orderLock=useRef(false);
   const [productGallery,setProductGallery]=useState(null);
@@ -65,7 +67,56 @@ export default function PublicProfilePage({ user }) {
     } catch (e) { setError(e.message); }
   }
 
-  async function submitProductOrder(event){event.preventDefault();if(orderLock.current)return;orderLock.current=true;setOrderBusy(true);setError("");try{const result=await api.publicProductOrder(profile.id,{items:[{productId:orderProduct._id,quantity:Number(orderForm.quantity)}],customerName:orderForm.customerName,customerEmail:orderForm.customerEmail,customerPhone:orderForm.customerPhone,deliveryLocation:orderForm.deliveryLocation,notes:orderForm.notes});setOrderMessage(`Order ${result.orderNumber} sent successfully.`);setOrderTrackingLink(`/order-status/${result.id}#${result.trackingToken}`);setOrderProduct(null);setOrderForm({quantity:1,customerName:"",customerEmail:"",customerPhone:"",deliveryLocation:"",notes:""});setError("");}catch(e){setError(e.message);}finally{orderLock.current=false;setOrderBusy(false);}}
+  async function submitProductOrder(event) {
+    event.preventDefault();
+    if (orderLock.current || !orderProduct) return;
+    orderLock.current = true;
+    setOrderBusy(true);
+    setError("");
+    try {
+      const result = await api.publicProductOrder(profile.id, {
+        items: [{ productId: orderProduct._id, quantity: Number(orderForm.quantity) }],
+        customerName: orderForm.customerName,
+        customerEmail: orderForm.customerEmail,
+        customerPhone: orderForm.customerPhone,
+        deliveryLocation: orderForm.deliveryLocation,
+        notes: orderForm.notes
+      });
+      setTrackingCopied(false);
+      setTrackingCopyError("");
+      setOrderSuccess({
+        orderNumber: result.orderNumber,
+        trackingLink: result.id && result.trackingToken
+          ? `/order-status/${result.id}#${result.trackingToken}`
+          : ""
+      });
+      setOrderProduct(null);
+      setOrderForm({ quantity: 1, customerName: "", customerEmail: "", customerPhone: "", deliveryLocation: "", notes: "" });
+      setError("");
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      orderLock.current = false;
+      setOrderBusy(false);
+    }
+  }
+
+  function dismissOrderSuccess() {
+    setOrderSuccess(null);
+    setTrackingCopied(false);
+    setTrackingCopyError("");
+  }
+
+  async function copyOrderTrackingLink() {
+    if (!orderSuccess?.trackingLink) return;
+    try {
+      await navigator.clipboard.writeText(new URL(orderSuccess.trackingLink, window.location.origin).href);
+      setTrackingCopied(true);
+      setTrackingCopyError("");
+    } catch {
+      setTrackingCopyError("Unable to copy automatically. Open order status to save the link.");
+    }
+  }
 
   async function friendAction(action) {
     if (!data?.profile?.id || friendBusy) return;
@@ -213,7 +264,42 @@ export default function PublicProfilePage({ user }) {
 
     </section>
 
-      {orderMessage && <div className="panel order-success-notice" role="status"><p className="success">{orderMessage}</p>{orderTrackingLink&&<><Link className="ui-button ui-button-outline order-track-link" to={orderTrackingLink}>View order status</Link><p className="muted">Save this private tracking link. Anyone who has it can view your order status.</p></>}</div>}
+      <Dialog
+        open={Boolean(orderSuccess)}
+        onOpenChange={open => { if (!open) dismissOrderSuccess(); }}
+        title="Order placed successfully"
+        className="order-confirmation-dialog"
+      >
+        <DialogContent className="order-confirmation-content">
+          <Button type="button" variant="ghost" size="icon" className="order-confirmation-close" aria-label="Close order confirmation" onClick={dismissOrderSuccess}>
+            <FiX aria-hidden="true" />
+          </Button>
+          <span className="order-confirmation-icon" aria-hidden="true"><FiCheckCircle /></span>
+          <DialogHeader className="order-confirmation-header">
+            <DialogTitle>Order placed successfully!</DialogTitle>
+            <DialogDescription>Your order has been sent to the seller.</DialogDescription>
+          </DialogHeader>
+          <div className="order-confirmation-reference">
+            <span>Order number</span>
+            <strong>{orderSuccess?.orderNumber}</strong>
+          </div>
+          {orderSuccess?.trackingLink && (
+            <>
+              <p className="order-confirmation-privacy"><FiLock aria-hidden="true" /> Keep your tracking link private. Anyone with the link can view your order status.</p>
+              <DialogFooter className="order-confirmation-actions">
+                <Button type="button" variant="outline" onClick={copyOrderTrackingLink}>
+                  {trackingCopied ? <FiCheckCircle aria-hidden="true" /> : <FiCopy aria-hidden="true" />}
+                  {trackingCopied ? "Link copied" : "Copy tracking link"}
+                </Button>
+                <Button asChild>
+                  <Link to={orderSuccess.trackingLink} onClick={dismissOrderSuccess}>View order status <FiArrowRight aria-hidden="true" /></Link>
+                </Button>
+              </DialogFooter>
+              {trackingCopyError && <p className="error order-confirmation-copy-error" role="alert">{trackingCopyError}</p>}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
       {orderProduct && <div className="booking-modal-backdrop" onClick={()=>setOrderProduct(null)}><section className="panel booking-editor-panel booking-modal" onClick={e=>e.stopPropagation()}><div className="panel-title"><div><p className="eyebrow">PRODUCT ORDER</p><h2>{orderProduct.name}</h2></div><Button type="button" variant="outline" size="icon" className="icon-action" aria-label="Close order" data-tooltip="Close" onClick={()=>setOrderProduct(null)}><FiX/></Button></div><form onSubmit={submitProductOrder}><Label>Quantity<Input type="number" min="1" max={orderProduct.stock} required value={orderForm.quantity} onChange={e=>setOrderForm({...orderForm,quantity:e.target.value})}/></Label><Label>Name<Input required value={orderForm.customerName} onChange={e=>setOrderForm({...orderForm,customerName:e.target.value})}/></Label><Label>Phone<Input required value={orderForm.customerPhone} onChange={e=>setOrderForm({...orderForm,customerPhone:e.target.value})}/></Label><Label>Email<Input type="email" value={orderForm.customerEmail} onChange={e=>setOrderForm({...orderForm,customerEmail:e.target.value})}/></Label><Label>Delivery location <span className="required-mark">*</span><div className="location-input-wrap"><FiMapPin aria-hidden="true"/><Input required maxLength="250" autoComplete="street-address" placeholder="Street, barangay, city / delivery address" value={orderForm.deliveryLocation} onChange={e=>setOrderForm({...orderForm,deliveryLocation:e.target.value})}/></div></Label><Label>Notes<Textarea value={orderForm.notes} onChange={e=>setOrderForm({...orderForm,notes:e.target.value})}/></Label><strong>Total: {orderProduct.currency} {(Number(orderProduct.price||0)*Number(orderForm.quantity||1)).toLocaleString()}</strong>{error && <p className="error" role="alert">{error}</p>}<Button type="submit" className="public-place-order" disabled={orderBusy}><FiShoppingBag/>{orderBusy?"Placing order…":"Place order"}</Button></form></section></div>}
 
     {detailProduct&&<div className="booking-modal-backdrop product-gallery-backdrop" onClick={()=>setDetailProduct(null)}><section className="ui-card public-product-gallery search-product-details" role="dialog" aria-modal="true" aria-label={detailProduct.name+" details"} onClick={e=>e.stopPropagation()}><div className="public-gallery-head"><div><p className="eyebrow">PRODUCT DETAILS</p><h2>{detailProduct.name}</h2></div><Button variant="outline" size="icon" aria-label="Close product details" onClick={()=>setDetailProduct(null)}><FiX/></Button></div><div className="public-gallery-stage">{(detailProduct.images?.[0]||detailProduct.image)?<Image src={detailProduct.images?.[0]||detailProduct.image} alt={detailProduct.name}/>:<span className="product-image-placeholder"><FiShoppingBag/></span>}</div><div className="public-product-body"><p>{detailProduct.description||"No description available."}</p><strong>{detailProduct.currency||"PHP"} {Number(detailProduct.price||0).toLocaleString()}</strong><small>{detailProduct.stock>0?detailProduct.stock+" in stock":"Out of stock"}</small><p>Sold by {profile.name}</p></div><div className="public-gallery-footer"><Button variant="outline" onClick={()=>{const images=detailProduct.images?.length?detailProduct.images:(detailProduct.image?[detailProduct.image]:[]);if(images.length){setProductGallery({...detailProduct,images});setGalleryIndex(0);setDetailProduct(null);}}} disabled={!(detailProduct.images?.length||detailProduct.image)}>View images</Button><Button disabled={detailProduct.stock<1||paused} onClick={()=>{setOrderProduct(detailProduct);setOrderForm({...orderForm,quantity:1});setDetailProduct(null);}}><FiShoppingBag/>Order product</Button></div></section></div>}
