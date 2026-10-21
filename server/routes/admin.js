@@ -79,7 +79,7 @@ router.get("/businesses", async (req, res) => {
       return res.status(400).json({ message: "Invalid directory cursor." });
     const filter = { role: "business" };
     if (paged && req.query.before) filter._id = { $lt: new mongoose.Types.ObjectId(req.query.before) };
-    const query = User.find(filter).select("name username email accountStatus profileImage createdAt");
+    const query = User.find(filter).select("name username email accountStatus profileImage profileImagePositionX profileImagePositionY coverImage createdAt");
     const users = await (paged
       ? query.sort({ _id: -1 }).limit(limit + 1).lean()
       : query.sort({ createdAt: -1 }).lean());
