@@ -1,6 +1,7 @@
 import { Card } from "../components/ui/card.jsx";
 import { Button } from "../components/ui/button.jsx";
 import { Input } from "../components/ui/input.jsx";
+import { Image } from "../components/ui/image.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
@@ -191,7 +192,7 @@ export default function BusinessManagementPage({ user, onLogout }) {
                 const averageRating = Number(item.reviewSummary?.averageRating || 0).toFixed(1);
                 return <Card as="article" className="business-admin-row" key={id}>
                   {viewMode === "grid" && <div className="business-admin-cover" aria-hidden="true">
-                    {item.coverImage && <img src={item.coverImage} alt="" loading="lazy" />}
+                    {item.coverImage && <Image src={item.coverImage} alt="" loading="lazy" />}
                   </div>}
                   <div className="business-admin-identity">
                     <ProfileAvatar
