@@ -175,25 +175,44 @@ export default function BusinessManagementPage({ user, onLogout }) {
                 const id = String(item._id);
                 const name = item.business?.name || item.name || "Unnamed business";
                 const status = item.accountStatus || "active";
+                const reviewCount = Number(item.reviewSummary?.count || 0);
+                const averageRating = Number(item.reviewSummary?.averageRating || 0).toFixed(1);
                 return <Card as="article" className="business-admin-row" key={id}>
+                  {viewMode === "grid" && <div className="business-admin-cover" aria-hidden="true">
+                    {item.coverImage && <img src={item.coverImage} alt="" loading="lazy" />}
+                  </div>}
                   <div className="business-admin-identity">
-                    <ProfileAvatar profile={{name,profileImage:item.business?.logo || item.profileImage}} />
+                    <ProfileAvatar
+                      profile={{
+                        name,
+                        profileImage: item.profileImage || item.business?.logo,
+                        profileImagePositionX: item.profileImagePositionX,
+                        profileImagePositionY: item.profileImagePositionY
+                      }}
+                      size={viewMode === "grid" ? "xl" : "md"}
+                    />
                     <div className="business-admin-identity-text">
                       <strong>{name}</strong>
+                      {viewMode === "grid" && item.username && <span className="business-admin-handle">@{item.username}</span>}
                       <small title={item.email}>{item.email}</small>
                       <span className="business-admin-category">{item.business?.category || "General"}</span>
                     </div>
                   </div>
+                  {viewMode === "grid" && <div className="business-admin-rating" aria-label={`Rating ${averageRating} out of 5, ${reviewCount} ${reviewCount === 1 ? "rating" : "ratings"}`}>
+                    <FiStar aria-hidden="true" />
+                    <strong>{averageRating}</strong>
+                    <span>({reviewCount} {reviewCount === 1 ? "rating" : "ratings"})</span>
+                  </div>}
                   <div className="business-admin-account-status">
                     <span className={`status business-admin-status ${status}`}>{status}</span>
                   </div>
-                  <div className="business-admin-metric" data-label="Services">
+                  <div className="business-admin-metric business-admin-metric--services" data-label="Services">
                     <FiBriefcase aria-hidden="true" /><strong>{item.serviceCount ?? 0}</strong>
                   </div>
-                  <div className="business-admin-metric" data-label="Bookings">
+                  <div className="business-admin-metric business-admin-metric--bookings" data-label="Bookings">
                     <FiCalendar aria-hidden="true" /><strong>{item.bookingCount ?? 0}</strong>
                   </div>
-                  <div className="business-admin-metric" data-label="Reviews">
+                  <div className="business-admin-metric business-admin-metric--reviews" data-label="Reviews">
                     <FiStar aria-hidden="true" /><strong>{item.reviewSummary?.count ?
                       `${Number(item.reviewSummary.averageRating || 0).toFixed(1)} (${item.reviewSummary.count})` : "—"}</strong>
                   </div>
