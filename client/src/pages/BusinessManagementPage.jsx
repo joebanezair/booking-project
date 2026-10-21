@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBriefcase, FiCalendar, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
+import { FiBriefcase, FiCalendar, FiCheckCircle, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPauseCircle, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { api } from "../api.js";
@@ -105,10 +105,22 @@ export default function BusinessManagementPage({ user, onLogout }) {
           <p className="muted">Manage business accounts and their activity in one place.</p>
         </div>
         <div className="business-admin-overview" aria-label="Account overview">
-          <div><strong>{items.length}</strong><span>Total</span></div>
-          <div><strong>{activeCount}</strong><span>Active</span></div>
-          <div><strong>{pausedCount}</strong><span>Paused</span></div>
-          <div><strong>{disabledCount}</strong><span>Disabled</span></div>
+          <div className="business-admin-summary-card business-admin-summary-card--total">
+            <span className="business-admin-summary-icon"><FiUsers aria-hidden="true" /></span>
+            <strong>{items.length}</strong><span className="business-admin-summary-label">Total</span>
+          </div>
+          <div className="business-admin-summary-card business-admin-summary-card--active">
+            <span className="business-admin-summary-icon"><FiCheckCircle aria-hidden="true" /></span>
+            <strong>{activeCount}</strong><span className="business-admin-summary-label">Active</span>
+          </div>
+          <div className="business-admin-summary-card business-admin-summary-card--paused">
+            <span className="business-admin-summary-icon"><FiPauseCircle aria-hidden="true" /></span>
+            <strong>{pausedCount}</strong><span className="business-admin-summary-label">Paused</span>
+          </div>
+          <div className="business-admin-summary-card business-admin-summary-card--disabled">
+            <span className="business-admin-summary-icon"><FiSlash aria-hidden="true" /></span>
+            <strong>{disabledCount}</strong><span className="business-admin-summary-label">Disabled</span>
+          </div>
         </div>
       </header>
 
