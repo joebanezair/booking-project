@@ -1787,30 +1787,37 @@ html body .order-confirmation-success::after {
   content: "";
   position: absolute;
   inset: 7px;
-  border-radius: 50%;
+  border-radius: 50% !important;
   background: rgba(28, 179, 101, .08);
 }
 html body .order-confirmation-success::after {
   inset: 16px;
   background: rgba(28, 179, 101, .09);
 }
-html body .order-confirmation-icon {
+html body .order-confirmation-dialog .order-confirmation-success .order-confirmation-icon {
   position: relative;
   z-index: 1;
   display: grid;
   place-items: center;
+  flex: 0 0 52px;
   width: 52px;
   height: 52px;
+  aspect-ratio: 1 / 1;
   margin: 0;
-  border: 1px solid #a7e7c3;
-  border-radius: 50%;
-  background: #e7faee;
-  color: #149653;
+  border: 0 !important;
+  border-radius: 50% !important;
+  clip-path: circle(50% at 50%);
+  background: linear-gradient(145deg, #1dbf6a, #0d9950) !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(13, 153, 80, .16);
   animation: order-confirmation-icon-in .52s cubic-bezier(.2, .7, .25, 1.2) both;
 }
-html body .order-confirmation-icon svg {
+html body .order-confirmation-dialog .order-confirmation-icon svg {
+  display: block;
   width: 30px;
   height: 30px;
+  stroke: currentColor;
+  stroke-width: 3;
 }
 html body .order-confirmation-spark {
   position: absolute;
