@@ -11,7 +11,7 @@ import { fileToDataUrl } from "../lib.js";
 const newQuestion=()=>({id:crypto.randomUUID?.()||`q-${Date.now()}`,label:"",type:"text",required:false,options:[]});
 
 export default function ContentForm({initial,onSubmit,submitLabel}){
-  const [form,setForm]=useState({durationMinutes:60,bufferMinutes:0,capacity:1,bookingQuestions:[],...initial,images:initial.images||[],bookingQuestions:initial.bookingQuestions||[]});
+  const [form,setForm]=useState({durationMinutes:60,bufferMinutes:0,capacity:1,...initial,images:initial.images||[],bookingQuestions:initial.bookingQuestions||[]});
   const [error,setError]=useState("");
 
   async function cover(file){try{const coverImage=await fileToDataUrl(file);setForm(v=>({...v,coverImage}));setError("");}catch(e){setError(e.message);}}
