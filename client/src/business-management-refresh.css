@@ -482,3 +482,298 @@ html body .business-admin-list--grid .business-admin-identity > .profile-avatar{
 @media(prefers-reduced-motion:reduce){
  .business-admin-list--grid .business-admin-row{transition:none}
 }
+
+
+/* Business management polish v2 — layout hierarchy, interactions and mobile QA */
+/* All existing data/actions remain. Preserve borderless 15px summary/toggle styles. */
+.business-admin-page {
+  --admin-ink: var(--foreground,#19273d);
+  --admin-soft: var(--muted-foreground,#697b96);
+  --admin-line: var(--border,#e2e8f1);
+  --admin-panel: var(--card,#fff);
+}
+.business-admin-header {
+  gap: clamp(18px,3vw,34px);
+  margin-bottom: 20px;
+}
+.business-admin-heading h1 {
+  font-size: clamp(28px,2.15vw,34px);
+  font-weight: 740;
+  letter-spacing: -.038em;
+}
+.business-admin-heading .muted {
+  max-width: 530px;
+  font-size: 13px;
+  color: var(--admin-soft);
+}
+.business-admin-overview {
+  gap: 11px;
+}
+.business-admin-overview > .business-admin-summary-card {
+  border: 0 !important;
+  border-radius: 15px !important;
+  box-shadow: none !important;
+  padding: 13px 16px;
+}
+.business-admin-overview .business-admin-summary-card strong {
+  font-weight: 600;
+}
+.business-admin-overview .business-admin-summary-card .business-admin-summary-label {
+  font-weight: 400;
+}
+.business-admin-directory {
+  border-radius: 12px;
+  padding: 24px 25px 25px;
+  border-color: var(--admin-line);
+  box-shadow: 0 4px 18px rgba(24,43,80,.025);
+}
+.business-admin-toolbar {
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.business-admin-directory-heading h2 {
+  gap: 10px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+.business-admin-directory-heading h2 svg {
+  height: 21px;
+  width: 21px;
+}
+.business-admin-directory-heading > span {
+  padding-left: 31px;
+  color: var(--admin-soft);
+  font-size: 12px;
+}
+.business-admin-controls {
+  gap: 10px;
+}
+.business-admin-search input,
+.business-admin-filter select {
+  background: var(--admin-panel) !important;
+  color: var(--admin-ink);
+  border-color: var(--admin-line) !important;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.business-admin-search input:hover,
+.business-admin-filter select:hover {
+  border-color: color-mix(in srgb, var(--primary,#5267d7) 35%, var(--admin-line)) !important;
+}
+.business-admin-search input:focus-visible,
+.business-admin-filter select:focus-visible {
+  outline: 2px solid color-mix(in srgb,var(--primary,#5267d7) 55%,transparent);
+  outline-offset: 1px;
+}
+.business-admin-view-toggle {
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: transparent;
+  box-shadow: none !important;
+}
+.business-admin-view-toggle .ui-button,
+.business-admin-view-toggle .ui-button.is-selected {
+  border: 0 !important;
+  border-radius: 15px !important;
+  font-weight: 400 !important;
+}
+.business-admin-view-toggle .ui-button:not(.is-selected):hover {
+  background: var(--secondary,#eef2f8);
+  color: var(--admin-ink);
+}
+.business-admin-refresh.ui-button {
+  font-weight: 500;
+  border-radius: 10px !important;
+}
+.business-admin-row.ui-card {
+  background: var(--admin-panel);
+}
+/* Give business details visual priority, without removing status, reviews, or controls. */
+.business-admin-list--grid {
+  gap: 18px;
+}
+html body .business-admin-list--grid .business-admin-row.ui-card {
+  border-color: var(--admin-line) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 3px 12px rgba(24,43,80,.028) !important;
+  transition: border-color .17s ease, box-shadow .17s ease;
+}
+html body .business-admin-list--grid .business-admin-row.ui-card:hover {
+  border-color: color-mix(in srgb,var(--primary,#5267d7) 30%,var(--admin-line)) !important;
+  box-shadow: 0 8px 22px rgba(24,43,80,.07) !important;
+}
+.business-admin-list--grid .business-admin-identity {
+  gap: 14px;
+}
+.business-admin-list--grid .business-admin-identity-text {
+  gap: 5px;
+}
+.business-admin-list--grid .business-admin-identity-text > strong {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -.016em;
+}
+.business-admin-list--grid .business-admin-identity-text > small {
+  color: var(--admin-soft);
+  font-size: 12px;
+}
+.business-admin-list--grid .business-admin-category {
+  border-radius: 8px !important;
+  font-size: 11px;
+  font-weight: 400;
+}
+.business-admin-list--grid .business-admin-account-status {
+  margin-top: 7px;
+}
+.business-admin-list--grid .business-admin-status.status {
+  border-radius: 9px !important;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+.business-admin-list--grid .business-admin-metric {
+  min-height: 72px;
+  gap: 2px 9px;
+  border-color: var(--admin-line);
+}
+.business-admin-list--grid .business-admin-metric svg {
+  background: var(--secondary,#f2f5fa);
+  border-radius: 10px !important;
+  color: var(--admin-ink);
+}
+.business-admin-list--grid .business-admin-metric strong {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--admin-ink);
+}
+.business-admin-list--grid .business-admin-metric::after {
+  color: var(--admin-soft);
+  font-size: 11px;
+}
+.business-admin-list--grid .business-admin-actions {
+  padding-top: 11px;
+}
+.business-admin-list--grid .business-admin-actions > .ui-button,
+.business-admin-actions > .ui-button {
+  border-radius: 10px !important;
+  font-weight: 500;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.business-admin-list--grid .business-admin-actions > .ui-button:hover,
+.business-admin-actions > .ui-button:hover {
+  border-color: color-mix(in srgb,var(--primary,#5267d7) 45%,var(--admin-line));
+  background: var(--secondary,#f2f5fb);
+}
+.business-admin-actions:has(.business-admin-action-popover) {
+  z-index: 12;
+}
+.business-admin-action-popover {
+  z-index: 30;
+  width: 210px;
+  padding: 7px;
+  border-radius: 12px !important;
+  background: var(--admin-panel);
+  border-color: var(--admin-line);
+  box-shadow: 0 15px 38px rgba(24,38,71,.17);
+}
+.business-admin-action-popover > .ui-button {
+  min-height: 38px;
+  border-radius: 8px !important;
+  font-weight: 500;
+}
+.business-admin-action-popover > .ui-button:not(.business-admin-danger):hover {
+  background: var(--secondary,#eef2f8);
+}
+.business-admin-action-popover > .business-admin-danger {
+  color: #c52e3d;
+}
+.business-admin-empty {
+  border: 1px dashed var(--admin-line);
+  border-radius: 12px;
+  background: var(--admin-panel);
+}
+/* List mode stays useful, and the labels remain aligned on tablets. */
+.business-admin-columns {
+  padding: 0 15px 11px;
+  color: var(--admin-soft);
+}
+.business-admin-list:not(.business-admin-list--grid) .business-admin-row.ui-card {
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+@media (max-width: 1370px) {
+  .business-admin-directory { padding: 22px; }
+  .business-admin-search { width: clamp(210px,24vw,325px); }
+}
+@media (max-width: 1080px) {
+  .business-admin-header { align-items:stretch; }
+  .business-admin-overview > .business-admin-summary-card { min-height: 74px; }
+  .business-admin-list--grid { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 760px) {
+  .business-admin-directory-heading > span { padding-left: 0; }
+  .business-admin-toolbar { gap: 16px; }
+  .business-admin-controls { gap: 9px; }
+}
+@media (max-width: 600px) {
+  .business-admin-heading h1 { font-size: 27px; }
+  .business-admin-header { gap: 15px; }
+  .business-admin-directory { padding: 15px; }
+  .business-admin-overview > .business-admin-summary-card {
+    padding: 11px 12px;
+    border-radius: 15px !important;
+  }
+  .business-admin-controls {
+    display:grid;
+    grid-template-columns: minmax(0,1fr) auto auto;
+    gap: 8px;
+  }
+  .business-admin-search { grid-column: 1 / -1; width: 100%; }
+  .business-admin-filter { min-width: 0; }
+  .business-admin-filter select { width: 100%; max-width: none; }
+  .business-admin-refresh.ui-button { margin-left: 0; }
+  .business-admin-list--grid .business-admin-identity { gap: 9px; }
+  html body .business-admin-list--grid .business-admin-row.ui-card {
+    min-height: 238px;
+    padding: 15px !important;
+  }
+  .business-admin-list--grid .business-admin-identity-text > strong { font-size: 13px; }
+  .business-admin-list--grid .business-admin-metric { min-height: 78px; }
+  .business-admin-list--grid .business-admin-metric strong { font-size: 13px; }
+  .business-admin-list:not(.business-admin-list--grid) .business-admin-row.ui-card {
+    display:grid;
+    grid-template-columns: repeat(6,minmax(0,1fr));
+    grid-template-areas:
+      "identity identity identity identity status status"
+      "services services bookings bookings reviews reviews"
+      "actions actions actions actions actions actions";
+    gap: 12px 6px;
+  }
+  .business-admin-list:not(.business-admin-list--grid) .business-admin-identity { grid-area: identity; }
+  .business-admin-list:not(.business-admin-list--grid) .business-admin-account-status {
+    grid-area: status;
+    justify-self: end;
+  }
+  .business-admin-list:not(.business-admin-list--grid) .business-admin-metric--services { grid-area: services; }
+  .business-admin-list:not(.business-admin-list--grid) .business-admin-metric--bookings { grid-area: bookings; }
+  .business-admin-list:not(.business-admin-list--grid) .business-admin-metric--reviews { grid-area: reviews; }
+  .business-admin-list:not(.business-admin-list--grid) .business-admin-actions {
+    grid-area: actions;
+    justify-content:flex-end;
+    border-top: 1px solid var(--admin-line);
+    padding-top: 11px;
+  }
+  .business-admin-list:not(.business-admin-list--grid) .business-admin-metric {
+    display:flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    min-width:0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .business-admin-row.ui-card,
+  .business-admin-actions > .ui-button,
+  .business-admin-search input,
+  .business-admin-filter select { transition: none !important; }
+}
