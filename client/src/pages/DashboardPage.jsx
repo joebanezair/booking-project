@@ -182,6 +182,29 @@ export default function DashboardPage({ user, onLogout }) {
   const mainVisible = metricGroups[0].metrics.some(([key]) => visibleMetrics[key]);
   const bookingsVisible = metricGroups[1].metrics.some(([key]) => visibleMetrics[key]);
   const salesVisible = metricGroups[2].metrics.some(([key]) => visibleMetrics[key]);
+  // The modal displays the same database-backed values as the administrator dashboard.
+  // A hidden statistic still shows its current value here; visibility is presentation-only.
+  const countText = value => typeof value === "number" && Number.isFinite(value)
+    ? value.toLocaleString("en-PH") : "—";
+  const metricValues = {
+    revenue: revenueRows?.length > 1 ? revenueBreakdown : revenueDisplay,
+    products: countText(overview?.products?.total),
+    services: countText(overview?.services?.total),
+    bookings: countText(overview?.bookings?.total),
+    reviews: countText(overview?.reviews?.verified),
+    rating: typeof overview?.reviews?.averageRating === "number"
+      ? `${overview.reviews.averageRating.toFixed(1)} / 5` : "—",
+    pending: countText(overview?.bookings?.pending),
+    confirmed: countText(overview?.bookings?.confirmed),
+    inProgress: countText(overview?.bookings?.inProgress),
+    completed: countText(overview?.bookings?.completed),
+    cancelled: countText(overview?.bookings?.cancelled),
+    noShow: countText(overview?.bookings?.noShow),
+    serviceSales: countText(overview?.sales?.recorded),
+    posSales: countText(overview?.sales?.posRecorded),
+    onlineOrders: countText(overview?.sales?.onlineOrders),
+    completedOrders: countText(overview?.sales?.completedOnlineOrders)
+  };
 
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
@@ -287,20 +310,23 @@ export default function DashboardPage({ user, onLogout }) {
                   <table className="admin-stats-table">
                     <thead className="admin-stats-sr-only">
                       <tr>
-                        <th scope="col">Statistic</th>
-                        <th scope="col">Visible</th>
+                        <th scope="col">Show statistic</th>
+                        <th scope="col">Current value</th>
                       </tr>
                     </thead>
                     <tbody>
                       {group.metrics.map(([key, label]) => <tr key={key}>
                         <th scope="row" className="admin-stats-row-name">
-                          <label htmlFor={`admin-stat-show-${key}`}>{label}</label>
+                          <label htmlFor={`admin-stat-show-${key}`} className="admin-stats-metric-option">
+                            <input type="checkbox" id={`admin-stat-show-${key}`}
+                              aria-label={`Show ${label}`}
+                              checked={draftMetrics[key] !== false}
+                              onChange={event => setDraftMetrics(current => ({ ...current, [key]: event.target.checked }))} />
+                            <span>{label}</span>
+                          </label>
                         </th>
-                        <td className="admin-stats-visible-column">
-                          <input type="checkbox" id={`admin-stat-show-${key}`}
-                            aria-label={`Show ${label}`}
-                            checked={draftMetrics[key] !== false}
-                            onChange={event => setDraftMetrics(current => ({ ...current, [key]: event.target.checked }))} />
+                        <td className="admin-stats-metric-value" title={String(metricValues[key] ?? "—")}>
+                          {metricValues[key] ?? "—"}
                         </td>
                       </tr>)}
                     </tbody>
