@@ -6,7 +6,7 @@ import Business from "../models/Business.js";
 import Booking from "../models/Booking.js";
 import Content from "../models/Content.js";
 import Review from "../models/Review.js";
-import Sale, { PosSale, ProductOrder } from "../models/Sale.js";
+import Sale, { Product, PosSale, ProductOrder } from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireAdmin } from "../middleware/requireRole.js";
 import { notify } from "../lib/notifications.js";
@@ -86,25 +86,32 @@ router.get("/businesses", async (req, res) => {
     const hasMore = paged && users.length > limit;
     if (hasMore) users.pop();
     const ids = users.map(user => user._id);
-    const [profiles, serviceCounts, bookingCounts, reviewRows] = await Promise.all([
+    const [profiles, productCounts, serviceCounts, bookingCounts, reviewRows] = await Promise.all([
       Business.find({ owner: { $in: ids } }).select("owner name category location phone website logo").lean(),
+      Product.aggregate([{ $match: { user: { $in: ids } } }, { $group: { _id: "$user", count: { $sum: 1 } } }]),
       Content.aggregate([{ $match: { user: { $in: ids } } }, { $group: { _id: "$user", count: { $sum: 1 } } }]),
       Booking.aggregate([{ $match: { user: { $in: ids } } }, { $group: { _id: "$user", count: { $sum: 1 } } }]),
       Review.aggregate([{ $match: { businessOwner: { $in: ids }, verified: true } }, { $group: { _id: "$businessOwner", count: { $sum: 1 }, averageRating: { $avg: "$rating" } } }])
     ]);
     const byOwner = new Map(profiles.map(item => [String(item.owner), item]));
+    const products = new Map(productCounts.map(item => [String(item._id), item.count]));
     const services = new Map(serviceCounts.map(item => [String(item._id), item.count]));
     const bookings = new Map(bookingCounts.map(item => [String(item._id), item.count]));
-    const reviews = new Map(reviewRows.map(item => [String(item._id), { count: item.count, averageRating: Number(item.averageRating.toFixed(1)) }]));
+    const reviews = new Map(reviewRows.map(item => [String(item._id), {
+      count: item.count,
+      averageRating: Number.isFinite(item.averageRating) ? Number(item.averageRating.toFixed(1)) : 0
+    }]));
 
     const items = users.filter(user => byOwner.has(String(user._id))).map(user => ({
       ...user,
       accountStatus: user.accountStatus || "active",
       business: byOwner.get(String(user._id)),
+      productCount: products.get(String(user._id)) || 0,
       serviceCount: services.get(String(user._id)) || 0,
       bookingCount: bookings.get(String(user._id)) || 0,
       reviewSummary: reviews.get(String(user._id)) || { count: 0, averageRating: 0 }
     }));
+    res.set("Cache-Control", "no-store");
     res.json(paged ? { items, hasMore, nextCursor: hasMore ? String(users[users.length - 1]._id) : null } : items);
   } catch (error) {
     console.error(error);
@@ -138,7 +145,7 @@ router.get("/businesses/:id", async (req, res) => {
     ];
 
     const [business, services, recentBookings, reviewRows, saleRows,
-      serviceCounts, bookingStatuses, serviceRevenue, posRevenue, onlineRevenue] = await Promise.all([
+      productCount, serviceCounts, bookingStatuses, serviceRevenue, posRevenue, onlineRevenue] = await Promise.all([
       Business.findOne({ owner: user._id }).lean(),
       Content.find({ user: user._id }).select("title published visibility category price currency updatedAt").sort({ updatedAt: -1 }).limit(50).lean(),
       Booking.find({ user: user._id }).select("guestName guestEmail guestPhone service servicePrice currency bookingDate completedAt status source").sort({ createdAt: -1 }).limit(20).lean(),
@@ -148,6 +155,7 @@ router.get("/businesses/:id", async (req, res) => {
         { $group: { _id: "$currency", total: { $sum: "$saleAmount" }, count: { $sum: 1 } } },
         { $sort: { count: -1, total: -1 } }
       ]),
+      Product.countDocuments({ user: user._id }),
       Content.countDocuments({ user: user._id }),
       Booking.aggregate([
         { $match: { user: user._id } },
@@ -196,6 +204,7 @@ router.get("/businesses/:id", async (req, res) => {
       business,
       services,
       recentBookings,
+      productCount,
       serviceCount: serviceCounts,
       bookingSummary: { total: bookingsTotal, statuses: bookingStatusCounts },
       financialSummary: {
