@@ -25,26 +25,39 @@ router.get("/overview", async (_req, res) => {
       activeBusinesses,
       pausedBusinesses,
       disabledBusinesses,
+      totalProducts,
+      publishedProducts,
       totalServices,
       publishedServices,
       totalBookings,
-      pendingBookings,
-      completedBookings,
+      bookingStatusRows,
       verifiedReviews,
+      verifiedRatingRows,
       recordedSales,
+      recordedPosSales,
+      totalOnlineOrders,
+      completedOnlineOrders,
       salesTotals
     ] = await Promise.all([
       User.countDocuments({ role: "business" }),
       User.countDocuments({ role: "business", accountStatus: "active" }),
       User.countDocuments({ role: "business", accountStatus: "paused" }),
       User.countDocuments({ role: "business", accountStatus: "disabled" }),
+      Product.countDocuments(),
+      Product.countDocuments({ published: true }),
       Content.countDocuments(),
       Content.countDocuments({ published: true }),
       Booking.countDocuments(),
-      Booking.countDocuments({ status: "pending" }),
-      Booking.countDocuments({ status: "completed" }),
+      Booking.aggregate([{ $group: { _id: "$status", count: { $sum: 1 } } }]),
       Review.countDocuments({ verified: true }),
+      Review.aggregate([
+        { $match: { verified: true, rating: { $gte: 1, $lte: 5 } } },
+        { $group: { _id: null, count: { $sum: 1 }, averageRating: { $avg: "$rating" } } }
+      ]),
       Sale.countDocuments({ status: "recorded" }),
+      PosSale.countDocuments({ status: "recorded" }),
+      ProductOrder.countDocuments(),
+      ProductOrder.countDocuments({ status: "completed" }),
       Sale.aggregate([
         { $match: { status: "recorded" } },
         { $group: { _id: "$currency", total: { $sum: "$saleAmount" }, count: { $sum: 1 } } },
@@ -52,15 +65,39 @@ router.get("/overview", async (_req, res) => {
       ])
     ]);
 
+    const bookingStatuses = Object.fromEntries(bookingStatusRows.map(row => [row._id, row.count]));
+    const verifiedRating = verifiedRatingRows[0];
+    // Platform-wide average must weight individual verified reviews, not business averages.
+    // A missing rating is null; zero is never presented as a one-star review.
+    res.set("Cache-Control", "no-store");
     res.json({
+      generatedAt: new Date().toISOString(),
       businesses: { total: totalBusinesses, active: activeBusinesses, paused: pausedBusinesses, disabled: disabledBusinesses },
+      products: { total: totalProducts, published: publishedProducts },
       services: { total: totalServices, published: publishedServices },
-      bookings: { total: totalBookings, pending: pendingBookings, completed: completedBookings },
+      bookings: {
+        total: totalBookings,
+        pending: bookingStatuses.pending || 0,
+        confirmed: bookingStatuses.confirmed || 0,
+        inProgress: bookingStatuses.in_progress || 0,
+        completed: bookingStatuses.completed || 0,
+        cancelled: bookingStatuses.cancelled || 0,
+        noShow: bookingStatuses.no_show || 0
+      },
       sales: {
         recorded: recordedSales,
+        posRecorded: recordedPosSales,
+        onlineOrders: totalOnlineOrders,
+        completedOnlineOrders,
+        // Financial totals here represent recorded service sales only, not total collected payments.
         totalsByCurrency: salesTotals.map(row => ({ currency: row._id || "PHP", total: row.total, count: row.count }))
       },
-      reviews: { verified: verifiedReviews }
+      reviews: {
+        verified: verifiedReviews,
+        ratingsCount: verifiedRating?.count || 0,
+        averageRating: verifiedRating && Number.isFinite(verifiedRating.averageRating)
+          ? Number(verifiedRating.averageRating.toFixed(1)) : null
+      }
     });
   } catch (error) {
     console.error(error);
