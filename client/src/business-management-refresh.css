@@ -2473,4 +2473,5 @@ html body .business-admin-page .business-admin-list:not(.business-admin-list--gr
 }
 .dashboard-content-rail > .admin-dashboard-platform .business-admin-activity {
   margin: 0;
+  border-bottom: 2px solid var(--border, #dfe6f0) !important;
 }
