@@ -40,7 +40,7 @@ router.get("/overview", async (_req, res) => {
       salesTotals
     ] = await Promise.all([
       User.countDocuments({ role: "business" }),
-      User.countDocuments({ role: "business", accountStatus: "active" }),
+      User.countDocuments({ role: "business", accountStatus: { $nin: ["paused", "disabled"] } }),
       User.countDocuments({ role: "business", accountStatus: "paused" }),
       User.countDocuments({ role: "business", accountStatus: "disabled" }),
       Product.countDocuments(),
