@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiMessageSquare, FiPackage, FiPlus, FiSearch, FiSettings, FiUser, FiUsers } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiMessageSquare, FiPackage, FiPlus, FiSearch, FiSettings, FiStar, FiUser, FiUsers } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import BusinessSetupChecklist from "../components/BusinessSetupChecklist.jsx";
 import DashboardAnalytics from "../components/DashboardAnalytics.jsx";
@@ -32,6 +32,22 @@ function money(value, currency) {
   } catch {
     return `${currency} ${Number(value || 0).toLocaleString()}`;
   }
+}
+
+function PlatformMetric({ icon: Icon, label, value, note }) {
+  return <div className="business-admin-platform-metric">
+    <span className="business-admin-platform-icon"><Icon aria-hidden="true" /></span>
+    <strong>{value ?? "—"}</strong>
+    <span className="business-admin-platform-label">{label}</span>
+    <small>{note}</small>
+  </div>;
+}
+
+function BreakdownMetric({ label, value }) {
+  return <div className="business-admin-breakdown-metric">
+    <span>{label}</span>
+    <strong>{value ?? "—"}</strong>
+  </div>;
 }
 
 export default function DashboardPage({ user, onLogout }) {
@@ -108,13 +124,58 @@ export default function DashboardPage({ user, onLogout }) {
     <div className="dashboard-content-rail">
       {overviewError && <p className="error">{overviewError}</p>}
 
-      {isAdmin && <section className="stats-grid admin-platform-stats">
-        <Card as="article" className="stat-card"><span>Businesses</span><strong>{overview?.businesses.total ?? "—"}</strong><small>{overview ? `${overview.businesses.active} active · ${overview.businesses.paused} paused · ${overview.businesses.disabled} disabled` : "Loading activity…"}</small></Card>
-        <Card as="article" className="stat-card"><span>Services</span><strong>{overview?.services.total ?? "—"}</strong><small>{overview ? `${overview.services.published} published` : "Loading activity…"}</small></Card>
-        <Card as="article" className="stat-card"><span>Bookings</span><strong>{overview?.bookings.total ?? "—"}</strong><small>{overview ? `${overview.bookings.pending} pending · ${overview.bookings.completed} completed` : "Loading activity…"}</small></Card>
-        <Card as="article" className="stat-card"><span>Recorded sales</span><strong>{overview?.sales?.recorded ?? "—"}</strong><small>{overview?.sales?.totalsByCurrency?.length ? overview.sales.totalsByCurrency.map(item => `${item.currency} ${Number(item.total || 0).toLocaleString()}`).join(" · ") : "Completed booking value"}</small></Card>
-        <Card as="article" className="stat-card"><span>Verified reviews</span><strong>{overview?.reviews.verified ?? "—"}</strong><small>Completed-booking reviews</small></Card>
-      </section>}
+      {isAdmin && <div className="business-admin-page admin-dashboard-platform">
+      <section className="business-admin-activity" aria-labelledby="platform-activity-title" aria-busy={!overview && !overviewError}>
+        <div className="business-admin-activity-heading">
+          <div>
+            <h2 id="platform-activity-title">Platform statistics</h2>
+            <p>All registered businesses · lifetime totals</p>
+          </div>
+          <span aria-live="polite" className="business-admin-activity-updated">
+            {overview?.generatedAt ? `Updated ${new Date(overview.generatedAt).toLocaleString()}` : !overviewError ? "Loading live totals…" : "Statistics unavailable"}
+          </span>
+        </div>
+        <div className="business-admin-platform-grid">
+          <PlatformMetric icon={FiPackage} label="Total products"
+            value={overview?.products?.total}
+            note={overview ? `${overview.products.published} published` : "—"} />
+          <PlatformMetric icon={FiBriefcase} label="Total services"
+            value={overview?.services?.total}
+            note={overview ? `${overview.services.published} published` : "—"} />
+          <PlatformMetric icon={FiCalendar} label="Total bookings"
+            value={overview?.bookings?.total}
+            note="All booking statuses" />
+          <PlatformMetric icon={FiStar} label="Verified reviews"
+            value={overview?.reviews?.verified}
+            note="Submitted and verified" />
+          <PlatformMetric icon={FiStar} label="Average rating"
+            value={overview?.reviews?.averageRating != null ? `${overview.reviews.averageRating.toFixed(1)} / 5` : "—"}
+            note={overview ? `${overview.reviews.ratingsCount} verified ratings` : "—"} />
+        </div>
+        <div className="business-admin-breakdowns">
+          <div className="business-admin-breakdown-group">
+            <h3>Booking status</h3>
+            <div className="business-admin-breakdown-grid">
+              <BreakdownMetric label="Pending" value={overview?.bookings?.pending} />
+              <BreakdownMetric label="Confirmed" value={overview?.bookings?.confirmed} />
+              <BreakdownMetric label="In progress" value={overview?.bookings?.inProgress} />
+              <BreakdownMetric label="Completed" value={overview?.bookings?.completed} />
+              <BreakdownMetric label="Cancelled" value={overview?.bookings?.cancelled} />
+              <BreakdownMetric label="No-show" value={overview?.bookings?.noShow} />
+            </div>
+          </div>
+          <div className="business-admin-breakdown-group">
+            <h3>Sales and orders</h3>
+            <div className="business-admin-breakdown-grid">
+              <BreakdownMetric label="Service sales recorded" value={overview?.sales?.recorded} />
+              <BreakdownMetric label="POS sales recorded" value={overview?.sales?.posRecorded} />
+              <BreakdownMetric label="Online orders" value={overview?.sales?.onlineOrders} />
+              <BreakdownMetric label="Orders completed" value={overview?.sales?.completedOnlineOrders} />
+            </div>
+          </div>
+        </div>
+      </section>
+      </div>}
 
       {!isAdmin && setupLoaded && !setupComplete && <BusinessSetupChecklist
         items={onboarding}
