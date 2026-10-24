@@ -210,9 +210,6 @@ export default function DashboardPage({ user, onLogout }) {
                   <CardDescription>{section.text}</CardDescription>
                 </div>
               </CardHeader>
-              <CardContent className="dashboard-shadcn-card-content">
-                <span className="admin-tool-cta">{section.action}<FiArrowRight aria-hidden="true" /></span>
-              </CardContent>
             </Card>
           ) : (
             <Card className="dashboard-shadcn-card" key={section.to}>
