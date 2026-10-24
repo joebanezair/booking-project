@@ -2629,7 +2629,7 @@ html body .admin-stats-dialog .admin-stats-group-trigger:focus-visible {
   outline-offset: 1px;
 }
 html body .admin-stats-dialog .admin-stats-group-heading {
-  flex: 1; min-width: 0; font-size: 12px; font-weight: 700;
+  flex: 1; min-width: 0; font-size: 12px; font-weight: 500;
 }
 html body .admin-stats-dialog .admin-stats-group-count {
   flex-shrink: 0;
@@ -2684,7 +2684,7 @@ html body .admin-stats-dialog .admin-stats-table tbody tr:hover {
 }
 html body .admin-stats-dialog .admin-stats-table tbody th,
 html body .admin-stats-dialog .admin-stats-table tbody td {
-  padding: 5px 10px !important;
+  padding: 5px 8px !important;
   line-height: 1.35;
   vertical-align: middle;
   background: transparent !important;
@@ -2693,35 +2693,61 @@ html body .admin-stats-dialog .admin-stats-table tbody td {
 }
 html body .admin-stats-dialog .admin-stats-table tbody th.admin-stats-row-name {
   font-size: 12px !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   color: var(--foreground, #1e2b41) !important;
   text-align: left !important;
+  text-transform: none !important;
 }
-html body .admin-stats-dialog .admin-stats-table tbody th.admin-stats-row-name label {
-  display: block;
-  margin: 0;
+html body .admin-stats-dialog .admin-stats-table tbody th.admin-stats-row-name .admin-stats-metric-option {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  width: auto !important;
   min-width: 0;
+  margin: 0;
+  padding: 0;
   cursor: pointer;
-  font: inherit !important;
-  font-weight: 500 !important;
   color: inherit !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.4;
   text-align: left !important;
   text-transform: none !important;
   letter-spacing: normal !important;
 }
-html body .admin-stats-dialog .admin-stats-table .admin-stats-visible-column {
-  width: 56px;
-  text-align: center !important;
+html body .admin-stats-dialog .admin-stats-table tbody th.admin-stats-row-name .admin-stats-metric-option span {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
 }
-html body .admin-stats-dialog .admin-stats-table input[type="checkbox"] {
-  display: inline-block;
+html body .admin-stats-dialog .admin-stats-table .admin-stats-metric-value {
+  width: 132px;
+  max-width: 43%;
+  padding-right: 3px !important;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 600;
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: var(--foreground, #1e2b41);
+}
+html body .admin-stats-dialog .admin-stats-table .admin-stats-metric-option input[type="checkbox"] {
+  display: block !important;
+  flex: 0 0 16px !important;
   box-sizing: border-box;
   width: 16px !important;
   min-width: 16px !important;
-  height: 16px;
-  margin: 0;
-  padding: 0;
-  vertical-align: middle;
+  max-width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 4px;
   accent-color: var(--primary, #526be4);
   cursor: pointer;
 }
