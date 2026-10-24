@@ -6,10 +6,39 @@ import { Label } from "../components/ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBriefcase, FiCalendar, FiCheckCircle, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPauseCircle, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
+import { FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiCopy, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPackage, FiPauseCircle, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { api } from "../api.js";
+
+// The display is deliberately abbreviated; the complete immutable MongoDB ID is copied.
+function UserIdControl({ id, compact = false }) {
+  const [copyState, setCopyState] = useState("idle");
+  async function copyFullId(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard is unavailable");
+      await navigator.clipboard.writeText(id);
+      setCopyState("copied");
+    } catch {
+      setCopyState("error");
+    }
+  }
+  return <span className={"business-admin-user-id" + (compact ? " business-admin-user-id--compact" : "")}>
+    {compact && <span className="business-admin-id-label">ID:</span>}
+    <code>{id.slice(0, 8)}…</code>
+    <Button type="button" variant="ghost" size="icon-sm"
+      className="business-admin-id-copy"
+      title={copyState === "copied" ? "Full ID copied" : "Copy full user ID"}
+      aria-label={copyState === "copied" ? "Full user ID copied" : "Copy full user ID"}
+      onClick={copyFullId}>
+      {copyState === "copied" ? <FiCheck aria-hidden="true" /> : <FiCopy aria-hidden="true" />}
+    </Button>
+    {copyState === "copied" && <span className="business-admin-copy-feedback" role="status">Copied</span>}
+    {copyState === "error" && <span className="business-admin-copy-feedback" role="alert">Copy unavailable</span>}
+  </span>;
+}
 
 export default function BusinessManagementPage({ user, onLogout }) {
   const [items,setItems] = useState([]);
@@ -21,6 +50,7 @@ export default function BusinessManagementPage({ user, onLogout }) {
   const [confirmPassword,setConfirmPassword] = useState("");
   const [busy,setBusy] = useState(false);
   const [isLoading,setIsLoading] = useState(true);
+  const [hasLoaded,setHasLoaded] = useState(false);
   const [query,setQuery] = useState("");
   const [statusFilter,setStatusFilter] = useState("all");
   // Always enter Business Management in the approved grid layout.
@@ -42,7 +72,7 @@ export default function BusinessManagementPage({ user, onLogout }) {
     return items.filter(item => {
       if (statusFilter !== "all" && (item.accountStatus || "active") !== statusFilter) return false;
       if (!term) return true;
-      return [item.business?.name, item.name, item.email, item.business?.category]
+      return [item._id, item.business?.name, item.name, item.email, item.business?.category]
         .some(value => String(value || "").toLocaleLowerCase().includes(term));
     });
   }, [items, query, statusFilter]);
@@ -65,8 +95,14 @@ export default function BusinessManagementPage({ user, onLogout }) {
 
   async function load() {
     setIsLoading(true);
-    try { setItems(await api.admin.businesses()); setError(""); }
-    catch(e) { setError(e.message); }
+    try {
+      const businesses = await api.admin.businesses();
+      if (!Array.isArray(businesses)) throw new Error("Unexpected business directory response.");
+      setItems(businesses); setHasLoaded(true); setError("");
+    } catch(e) {
+      // Never show stale totals as current after an unsuccessful refresh.
+      setItems([]); setHasLoaded(false); setError(e.message);
+    }
     finally { setIsLoading(false); }
   }
   useEffect(() => { load(); }, []);
@@ -108,19 +144,19 @@ export default function BusinessManagementPage({ user, onLogout }) {
         <div className="business-admin-overview" aria-label="Account overview">
           <div className="business-admin-summary-card business-admin-summary-card--total">
             <span className="business-admin-summary-icon"><FiUsers aria-hidden="true" /></span>
-            <strong>{items.length}</strong><span className="business-admin-summary-label">Total</span>
+            <strong>{hasLoaded ? items.length : "—"}</strong><span className="business-admin-summary-label">Total</span>
           </div>
           <div className="business-admin-summary-card business-admin-summary-card--active">
             <span className="business-admin-summary-icon"><FiCheckCircle aria-hidden="true" /></span>
-            <strong>{activeCount}</strong><span className="business-admin-summary-label">Active</span>
+            <strong>{hasLoaded ? activeCount : "—"}</strong><span className="business-admin-summary-label">Active</span>
           </div>
           <div className="business-admin-summary-card business-admin-summary-card--paused">
             <span className="business-admin-summary-icon"><FiPauseCircle aria-hidden="true" /></span>
-            <strong>{pausedCount}</strong><span className="business-admin-summary-label">Paused</span>
+            <strong>{hasLoaded ? pausedCount : "—"}</strong><span className="business-admin-summary-label">Paused</span>
           </div>
           <div className="business-admin-summary-card business-admin-summary-card--disabled">
             <span className="business-admin-summary-icon"><FiSlash aria-hidden="true" /></span>
-            <strong>{disabledCount}</strong><span className="business-admin-summary-label">Disabled</span>
+            <strong>{hasLoaded ? disabledCount : "—"}</strong><span className="business-admin-summary-label">Disabled</span>
           </div>
         </div>
       </header>
@@ -132,12 +168,12 @@ export default function BusinessManagementPage({ user, onLogout }) {
         <div className="business-admin-toolbar">
           <div className="business-admin-directory-heading">
             <h2 id="business-directory-title"><FiUsers aria-hidden="true" /> Business directory</h2>
-            <span aria-live="polite">{filteredItems.length} of {items.length} businesses</span>
+            <span aria-live="polite">{hasLoaded ? `${filteredItems.length} of ${items.length} businesses` : "Business data unavailable"}</span>
           </div>
           <div className="business-admin-controls">
             <div className="business-admin-search">
               <FiSearch aria-hidden="true" />
-              <Input type="search" aria-label="Search businesses" placeholder="Search name, email, category..."
+              <Input type="search" aria-label="Search businesses" placeholder="Search name, email, user ID..."
                 value={query} onChange={event => setQuery(event.target.value)} />
             </div>
             <div className="business-admin-filter">
@@ -171,16 +207,17 @@ export default function BusinessManagementPage({ user, onLogout }) {
         </div>
 
         {viewMode === "list" && <div className="business-admin-columns" aria-hidden="true">
-          <span>Business</span><span>Status</span><span>Services</span>
-          <span>Bookings</span><span>Reviews</span><span>Actions</span>
+          <span>User ID</span><span>Business</span><span>Status</span>
+          <span>Products</span><span>Services</span><span>Bookings</span>
+          <span>Reviews</span><span>Rating</span><span>Actions</span>
         </div>}
         <div className={"business-admin-list" + (viewMode === "grid" ? " business-admin-list--grid" : "")}>
           {isLoading && items.length === 0 ? <p className="business-admin-empty" role="status">Loading businesses...</p> :
             filteredItems.length === 0 ?
               <div className="business-admin-empty">
                 <FiUsers aria-hidden="true" />
-                <strong>{items.length === 0 ? "No businesses yet" : "No matching businesses"}</strong>
-                <span>{items.length === 0 ? "Registered business accounts will appear here." : "Try another search or account status."}</span>
+                <strong>{!hasLoaded ? "Business data unavailable" : items.length === 0 ? "No businesses yet" : "No matching businesses"}</strong>
+                <span>{!hasLoaded ? "Refresh to retry loading from the database." : items.length === 0 ? "Registered business accounts will appear here." : "Try another search or account status."}</span>
                 {items.length > 0 && <Button type="button" variant="ghost" size="sm"
                   onClick={() => { setQuery(""); setStatusFilter("all"); }}>Clear filters</Button>}
               </div> :
@@ -189,11 +226,13 @@ export default function BusinessManagementPage({ user, onLogout }) {
                 const name = item.business?.name || item.name || "Unnamed business";
                 const status = item.accountStatus || "active";
                 const reviewCount = Number(item.reviewSummary?.count || 0);
-                const averageRating = Number(item.reviewSummary?.averageRating || 0).toFixed(1);
+                const averageRating = reviewCount > 0 && Number(item.reviewSummary?.averageRating) > 0
+                  ? Number(item.reviewSummary.averageRating).toFixed(1) : "—";
                 return <Card as="article" className="business-admin-row" key={id}>
                   <Link className="business-admin-card-hit" to={`/dashboard/businesses/${id}`}
                     aria-label={`View business statistics for ${name}`}
                     title={`View ${name} business statistics`} />
+                  {viewMode === "list" && <UserIdControl id={id} />}
                   {viewMode === "grid" && <div className="business-admin-cover" aria-hidden="true">
                     {item.coverImage && <Image src={item.coverImage} alt="" loading="lazy" />}
                   </div>}
@@ -211,7 +250,10 @@ export default function BusinessManagementPage({ user, onLogout }) {
                       <strong>{name}</strong>
                       {viewMode === "grid" && item.username && <span className="business-admin-handle">@{item.username}</span>}
                       <small title={item.email}>{item.email}</small>
-                      <span className="business-admin-category">{item.business?.category || "General"}</span>
+                      <div className="business-admin-metadata">
+                        <span className="business-admin-category">{item.business?.category || "General"}</span>
+                        {viewMode === "grid" && <UserIdControl id={id} compact />}
+                      </div>
                     </div>
                   </div>
                   {viewMode === "grid" && <div className="business-admin-rating" aria-label={`Rating ${averageRating} out of 5, ${reviewCount} ${reviewCount === 1 ? "rating" : "ratings"}`}>
@@ -222,15 +264,22 @@ export default function BusinessManagementPage({ user, onLogout }) {
                   <div className="business-admin-account-status">
                     <span className={`status business-admin-status ${status}`}>{status}</span>
                   </div>
+                  <div className="business-admin-metric business-admin-metric--products" data-label="Products">
+                    <FiPackage aria-hidden="true" /><strong>{item.productCount ?? "—"}</strong>
+                  </div>
                   <div className="business-admin-metric business-admin-metric--services" data-label="Services">
                     <FiBriefcase aria-hidden="true" /><strong>{item.serviceCount ?? 0}</strong>
                   </div>
                   <div className="business-admin-metric business-admin-metric--bookings" data-label="Bookings">
                     <FiCalendar aria-hidden="true" /><strong>{item.bookingCount ?? 0}</strong>
                   </div>
-                  <div className="business-admin-metric business-admin-metric--reviews" data-label="Reviews">
-                    <FiStar aria-hidden="true" /><strong>{item.reviewSummary?.count ?
-                      `${Number(item.reviewSummary.averageRating || 0).toFixed(1)} (${item.reviewSummary.count})` : "—"}</strong>
+                  <div className="business-admin-metric business-admin-metric--reviews" data-label="Reviews"
+                    title="Verified customer reviews">
+                    <FiStar aria-hidden="true" /><strong>{reviewCount}</strong>
+                  </div>
+                  <div className="business-admin-metric business-admin-metric--rating" data-label="Rating"
+                    title="Average of verified customer reviews (out of 5)">
+                    <FiStar aria-hidden="true" /><strong>{averageRating}</strong>
                   </div>
                   <div className="business-admin-actions">
                     <Button asChild variant="outline" size="sm" className="business-admin-view">
