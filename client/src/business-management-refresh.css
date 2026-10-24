@@ -2475,3 +2475,32 @@ html body .business-admin-page .business-admin-list:not(.business-admin-list--gr
   margin: 0;
   border-bottom: 2px solid var(--border, #dfe6f0) !important;
 }
+
+
+/* Admin-only platform revenue: six responsive KPIs with currency-safe presentation. */
+@media (min-width: 1181px) {
+  html body #root .admin-dashboard-platform .business-admin-platform-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+@media (min-width: 601px) and (max-width: 1180px) {
+  html body #root .admin-dashboard-platform .business-admin-platform-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  html body #root .admin-dashboard-platform .business-admin-platform-metric:nth-child(4) {
+    padding-left: 0;
+  }
+}
+@media (max-width: 600px) {
+  html body #root .admin-dashboard-platform .business-admin-platform-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+html body #root .admin-dashboard-platform .business-admin-platform-metric--revenue strong {
+  font-size: clamp(17px, 1.6vw, 23px);
+  line-height: 1.17;
+  overflow-wrap: anywhere;
+}
+html body #root .admin-dashboard-platform .business-admin-platform-metric--revenue small {
+  overflow-wrap: anywhere;
+}
