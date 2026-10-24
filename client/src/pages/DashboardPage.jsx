@@ -191,25 +191,45 @@ export default function DashboardPage({ user, onLogout }) {
         statusLoading={statusLoading}
       />}
 
-      <section className="dashboard-route-section">
+      <section className={"dashboard-route-section" + (isAdmin ? " dashboard-route-section--admin" : "")}>
         <div className="dashboard-section-heading">
-          <div><p className="eyebrow">QUICK ACCESS</p><h2>Manage your business</h2><p className="muted">Jump straight to the tools you use most.</p></div>
+          <div>
+            <p className="eyebrow">QUICK ACCESS</p>
+            <h2>{isAdmin ? "Administration" : "Manage your business"}</h2>
+            <p className="muted">{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
+          </div>
         </div>
         <section className="dashboard-route-grid">
-          {sections.map(({ icon: Icon, ...section }) => <Card className="dashboard-shadcn-card" key={section.to}>
-            <CardHeader className="dashboard-shadcn-card-header">
-              <span className="route-card-icon"><Icon aria-hidden="true" /></span>
-              <div>
-                <CardTitle>{section.title}</CardTitle>
-                <CardDescription>{section.text}</CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="dashboard-shadcn-card-content">
-              <Button asChild variant="outline" size="sm">
-                <Link to={section.to} aria-label={section.action}>{section.action}<FiArrowRight aria-hidden="true" /></Link>
-              </Button>
-            </CardContent>
-          </Card>)}
+          {sections.map(({ icon: Icon, ...section }) => isAdmin ? (
+            <Card as={Link} to={section.to} className="dashboard-shadcn-card admin-tool-link" key={section.to}
+              aria-label={section.action}>
+              <CardHeader className="dashboard-shadcn-card-header">
+                <span className="route-card-icon"><Icon aria-hidden="true" /></span>
+                <div>
+                  <CardTitle>{section.title}</CardTitle>
+                  <CardDescription>{section.text}</CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="dashboard-shadcn-card-content">
+                <span className="admin-tool-cta">{section.action}<FiArrowRight aria-hidden="true" /></span>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="dashboard-shadcn-card" key={section.to}>
+              <CardHeader className="dashboard-shadcn-card-header">
+                <span className="route-card-icon"><Icon aria-hidden="true" /></span>
+                <div>
+                  <CardTitle>{section.title}</CardTitle>
+                  <CardDescription>{section.text}</CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="dashboard-shadcn-card-content">
+                <Button asChild variant="outline" size="sm">
+                  <Link to={section.to} aria-label={section.action}>{section.action}<FiArrowRight aria-hidden="true" /></Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </section>
       </section>
     </div>
