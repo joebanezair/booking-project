@@ -107,9 +107,8 @@ export default function DashboardPage({ user, onLogout }) {
   const [visibleMetrics, setVisibleMetrics] = useState(() => readVisibleMetrics(visibilityKey));
   const [draftMetrics, setDraftMetrics] = useState(() => readVisibleMetrics(visibilityKey));
   const [customizeOpen, setCustomizeOpen] = useState(false);
-  const [expandedMetricGroups, setExpandedMetricGroups] = useState(() =>
-    Object.fromEntries(metricGroups.map(group => [group.title, true]))
-  );
+  // One expanded group at a time prevents metrics from being clipped by a nested scroll area.
+  const [expandedMetricGroup, setExpandedMetricGroup] = useState("Main statistics");
   useEffect(() => {
     const saved = readVisibleMetrics(visibilityKey);
     setVisibleMetrics(saved);
@@ -124,6 +123,7 @@ export default function DashboardPage({ user, onLogout }) {
   }
   function openMetricsDialog() {
     setDraftMetrics({ ...visibleMetrics });
+    setExpandedMetricGroup("Main statistics");
     setCustomizeOpen(true);
   }
 
@@ -273,27 +273,27 @@ export default function DashboardPage({ user, onLogout }) {
           <div className="admin-stats-checklist">
             {metricGroups.map(group => {
               const groupId = `admin-stats-${group.title.toLowerCase().replaceAll(" ", "-")}`;
-              const expanded = expandedMetricGroups[group.title] !== false;
+              const expanded = expandedMetricGroup === group.title;
               const checkedCount = group.metrics.filter(([key]) => draftMetrics[key] !== false).length;
               return <section key={group.title} className="admin-stats-table-section" aria-label={group.title}>
                 <button type="button" className="admin-stats-group-trigger"
                   aria-expanded={expanded} aria-controls={groupId}
-                  onClick={() => setExpandedMetricGroups(current => ({ ...current, [group.title]: !expanded }))}>
+                  onClick={() => setExpandedMetricGroup(current => current === group.title ? null : group.title)}>
                   <span className="admin-stats-group-heading">{group.title}</span>
                   <span className="admin-stats-group-count">{checkedCount}/{group.metrics.length} shown</span>
                   <FiChevronDown aria-hidden="true" className={expanded ? "is-expanded" : ""} />
                 </button>
                 <div id={groupId} className="admin-stats-table-wrap" hidden={!expanded}>
                   <table className="admin-stats-table">
-                    <thead>
+                    <thead className="admin-stats-sr-only">
                       <tr>
                         <th scope="col">Statistic</th>
-                        <th scope="col" className="admin-stats-visible-column">Show</th>
+                        <th scope="col">Visible</th>
                       </tr>
                     </thead>
                     <tbody>
                       {group.metrics.map(([key, label]) => <tr key={key}>
-                        <th scope="row">
+                        <th scope="row" className="admin-stats-row-name">
                           <label htmlFor={`admin-stat-show-${key}`}>{label}</label>
                         </th>
                         <td className="admin-stats-visible-column">
