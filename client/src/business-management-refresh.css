@@ -2515,3 +2515,174 @@ html body .business-admin-page .business-admin-list .business-admin-actions > .u
 html body .business-admin-page .business-admin-list .business-admin-actions > .ui-button.business-admin-more {
   border-bottom: 2px solid var(--admin-premium-line, var(--border, #dfe6f0)) !important;
 }
+
+
+/* Admin platform statistics visibility checklist, display-only. */
+html body #root .admin-dashboard-platform .admin-stats-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px 14px;
+}
+html body #root .admin-dashboard-platform .admin-stats-customize-button.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid var(--border, #e2e8f0) !important;
+  border-bottom: 2px solid var(--border, #e2e8f0) !important;
+  border-radius: 10px !important;
+  background: var(--card, #fff) !important;
+  color: var(--foreground, #17233b) !important;
+  box-shadow: none !important;
+  font-size: 12px;
+}
+html body #root .admin-dashboard-platform .admin-stats-customize-button.ui-button svg {
+  width: 15px;
+  height: 15px;
+}
+html body #root .admin-dashboard-platform .admin-stats-customize-button.ui-button:hover {
+  background: var(--secondary, #f2f5fa) !important;
+}
+html body #root .admin-dashboard-platform .business-admin-platform-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(168px, 100%), 1fr)) !important;
+}
+html body #root .admin-dashboard-platform .business-admin-breakdowns--single {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+html body #root .admin-dashboard-platform .business-admin-breakdowns--single .business-admin-breakdown-group {
+  padding: 0 !important;
+  border: 0 !important;
+}
+html body #root .admin-dashboard-platform .admin-stats-empty {
+  margin: 16px 0 3px;
+  padding: 17px 0;
+  color: var(--muted-foreground, #76849a);
+  font-size: 13px;
+  line-height: 1.45;
+}
+html body .ui-dialog.admin-stats-dialog {
+  width: min(585px, calc(100vw - 24px));
+  max-width: min(585px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  border: 1px solid var(--border, #dfe5ef);
+  border-bottom: 2px solid var(--border, #dfe5ef);
+  border-radius: 15px !important;
+  background: var(--card, #fff);
+  box-shadow: 0 24px 80px rgba(19, 35, 67, .18);
+}
+html body .admin-stats-dialog .ui-dialog-content {
+  gap: 17px;
+  padding: 22px;
+}
+html body .admin-stats-dialog .ui-dialog-title {
+  font-size: 20px;
+  font-weight: 720;
+  letter-spacing: -.025em;
+}
+html body .admin-stats-dialog .ui-dialog-description {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted-foreground, #74829a);
+}
+html body .admin-stats-dialog .admin-stats-checklist {
+  display: grid;
+  gap: 18px;
+  max-height: min(55dvh, 460px);
+  overflow-y: auto;
+  padding: 3px 3px 5px;
+  scrollbar-width: thin;
+}
+html body .admin-stats-dialog .admin-stats-checklist-group {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+html body .admin-stats-dialog .admin-stats-checklist-group legend {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 690;
+  color: var(--foreground, #1e2b41);
+}
+html body .admin-stats-dialog .admin-stats-checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+html body .admin-stats-dialog .admin-stats-checklist-item {
+  display: flex !important;
+  align-items: center;
+  gap: 10px !important;
+  min-width: 0;
+  padding: 10px 11px;
+  border: 1px solid var(--border, #e4e9f1);
+  border-radius: 10px;
+  background: var(--card, #fff);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--foreground, #23324b);
+}
+html body .admin-stats-dialog .admin-stats-checklist-item:has(input:checked) {
+  background: color-mix(in srgb, var(--primary, #526be4) 5%, var(--card, #fff));
+  border-color: color-mix(in srgb, var(--primary, #526be4) 24%, var(--border, #e4e9f1));
+}
+html body .admin-stats-dialog .admin-stats-checklist-item:focus-within {
+  outline: 2px solid var(--ring, var(--primary, #526be4));
+  outline-offset: 1px;
+}
+html body .admin-stats-dialog .admin-stats-checklist-item input[type="checkbox"] {
+  display: block;
+  flex: 0 0 16px;
+  width: 16px !important;
+  min-width: 16px !important;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--primary, #526be4);
+  cursor: pointer;
+}
+html body .admin-stats-dialog .admin-stats-checklist-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 11px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border, #e2e8f0);
+}
+html body .admin-stats-dialog .admin-stats-checklist-helpers,
+html body .admin-stats-dialog .admin-stats-checklist-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+@media (max-width: 600px) {
+  html body #root .admin-dashboard-platform .admin-stats-heading-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  html body #root .admin-dashboard-platform .business-admin-platform-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(135px, 100%), 1fr)) !important;
+  }
+  html body .admin-stats-dialog .ui-dialog-content { padding: 16px; }
+  html body .admin-stats-dialog .admin-stats-checklist-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7px;
+  }
+  html body .admin-stats-dialog .admin-stats-checklist-footer {
+    align-items: stretch;
+  }
+  html body .admin-stats-dialog .admin-stats-checklist-actions {
+    justify-content: flex-end;
+    width: 100%;
+  }
+}
