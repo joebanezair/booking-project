@@ -6,7 +6,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiCopy, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPackage, FiPauseCircle, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
+import { FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiCopy, FiDollarSign, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPackage, FiPauseCircle, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { api } from "../api.js";
@@ -38,6 +38,34 @@ function UserIdControl({ id, compact = false }) {
     {copyState === "copied" && <span className="business-admin-copy-feedback" role="status">Copied</span>}
     {copyState === "error" && <span className="business-admin-copy-feedback" role="alert">Copy unavailable</span>}
   </span>;
+}
+
+
+function formatGrossAmount(value, currency) {
+  if (!Number.isFinite(Number(value))) return "—";
+  try {
+    return new Intl.NumberFormat("en-PH", {
+      style: "currency", currency, minimumFractionDigits: 2, maximumFractionDigits: 2
+    }).format(Number(value));
+  } catch {
+    return `${currency} ${Number(value).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+}
+
+function BusinessRevenue({ summary }) {
+  const rows = summary?.totalsByCurrency;
+  const amounts = !Array.isArray(rows) ? null
+    : rows.length ? rows : [{ currency: "PHP", gross: 0 }];
+  return <div className="business-admin-revenue" title="Gross recorded service and POS sales, plus completed online order value. Excludes voided and fully refunded orders; not verified payments or profit.">
+    <span className="business-admin-revenue-icon"><FiDollarSign aria-hidden="true" /></span>
+    <span className="business-admin-revenue-details">
+      <span className="business-admin-revenue-label">Total revenue <small>· Gross sales</small></span>
+      <span className="business-admin-revenue-values">
+        {amounts === null ? <strong>—</strong> :
+          amounts.map(row => <strong key={row.currency}>{formatGrossAmount(row.gross, row.currency)}</strong>)}
+      </span>
+    </span>
+  </div>;
 }
 
 export default function BusinessManagementPage({ user, onLogout }) {
@@ -291,7 +319,9 @@ export default function BusinessManagementPage({ user, onLogout }) {
                     title="Average of verified customer reviews (out of 5)">
                     <FiStar aria-hidden="true" /><strong>{averageRating}</strong>
                   </div>
-                  <div className="business-admin-actions">
+                  <div className="business-admin-card-footer">
+                    <BusinessRevenue summary={item.financialSummary} />
+                    <div className="business-admin-actions">
                     <Button asChild variant="outline" size="sm" className="business-admin-view">
                       <Link to={`/dashboard/businesses/${id}`}><FiEye aria-hidden="true" /> View</Link>
                     </Button>
@@ -319,6 +349,7 @@ export default function BusinessManagementPage({ user, onLogout }) {
                           setPendingStatus({id:item._id,name,accountStatus:"disabled"}); setOpenActions(null);
                         }}><FiSlash aria-hidden="true" /> Disable account</Button>}
                     </div>}
+                    </div>
                   </div>
                 </Card>;
               })}
