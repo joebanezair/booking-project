@@ -161,12 +161,28 @@ router.get("/businesses", async (req, res) => {
     const hasMore = paged && users.length > limit;
     if (hasMore) users.pop();
     const ids = users.map(user => user._id);
-    const [profiles, productCounts, serviceCounts, bookingCounts, reviewRows] = await Promise.all([
+    // Set-based revenue queries avoid per-business requests, including for paginated directories.
+    // These use the exact business detail definition, grouped separately by owner AND currency.
+    const revenuePipeline = (filter, amountField) => [
+      { $match: { businessOwner: { $in: ids }, ...filter } },
+      { $group: {
+        _id: { owner: "$businessOwner", currency: { $ifNull: ["$currency", "PHP"] } },
+        gross: { $sum: { $ifNull: [amountField, 0] } }
+      } }
+    ];
+    const [profiles, productCounts, serviceCounts, bookingCounts, reviewRows,
+      serviceRevenueRows, posRevenueRows, onlineRevenueRows] = await Promise.all([
       Business.find({ owner: { $in: ids } }).select("owner name category location phone website logo").lean(),
       Product.aggregate([{ $match: { user: { $in: ids } } }, { $group: { _id: "$user", count: { $sum: 1 } } }]),
       Content.aggregate([{ $match: { user: { $in: ids } } }, { $group: { _id: "$user", count: { $sum: 1 } } }]),
       Booking.aggregate([{ $match: { user: { $in: ids } } }, { $group: { _id: "$user", count: { $sum: 1 } } }]),
-      Review.aggregate([{ $match: { businessOwner: { $in: ids }, verified: true } }, { $group: { _id: "$businessOwner", count: { $sum: 1 }, averageRating: { $avg: "$rating" } } }])
+      Review.aggregate([{ $match: { businessOwner: { $in: ids }, verified: true } }, { $group: { _id: "$businessOwner", count: { $sum: 1 }, averageRating: { $avg: "$rating" } } }]),
+      Sale.aggregate(revenuePipeline({ status: "recorded" }, "$saleAmount")),
+      PosSale.aggregate(revenuePipeline({ status: "recorded" }, "$total")),
+      // Completed order VALUE, not verified collected payments. Exclude fully refunded and voided.
+      ProductOrder.aggregate(revenuePipeline(
+        { status: "completed", paymentStatus: { $nin: ["refunded", "voided"] } }, "$total"
+      ))
     ]);
     const byOwner = new Map(profiles.map(item => [String(item.owner), item]));
     const products = new Map(productCounts.map(item => [String(item._id), item.count]));
@@ -177,6 +193,16 @@ router.get("/businesses", async (req, res) => {
       averageRating: Number.isFinite(item.averageRating) ? Number(item.averageRating.toFixed(1)) : 0
     }]));
 
+    const revenueByOwner = new Map();
+    for (const rows of [serviceRevenueRows, posRevenueRows, onlineRevenueRows]) {
+      for (const row of rows) {
+        const owner = String(row._id.owner);
+        const currency = row._id.currency || "PHP";
+        if (!revenueByOwner.has(owner)) revenueByOwner.set(owner, new Map());
+        const amounts = revenueByOwner.get(owner);
+        amounts.set(currency, (amounts.get(currency) || 0) + Number(row.gross || 0));
+      }
+    }
     const items = users.filter(user => byOwner.has(String(user._id))).map(user => ({
       ...user,
       accountStatus: user.accountStatus || "active",
@@ -184,7 +210,13 @@ router.get("/businesses", async (req, res) => {
       productCount: products.get(String(user._id)) || 0,
       serviceCount: services.get(String(user._id)) || 0,
       bookingCount: bookings.get(String(user._id)) || 0,
-      reviewSummary: reviews.get(String(user._id)) || { count: 0, averageRating: 0 }
+      reviewSummary: reviews.get(String(user._id)) || { count: 0, averageRating: 0 },
+      financialSummary: {
+        definition: "gross_recorded_sales",
+        totalsByCurrency: [...(revenueByOwner.get(String(user._id)) || new Map())]
+          .map(([currency, gross]) => ({ currency, gross }))
+          .sort((first, second) => first.currency.localeCompare(second.currency))
+      }
     }));
     res.set("Cache-Control", "no-store");
     res.json(paged ? { items, hasMore, nextCursor: hasMore ? String(users[users.length - 1]._id) : null } : items);
