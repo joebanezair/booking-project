@@ -2810,3 +2810,117 @@ html body .admin-stats-dialog .admin-stats-checklist-footer .ui-button svg {
 @media (prefers-reduced-motion: reduce) {
   html body .admin-stats-dialog .admin-stats-group-trigger svg { transition: none; }
 }
+
+
+/* Per-business revenue footer: shared between grid and list. */
+html body .business-admin-page .business-admin-list .business-admin-card-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  min-width: 0;
+  padding: 12px 0 2px;
+  border: 0 !important;
+}
+html body .business-admin-page .business-admin-list--grid .business-admin-card-footer {
+  grid-area: 3 / 1 / 4 / 6;
+  align-self: end;
+}
+html body .business-admin-page .business-admin-list:not(.business-admin-list--grid) .business-admin-card-footer {
+  grid-column: 1 / -1;
+  grid-row: auto;
+  margin-top: 3px;
+  padding-top: 12px;
+}
+html body .business-admin-page .business-admin-card-footer .business-admin-revenue {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1 1 160px;
+  min-width: 0;
+  color: var(--foreground, #1b2a43);
+}
+html body .business-admin-page .business-admin-revenue-icon {
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--secondary, #f1f4fa);
+  color: var(--muted-foreground, #6c7c97);
+}
+html body .business-admin-page .business-admin-revenue-icon svg {
+  width: 15px;
+  height: 15px;
+}
+html body .business-admin-page .business-admin-revenue-details {
+  display: grid;
+  align-items: start;
+  gap: 2px;
+  min-width: 0;
+}
+html body .business-admin-page .business-admin-revenue-label {
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--muted-foreground, #70809a);
+}
+html body .business-admin-page .business-admin-revenue-label small {
+  font-size: 10px;
+  font-weight: 400;
+}
+html body .business-admin-page .business-admin-revenue-values {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  min-width: 0;
+}
+html body .business-admin-page .business-admin-revenue-values strong {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -.015em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+html body .business-admin-page .business-admin-card-footer .business-admin-actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: center;
+  gap: 9px;
+  margin: 0;
+  padding: 0 !important;
+  border: 0 !important;
+  grid-area: auto;
+}
+@media (max-width: 1370px) {
+  html body .business-admin-page .business-admin-list:not(.business-admin-list--grid) .business-admin-card-footer {
+    grid-area: actions;
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 600px) {
+  html body .business-admin-page .business-admin-list--grid .business-admin-card-footer {
+    grid-area: 4 / 1 / 5 / 7;
+    align-self: stretch;
+  }
+  html body .business-admin-page .business-admin-card-footer .business-admin-revenue {
+    flex-basis: 100%;
+  }
+  html body .business-admin-page .business-admin-card-footer .business-admin-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  html body .business-admin-page .business-admin-card-footer .business-admin-actions > .ui-button {
+    flex: 0 1 auto;
+  }
+}
