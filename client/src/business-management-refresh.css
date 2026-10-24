@@ -2126,9 +2126,11 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   grid-row: 1;
   justify-self: start;
   align-self: center;
+  box-sizing: border-box;
   width: 30px;
   height: 30px;
-  border-radius: 10px;
+  border-radius: 10px !important;
+  overflow: hidden;
   background: var(--secondary, #f0f4fa) !important;
   color: var(--admin-premium-muted);
 }
