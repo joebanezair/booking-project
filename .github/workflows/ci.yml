@@ -34,9 +34,6 @@ jobs:
         working-directory: client
         run: npm ci
 
-      - name: Audit shared UI primitives and button sizing
-        run: node client/scripts/audit-ui.mjs
-
       - name: Build client
         working-directory: client
         run: npm run build
@@ -54,3 +51,6 @@ jobs:
       - name: Test media URL authorization
         working-directory: server
         run: node --test tests/*.test.js
+
+      - name: Audit shared UI primitives and button sizing
+        run: node client/scripts/audit-ui.mjs
