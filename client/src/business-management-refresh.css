@@ -2005,6 +2005,7 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   padding: 6px;
   background: var(--admin-premium-surface);
   border: 1px solid var(--admin-premium-line);
+  border-bottom: 2px solid var(--admin-premium-line) !important;
   border-radius: 15px !important;
   box-shadow: none;
 }
