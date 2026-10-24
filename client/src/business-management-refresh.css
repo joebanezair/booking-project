@@ -2024,7 +2024,7 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   box-shadow: none !important;
 }
 .business-admin-page .business-admin-overview > .business-admin-summary-card + .business-admin-summary-card {
-  border-left: 1px solid var(--admin-premium-line) !important;
+  border-left: 0 !important;
 }
 .business-admin-page .business-admin-summary-icon {
   grid-column: 1;
@@ -2033,7 +2033,7 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   place-items: center;
   width: 31px;
   height: 31px;
-  border-radius: 50% !important;
+  border-radius: 10px !important;
 }
 .business-admin-page .business-admin-summary-icon svg { width: 16px; height: 16px; }
 .business-admin-page .business-admin-overview .business-admin-summary-card strong {
@@ -2095,8 +2095,8 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0;
-  padding: 0 0 22px;
-  border-bottom: 1px solid var(--admin-premium-line);
+  padding: 0 0 16px;
+  border-bottom: 0;
 }
 .business-admin-page .business-admin-platform-metric {
   display: grid;
@@ -2117,7 +2117,7 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
 .business-admin-page .business-admin-platform-metric:first-child { padding-left: 0; }
 .business-admin-page .business-admin-platform-metric:last-child { padding-right: 0; }
 .business-admin-page .business-admin-platform-metric + .business-admin-platform-metric {
-  border-left: 1px solid var(--admin-premium-line) !important;
+  border-left: 0 !important;
 }
 .business-admin-page .business-admin-platform-icon {
   display: grid;
@@ -2182,7 +2182,7 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   box-shadow: none !important;
 }
 .business-admin-page .business-admin-breakdown-group + .business-admin-breakdown-group {
-  border-left: 1px solid var(--admin-premium-line) !important;
+  border-left: 0 !important;
   padding: 0 0 0 24px;
 }
 .business-admin-page .business-admin-breakdown-group h3 {
@@ -2210,7 +2210,7 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   min-height: 47px;
   padding: 8px 2px;
   border: 0 !important;
-  border-bottom: 1px solid color-mix(in srgb,var(--admin-premium-line) 72%,transparent) !important;
+  border-bottom: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
@@ -2295,9 +2295,15 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   font-weight: 630;
 }
 .business-admin-page .business-admin-list--grid .business-admin-metric {
-  min-height: 71px;
-  border-top: 1px solid var(--admin-premium-line);
-  border-bottom: 1px solid var(--admin-premium-line);
+  /* Make room for the rounded icon beside the number. */
+  grid-template-columns: 31px minmax(0,1fr);
+  grid-template-rows: 31px auto;
+  column-gap: 6px;
+  row-gap: 4px;
+  min-height: 73px;
+  padding: 9px 6px;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
 }
 .business-admin-page .business-admin-list--grid .business-admin-metric strong {
   font-size: 16px;
@@ -2352,7 +2358,7 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
     padding: 0 !important;
   }
   .business-admin-page .business-admin-breakdown-group + .business-admin-breakdown-group {
-    border-top: 1px solid var(--admin-premium-line) !important;
+    border-top: 0 !important;
     padding-top: 17px !important;
   }
 }
@@ -2374,7 +2380,7 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
     border-left: 0 !important;
   }
   .business-admin-page .business-admin-overview > .business-admin-summary-card:nth-child(n+3) {
-    border-top: 1px solid var(--admin-premium-line) !important;
+    border-top: 0 !important;
   }
   .business-admin-page .business-admin-activity {
     padding: 16px 14px 17px;
@@ -2408,7 +2414,7 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
     padding-left: 0;
   }
   .business-admin-page .business-admin-platform-metric:nth-child(4) {
-    border-left: 1px solid var(--admin-premium-line) !important;
+    border-left: 0 !important;
     padding-left: 10px;
   }
   .business-admin-page .business-admin-breakdown-grid { gap: 2px 10px; }
@@ -2422,5 +2428,34 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
     grid-template-rows: auto auto auto auto;
     min-height: 0;
     padding: 14px !important;
+  }
+}
+
+/* Subtle rounded icon surfaces in both business directory views. */
+html body .business-admin-page .business-admin-list--grid .business-admin-metric > svg,
+html body .business-admin-page .business-admin-list:not(.business-admin-list--grid) .business-admin-metric > svg {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 31px;
+  min-width: 31px;
+  height: 31px;
+  padding: 7px;
+  border-radius: 10px !important;
+  background: var(--secondary, #f1f4fa) !important;
+  color: var(--admin-premium-muted);
+}
+@media (max-width: 600px) {
+  .business-admin-page .business-admin-list--grid .business-admin-metric {
+    grid-template-columns: 28px minmax(0,1fr);
+    grid-template-rows: 28px auto;
+    min-height: 69px;
+  }
+  html body .business-admin-page .business-admin-list--grid .business-admin-metric > svg,
+  html body .business-admin-page .business-admin-list:not(.business-admin-list--grid) .business-admin-metric > svg {
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    padding: 6px;
+    border-radius: 9px !important;
   }
 }
