@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiDollarSign, FiMessageSquare, FiPackage, FiPlus, FiSearch, FiSettings, FiStar, FiUser, FiUsers } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckSquare, FiChevronDown, FiDollarSign, FiMessageSquare, FiPackage, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSettings, FiStar, FiUser, FiUsers, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import BusinessSetupChecklist from "../components/BusinessSetupChecklist.jsx";
 import DashboardAnalytics from "../components/DashboardAnalytics.jsx";
@@ -107,6 +107,9 @@ export default function DashboardPage({ user, onLogout }) {
   const [visibleMetrics, setVisibleMetrics] = useState(() => readVisibleMetrics(visibilityKey));
   const [draftMetrics, setDraftMetrics] = useState(() => readVisibleMetrics(visibilityKey));
   const [customizeOpen, setCustomizeOpen] = useState(false);
+  const [expandedMetricGroups, setExpandedMetricGroups] = useState(() =>
+    Object.fromEntries(metricGroups.map(group => [group.title, true]))
+  );
   useEffect(() => {
     const saved = readVisibleMetrics(visibilityKey);
     setVisibleMetrics(saved);
@@ -268,28 +271,63 @@ export default function DashboardPage({ user, onLogout }) {
             <DialogDescription>Select which statistics appear on your Dashboard. Unchecking hides a number; it never deletes data.</DialogDescription>
           </DialogHeader>
           <div className="admin-stats-checklist">
-            {metricGroups.map(group => <fieldset key={group.title} className="admin-stats-checklist-group">
-              <legend>{group.title}</legend>
-              <div className="admin-stats-checklist-grid">
-                {group.metrics.map(([key, label]) => <label key={key} className="admin-stats-checklist-item">
-                  <input type="checkbox" checked={draftMetrics[key] !== false}
-                    onChange={event => setDraftMetrics(current => ({ ...current, [key]: event.target.checked }))} />
-                  <span>{label}</span>
-                </label>)}
-              </div>
-            </fieldset>)}
+            {metricGroups.map(group => {
+              const groupId = `admin-stats-${group.title.toLowerCase().replace(/\\s+/g, "-")}`;
+              const expanded = expandedMetricGroups[group.title] !== false;
+              const checkedCount = group.metrics.filter(([key]) => draftMetrics[key] !== false).length;
+              return <section key={group.title} className="admin-stats-table-section" aria-label={group.title}>
+                <button type="button" className="admin-stats-group-trigger"
+                  aria-expanded={expanded} aria-controls={groupId}
+                  onClick={() => setExpandedMetricGroups(current => ({ ...current, [group.title]: !expanded }))}>
+                  <span className="admin-stats-group-heading">{group.title}</span>
+                  <span className="admin-stats-group-count">{checkedCount}/{group.metrics.length} shown</span>
+                  <FiChevronDown aria-hidden="true" className={expanded ? "is-expanded" : ""} />
+                </button>
+                {expanded && <div id={groupId} className="admin-stats-table-wrap">
+                  <table className="admin-stats-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Statistic</th>
+                        <th scope="col" className="admin-stats-visible-column">Show</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {group.metrics.map(([key, label]) => <tr key={key}>
+                        <th scope="row">
+                          <label htmlFor={`admin-stat-show-${key}`}>{label}</label>
+                        </th>
+                        <td className="admin-stats-visible-column">
+                          <input type="checkbox" id={`admin-stat-show-${key}`}
+                            aria-label={`Show ${label}`}
+                            checked={draftMetrics[key] !== false}
+                            onChange={event => setDraftMetrics(current => ({ ...current, [key]: event.target.checked }))} />
+                        </td>
+                      </tr>)}
+                    </tbody>
+                  </table>
+                </div>}
+              </section>;
+            })}
           </div>
           <DialogFooter className="admin-stats-checklist-footer">
             <div className="admin-stats-checklist-helpers">
               <Button type="button" variant="ghost" size="sm"
-                onClick={() => setDraftMetrics(defaultVisibleMetrics())}>Select all</Button>
+                onClick={() => setDraftMetrics(defaultVisibleMetrics())}>
+                <FiCheckSquare aria-hidden="true" /> Select all
+              </Button>
               <Button type="button" variant="ghost" size="sm"
-                onClick={() => setDraftMetrics({ ...visibleMetrics })}>Reset changes</Button>
+                onClick={() => setDraftMetrics({ ...visibleMetrics })}>
+                <FiRotateCcw aria-hidden="true" /> Reset changes
+              </Button>
             </div>
             <div className="admin-stats-checklist-actions">
               <Button type="button" variant="outline" size="sm"
-                onClick={() => setCustomizeOpen(false)}>Cancel</Button>
-              <Button type="button" size="sm" onClick={saveMetrics}>Save changes</Button>
+                onClick={() => setCustomizeOpen(false)}>
+                <FiX aria-hidden="true" /> Cancel
+              </Button>
+              <Button type="button" size="sm" onClick={saveMetrics}>
+                <FiSave aria-hidden="true" /> Save changes
+              </Button>
             </div>
           </DialogFooter>
         </DialogContent>
