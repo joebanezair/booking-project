@@ -2461,3 +2461,16 @@ html body .business-admin-page .business-admin-list:not(.business-admin-list--gr
     border-radius: 9px !important;
   }
 }
+
+/* Reuse the same minimalist platform panel on the admin Dashboard.
+   This removes business-management page padding from the dashboard slot. */
+.dashboard-content-rail > .admin-dashboard-platform.business-admin-page {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 0;
+}
+.dashboard-content-rail > .admin-dashboard-platform .business-admin-activity {
+  margin: 0;
+}
