@@ -272,7 +272,7 @@ export default function DashboardPage({ user, onLogout }) {
           </DialogHeader>
           <div className="admin-stats-checklist">
             {metricGroups.map(group => {
-              const groupId = `admin-stats-${group.title.toLowerCase().replace(/\\s+/g, "-")}`;
+              const groupId = `admin-stats-${group.title.toLowerCase().replaceAll(" ", "-")}`;
               const expanded = expandedMetricGroups[group.title] !== false;
               const checkedCount = group.metrics.filter(([key]) => draftMetrics[key] !== false).length;
               return <section key={group.title} className="admin-stats-table-section" aria-label={group.title}>
@@ -283,7 +283,7 @@ export default function DashboardPage({ user, onLogout }) {
                   <span className="admin-stats-group-count">{checkedCount}/{group.metrics.length} shown</span>
                   <FiChevronDown aria-hidden="true" className={expanded ? "is-expanded" : ""} />
                 </button>
-                {expanded && <div id={groupId} className="admin-stats-table-wrap">
+                <div id={groupId} className="admin-stats-table-wrap" hidden={!expanded}>
                   <table className="admin-stats-table">
                     <thead>
                       <tr>
@@ -305,7 +305,7 @@ export default function DashboardPage({ user, onLogout }) {
                       </tr>)}
                     </tbody>
                   </table>
-                </div>}
+                </div>
               </section>;
             })}
           </div>
