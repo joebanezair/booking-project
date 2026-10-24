@@ -37,7 +37,9 @@ router.get("/overview", async (_req, res) => {
       recordedPosSales,
       totalOnlineOrders,
       completedOnlineOrders,
-      salesTotals
+      salesTotals,
+      posRevenueRows,
+      onlineRevenueRows
     ] = await Promise.all([
       User.countDocuments({ role: "business" }),
       User.countDocuments({ role: "business", accountStatus: { $nin: ["paused", "disabled"] } }),
@@ -60,13 +62,44 @@ router.get("/overview", async (_req, res) => {
       ProductOrder.countDocuments({ status: "completed" }),
       Sale.aggregate([
         { $match: { status: "recorded" } },
-        { $group: { _id: "$currency", total: { $sum: "$saleAmount" }, count: { $sum: 1 } } },
+        { $group: { _id: { $ifNull: ["$currency", "PHP"] }, total: { $sum: "$saleAmount" }, count: { $sum: 1 } } },
         { $sort: { count: -1, total: -1 } }
+      ]),
+      PosSale.aggregate([
+        { $match: { status: "recorded" } },
+        { $group: { _id: { $ifNull: ["$currency", "PHP"] }, total: { $sum: "$total" }, count: { $sum: 1 } } }
+      ]),
+      // Completed order value isn't proof of payment received.
+      // Exclude fully refunded and voided orders, matching the business detail view.
+      ProductOrder.aggregate([
+        { $match: { status: "completed", paymentStatus: { $nin: ["refunded", "voided"] } } },
+        { $group: { _id: { $ifNull: ["$currency", "PHP"] }, total: { $sum: "$total" }, count: { $sum: 1 } } }
       ])
     ]);
 
     const bookingStatuses = Object.fromEntries(bookingStatusRows.map(row => [row._id, row.count]));
     const verifiedRating = verifiedRatingRows[0];
+    // Aggregate gross recorded sales, not platform commissions or verified cash receipts.
+    // Group by currency rather than combining incompatible monetary units.
+    // Each transaction comes from exactly one of the three source collections.
+    const revenueByCurrency = new Map();
+    for (const [channel, rows] of [
+      ["services", salesTotals], ["pos", posRevenueRows], ["online", onlineRevenueRows]
+    ]) {
+      for (const row of rows) {
+        const currency = row._id || "PHP";
+        if (!revenueByCurrency.has(currency)) {
+          revenueByCurrency.set(currency, {
+            currency, gross: 0, services: 0, pos: 0, online: 0, transactions: 0
+          });
+        }
+        const entry = revenueByCurrency.get(currency);
+        const total = Number(row.total || 0);
+        entry[channel] += total;
+        entry.gross += total;
+        entry.transactions += row.count || 0;
+      }
+    }
     // Platform-wide average must weight individual verified reviews, not business averages.
     // A missing rating is null; zero is never presented as a one-star review.
     res.set("Cache-Control", "no-store");
@@ -89,8 +122,13 @@ router.get("/overview", async (_req, res) => {
         posRecorded: recordedPosSales,
         onlineOrders: totalOnlineOrders,
         completedOnlineOrders,
-        // Financial totals here represent recorded service sales only, not total collected payments.
+        // Legacy: service sales only. The consolidated totals are in revenue below.
         totalsByCurrency: salesTotals.map(row => ({ currency: row._id || "PHP", total: row.total, count: row.count }))
+      },
+      revenue: {
+        definition: "gross_recorded_sales",
+        // No refund-amount field exists for partially refunded orders; these are gross amounts.
+        totalsByCurrency: [...revenueByCurrency.values()].sort((a, b) => a.currency.localeCompare(b.currency))
       },
       reviews: {
         verified: verifiedReviews,
