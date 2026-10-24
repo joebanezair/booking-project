@@ -2504,3 +2504,13 @@ html body #root .admin-dashboard-platform .business-admin-platform-metric--reven
 html body #root .admin-dashboard-platform .business-admin-platform-metric--revenue small {
   overflow-wrap: anywhere;
 }
+
+
+/* Business directory: 2px bottom edge on cards and View/Actions buttons. */
+html body .business-admin-page .business-admin-list .business-admin-row.ui-card {
+  border-bottom: 2px solid var(--admin-premium-line, var(--border, #dfe6f0)) !important;
+}
+html body .business-admin-page .business-admin-list .business-admin-actions > .ui-button.business-admin-view,
+html body .business-admin-page .business-admin-list .business-admin-actions > .ui-button.business-admin-more {
+  border-bottom: 2px solid var(--admin-premium-line, var(--border, #dfe6f0)) !important;
+}
