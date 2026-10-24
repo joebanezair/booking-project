@@ -1968,35 +1968,39 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
 }
 
 
-/* Minimal premium admin: remove redundant metric cards (2026-10-24) */
-/* Two meaningful surfaces only: one platform overview and individual directory entries.
-   Account statuses are a single compact strip; nested metric cards become typography/dividers. */
+/* Premium admin layout — quiet surfaces, stronger hierarchy, fewer borders.
+   This replaces the previous end-of-file overrides without touching data or controls. */
 .business-admin-page {
-  --admin-premium-line: var(--border, #e5e9f0);
-  --admin-premium-text: var(--foreground, #19253b);
-  --admin-premium-muted: var(--muted-foreground, #77849a);
+  --admin-premium-line: var(--border, #dfe6f0);
+  --admin-premium-text: var(--foreground, #16243b);
+  --admin-premium-muted: var(--muted-foreground, #71809a);
   --admin-premium-surface: var(--card, #fff);
 }
 .business-admin-page .business-admin-header {
+  display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 22px;
-  margin-bottom: 24px;
+  gap: 24px;
+  margin-bottom: 22px;
 }
 .business-admin-page .business-admin-heading h1 {
-  font-size: clamp(27px, 2.2vw, 34px);
-  font-weight: 730;
-  letter-spacing: -.038em;
+  margin-bottom: 7px;
+  font-size: clamp(28px, 2.3vw, 35px);
+  font-weight: 740;
+  letter-spacing: -.045em;
+  line-height: 1.15;
 }
 .business-admin-page .business-admin-heading .muted {
+  max-width: 545px;
   font-size: 13px;
+  line-height: 1.55;
   color: var(--admin-premium-muted);
 }
-/* Status overview is now one band instead of four floating tiles. */
+/* Account health is a single status bar, never four competing cards. */
 .business-admin-page .business-admin-overview {
   display: grid;
   grid-template-columns: repeat(4, minmax(92px, 1fr));
-  width: min(100%, 500px);
+  width: min(100%, 520px);
   gap: 0;
   padding: 6px;
   background: var(--admin-premium-surface);
@@ -2005,13 +2009,15 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   box-shadow: none;
 }
 .business-admin-page .business-admin-overview > .business-admin-summary-card {
-  grid-template-columns: 27px minmax(0, 1fr);
+  display: grid;
+  grid-template-columns: 31px minmax(0,1fr);
   grid-template-rows: auto auto;
   align-content: center;
-  column-gap: 8px;
-  row-gap: 1px;
-  min-height: 56px;
-  padding: 7px 10px;
+  align-items: center;
+  gap: 2px 9px;
+  padding: 9px 12px;
+  min-width: 0;
+  min-height: 66px;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
@@ -2023,50 +2029,68 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
 .business-admin-page .business-admin-summary-icon {
   grid-column: 1;
   grid-row: 1 / 3;
-  width: 27px;
-  height: 27px;
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 31px;
   border-radius: 50% !important;
 }
-.business-admin-page .business-admin-summary-icon svg {
-  width: 15px;
-  height: 15px;
-}
+.business-admin-page .business-admin-summary-icon svg { width: 16px; height: 16px; }
 .business-admin-page .business-admin-overview .business-admin-summary-card strong {
-  font-size: 20px;
-  line-height: 1.2;
-  font-weight: 680;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  font-size: 21px;
+  line-height: 1.12;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   color: var(--admin-premium-text);
 }
 .business-admin-page .business-admin-overview .business-admin-summary-card .business-admin-summary-label {
-  font-size: 11px;
-  line-height: 1.25;
+  grid-column: 2;
+  grid-row: 2;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.3;
   color: var(--admin-premium-muted);
 }
-/* One quiet statistics panel; its five headline numbers have no individual card borders. */
+/* One rounded statistics surface with clear numerical hierarchy. */
 .business-admin-page .business-admin-activity {
-  padding: 23px 24px 21px;
-  margin-bottom: 24px;
+  min-width: 0;
+  margin: 0 0 25px;
+  padding: 23px 25px 22px;
   border: 1px solid var(--admin-premium-line);
   border-radius: 15px !important;
   background: var(--admin-premium-surface);
-  box-shadow: none;
+  box-shadow: 0 4px 18px rgba(16, 36, 65, .025);
 }
 .business-admin-page .business-admin-activity-heading {
-  align-items: baseline;
-  margin-bottom: 21px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 19px;
 }
 .business-admin-page .business-admin-activity-heading h2 {
   margin: 0 0 5px;
-  font-size: 18px;
-  font-weight: 720;
-  line-height: 1.2;
+  font-size: 19px;
+  line-height: 1.25;
+  font-weight: 730;
+  letter-spacing: -.025em;
   color: var(--admin-premium-text);
 }
 .business-admin-page .business-admin-activity-heading p,
 .business-admin-page .business-admin-activity-updated {
-  font-size: 11px;
+  font-size: 12px;
+  line-height: 1.5;
   color: var(--admin-premium-muted);
 }
+.business-admin-page .business-admin-activity-updated {
+  align-self: center;
+  font-variant-numeric: tabular-nums;
+}
+/* Icon and numeric value on the same first row. No nested cards. */
 .business-admin-page .business-admin-platform-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -2075,88 +2099,83 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   border-bottom: 1px solid var(--admin-premium-line);
 }
 .business-admin-page .business-admin-platform-metric {
-  position: relative;
   display: grid;
-  /* Icon and value share the same row; text stays below the value. */
-  grid-template-columns: 30px minmax(0, 1fr);
-  grid-template-rows: minmax(36px, auto) auto auto;
+  grid-template-columns: 34px minmax(0,1fr);
+  grid-template-rows: 42px auto auto;
   align-content: start;
   align-items: center;
   justify-items: start;
-  row-gap: 4px;
-  column-gap: 9px;
+  gap: 4px 10px;
   min-width: 0;
-  min-height: 108px;
-  padding: 9px 18px 2px;
+  min-height: 113px;
+  padding: 8px 18px 1px;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
 }
-.business-admin-page .business-admin-platform-metric:first-child {
-  padding-left: 0;
-}
-.business-admin-page .business-admin-platform-metric:last-child {
-  padding-right: 0;
-}
+.business-admin-page .business-admin-platform-metric:first-child { padding-left: 0; }
+.business-admin-page .business-admin-platform-metric:last-child { padding-right: 0; }
 .business-admin-page .business-admin-platform-metric + .business-admin-platform-metric {
   border-left: 1px solid var(--admin-premium-line) !important;
 }
 .business-admin-page .business-admin-platform-icon {
+  display: grid;
+  place-items: center;
   grid-column: 1;
   grid-row: 1;
   justify-self: start;
   align-self: center;
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 7px;
-  background: transparent !important;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--secondary, #f0f4fa) !important;
   color: var(--admin-premium-muted);
 }
 .business-admin-page .business-admin-platform-icon svg {
-  width: 20px;
-  height: 20px;
+  display: block;
+  width: 18px;
+  height: 18px;
 }
 .business-admin-page .business-admin-platform-metric strong {
   grid-column: 2;
   grid-row: 1;
   align-self: center;
-  justify-self: start;
   margin: 0;
-  font-size: clamp(24px, 2.3vw, 31px);
-  line-height: 1.1;
+  font-size: clamp(24px, 2.4vw, 32px);
+  line-height: 1.12;
   letter-spacing: -.035em;
-  font-weight: 720;
+  font-weight: 740;
+  font-variant-numeric: tabular-nums;
   color: var(--admin-premium-text);
 }
 .business-admin-page .business-admin-platform-label {
   grid-column: 2;
   grid-row: 2;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 620;
   line-height: 1.35;
-  font-weight: 580;
   color: var(--admin-premium-text);
 }
 .business-admin-page .business-admin-platform-metric small {
   grid-column: 2;
   grid-row: 3;
   padding-top: 1px;
-  font-size: 11px;
-  line-height: 1.3;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
   color: var(--admin-premium-muted);
 }
-/* Breakdowns are plain columns with breathing room, not cards inside cards. */
+/* Use the white space to give status counts real scanability rather than more tiles. */
 .business-admin-page .business-admin-breakdowns {
   display: grid;
-  grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   gap: 0;
-  margin-top: 20px;
+  margin-top: 19px;
 }
 .business-admin-page .business-admin-breakdown-group {
   min-width: 0;
-  padding: 0 22px 0 0;
+  padding: 0 24px 0 0;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
@@ -2167,142 +2186,189 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   padding: 0 0 0 24px;
 }
 .business-admin-page .business-admin-breakdown-group h3 {
-  margin: 0 0 10px;
-  font-size: 12px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.3;
   font-weight: 700;
   color: var(--admin-premium-text);
 }
 .business-admin-page .business-admin-breakdown-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 9px 15px;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 4px 17px;
 }
 .business-admin-page .business-admin-breakdown-group:nth-child(2) .business-admin-breakdown-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0,1fr));
 }
 .business-admin-page .business-admin-breakdown-metric {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   min-width: 0;
-  min-height: 51px;
-  gap: 3px;
-  padding: 4px 0;
+  min-height: 47px;
+  padding: 8px 2px;
   border: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb,var(--admin-premium-line) 72%,transparent) !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 .business-admin-page .business-admin-breakdown-metric span {
-  font-size: 11px;
-  line-height: 1.3;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.35;
   color: var(--admin-premium-muted);
 }
 .business-admin-page .business-admin-breakdown-metric strong {
+  flex: 0 0 auto;
   font-size: 18px;
   line-height: 1.2;
-  font-weight: 690;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: var(--admin-premium-text);
 }
-/* The directory heading now sits directly on the page. Business records stay bounded. */
+/* Directory on the page, businesses remain discrete cards. */
 .business-admin-page .business-admin-directory {
-  padding: 0;
+  min-width: 0;
+  padding: 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 .business-admin-page .business-admin-toolbar {
-  gap: 14px;
+  gap: 17px;
   margin-bottom: 17px;
 }
 .business-admin-page .business-admin-directory-heading h2 {
-  font-size: 18px;
-  font-weight: 720;
+  margin-bottom: 6px;
+  font-size: 19px;
+  font-weight: 730;
+  letter-spacing: -.025em;
 }
 .business-admin-page .business-admin-directory-heading > span {
+  font-size: 12px;
   color: var(--admin-premium-muted);
 }
-/* Grid cards remain useful for identifying individual business accounts. */
+.business-admin-page .business-admin-list--grid {
+  gap: 16px;
+}
 html body .business-admin-page .business-admin-list--grid .business-admin-row.ui-card {
-  min-height: 230px;
-  grid-template-rows: minmax(97px,auto) minmax(71px,auto) minmax(41px,auto);
-  padding: 16px 18px 11px !important;
+  grid-template-rows: minmax(94px,auto) minmax(70px,auto) minmax(41px,auto);
+  min-height: 225px;
+  padding: 17px 19px 11px !important;
   border: 1px solid var(--admin-premium-line) !important;
   border-radius: 15px !important;
   background: var(--admin-premium-surface) !important;
   box-shadow: none !important;
 }
 html body .business-admin-page .business-admin-list--grid .business-admin-row.ui-card:hover {
-  border-color: color-mix(in srgb, var(--primary,#536be4) 35%, var(--admin-premium-line)) !important;
-  box-shadow: 0 4px 16px rgba(22, 38, 70, .04) !important;
+  border-color: color-mix(in srgb, var(--primary,#516bdf) 36%, var(--admin-premium-line)) !important;
+  box-shadow: 0 5px 18px rgba(25,42,74,.045) !important;
+}
+.business-admin-page .business-admin-list--grid .business-admin-identity {
+  gap: 13px;
+  padding-top: 3px;
+}
+.business-admin-page .business-admin-list--grid .business-admin-identity-text > strong {
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 730;
+  color: var(--admin-premium-text);
+}
+.business-admin-page .business-admin-list--grid .business-admin-identity-text > small {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--admin-premium-muted);
+}
+.business-admin-page .business-admin-list--grid .business-admin-category {
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 7px !important;
+  background: var(--secondary,#f1f4f9);
+}
+.business-admin-page .business-admin-list--grid .business-admin-status.status {
+  border-radius: 9px !important;
+  font-size: 11px;
+  font-weight: 630;
 }
 .business-admin-page .business-admin-list--grid .business-admin-metric {
+  min-height: 71px;
   border-top: 1px solid var(--admin-premium-line);
   border-bottom: 1px solid var(--admin-premium-line);
 }
+.business-admin-page .business-admin-list--grid .business-admin-metric strong {
+  font-size: 16px;
+  font-weight: 700;
+}
+.business-admin-page .business-admin-list--grid .business-admin-metric::after {
+  font-size: 12px;
+  color: var(--admin-premium-muted);
+}
 .business-admin-page .business-admin-list--grid .business-admin-actions {
-  padding-top: 9px;
   border-top: 0 !important;
+  padding-top: 9px;
 }
 .business-admin-page .business-admin-list--grid .business-admin-actions > .ui-button {
   border-radius: 9px !important;
 }
-/* Keep list-mode rows simple, with understated separators. */
 .business-admin-page .business-admin-list:not(.business-admin-list--grid) .business-admin-row.ui-card {
-  border-color: var(--admin-premium-line) !important;
+  border: 1px solid var(--admin-premium-line) !important;
   border-radius: 15px !important;
-  background: var(--admin-premium-surface);
+  background: var(--admin-premium-surface) !important;
   box-shadow: none !important;
 }
-@media (max-width: 1250px) {
+.business-admin-page .business-admin-list:not(.business-admin-list--grid) .business-admin-metric > strong {
+  font-size: 14px;
+}
+/* At narrower widths, avoid clipped labels and misleading misaligned grid dividers. */
+@media(max-width: 1180px) {
   .business-admin-page .business-admin-header {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0,1fr);
     align-items: stretch;
   }
   .business-admin-page .business-admin-overview {
-    width: min(100%, 550px);
+    width: min(100%, 555px);
   }
-}
-@media (max-width: 1060px) {
   .business-admin-page .business-admin-platform-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    row-gap: 20px;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    row-gap: 18px;
   }
   .business-admin-page .business-admin-platform-metric:nth-child(4) {
     border-left: 0 !important;
     padding-left: 0;
   }
 }
-@media (max-width: 780px) {
+@media(max-width: 780px) {
   .business-admin-page .business-admin-breakdowns {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0,1fr);
     gap: 16px;
   }
   .business-admin-page .business-admin-breakdown-group,
   .business-admin-page .business-admin-breakdown-group + .business-admin-breakdown-group {
-    padding: 0 !important;
     border-left: 0 !important;
+    padding: 0 !important;
   }
   .business-admin-page .business-admin-breakdown-group + .business-admin-breakdown-group {
     border-top: 1px solid var(--admin-premium-line) !important;
-    padding-top: 16px !important;
+    padding-top: 17px !important;
   }
 }
-@media (max-width: 600px) {
+@media(max-width: 600px) {
   .business-admin-page .business-admin-header {
     gap: 14px;
-    margin-bottom: 17px;
+    margin-bottom: 18px;
   }
   .business-admin-page .business-admin-overview {
+    grid-template-columns: repeat(2,minmax(0,1fr));
     width: 100%;
-    grid-template-columns: repeat(2, minmax(0,1fr));
     padding: 5px;
   }
   .business-admin-page .business-admin-overview > .business-admin-summary-card {
-    padding: 9px 10px;
-    min-height: 55px;
+    min-height: 59px;
+    padding: 9px;
   }
   .business-admin-page .business-admin-overview > .business-admin-summary-card:nth-child(3) {
     border-left: 0 !important;
@@ -2311,61 +2377,50 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
     border-top: 1px solid var(--admin-premium-line) !important;
   }
   .business-admin-page .business-admin-activity {
-    padding: 16px 14px 15px;
-    margin-bottom: 20px;
+    padding: 16px 14px 17px;
+    margin-bottom: 21px;
   }
   .business-admin-page .business-admin-activity-heading {
-    margin-bottom: 14px;
+    margin-bottom: 13px;
   }
   .business-admin-page .business-admin-platform-grid {
-    grid-template-columns: repeat(2, minmax(0,1fr));
-    row-gap: 13px;
-    padding-bottom: 16px;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    row-gap: 14px;
+    padding-bottom: 17px;
   }
   .business-admin-page .business-admin-platform-metric {
-    grid-template-columns: 25px minmax(0, 1fr);
-    grid-template-rows: minmax(32px, auto) auto auto;
+    grid-template-columns: 26px minmax(0,1fr);
+    grid-template-rows: 34px auto auto;
     column-gap: 7px;
-    min-height: 100px;
-    padding: 7px 11px;
+    min-height: 103px;
+    padding: 7px 10px;
   }
   .business-admin-page .business-admin-platform-icon {
-    width: 25px;
-    height: 25px;
+    width: 26px;
+    height: 26px;
   }
-  .business-admin-page .business-admin-platform-icon svg {
-    width: 18px;
-    height: 18px;
-  }
+  .business-admin-page .business-admin-platform-icon svg { width: 16px; height: 16px; }
+  .business-admin-page .business-admin-platform-metric strong { font-size: 24px; }
+  .business-admin-page .business-admin-platform-label { font-size: 11px; }
+  .business-admin-page .business-admin-platform-metric small { font-size: 10px; }
   .business-admin-page .business-admin-platform-metric:nth-child(odd) {
     border-left: 0 !important;
     padding-left: 0;
   }
   .business-admin-page .business-admin-platform-metric:nth-child(4) {
     border-left: 1px solid var(--admin-premium-line) !important;
-    padding-left: 11px;
+    padding-left: 10px;
   }
-  .business-admin-page .business-admin-platform-metric strong {
-    font-size: 25px;
+  .business-admin-page .business-admin-breakdown-grid { gap: 2px 10px; }
+  .business-admin-page .business-admin-breakdown-metric {
+    flex-wrap: wrap;
+    min-height: 46px;
   }
-  .business-admin-page .business-admin-platform-label {
-    font-size: 11px;
-  }
-  .business-admin-page .business-admin-breakdowns {
-    margin-top: 15px;
-  }
-  .business-admin-page .business-admin-breakdown-grid {
-    gap: 7px 12px;
-  }
-  .business-admin-page .business-admin-directory {
-    padding: 0 !important;
-  }
-  .business-admin-page .business-admin-toolbar {
-    gap: 12px;
-  }
+  .business-admin-page .business-admin-breakdown-metric span { font-size: 11px; }
+  .business-admin-page .business-admin-breakdown-metric strong { font-size: 16px; }
   html body .business-admin-page .business-admin-list--grid .business-admin-row.ui-card {
-    min-height: 0;
     grid-template-rows: auto auto auto auto;
+    min-height: 0;
     padding: 14px !important;
   }
 }
