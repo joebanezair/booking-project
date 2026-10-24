@@ -40,8 +40,25 @@ function UserIdControl({ id, compact = false }) {
   </span>;
 }
 
+function PlatformMetric({ icon: Icon, label, value, note }) {
+  return <div className="business-admin-platform-metric">
+    <span className="business-admin-platform-icon"><Icon aria-hidden="true" /></span>
+    <strong>{value ?? "—"}</strong>
+    <span className="business-admin-platform-label">{label}</span>
+    <small>{note}</small>
+  </div>;
+}
+
+function BreakdownMetric({ label, value }) {
+  return <div className="business-admin-breakdown-metric">
+    <span>{label}</span>
+    <strong>{value ?? "—"}</strong>
+  </div>;
+}
+
 export default function BusinessManagementPage({ user, onLogout }) {
   const [items,setItems] = useState([]);
+  const [overview,setOverview] = useState(null);
   const [error,setError] = useState("");
   const [message,setMessage] = useState("");
   const [pendingStatus,setPendingStatus] = useState(null);
@@ -64,9 +81,6 @@ export default function BusinessManagementPage({ user, onLogout }) {
     catch { /* Storage can be blocked; the local view switch remains functional. */ }
   }, []);
 
-  const activeCount = items.filter(item => (item.accountStatus || "active") === "active").length;
-  const pausedCount = items.filter(item => item.accountStatus === "paused").length;
-  const disabledCount = items.filter(item => item.accountStatus === "disabled").length;
   const filteredItems = useMemo(() => {
     const term = query.trim().toLocaleLowerCase();
     return items.filter(item => {
@@ -95,15 +109,27 @@ export default function BusinessManagementPage({ user, onLogout }) {
 
   async function load() {
     setIsLoading(true);
+    setHasLoaded(false);
+    setItems([]);
+    setOverview(null);
     try {
-      const businesses = await api.admin.businesses();
-      if (!Array.isArray(businesses)) throw new Error("Unexpected business directory response.");
-      setItems(businesses); setHasLoaded(true); setError("");
-    } catch(e) {
-      // Never show stale totals as current after an unsuccessful refresh.
-      setItems([]); setHasLoaded(false); setError(e.message);
-    }
-    finally { setIsLoading(false); }
+      // Both sources must succeed so the page never mixes old and new totals.
+      const [businesses, stats] = await Promise.all([api.admin.businesses(), api.admin.overview()]);
+      if (!Array.isArray(businesses) ||
+          !stats?.businesses || !stats?.products || !stats?.services ||
+          !stats?.bookings || !stats?.reviews || !stats?.sales ||
+          !Number.isFinite(stats.products.total) ||
+          !Number.isFinite(stats.bookings.total)) {
+        throw new Error("Unexpected platform statistics response. Restart the updated backend.");
+      }
+      setItems(businesses);
+      setOverview(stats);
+      setHasLoaded(true);
+      setError("");
+    } catch (e) {
+      // Display unavailable values rather than inventing zeros after a failed read.
+      setError(e.message);
+    } finally { setIsLoading(false); }
   }
   useEffect(() => { load(); }, []);
 
@@ -112,10 +138,10 @@ export default function BusinessManagementPage({ user, onLogout }) {
     setBusy(true);
     try {
       const {id,accountStatus} = pendingStatus;
-      const updated = await api.admin.setBusinessStatus(id, accountStatus);
-      setItems(current=>current.map(item=>String(item._id)===String(id)
-        ? {...item,accountStatus:updated.accountStatus}:item));
-      setPendingStatus(null); setMessage("Business status updated."); setError("");
+      await api.admin.setBusinessStatus(id, accountStatus);
+      setPendingStatus(null);
+      await load(); // Keep the global account counts and directory synchronized.
+      setMessage("Business status updated.");
     } catch(e) { setError(e.message); }
     finally { setBusy(false); }
   }
@@ -144,22 +170,73 @@ export default function BusinessManagementPage({ user, onLogout }) {
         <div className="business-admin-overview" aria-label="Account overview">
           <div className="business-admin-summary-card business-admin-summary-card--total">
             <span className="business-admin-summary-icon"><FiUsers aria-hidden="true" /></span>
-            <strong>{hasLoaded ? items.length : "—"}</strong><span className="business-admin-summary-label">Total</span>
+            <strong>{overview?.businesses?.total ?? "—"}</strong><span className="business-admin-summary-label">Total</span>
           </div>
           <div className="business-admin-summary-card business-admin-summary-card--active">
             <span className="business-admin-summary-icon"><FiCheckCircle aria-hidden="true" /></span>
-            <strong>{hasLoaded ? activeCount : "—"}</strong><span className="business-admin-summary-label">Active</span>
+            <strong>{overview?.businesses?.active ?? "—"}</strong><span className="business-admin-summary-label">Active</span>
           </div>
           <div className="business-admin-summary-card business-admin-summary-card--paused">
             <span className="business-admin-summary-icon"><FiPauseCircle aria-hidden="true" /></span>
-            <strong>{hasLoaded ? pausedCount : "—"}</strong><span className="business-admin-summary-label">Paused</span>
+            <strong>{overview?.businesses?.paused ?? "—"}</strong><span className="business-admin-summary-label">Paused</span>
           </div>
           <div className="business-admin-summary-card business-admin-summary-card--disabled">
             <span className="business-admin-summary-icon"><FiSlash aria-hidden="true" /></span>
-            <strong>{hasLoaded ? disabledCount : "—"}</strong><span className="business-admin-summary-label">Disabled</span>
+            <strong>{overview?.businesses?.disabled ?? "—"}</strong><span className="business-admin-summary-label">Disabled</span>
           </div>
         </div>
       </header>
+
+      <section className="business-admin-activity" aria-labelledby="platform-activity-title" aria-busy={isLoading}>
+        <div className="business-admin-activity-heading">
+          <div>
+            <h2 id="platform-activity-title">Platform statistics</h2>
+            <p>All registered businesses · lifetime totals</p>
+          </div>
+          <span aria-live="polite" className="business-admin-activity-updated">
+            {overview?.generatedAt ? `Updated ${new Date(overview.generatedAt).toLocaleString()}` : isLoading ? "Loading live totals…" : "Statistics unavailable"}
+          </span>
+        </div>
+        <div className="business-admin-platform-grid">
+          <PlatformMetric icon={FiPackage} label="Total products"
+            value={overview?.products?.total}
+            note={overview ? `${overview.products.published} published` : "—"} />
+          <PlatformMetric icon={FiBriefcase} label="Total services"
+            value={overview?.services?.total}
+            note={overview ? `${overview.services.published} published` : "—"} />
+          <PlatformMetric icon={FiCalendar} label="Total bookings"
+            value={overview?.bookings?.total}
+            note="All booking statuses" />
+          <PlatformMetric icon={FiStar} label="Verified reviews"
+            value={overview?.reviews?.verified}
+            note="Submitted and verified" />
+          <PlatformMetric icon={FiStar} label="Average rating"
+            value={overview?.reviews?.averageRating != null ? `${overview.reviews.averageRating.toFixed(1)} / 5` : "—"}
+            note={overview ? `${overview.reviews.ratingsCount} verified ratings` : "—"} />
+        </div>
+        <div className="business-admin-breakdowns">
+          <div className="business-admin-breakdown-group">
+            <h3>Booking status</h3>
+            <div className="business-admin-breakdown-grid">
+              <BreakdownMetric label="Pending" value={overview?.bookings?.pending} />
+              <BreakdownMetric label="Confirmed" value={overview?.bookings?.confirmed} />
+              <BreakdownMetric label="In progress" value={overview?.bookings?.inProgress} />
+              <BreakdownMetric label="Completed" value={overview?.bookings?.completed} />
+              <BreakdownMetric label="Cancelled" value={overview?.bookings?.cancelled} />
+              <BreakdownMetric label="No-show" value={overview?.bookings?.noShow} />
+            </div>
+          </div>
+          <div className="business-admin-breakdown-group">
+            <h3>Sales and orders</h3>
+            <div className="business-admin-breakdown-grid">
+              <BreakdownMetric label="Service sales recorded" value={overview?.sales?.recorded} />
+              <BreakdownMetric label="POS sales recorded" value={overview?.sales?.posRecorded} />
+              <BreakdownMetric label="Online orders" value={overview?.sales?.onlineOrders} />
+              <BreakdownMetric label="Orders completed" value={overview?.sales?.completedOnlineOrders} />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {error && <p className="error" role="alert">{error}</p>}
       {message && <p className="success" role="status">{message}</p>}
