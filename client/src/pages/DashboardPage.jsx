@@ -8,6 +8,7 @@ import DashboardAnalytics from "../components/DashboardAnalytics.jsx";
 import { api } from "../api.js";
 import { Button } from "../components/ui/button.jsx";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.jsx";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 
 const businessSections = [
   { title: "Services", text: "Create and manage your public, private, or draft services.", to: "/dashboard/services", action: "Manage services", icon: FiBriefcase },
@@ -62,6 +63,33 @@ function formatRevenue(amount, currency = "PHP") {
   }
 }
 
+
+const metricGroups = [
+  { title: "Main statistics", metrics: [
+    ["revenue","Total platform revenue"],["products","Total products"],
+    ["services","Total services"],["bookings","Total bookings"],
+    ["reviews","Verified reviews"],["rating","Average rating"]
+  ] },
+  { title: "Booking status", metrics: [
+    ["pending","Pending"],["confirmed","Confirmed"],["inProgress","In progress"],
+    ["completed","Completed"],["cancelled","Cancelled"],["noShow","No-show"]
+  ] },
+  { title: "Sales and orders", metrics: [
+    ["serviceSales","Service sales recorded"],["posSales","POS sales recorded"],
+    ["onlineOrders","Online orders"],["completedOrders","Orders completed"]
+  ] }
+];
+const defaultVisibleMetrics = () => Object.fromEntries(metricGroups.flatMap(g => g.metrics.map(([key]) => [key, true])));
+function readVisibleMetrics(key) {
+  const value = defaultVisibleMetrics();
+  try {
+    const stored = JSON.parse(window.localStorage.getItem(key) || "null");
+    if (!stored || typeof stored !== "object" || Array.isArray(stored)) return value;
+    for (const metric of Object.keys(value)) if (typeof stored[metric] === "boolean") value[metric] = stored[metric];
+  } catch { /* Session-only preference if browser storage is unavailable. */ }
+  return value;
+}
+
 export default function DashboardPage({ user, onLogout }) {
   const isAdmin = user.role === "admin";
   const sections = isAdmin ? adminSections : businessSections;
@@ -75,6 +103,26 @@ export default function DashboardPage({ user, onLogout }) {
   const [setupLoaded, setSetupLoaded] = useState(false);
   const [overviewError, setOverviewError] = useState("");
   const [setupExpanded, setSetupExpanded] = useState(false);
+  const visibilityKey = `bookflow:admin-metrics:v1:${user._id || user.id || user.email}`;
+  const [visibleMetrics, setVisibleMetrics] = useState(() => readVisibleMetrics(visibilityKey));
+  const [draftMetrics, setDraftMetrics] = useState(() => readVisibleMetrics(visibilityKey));
+  const [customizeOpen, setCustomizeOpen] = useState(false);
+  useEffect(() => {
+    const saved = readVisibleMetrics(visibilityKey);
+    setVisibleMetrics(saved);
+    setDraftMetrics(saved);
+    setCustomizeOpen(false);
+  }, [visibilityKey]);
+  function saveMetrics() {
+    setVisibleMetrics({ ...draftMetrics });
+    try { window.localStorage.setItem(visibilityKey, JSON.stringify(draftMetrics)); }
+    catch { /* The customization still works for this browser session. */ }
+    setCustomizeOpen(false);
+  }
+  function openMetricsDialog() {
+    setDraftMetrics({ ...visibleMetrics });
+    setCustomizeOpen(true);
+  }
 
   useEffect(() => {
     if (isAdmin) {
@@ -128,6 +176,9 @@ export default function DashboardPage({ user, onLogout }) {
     : revenueRows.length === 1 ? formatRevenue(revenueRows[0].gross, revenueRows[0].currency)
     : "By currency";
   const revenueBreakdown = revenueRows?.map(row => formatRevenue(row.gross, row.currency)).join(" · ");
+  const mainVisible = metricGroups[0].metrics.some(([key]) => visibleMetrics[key]);
+  const bookingsVisible = metricGroups[1].metrics.some(([key]) => visibleMetrics[key]);
+  const salesVisible = metricGroups[2].metrics.some(([key]) => visibleMetrics[key]);
 
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
@@ -149,57 +200,100 @@ export default function DashboardPage({ user, onLogout }) {
             <h2 id="platform-activity-title">Platform statistics</h2>
             <p>All registered businesses · lifetime totals</p>
           </div>
-          <span aria-live="polite" className="business-admin-activity-updated">
-            {overview?.generatedAt ? `Updated ${new Date(overview.generatedAt).toLocaleString()}` : !overviewError ? "Loading live totals…" : "Statistics unavailable"}
-          </span>
+          <div className="admin-stats-heading-actions">
+            <span aria-live="polite" className="business-admin-activity-updated">
+              {overview?.generatedAt ? `Updated ${new Date(overview.generatedAt).toLocaleString()}` : !overviewError ? "Loading live totals…" : "Statistics unavailable"}
+            </span>
+            <Button type="button" size="sm" variant="outline" className="admin-stats-customize-button"
+              onClick={openMetricsDialog} aria-haspopup="dialog">
+              <FiSettings aria-hidden="true" /> Customize
+            </Button>
+          </div>
         </div>
-        <div className="business-admin-platform-grid">
-          <PlatformMetric icon={FiDollarSign} label="Total platform revenue"
+        {mainVisible && <div className="business-admin-platform-grid">
+          {visibleMetrics.revenue && <PlatformMetric icon={FiDollarSign} label="Total platform revenue"
             value={revenueDisplay}
             note={revenueRows === null ? "Revenue unavailable" : revenueRows.length > 1
               ? revenueBreakdown : "Gross sales · not platform fees"}
             className="business-admin-platform-metric--revenue"
-            title="Gross recorded service and POS sales plus completed online order value; excludes voided and fully refunded orders. Not verified payments or platform commissions." />
-          <PlatformMetric icon={FiPackage} label="Total products"
+            title="Gross recorded service and POS sales plus completed online order value; excludes voided and fully refunded orders. Not verified payments or platform commissions." />}
+          {visibleMetrics.products && <PlatformMetric icon={FiPackage} label="Total products"
             value={overview?.products?.total}
-            note={overview ? `${overview.products.published} published` : "—"} />
-          <PlatformMetric icon={FiBriefcase} label="Total services"
+            note={overview ? `${overview.products.published} published` : "—"} />}
+          {visibleMetrics.services && <PlatformMetric icon={FiBriefcase} label="Total services"
             value={overview?.services?.total}
-            note={overview ? `${overview.services.published} published` : "—"} />
-          <PlatformMetric icon={FiCalendar} label="Total bookings"
+            note={overview ? `${overview.services.published} published` : "—"} />}
+          {visibleMetrics.bookings && <PlatformMetric icon={FiCalendar} label="Total bookings"
             value={overview?.bookings?.total}
-            note="All booking statuses" />
-          <PlatformMetric icon={FiStar} label="Verified reviews"
+            note="All booking statuses" />}
+          {visibleMetrics.reviews && <PlatformMetric icon={FiStar} label="Verified reviews"
             value={overview?.reviews?.verified}
-            note="Submitted and verified" />
-          <PlatformMetric icon={FiStar} label="Average rating"
+            note="Submitted and verified" />}
+          {visibleMetrics.rating && <PlatformMetric icon={FiStar} label="Average rating"
             value={overview?.reviews?.averageRating != null ? `${overview.reviews.averageRating.toFixed(1)} / 5` : "—"}
-            note={overview ? `${overview.reviews.ratingsCount} verified ratings` : "—"} />
-        </div>
-        <div className="business-admin-breakdowns">
-          <div className="business-admin-breakdown-group">
+            note={overview ? `${overview.reviews.ratingsCount} verified ratings` : "—"} />}
+        </div>}
+        {(bookingsVisible || salesVisible) && <div className={"business-admin-breakdowns" + (bookingsVisible !== salesVisible ? " business-admin-breakdowns--single" : "")}>
+          {bookingsVisible && <div className="business-admin-breakdown-group">
             <h3>Booking status</h3>
             <div className="business-admin-breakdown-grid">
-              <BreakdownMetric label="Pending" value={overview?.bookings?.pending} />
-              <BreakdownMetric label="Confirmed" value={overview?.bookings?.confirmed} />
-              <BreakdownMetric label="In progress" value={overview?.bookings?.inProgress} />
-              <BreakdownMetric label="Completed" value={overview?.bookings?.completed} />
-              <BreakdownMetric label="Cancelled" value={overview?.bookings?.cancelled} />
-              <BreakdownMetric label="No-show" value={overview?.bookings?.noShow} />
+              {visibleMetrics.pending && <BreakdownMetric label="Pending" value={overview?.bookings?.pending} />}
+              {visibleMetrics.confirmed && <BreakdownMetric label="Confirmed" value={overview?.bookings?.confirmed} />}
+              {visibleMetrics.inProgress && <BreakdownMetric label="In progress" value={overview?.bookings?.inProgress} />}
+              {visibleMetrics.completed && <BreakdownMetric label="Completed" value={overview?.bookings?.completed} />}
+              {visibleMetrics.cancelled && <BreakdownMetric label="Cancelled" value={overview?.bookings?.cancelled} />}
+              {visibleMetrics.noShow && <BreakdownMetric label="No-show" value={overview?.bookings?.noShow} />}
             </div>
-          </div>
-          <div className="business-admin-breakdown-group">
+          </div>}
+          {salesVisible && <div className="business-admin-breakdown-group">
             <h3>Sales and orders</h3>
             <div className="business-admin-breakdown-grid">
-              <BreakdownMetric label="Service sales recorded" value={overview?.sales?.recorded} />
-              <BreakdownMetric label="POS sales recorded" value={overview?.sales?.posRecorded} />
-              <BreakdownMetric label="Online orders" value={overview?.sales?.onlineOrders} />
-              <BreakdownMetric label="Orders completed" value={overview?.sales?.completedOnlineOrders} />
+              {visibleMetrics.serviceSales && <BreakdownMetric label="Service sales recorded" value={overview?.sales?.recorded} />}
+              {visibleMetrics.posSales && <BreakdownMetric label="POS sales recorded" value={overview?.sales?.posRecorded} />}
+              {visibleMetrics.onlineOrders && <BreakdownMetric label="Online orders" value={overview?.sales?.onlineOrders} />}
+              {visibleMetrics.completedOrders && <BreakdownMetric label="Orders completed" value={overview?.sales?.completedOnlineOrders} />}
             </div>
-          </div>
-        </div>
+          </div>}
+        </div>}
+        {!mainVisible && !bookingsVisible && !salesVisible &&
+          <p className="admin-stats-empty">No statistics selected. Click Customize to choose what appears here.</p>}
       </section>
       </div>}
+
+      {isAdmin && <Dialog open={customizeOpen} onOpenChange={setCustomizeOpen} className="admin-stats-dialog"
+        title="Customize platform statistics">
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Customize statistics</DialogTitle>
+            <DialogDescription>Select which statistics appear on your Dashboard. Unchecking hides a number; it never deletes data.</DialogDescription>
+          </DialogHeader>
+          <div className="admin-stats-checklist">
+            {metricGroups.map(group => <fieldset key={group.title} className="admin-stats-checklist-group">
+              <legend>{group.title}</legend>
+              <div className="admin-stats-checklist-grid">
+                {group.metrics.map(([key, label]) => <label key={key} className="admin-stats-checklist-item">
+                  <input type="checkbox" checked={draftMetrics[key] !== false}
+                    onChange={event => setDraftMetrics(current => ({ ...current, [key]: event.target.checked }))} />
+                  <span>{label}</span>
+                </label>)}
+              </div>
+            </fieldset>)}
+          </div>
+          <DialogFooter className="admin-stats-checklist-footer">
+            <div className="admin-stats-checklist-helpers">
+              <Button type="button" variant="ghost" size="sm"
+                onClick={() => setDraftMetrics(defaultVisibleMetrics())}>Select all</Button>
+              <Button type="button" variant="ghost" size="sm"
+                onClick={() => setDraftMetrics({ ...visibleMetrics })}>Reset changes</Button>
+            </div>
+            <div className="admin-stats-checklist-actions">
+              <Button type="button" variant="outline" size="sm"
+                onClick={() => setCustomizeOpen(false)}>Cancel</Button>
+              <Button type="button" size="sm" onClick={saveMetrics}>Save changes</Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>}
 
       {!isAdmin && setupLoaded && !setupComplete && <BusinessSetupChecklist
         items={onboarding}
