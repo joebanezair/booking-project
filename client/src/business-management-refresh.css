@@ -2521,10 +2521,14 @@ html body .business-admin-page .business-admin-list .business-admin-actions > .u
 /* Borderless, compact shadcn-style accordion. Never clip an expanded group. */
 html body #root .admin-dashboard-platform .admin-stats-heading-actions {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 8px 12px;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 6px;
+}
+html body #root .admin-dashboard-platform .admin-stats-heading-actions .business-admin-activity-updated {
+  align-self: flex-end;
+  text-align: right;
 }
 html body #root .admin-dashboard-platform .admin-stats-customize-button.ui-button {
   display: inline-flex;
@@ -2533,7 +2537,7 @@ html body #root .admin-dashboard-platform .admin-stats-customize-button.ui-butto
   min-height: 33px;
   padding: 6px 11px;
   border: 1px solid var(--border, #e2e8f0) !important;
-  border-bottom: 2px solid var(--border, #e2e8f0) !important;
+  border-bottom: 1px solid var(--border, #e2e8f0) !important;
   border-radius: 10px !important;
   background: var(--card, #fff) !important;
   color: var(--foreground, #17233b) !important;
@@ -2792,7 +2796,8 @@ html body .admin-stats-dialog .admin-stats-checklist-footer .ui-button svg {
 @media (max-width: 600px) {
   html body #root .admin-dashboard-platform .admin-stats-heading-actions {
     width: 100%;
-    justify-content: space-between;
+    align-items: flex-end;
+    justify-content: flex-start;
   }
   html body #root .admin-dashboard-platform .business-admin-platform-grid {
     grid-template-columns: repeat(auto-fit, minmax(min(135px, 100%), 1fr)) !important;
