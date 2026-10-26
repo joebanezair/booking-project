@@ -2849,7 +2849,8 @@ html body .business-admin-page .business-admin-revenue-icon {
   place-items: center;
   width: 30px;
   height: 30px;
-  border-radius: 50%;
+  border-radius: 10px !important;
+  overflow: hidden;
   background: var(--secondary, #f1f4fa);
   color: var(--muted-foreground, #6c7c97);
 }
