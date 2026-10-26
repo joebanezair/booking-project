@@ -335,6 +335,7 @@ export default function AppLayout({ children, user, onLogout }) {
     <section className="content-shell">
       {user?.role === "business" && user?.accountStatus === "paused" && <div className="account-status-banner">Your business is temporarily paused. Existing data stays available, but publishing services and new guest bookings are disabled.</div>}
       {user?.role === "business" && !hasBusinessFeature(user, "booking") && <div className="account-status-banner" role="status">Booking plan inactive. Services and new bookings are unavailable. Existing records are preserved; contact your administrator to reactivate access.</div>}
+      {user?.role === "business" && !hasBusinessFeature(user, "pos") && <div className="account-status-banner" role="status">POS plan inactive. Products, checkout and online orders are unavailable. Existing records are preserved; contact your administrator to reactivate access.</div>}
       {children}
     </section>
 
