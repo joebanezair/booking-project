@@ -624,6 +624,7 @@ html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button:disa
   #root .admin-detail-page .admin-detail-booking-statuses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #root .admin-detail-page .admin-detail-booking-statuses > div:nth-child(3)::after,
   #root .admin-detail-page .admin-detail-booking-statuses > div:nth-child(5)::after { display: none; }
+  #root .admin-detail-page .admin-detail-booking-statuses > div:nth-child(4)::after { display: block; }
   #root .admin-detail-page .admin-detail-feature-controls { grid-template-columns: 1fr; }
   #root .admin-detail-page .admin-detail-feature-buttons { justify-content: stretch; width: 100%; }
   html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button { flex: 1 1 auto; }
