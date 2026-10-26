@@ -234,6 +234,19 @@ const publicCover=readFileSync(join(root,"pages/PublicProfilePage.jsx"),"utf8");
 if (!editorCover.includes('className="ui-profile-cover-image"')) failures.push("ProfileMediaHeader cover is not using shared Image");
 if (!publicCover.includes('className="ui-profile-cover-image"')) failures.push("PublicProfilePage cover is not using shared Image");
 
+// Public profile booking CTA must respect backend bookability, and initials
+// need their own centered layer (uploaded images remain untouched).
+const publicProfileSource = readFileSync(join(root,"pages/PublicProfilePage.jsx"),"utf8");
+const avatarSource = readFileSync(join(root,"components/ProfileAvatar.jsx"),"utf8");
+const storefrontStyles = readFileSync(join(root,"public-storefront.css"),"utf8");
+if (!publicProfileSource.includes("profile.bookingAvailable && <Button asChild"))
+  failures.push("Public profile booking action must be hidden when no bookable services are available.");
+if (!avatarSource.includes("profile-avatar-fallback") ||
+    !avatarSource.includes("profile-avatar-initial") ||
+    !storefrontStyles.includes(".profile-avatar-fallback > .profile-avatar-initial") ||
+    !storefrontStyles.includes("justify-content: center !important"))
+  failures.push("Pictureless profile avatar initial must be centered across profiles.");
+
 console.log("UI source audit: "+JSON.stringify(seen));
 if(failures.length){ for(const reason of failures)console.error("FAIL: "+reason);process.exitCode=1; }
 else console.log("PASS: all authored UI buttons/images use shared primitives; button-like Links, cover images, and 10px radius tokens verified.");
