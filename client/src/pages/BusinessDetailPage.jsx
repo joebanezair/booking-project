@@ -232,7 +232,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
             {featureMessage && <p className="admin-detail-feature-feedback" role="status">{featureMessage}</p>}
             <div className="admin-detail-feature-grid">
               {[
-                { key: "pos", label: "Point of sale", Icon: FiCreditCard, description: "Accept in-person POS payments and checkouts." },
+                { key: "pos", label: "Point of sale", Icon: FiCreditCard, description: "Controls Products, POS and Online Orders access." },
                 { key: "booking", label: "Bookings & services", Icon: FiCalendar, description: "Manage services, post listings, and accept bookings." }
               ].map(({ key, label, Icon, description }) => {
                 const plan = userInfo.featureAccess?.[key] || { enabled: true, active: true, expiresAt: null, expired: false };
