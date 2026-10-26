@@ -144,7 +144,7 @@ export default function DashboardPage({ user, onLogout }) {
   const [visibleBusinessWidgets, setVisibleBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
   const [draftBusinessWidgets, setDraftBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
   const [businessCustomizeOpen, setBusinessCustomizeOpen] = useState(false);
-  const [expandedBusinessGroup, setExpandedBusinessGroup] = useState("Key metrics");
+  const [expandedBusinessGroups, setExpandedBusinessGroups] = useState({ "Key metrics": true });
   const sections = isAdmin ? adminSections : businessSections.filter(section =>
     (!section.feature || hasBusinessFeature(user, section.feature)) &&
     visibleBusinessWidgets[section.widgetKey] !== false
@@ -157,7 +157,7 @@ export default function DashboardPage({ user, onLogout }) {
   }, [businessWidgetKey]);
   function openBusinessCustomize() {
     setDraftBusinessWidgets({ ...visibleBusinessWidgets });
-    setExpandedBusinessGroup("Key metrics");
+    setExpandedBusinessGroups({ "Key metrics": true });
     setBusinessCustomizeOpen(true);
   }
   function saveBusinessCustomize() {
@@ -275,6 +275,8 @@ export default function DashboardPage({ user, onLogout }) {
     topServices: "Top 5"
   };
   const businessWidgetCount = Object.values(visibleBusinessWidgets).filter(Boolean).length;
+  const businessWidgetTotal = businessWidgetGroups.reduce((count, group) => count + group.widgets.length, 0);
+  const draftBusinessWidgetCount = Object.values(draftBusinessWidgets).filter(Boolean).length;
   const businessAnalyticsVisible = businessWidgetGroups[1].widgets.concat(businessWidgetGroups[2].widgets)
     .some(([key]) => visibleBusinessWidgets[key] !== false);
   return <AppLayout user={user} onLogout={onLogout}>
@@ -447,19 +449,25 @@ export default function DashboardPage({ user, onLogout }) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Customize dashboard</DialogTitle>
-            <DialogDescription>Choose which information you want to see. Hidden sections remain saved; no business data is deleted.</DialogDescription>
+            <DialogDescription>Show only what matters to you. Hidden items can be restored anytime.</DialogDescription>
           </DialogHeader>
+          <div className="business-dashboard-widget-summary" aria-live="polite">
+            <span><strong>{draftBusinessWidgetCount}</strong> of {businessWidgetTotal} widgets selected</span>
+            <span>Changes apply when saved</span>
+          </div>
           <div className="business-dashboard-widget-list">
             {businessWidgetGroups.map(group => {
               const id = `business-widget-${group.title.toLowerCase().replaceAll(" ", "-")}`;
-              const expanded = expandedBusinessGroup === group.title;
+              const expanded = Boolean(expandedBusinessGroups[group.title]);
               const shown = group.widgets.filter(([key]) => draftBusinessWidgets[key] !== false).length;
               return <section className="business-dashboard-widget-group" key={group.title}>
                 <button className="business-dashboard-widget-trigger" type="button"
                   aria-controls={id} aria-expanded={expanded}
-                  onClick={() => setExpandedBusinessGroup(current => current === group.title ? null : group.title)}>
+                  onClick={() => setExpandedBusinessGroups(current => ({
+                    ...current, [group.title]: !current[group.title]
+                  }))}>
                   <span>{group.title}</span>
-                  <span className="business-dashboard-widget-count">{shown}/{group.widgets.length} shown</span>
+                  <span className="business-dashboard-widget-count">{shown} / {group.widgets.length}</span>
                   <FiChevronDown className={expanded ? "is-expanded" : ""} aria-hidden="true" />
                 </button>
                 <div id={id} className="business-dashboard-widget-rows" hidden={!expanded}>
@@ -490,7 +498,7 @@ export default function DashboardPage({ user, onLogout }) {
               </Button>
               <Button type="button" variant="ghost" size="sm"
                 onClick={() => setDraftBusinessWidgets({ ...visibleBusinessWidgets })}>
-                <FiRotateCcw aria-hidden="true" /> Reset changes
+                <FiRotateCcw aria-hidden="true" /> Undo changes
               </Button>
             </div>
             <div className="business-dashboard-widget-actions">
