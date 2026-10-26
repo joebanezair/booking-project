@@ -654,3 +654,21 @@ html body #root .bookflow-storefront .storefront-footer-inner > small {
     flex-basis: 182px !important;
   }
 }
+
+/* All pictureless profile avatars: position the initial independently of
+   storefront, dashboard and other image-container layout rules. */
+.profile-avatar-fallback { position: relative; }
+html body #root .profile-avatar-fallback > .profile-avatar-initial {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  pointer-events: none;
+}
