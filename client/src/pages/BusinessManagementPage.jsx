@@ -6,7 +6,8 @@ import { Label } from "../components/ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiCopy, FiDollarSign, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPackage, FiPauseCircle, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
+import { FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiCopy, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPackage, FiPauseCircle, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
+import { PiCoin } from "react-icons/pi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { api } from "../api.js";
@@ -57,7 +58,7 @@ function BusinessRevenue({ summary }) {
   const amounts = !Array.isArray(rows) ? null
     : rows.length ? rows : [{ currency: "PHP", gross: 0 }];
   return <div className="business-admin-revenue" title="Gross recorded service and POS sales, plus completed online order value. Excludes voided and fully refunded orders; not verified payments or profit.">
-    <span className="business-admin-revenue-icon"><FiDollarSign aria-hidden="true" /></span>
+    <span className="business-admin-revenue-icon"><PiCoin aria-hidden="true" /></span>
     <span className="business-admin-revenue-details">
       <span className="business-admin-revenue-label">Total revenue <small>· Gross sales</small></span>
       <span className="business-admin-revenue-values">
