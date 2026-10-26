@@ -737,3 +737,258 @@ html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-all-emp
     min-height: 235px !important;
   }
 }
+
+
+/* Flat business dashboard v4: remove redundant individual cards. */
+/* The checklist is a single progress row, no enclosing card. */
+html body #root .dashboard-content-rail > .onboarding-panel.onboarding-relaunch {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  margin: 0 0 15px !important;
+  padding: 6px 0 14px !important;
+}
+html body #root .onboarding-relaunch .onboarding-launch-progress {
+  margin-bottom: 0 !important;
+}
+/* All visible KPIs are in ONE shared strip, instead of four cards. */
+html body #root .dashboard-v2-analytics > .dashboard-v2-stats {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  margin: 0 0 14px !important;
+  padding: 0 !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="1"] {
+  grid-template-columns: 1fr !important;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat {
+  display: grid;
+  align-content: center;
+  gap: 0;
+  min-width: 0;
+  min-height: 100px !important;
+  padding: 14px 17px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat + .dashboard-v2-stat {
+  border-left: 1px solid var(--border) !important;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-stats .dashboard-v2-stat-number {
+  font-size: clamp(23px, 2vw, 27px);
+  margin-top: 7px;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-stats .dashboard-v2-stat > small {
+  margin-top: 5px;
+  font-size: 10px;
+}
+/* One analytics container. The sections are divided with hairlines,
+   never nested cards. This retains every chart and Customize toggle. */
+html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid,
+html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="2"],
+html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="1"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.6fr) minmax(215px, .9fr) minmax(200px, .9fr) !important;
+  gap: 0 !important;
+  align-items: stretch !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="1"] {
+  grid-template-columns: 1fr !important;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services),
+html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-all-empty="true"] > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services),
+html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-all-empty="false"] > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) {
+  display: flex;
+  flex-direction: column;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  min-width: 0;
+  min-height: 175px !important;
+  height: auto !important;
+  margin: 0;
+  padding: 17px 18px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  align-self: stretch !important;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-all-empty="false"] > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) {
+  min-height: 255px !important;
+}
+html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) + :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) {
+  border-left: 1px solid var(--border) !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-sales.is-empty .dashboard-v2-chart-area {
+  flex: 0 0 auto;
+  min-height: 88px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-top-services.is-empty .dashboard-v2-top-empty {
+  flex: 0 0 auto;
+  min-height: 96px !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-status.is-empty .dashboard-status-content {
+  align-content: start;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-sales-controls {
+  background: var(--secondary);
+}
+/* Quick access: clickable rows, not boxes with another button inside. */
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-route-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0 18px !important;
+}
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 69px;
+  padding: 11px 3px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0 !important;
+  background: transparent;
+  box-shadow: none;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: color .12s ease;
+}
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link:hover {
+  color: var(--primary);
+}
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link:focus-visible {
+  outline: 2px solid var(--ring, var(--primary));
+  outline-offset: 2px;
+  border-radius: 5px !important;
+}
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link .route-card-icon {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  border-radius: 9px;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, var(--card));
+}
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link .route-card-icon svg {
+  width: 17px;
+  height: 17px;
+}
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-copy {
+  display: grid;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-copy strong {
+  font-size: 12px;
+  font-weight: 630;
+}
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-copy small {
+  color: var(--muted-foreground);
+  font-size: 10px;
+  line-height: 1.4;
+}
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-arrow {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  color: var(--muted-foreground);
+}
+@media (max-width: 1120px) {
+  html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="3"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="3"] > :last-child {
+    grid-column: 1 / -1 !important;
+    border-left: 0 !important;
+    border-top: 1px solid var(--border) !important;
+  }
+  html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-route-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 760px) {
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats,
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="3"],
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="1"] {
+    grid-template-columns: 1fr !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat {
+    border: 0 !important;
+    border-top: 1px solid var(--border) !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat:nth-child(-n+2) {
+    border-top: 0 !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat:nth-child(even) {
+    border-left: 1px solid var(--border) !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat:nth-child(odd) {
+    border-left: 0 !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid,
+  html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="2"],
+  html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="3"] {
+    grid-template-columns: 1fr !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) {
+    border-left: 0 !important;
+    border-top: 1px solid var(--border) !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-analysis-grid > :first-child {
+    border-top: 0 !important;
+  }
+  html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-route-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 420px) {
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats,
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="2"],
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="3"] {
+    grid-template-columns: 1fr !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat {
+    border-left: 0 !important;
+    border-top: 1px solid var(--border) !important;
+  }
+  html body #root .dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat:first-child {
+    border-top: 0 !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .dashboard-route-section .dashboard-quick-link { transition: none; }
+}
