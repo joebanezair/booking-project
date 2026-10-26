@@ -7,11 +7,21 @@ import Comment from "../models/Comment.js";
 import Reaction from "../models/Reaction.js";
 import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
+import { requireFeature } from "../middleware/requireFeature.js";
 import EmojiReaction from "../models/EmojiReaction.js";
 import { storeImageFields, publicMediaInput } from "../lib/mediaStore.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
+// A deactivated or expired Booking plan also disables service management.
+// Enforce this before image processing; keep GETs read-only for existing data.
+const requireBookingServiceAccess = requireFeature("booking");
+router.use((req, res, next) => {
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
+    return requireBookingServiceAccess(req, res, next);
+  }
+  return next();
+});
 router.use(storeImageFields(["coverImage", "images"]));
 
 const imagePattern = /^data:image\/(jpeg|png|webp|gif);base64,[a-z0-9+/=]+$/i;
