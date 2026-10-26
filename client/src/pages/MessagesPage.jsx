@@ -7,7 +7,7 @@ export default function MessagesPage({ user, onLogout }) {
   return <AppLayout user={user} onLogout={onLogout}>
     <div className="messages-page-refine">
     <header className="topbar messages-topbar">
-      <div><p className="eyebrow">INBOX</p><h1>Messages</h1><p className="muted">Chat with registered businesses and administrators with instant delivery.</p></div>
+      <div><h1>Messages</h1><p className="muted">Your conversations, all in one place.</p></div>
       <span className="live-indicator"><i /> Live</span>
     </header>
     <Messages currentUser={user} initialUserId={userId} />
