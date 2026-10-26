@@ -182,6 +182,7 @@ export const api = {
     businesses: () => request("/admin/businesses"),
     business: id => request(`/admin/businesses/${id}`),
     setBusinessStatus: (id, accountStatus) => request(`/admin/businesses/${id}/status`, { method: "PATCH", body: JSON.stringify({ accountStatus }) }),
+    setBusinessFeature: (id, feature, enabled, days) => request(`/admin/businesses/${id}/features/${encodeURIComponent(feature)}`, { method: "PATCH", body: JSON.stringify({ enabled, ...(enabled ? { days } : {}) }) }),
     resetBusinessPassword: (id, password) => request(`/admin/businesses/${id}/password`, { method: "PATCH", body: JSON.stringify({ password }) })
   },
   messages: {
