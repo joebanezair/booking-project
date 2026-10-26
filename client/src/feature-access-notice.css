@@ -1,0 +1,162 @@
+/* Business feature availability — one compact, accessible notice. */
+#root .content-shell .feature-access-notice {
+  display: grid;
+  grid-template-columns: minmax(210px, .72fr) minmax(0, 2fr);
+  align-items: center;
+  column-gap: 22px;
+  row-gap: 10px;
+  width: 100%;
+  margin: 0 0 18px;
+  padding: 15px 18px;
+  border: 1px solid color-mix(in srgb, var(--border, #e2e8f2) 85%, #e8b971);
+  border-radius: 13px;
+  background: var(--card, #fff);
+  box-shadow: 0 2px 12px rgba(24, 39, 73, .03);
+  color: var(--foreground, #17243b);
+}
+#root .content-shell .feature-access-heading {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 11px;
+}
+#root .content-shell .feature-access-alert-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  height: 36px;
+  width: 36px;
+  border-radius: 11px;
+  background: color-mix(in srgb, #e6a33d 12%, var(--card, #fff));
+  color: #a36a17;
+}
+#root .content-shell .feature-access-alert-icon svg {
+  height: 18px;
+  width: 18px;
+  stroke-width: 1.8;
+}
+#root .content-shell .feature-access-heading-text,
+#root .content-shell .feature-access-item-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 3px;
+}
+#root .content-shell .feature-access-heading-text strong {
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 680;
+  color: var(--foreground, #17243b);
+}
+#root .content-shell .feature-access-heading-text > span {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted-foreground, #71809a);
+}
+#root .content-shell .feature-access-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+  align-items: center;
+  min-width: 0;
+}
+#root .content-shell .feature-access-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 3px 14px;
+}
+#root .content-shell .feature-access-item:first-child {
+  border-left: 1px solid var(--border, #e2e8f2);
+}
+#root .content-shell .feature-access-item + .feature-access-item {
+  border-left: 1px solid var(--border, #e2e8f2);
+}
+#root .content-shell .feature-access-item-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 10px;
+  color: var(--muted-foreground, #71809a);
+  background: var(--secondary, #eff3f9);
+}
+#root .content-shell .feature-access-item-icon svg {
+  height: 16px;
+  width: 16px;
+  stroke-width: 1.8;
+}
+#root .content-shell .feature-access-item-copy {
+  flex: 1 1 auto;
+}
+#root .content-shell .feature-access-item-copy strong {
+  font-size: 12px;
+  font-weight: 640;
+  line-height: 1.35;
+  color: var(--foreground, #17243b);
+}
+#root .content-shell .feature-access-item-copy span {
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--muted-foreground, #71809a);
+}
+#root .content-shell .feature-access-state {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: var(--secondary, #f0f3f9);
+  color: var(--muted-foreground, #71809a);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 650;
+}
+#root .content-shell .feature-access-state::before {
+  content: "";
+  display: block;
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+}
+@media (max-width: 1190px) {
+  #root .content-shell .feature-access-notice {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    row-gap: 12px;
+  }
+  #root .content-shell .feature-access-items {
+    border-top: 1px solid var(--border, #e2e8f2);
+    padding-top: 11px;
+  }
+  #root .content-shell .feature-access-item:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
+@media (max-width: 680px) {
+  #root .content-shell .feature-access-notice {
+    padding: 13px;
+    border-radius: 12px;
+  }
+  #root .content-shell .feature-access-items {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  #root .content-shell .feature-access-item {
+    padding: 0;
+  }
+  #root .content-shell .feature-access-item + .feature-access-item {
+    border-left: 0;
+    padding-top: 9px;
+    border-top: 1px solid var(--border, #e2e8f2);
+  }
+  #root .content-shell .feature-access-state {
+    padding: 6px 8px;
+  }
+}
