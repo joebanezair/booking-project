@@ -1,163 +1,213 @@
-/* Business Insights design system — scoped to the administrator's business detail page.
-   This stylesheet intentionally loads after legacy detail styles. */
+/* Approved Business Insights layout — dedicated scoped overrides.
+   Kept separate from legacy admin styles to avoid changing other dashboards. */
+
 #root .admin-detail-page {
-  width: min(100%, 1240px);
-  margin-inline: auto;
-  padding: 10px 0 44px;
-  --detail-radius: 16px;
-  --detail-subtle: color-mix(in srgb, var(--detail-surface) 83%, var(--secondary));
+  --detail-ink: var(--foreground, #101c38);
+  --detail-muted: var(--muted-foreground, #7887a4);
+  --detail-border: var(--border, #e2e9f5);
+  --detail-surface: var(--card, #fff);
+  --detail-soft: color-mix(in srgb, var(--detail-surface) 72%, #e7f0ff);
+  width: min(100%, 1410px);
+  min-width: 0;
+  margin: 0 auto;
+  padding: 4px 0 40px;
+  color: var(--detail-ink);
 }
 #root .admin-detail-page .admin-detail-header {
+  display: flex;
   align-items: end;
-  margin-bottom: 20px;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+#root .admin-detail-page .admin-detail-header h1 {
+  margin: 0 0 7px;
+  font-size: clamp(25px, 2.7vw, 33px);
+  line-height: 1.18;
+  letter-spacing: -.035em;
+  font-weight: 700;
+}
+#root .admin-detail-page .admin-detail-header .muted {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--detail-muted);
 }
 #root .admin-detail-page .admin-detail-header .eyebrow,
 #root .admin-detail-page .admin-detail-section-heading .eyebrow {
-  margin: 0 0 7px;
+  margin: 0 0 6px;
+  color: var(--primary, #3863f0);
   font-size: 10px;
-  line-height: 1.4;
   font-weight: 700;
-  letter-spacing: .105em;
+  line-height: 1.4;
+  letter-spacing: .1em;
   text-transform: uppercase;
 }
-#root .admin-detail-page .admin-detail-header h1 {
-  font-size: clamp(26px, 3vw, 34px);
-  line-height: 1.14;
-  letter-spacing: -.035em;
-  font-weight: 720;
-  margin: 0 0 7px;
-}
-#root .admin-detail-page .admin-detail-header .muted {
-  line-height: 1.55;
+html body #root .admin-detail-page .admin-detail-back.ui-button {
+  min-height: 30px;
+  padding: 4px 0 !important;
+  margin: 0 0 9px;
+  background: transparent;
+  color: var(--detail-muted);
   font-size: 12px;
+  gap: 7px;
 }
 html body #root .admin-detail-page .admin-detail-refresh.ui-button {
   min-height: 37px;
-  padding: 8px 13px;
-  border: 1px solid var(--detail-border);
-  border-radius: 10px !important;
+  padding: 7px 13px !important;
   background: var(--detail-surface);
+  border: 1px solid var(--detail-border);
+  border-radius: 11px !important;
+  color: var(--detail-ink);
   font-size: 12px;
+  box-shadow: 0 2px 8px rgba(19, 37, 73, .02);
 }
-#root .admin-detail-page .admin-detail-back.ui-button { margin-bottom: 9px; }
-#root .admin-detail-page .admin-detail-profile {
+
+/* Profile header: one card, single row of account actions. */
+html body #root .admin-detail-page .admin-detail-profile {
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) auto;
+  grid-template-columns: 68px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 15px;
-  min-height: 105px;
-  padding: 20px 22px;
-  border: 1px solid var(--detail-border);
-  border-radius: 16px !important;
+  gap: 24px;
+  min-height: 116px;
+  padding: 20px 26px;
   background: var(--detail-surface);
-  box-shadow: 0 3px 18px rgba(24, 42, 75, .035);
+  border: 1px solid var(--detail-border);
+  border-radius: 17px !important;
+  box-shadow: 0 6px 22px rgba(25, 44, 76, .025);
 }
-#root .admin-detail-page .admin-detail-profile > .profile-avatar {
-  height: 56px !important;
-  width: 56px !important;
-  min-height: 56px !important;
-  min-width: 56px !important;
+html body #root .admin-detail-page .admin-detail-profile > .profile-avatar {
+  width: 68px !important;
+  height: 68px !important;
+  min-width: 68px !important;
+  min-height: 68px !important;
   border-radius: 50% !important;
 }
+#root .admin-detail-page .admin-detail-profile-text {
+  min-width: 0;
+}
 #root .admin-detail-page .admin-detail-profile-text h2 {
-  margin: 0 0 6px;
-  font-size: 16px;
+  margin: 0 0 5px;
+  font-size: 18px;
   font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -.02em;
 }
 #root .admin-detail-page .admin-detail-profile-text p,
 #root .admin-detail-page .admin-detail-profile-text small {
   display: block;
   margin: 0 0 3px;
+  color: var(--detail-muted);
   font-size: 12px;
   line-height: 1.5;
-  color: var(--detail-muted);
+  overflow-wrap: anywhere;
 }
 #root .admin-detail-page .admin-detail-profile-controls {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 13px;
+  gap: 16px;
+  flex-wrap: wrap;
+  grid-column: auto;
+  padding: 0;
+  border: 0;
 }
 #root .admin-detail-page .admin-detail-profile-actions {
   display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
   padding: 0;
-  gap: 7px;
   border: 0;
 }
-#root .admin-detail-page .admin-detail-status.status {
+html body #root .admin-detail-page .admin-detail-status.status {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   border-radius: 9999px !important;
-  padding: 8px 12px;
+  padding: 9px 14px;
+  font-size: 12px;
   font-weight: 650;
-  font-size: 11px;
+  line-height: 1.1;
+  text-transform: capitalize;
   white-space: nowrap;
 }
 #root .admin-detail-page .admin-detail-status.status::before {
   content: "";
-  width: 6px;
-  height: 6px;
-  flex: 0 0 6px;
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: currentColor;
 }
 html body #root .admin-detail-page .admin-detail-profile-actions .ui-button {
-  min-height: 36px;
-  padding: 8px 12px;
-  border-radius: 10px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 9px 14px;
+  border-radius: 11px !important;
   font-size: 12px;
   font-weight: 550;
+  box-shadow: none;
 }
-/* Section shells create clear visual groups without nested heavy outlines. */
+
+/* Large section surfaces, no stacked or dashed inner cards. */
 html body #root .admin-detail-page > .admin-detail-section {
   margin-top: 16px;
-  padding: 21px 22px;
+  padding: 21px 25px 20px;
   background: var(--detail-surface);
-  border: 1px solid var(--detail-border);
-  border-radius: 16px !important;
-  box-shadow: 0 3px 18px rgba(24, 42, 75, .025);
+  border: 1px solid color-mix(in srgb, var(--detail-border) 75%, transparent);
+  border-radius: 17px !important;
+  box-shadow: 0 6px 24px rgba(25, 44, 76, .022);
 }
 #root .admin-detail-page .admin-detail-section-heading {
-  align-items: flex-end;
-  margin-bottom: 17px;
-  gap: 12px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 0 0 18px;
 }
 #root .admin-detail-page .admin-detail-section-heading h2 {
   margin: 0 0 5px;
-  font-size: 18px;
-  line-height: 1.25;
-  letter-spacing: -.02em;
+  font-size: 21px;
   font-weight: 700;
+  line-height: 1.23;
+  letter-spacing: -.028em;
 }
 #root .admin-detail-page .admin-detail-section-heading .muted {
-  font-size: 12px;
-  line-height: 1.6;
-}
-#root .admin-detail-page .admin-detail-subtle {
-  font-size: 11px;
+  margin: 0;
   color: var(--detail-muted);
+  font-size: 12px;
+  line-height: 1.5;
 }
-#root .admin-detail-page .admin-detail-sales-empty {
+
+/* Sales: one slim, softly tinted no-data row. */
+html body #root .admin-detail-page .admin-detail-sales-empty {
   display: flex;
   align-items: center;
-  gap: 14px;
-  min-height: 100px;
-  padding: 20px;
-  background: var(--detail-subtle);
+  gap: 20px;
+  min-height: 97px;
+  padding: 16px 19px;
   border: 1px solid var(--detail-border);
   border-radius: 13px !important;
+  background: var(--detail-soft);
   box-shadow: none;
 }
 #root .admin-detail-page .admin-detail-sales-empty strong {
-  font-size: 13px;
-  font-weight: 675;
-  margin-bottom: 5px;
+  display: block;
+  margin: 0 0 6px;
+  color: var(--detail-ink);
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 700;
 }
 #root .admin-detail-page .admin-detail-sales-empty p {
+  margin: 0;
+  color: var(--detail-muted);
   font-size: 12px;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 #root .admin-detail-page .admin-detail-empty-icon,
 #root .admin-detail-page .admin-detail-finance-icon,
@@ -165,286 +215,426 @@ html body #root .admin-detail-page > .admin-detail-section {
 #root .admin-detail-page .admin-detail-feature-icon {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  flex-basis: 40px;
-  border-radius: 12px !important;
-  background: var(--secondary, #eef2fa);
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 13px !important;
+  background: var(--secondary, #eaf0fb);
   color: var(--detail-ink);
   overflow: hidden;
+}
+#root .admin-detail-page .admin-detail-empty-icon {
+  background: color-mix(in srgb, var(--primary, #4269eb) 8%, var(--detail-surface));
 }
 #root .admin-detail-page .admin-detail-empty-icon svg,
 #root .admin-detail-page .admin-detail-finance-icon svg,
 #root .admin-detail-page .admin-detail-metric-icon svg,
 #root .admin-detail-page .admin-detail-feature-icon svg {
-  width: 19px;
-  height: 19px;
-  stroke-width: 1.75;
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-#root .admin-detail-page .admin-detail-disclaimer {
-  margin-top: 12px;
+#root .admin-detail-page .admin-detail-financial-info {
+  position: relative;
+  flex: 0 0 auto;
+  z-index: 2;
 }
-#root .admin-detail-page .admin-detail-disclaimer summary {
+#root .admin-detail-page .admin-detail-financial-info summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  list-style: none;
+  cursor: pointer;
+  color: var(--detail-muted);
   font-size: 11px;
-  gap: 8px;
+  padding: 6px 0;
 }
-/* KPI tiles: comfortable figures and consistent icon alignment. */
+#root .admin-detail-page .admin-detail-financial-info summary::-webkit-details-marker { display: none; }
+#root .admin-detail-page .admin-detail-financial-info summary svg {
+  width: 13px;
+  height: 13px;
+}
+#root .admin-detail-page .admin-detail-financial-info summary:hover { color: var(--detail-ink); }
+#root .admin-detail-page .admin-detail-financial-info summary:focus-visible {
+  outline: 2px solid var(--ring, #5168dc);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+#root .admin-detail-page .admin-detail-financial-info > p {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: min(340px, 76vw);
+  margin: 5px 0 0;
+  padding: 13px 15px;
+  border: 1px solid var(--detail-border);
+  border-radius: 12px;
+  background: var(--detail-surface);
+  color: var(--detail-muted);
+  box-shadow: 0 10px 26px rgba(19, 37, 73, .13);
+  font-size: 11px;
+  line-height: 1.65;
+}
+#root .admin-detail-page .admin-detail-currency-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+html body #root .admin-detail-page .admin-detail-finance-card.ui-card {
+  border: 1px solid var(--detail-border);
+  border-radius: 13px !important;
+  box-shadow: none !important;
+  padding: 18px;
+}
+
+/* Exactly five readable metrics across, as in the reference. */
 #root .admin-detail-page .admin-detail-metrics {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
+  gap: 14px;
 }
 html body #root .admin-detail-page .admin-detail-metric.ui-card {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  gap: 16px;
   min-height: 112px;
-  gap: 11px;
-  padding: 16px 13px;
+  padding: 16px 18px;
+  background: var(--detail-surface);
   border: 1px solid var(--detail-border) !important;
   border-radius: 13px !important;
-  background: var(--detail-surface);
   box-shadow: none !important;
 }
 #root .admin-detail-page .admin-detail-metric > div:last-child {
   display: grid;
-  min-width: 0;
   gap: 5px;
+  min-width: 0;
 }
-#root .admin-detail-page .admin-detail-metric span { font-size: 11px; line-height: 1.3; }
+#root .admin-detail-page .admin-detail-metric span {
+  color: var(--detail-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
 #root .admin-detail-page .admin-detail-metric strong {
-  font-size: 23px;
-  letter-spacing: -.025em;
-  line-height: 1.2;
-  font-weight: 700;
+  display: block;
+  color: var(--detail-ink);
+  font-size: 24px;
+  font-weight: 730;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
 #root .admin-detail-page .admin-detail-metric small {
+  color: var(--detail-muted);
   font-size: 10px;
-  line-height: 1.4;
+  line-height: 1.5;
 }
-#root .admin-detail-page .admin-detail-booking-breakdown { margin-top: 20px; }
+#root .admin-detail-page .admin-detail-metric--blue .admin-detail-metric-icon {
+  color: #3267ed;
+  background: #edf3ff;
+}
+#root .admin-detail-page .admin-detail-metric--purple .admin-detail-metric-icon {
+  color: #8350f2;
+  background: #f2edff;
+}
+#root .admin-detail-page .admin-detail-metric--green .admin-detail-metric-icon {
+  color: #15995d;
+  background: #eafaf1;
+}
+#root .admin-detail-page .admin-detail-metric--neutral .admin-detail-metric-icon {
+  color: #52617f;
+  background: #f0f3f8;
+}
+
+/* One shared segmented booking bar instead of six separate cards. */
+#root .admin-detail-page .admin-detail-booking-breakdown {
+  margin-top: 21px;
+}
 #root .admin-detail-page .admin-detail-booking-breakdown h3 {
-  margin: 0 0 11px;
-  font-size: 12px;
-  font-weight: 650;
+  margin: 0 0 10px;
   color: var(--detail-ink);
+  font-size: 12px;
+  font-weight: 700;
 }
 #root .admin-detail-page .admin-detail-booking-statuses {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 9px;
+  gap: 0;
+  margin: 0;
+  padding: 0 10px;
+  min-height: 52px;
+  border: 1px solid var(--detail-border);
+  border-radius: 12px !important;
+  background: var(--detail-soft);
 }
 #root .admin-detail-page .admin-detail-booking-statuses > div {
-  padding: 11px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  padding: 9px 16px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent;
+  position: relative;
+}
+#root .admin-detail-page .admin-detail-booking-statuses > div + div::after {
+  position: absolute;
+  left: 0;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background: var(--detail-border);
+  content: "";
+}
+#root .admin-detail-page .admin-detail-booking-statuses span {
+  display: inline-flex;
+  align-items: center;
   gap: 9px;
-  min-height: 42px;
-  border-radius: 10px !important;
-  background: var(--detail-subtle);
-  border: 1px solid var(--detail-border);
+  min-width: 0;
+  color: var(--detail-muted);
+  font-size: 11px;
+  text-transform: capitalize;
+  white-space: nowrap;
 }
-#root .admin-detail-page .admin-detail-booking-statuses span { color: var(--detail-muted); }
-#root .admin-detail-page .admin-detail-booking-statuses strong { font-size: 12px; }
-/* Feature cards place independent actions in a deliberate control footer. */
-#root .admin-detail-page .admin-detail-feature-plan .admin-detail-section-heading {
-  margin-bottom: 16px;
+#root .admin-detail-page .admin-detail-booking-statuses span::before {
+  content: "";
+  display: inline-block;
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8794ab;
 }
+#root .admin-detail-page .admin-detail-booking-status--pending span::before { background: #f3b93c; }
+#root .admin-detail-page .admin-detail-booking-status--confirmed span::before { background: #4c74eb; }
+#root .admin-detail-page .admin-detail-booking-status--in_progress span::before { background: #9c75ef; }
+#root .admin-detail-page .admin-detail-booking-status--completed span::before { background: #21b778; }
+#root .admin-detail-page .admin-detail-booking-status--cancelled span::before { background: #f07178; }
+#root .admin-detail-page .admin-detail-booking-status--no_show span::before { background: #8997ac; }
+#root .admin-detail-page .admin-detail-booking-statuses strong {
+  color: var(--detail-ink);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Feature plan: two quiet panels and one predictable row of controls. */
 #root .admin-detail-page .admin-detail-feature-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 20px;
 }
 #root .admin-detail-page .admin-detail-feature-card {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  padding: 18px;
   min-width: 0;
+  padding: 18px;
   border: 1px solid var(--detail-border);
-  border-radius: 14px !important;
+  border-radius: 13px !important;
   background: var(--detail-surface);
   box-shadow: none;
 }
 #root .admin-detail-page .admin-detail-feature-head {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 44px;
+  gap: 13px;
+  min-height: 48px;
+  padding: 0 0 17px;
+  border-bottom: 1px solid var(--detail-border);
 }
-#root .admin-detail-page .admin-detail-feature-info { min-width: 0; flex: 1 1 auto; }
+#root .admin-detail-page .admin-detail-feature-icon {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  color: #3668ed;
+  background: #eaf1ff;
+}
+#root .admin-detail-page .admin-detail-feature-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
 #root .admin-detail-page .admin-detail-feature-info h3 {
+  margin: 0 0 5px;
+  color: var(--detail-ink);
   font-size: 14px;
   font-weight: 700;
-  line-height: 1.35;
-  margin: 0 0 5px;
+  line-height: 1.3;
 }
 #root .admin-detail-page .admin-detail-feature-info p {
+  margin: 0;
+  color: var(--detail-muted);
   font-size: 11px;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 #root .admin-detail-page .admin-detail-feature-badge {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 7px 11px;
+  flex: 0 0 auto;
+  padding: 8px 12px;
   border-radius: 9999px !important;
+  color: #61718f;
+  background: #f1f3f8;
   font-size: 11px;
+  font-weight: 650;
+  line-height: 1.1;
   white-space: nowrap;
 }
 #root .admin-detail-page .admin-detail-feature-badge::before {
   content: "";
-  width: 6px;
-  height: 6px;
-  flex: 0 0 6px;
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
   border-radius: 50%;
   background: currentColor;
+}
+#root .admin-detail-page .admin-detail-feature-badge.active {
+  color: #137a4c;
+  background: #e1f7ec;
+}
+#root .admin-detail-page .admin-detail-feature-badge.expired {
+  color: #925c16;
+  background: #fff3dc;
 }
 #root .admin-detail-page .admin-detail-feature-expiry {
   display: flex;
   align-items: center;
   gap: 7px;
+  min-height: 34px;
+  padding: 9px 0;
+  margin: 0;
+  border-bottom: 0;
   color: var(--detail-muted);
   font-size: 11px;
-  line-height: 1.4;
-  min-height: 42px;
-  margin: 7px 0 12px;
-  padding: 12px 0 10px;
-  border-bottom: 1px solid var(--detail-border);
 }
 #root .admin-detail-page .admin-detail-feature-expiry svg {
   width: 14px;
   height: 14px;
-  flex: 0 0 14px;
 }
 #root .admin-detail-page .admin-detail-feature-controls {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) auto;
   align-items: end;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  column-gap: 13px;
-  row-gap: 12px;
+  gap: 12px;
+  margin-top: 11px;
 }
 #root .admin-detail-page .admin-detail-feature-duration {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  flex: 1 1 132px;
-  min-width: 115px;
+  gap: 8px;
+  min-width: 0;
+  flex: none;
 }
 #root .admin-detail-page .admin-detail-feature-duration label {
   color: var(--detail-muted);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 550;
 }
-#root .admin-detail-page .admin-detail-feature-controls select {
+#root .admin-detail-page .admin-detail-feature-duration select {
   width: 100%;
   max-width: none;
-  min-height: 37px;
-  padding: 8px 12px;
-  border-radius: 10px !important;
-  background: var(--detail-surface);
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 12px;
   color: var(--detail-ink);
+  background: var(--detail-surface);
   border: 1px solid var(--detail-border);
+  border-radius: 10px !important;
   font-size: 12px;
+  font-weight: 500;
   box-shadow: none;
 }
 #root .admin-detail-page .admin-detail-feature-buttons {
   display: flex;
-  align-items: end;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-left: auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0;
 }
 html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button {
-  min-height: 37px;
-  padding: 8px 12px;
-  font-size: 11px;
-  font-weight: 625;
+  min-height: 42px;
+  padding: 9px 15px;
   border-radius: 10px !important;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: none;
   white-space: nowrap;
 }
-#root .admin-detail-page .admin-detail-feature-buttons .ui-button:disabled {
+html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button-default {
+  background: #3c62ed;
+  color: #fff;
+}
+html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button:disabled {
+  opacity: .52;
   cursor: not-allowed;
-  opacity: .55;
 }
 #root .admin-detail-page .admin-detail-feature-feedback {
-  border: 1px solid color-mix(in srgb, #167f50 22%, var(--detail-border));
-  border-radius: 10px;
-  margin-bottom: 14px;
   padding: 10px 12px;
+  margin: 0 0 13px;
+  border: 1px solid color-mix(in srgb, #1a995d 20%, var(--detail-border));
+  border-radius: 10px;
+  color: #137a4c;
+  background: #effbf4;
+  font-size: 12px;
 }
-#root .admin-detail-page .admin-detail-finance-card.ui-card {
-  border-radius: 13px !important;
-}
-#root .admin-detail-page .admin-detail-lists {
-  gap: 14px;
-  margin-top: 16px;
-}
-#root .admin-detail-page .admin-detail-list-panel {
-  padding: 19px;
-  border-radius: 16px !important;
-  border: 1px solid var(--detail-border);
-  box-shadow: 0 3px 18px rgba(24, 42, 75, .025);
-}
-#root .admin-detail-page .admin-detail-list-heading {
-  padding-bottom: 13px;
-}
-#root .admin-detail-page .admin-detail-list-heading h2 { font-size: 15px; font-weight: 700; }
-#root .admin-detail-page .admin-detail-list-heading span { font-size: 11px; }
-#root .admin-detail-page .admin-detail-list-empty {
-  min-height: 155px;
-  padding: 20px 12px 10px;
-  gap: 8px;
-}
-#root .admin-detail-page .admin-detail-list-empty .admin-detail-empty-icon {
-  min-width: 39px;
-  width: 39px;
-  height: 39px;
-  flex-basis: 39px;
-}
-#root .admin-detail-page .admin-detail-list-empty strong { font-size: 12px; font-weight: 650; }
-#root .admin-detail-page .admin-detail-list-empty p { font-size: 11px; }
-/* Tablet & narrow desktops: avoid six cramped booking pills. */
-@media (max-width: 1140px) {
+
+/* Adapt without duplicating dividers or forcing horizontal overflow. */
+@media (max-width: 1210px) {
   #root .admin-detail-page .admin-detail-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   #root .admin-detail-page .admin-detail-booking-statuses { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #root .admin-detail-page .admin-detail-booking-statuses > div:nth-child(4)::after { display: none; }
+  #root .admin-detail-page .admin-detail-feature-controls { grid-template-columns: 1fr; }
+  #root .admin-detail-page .admin-detail-feature-buttons { justify-content: flex-start; }
 }
 @media (max-width: 850px) {
   #root .admin-detail-page .admin-detail-feature-grid,
-  #root .admin-detail-page .admin-detail-lists,
   #root .admin-detail-page .admin-detail-currency-grid { grid-template-columns: 1fr; }
-  #root .admin-detail-page .admin-detail-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #root .admin-detail-page .admin-detail-profile {
-    grid-template-columns: 52px minmax(0, 1fr);
-    gap: 12px;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 13px;
+  }
+  #root .admin-detail-page .admin-detail-profile > .profile-avatar {
+    width: 56px !important;
+    height: 56px !important;
+    min-width: 56px !important;
+    min-height: 56px !important;
   }
   #root .admin-detail-page .admin-detail-profile-controls {
     grid-column: 1 / -1;
     justify-content: space-between;
-    padding-top: 12px;
+    padding-top: 13px;
     border-top: 1px solid var(--detail-border);
   }
+  #root .admin-detail-page .admin-detail-feature-controls { grid-template-columns: minmax(160px, 1fr) auto; }
+  #root .admin-detail-page .admin-detail-feature-buttons { justify-content: flex-end; }
 }
-@media (max-width: 560px) {
-  #root .admin-detail-page { padding-top: 4px; }
-  #root .admin-detail-page .admin-detail-header { align-items: start; }
-  #root .admin-detail-page .admin-detail-header h1 { font-size: 25px; }
-  #root .admin-detail-page .admin-detail-profile,
-  html body #root .admin-detail-page > .admin-detail-section,
-  #root .admin-detail-page .admin-detail-list-panel { padding: 15px; }
-  #root .admin-detail-page .admin-detail-profile-controls {
-    justify-content: flex-start;
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-  #root .admin-detail-page .admin-detail-profile-actions { justify-content: flex-start; flex-wrap: wrap; }
-  #root .admin-detail-page .admin-detail-booking-statuses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  #root .admin-detail-page .admin-detail-metric.ui-card { min-height: 104px; padding: 12px 10px; flex-direction: column; gap: 9px; }
-  #root .admin-detail-page .admin-detail-metric strong { font-size: 20px; }
-  #root .admin-detail-page .admin-detail-metric-icon { width: 34px; height: 34px; min-width: 34px; flex-basis: 34px; }
-  #root .admin-detail-page .admin-detail-feature-controls { align-items: stretch; }
-  #root .admin-detail-page .admin-detail-feature-duration { flex: 1 1 100%; }
-  #root .admin-detail-page .admin-detail-feature-buttons { margin-left: 0; width: 100%; }
-  html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button { flex: 1 1 auto; }
-  #root .admin-detail-page .admin-detail-sales-empty { padding: 16px; }
+@media (max-width: 620px) {
+  #root .admin-detail-page .admin-detail-header { align-items: flex-start; }
+  html body #root .admin-detail-page > .admin-detail-section { padding: 17px; }
+  #root .admin-detail-page .admin-detail-profile { padding: 15px; }
   #root .admin-detail-page .admin-detail-section-heading { align-items: start; }
+  #root .admin-detail-page .admin-detail-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  html body #root .admin-detail-page .admin-detail-metric.ui-card { flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px; min-height: 109px; }
+  #root .admin-detail-page .admin-detail-metric-icon { flex: 0 0 35px; width: 35px; min-width: 35px; height: 35px; }
+  #root .admin-detail-page .admin-detail-metric-icon svg { width: 17px; height: 17px; }
+  #root .admin-detail-page .admin-detail-metric strong { font-size: 21px; }
+  #root .admin-detail-page .admin-detail-booking-statuses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #root .admin-detail-page .admin-detail-booking-statuses > div:nth-child(3)::after,
+  #root .admin-detail-page .admin-detail-booking-statuses > div:nth-child(5)::after { display: none; }
+  #root .admin-detail-page .admin-detail-feature-controls { grid-template-columns: 1fr; }
+  #root .admin-detail-page .admin-detail-feature-buttons { justify-content: stretch; width: 100%; }
+  html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button { flex: 1 1 auto; }
+  #root .admin-detail-page .admin-detail-sales-empty { gap: 11px; padding: 14px; }
+  #root .admin-detail-page .admin-detail-sales-empty .admin-detail-empty-icon { flex: 0 0 38px; width: 38px; min-width: 38px; height: 38px; }
+}
+@media (max-width: 380px) {
+  #root .admin-detail-page .admin-detail-metrics { grid-template-columns: 1fr; }
+  #root .admin-detail-page .admin-detail-feature-head { flex-wrap: wrap; }
+  #root .admin-detail-page .admin-detail-feature-badge { margin-left: 61px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #root .admin-detail-page * { animation: none !important; transition: none !important; }
 }
