@@ -48,6 +48,9 @@ export default function BusinessDetailPage({ user, onLogout }) {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [featureDays, setFeatureDays] = useState({ pos: 30, booking: 30 });
+  const [featureSaving, setFeatureSaving] = useState("");
+  const [featureMessage, setFeatureMessage] = useState("");
 
   async function load() {
     setLoading(true);
@@ -85,6 +88,23 @@ export default function BusinessDetailPage({ user, onLogout }) {
       setError(e.message);
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function updateFeature(feature, enabled) {
+    if (featureSaving) return;
+    if (!enabled && !window.confirm(`Deactivate the ${feature === "pos" ? "POS" : "booking"} feature for this business? New transactions will be blocked.`)) return;
+    setFeatureSaving(feature);
+    setFeatureMessage("");
+    setError("");
+    try {
+      const response = await api.admin.setBusinessFeature(businessId, feature, enabled, featureDays[feature]);
+      setData(current => current ? { ...current, user: { ...current.user, featureAccess: response.featureAccess } } : current);
+      setFeatureMessage(`${feature === "pos" ? "POS" : "Booking"} access ${enabled ? "activated for " + featureDays[feature] + " days" : "deactivated"}.`);
+    } catch (e) {
+      setError(e.message || "Could not update feature access.");
+    } finally {
+      setFeatureSaving("");
     }
   }
 
@@ -201,6 +221,58 @@ export default function BusinessDetailPage({ user, onLogout }) {
                 </div>
               )}
               </div>
+            </div>
+          </section>
+
+          <section className="admin-detail-section admin-detail-feature-plan" aria-labelledby="feature-plan-title">
+            <div className="admin-detail-section-heading">
+              <div>
+                <p className="eyebrow">ACCESS MANAGEMENT</p>
+                <h2 id="feature-plan-title">Feature plan</h2>
+                <p className="muted">Enable features per business, set their duration, or deactivate access.</p>
+              </div>
+            </div>
+            {featureMessage && <p className="admin-detail-feature-feedback" role="status">{featureMessage}</p>}
+            <div className="admin-detail-feature-grid">
+              {[
+                { key: "pos", label: "Point of sale", Icon: FiCreditCard, description: "Allow new in-person POS checkouts." },
+                { key: "booking", label: "Bookings", Icon: FiCalendar, description: "Allow new service bookings and public reservations." }
+              ].map(({ key, label, Icon, description }) => {
+                const plan = userInfo.featureAccess?.[key] || { enabled: true, active: true, expiresAt: null, expired: false };
+                const active = plan.active !== false;
+                const status = active ? "Active" : plan.expired ? "Expired" : "Inactive";
+                return <article className="admin-detail-feature-card" key={key}>
+                  <div className="admin-detail-feature-head">
+                    <span className="admin-detail-feature-icon"><Icon aria-hidden="true" /></span>
+                    <div className="admin-detail-feature-info">
+                      <h3>{label}</h3>
+                      <p>{description}</p>
+                    </div>
+                    <span className={`admin-detail-feature-badge ${active ? "active" : plan.expired ? "expired" : "inactive"}`}>{status}</span>
+                  </div>
+                  <p className="admin-detail-feature-expiry">{plan.expiresAt
+                    ? `${plan.expired ? "Expired" : "Expires"} on ${dateLabel(plan.expiresAt)}`
+                    : active ? "No expiration set" : "Access deactivated"}</p>
+                  <div className="admin-detail-feature-controls">
+                    <label htmlFor={`feature-duration-${key}`}>Plan duration</label>
+                    <select id={`feature-duration-${key}`} value={featureDays[key]}
+                      disabled={Boolean(featureSaving)}
+                      onChange={event => setFeatureDays(current => ({ ...current, [key]: Number(event.target.value) }))}>
+                      {[7, 30, 90, 365].map(days => <option key={days} value={days}>{days} days</option>)}
+                    </select>
+                    <Button type="button" variant="default" size="sm"
+                      disabled={Boolean(featureSaving)}
+                      onClick={() => updateFeature(key, true)}>
+                      <FiPlay aria-hidden="true" /> {featureSaving === key ? "Saving..." : active ? "Set / renew" : "Activate"}
+                    </Button>
+                    <Button type="button" variant="outline" size="sm"
+                      disabled={Boolean(featureSaving) || plan.enabled === false}
+                      onClick={() => updateFeature(key, false)}>
+                      <FiSlash aria-hidden="true" /> Deactivate
+                    </Button>
+                  </div>
+                </article>;
+              })}
             </div>
           </section>
 
