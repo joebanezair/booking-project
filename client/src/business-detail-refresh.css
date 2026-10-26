@@ -225,3 +225,428 @@
 @media(prefers-reduced-motion:reduce) {
   .admin-detail-page *, .business-admin-card-hit {transition:none!important;}
 }
+
+
+/* Business Insights UI refresh: compact, low-noise and responsive */
+.admin-detail-page {
+  width: min(100%, 1300px);
+  padding: 2px 0 42px;
+}
+.admin-detail-header {
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.admin-detail-back.ui-button {
+  min-height: 30px;
+  padding: 4px 0 !important;
+  margin: 0 0 9px;
+  color: var(--detail-muted);
+  font-size: 12px;
+}
+.admin-detail-back.ui-button:hover {
+  color: var(--detail-ink);
+  background: transparent;
+}
+.admin-detail-header .eyebrow {
+  font-size: 10px;
+  margin: 0 0 6px;
+  letter-spacing: .095em;
+  text-transform: uppercase;
+}
+.admin-detail-header h1 {
+  margin: 0 0 6px;
+  font-size: clamp(25px, 2.5vw, 32px);
+  font-weight: 700;
+}
+.admin-detail-header .muted {
+  font-size: 12px;
+  line-height: 1.5;
+}
+html body #root .admin-detail-refresh.ui-button {
+  min-height: 36px;
+  padding: 8px 12px;
+  gap: 7px;
+  border-radius: 10px !important;
+  background: var(--detail-surface);
+  border: 1px solid var(--detail-border);
+  color: var(--detail-ink);
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: none;
+}
+.admin-detail-refresh.is-loading svg { animation: admin-detail-icon-spin 1s linear infinite; }
+@keyframes admin-detail-icon-spin { to { transform: rotate(360deg); } }
+
+.admin-detail-profile {
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 17px 20px;
+  border: 1px solid var(--detail-border);
+  border-radius: 12px;
+  background: var(--detail-surface);
+  box-shadow: 0 3px 18px rgba(19, 34, 65, .03);
+}
+.admin-detail-profile > .profile-avatar {
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  min-height: 54px !important;
+  border-radius: 50% !important;
+}
+.admin-detail-profile-text h2 {
+  font-size: 17px;
+  font-weight: 650;
+  margin-bottom: 5px;
+}
+.admin-detail-profile-text p, .admin-detail-profile-text small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.admin-detail-profile-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.admin-detail-status.status {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.2;
+  text-transform: capitalize;
+}
+.admin-detail-profile-actions {
+  grid-column: auto;
+  justify-content: flex-end;
+  gap: 7px;
+  flex-wrap: wrap;
+  padding: 0;
+  border-top: 0;
+}
+html body #root .admin-detail-page .admin-detail-profile-actions .ui-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 11px;
+  gap: 6px;
+  border-radius: 9px !important;
+  font-size: 11px;
+  font-weight: 550;
+  box-shadow: none;
+}
+
+.admin-detail-section {
+  margin-top: 25px;
+}
+.admin-detail-section-heading {
+  margin-bottom: 13px;
+  gap: 12px;
+}
+.admin-detail-section-heading .eyebrow {
+  margin: 0 0 5px;
+  font-size: 10px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.admin-detail-section-heading h2 {
+  font-size: 18px;
+  font-weight: 650;
+  margin: 0 0 5px;
+}
+.admin-detail-section-heading .muted {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.admin-detail-subtle {
+  padding: 4px 0;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.admin-detail-sales-empty {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 102px;
+  padding: 22px 23px;
+  border: 1px solid var(--detail-border);
+  border-radius: 12px;
+  background: var(--detail-surface);
+  box-shadow: 0 2px 14px rgba(19, 34, 65, .025);
+}
+.admin-detail-empty-icon {
+  display: grid;
+  flex: 0 0 42px;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: var(--secondary, #eff3fb);
+  color: var(--detail-muted);
+}
+.admin-detail-empty-icon svg { width: 20px; height: 20px; stroke-width: 1.65; }
+.admin-detail-sales-empty strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--detail-ink);
+}
+.admin-detail-sales-empty p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--detail-muted);
+}
+.admin-detail-currency-grid {
+  gap: 13px;
+}
+.admin-detail-finance-card.ui-card {
+  padding: 20px;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 14px rgba(19, 34, 65, .025) !important;
+}
+.admin-detail-finance-head { margin-bottom: 10px; }
+.admin-detail-finance-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--secondary, #eff3fb);
+  color: var(--detail-ink);
+}
+.admin-detail-finance-label { font-size: 11px; }
+.admin-detail-finance-value {
+  margin-bottom: 16px;
+  font-size: clamp(25px, 2.4vw, 31px);
+  font-weight: 700;
+}
+.admin-detail-finance-channels h3 { color: var(--detail-ink); }
+.admin-detail-disclaimer {
+  max-width: none;
+  margin: 10px 0 0;
+  border: 0;
+  font-size: 11px;
+}
+.admin-detail-disclaimer summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 550;
+  color: var(--detail-muted);
+  list-style: none;
+}
+.admin-detail-disclaimer summary::-webkit-details-marker { display: none; }
+.admin-detail-disclaimer summary:hover { color: var(--detail-ink); }
+.admin-detail-disclaimer summary:focus-visible {
+  outline: 2px solid var(--ring, #6478df);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+.admin-detail-disclaimer summary svg { height: 14px; width: 14px; }
+.admin-detail-disclaimer p {
+  max-width: 900px;
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  line-height: 1.6;
+  border-radius: 9px;
+  background: var(--secondary, #f4f6fa);
+}
+
+.admin-detail-metrics {
+  gap: 11px;
+}
+.admin-detail-metric.ui-card {
+  padding: 15px 14px;
+  align-items: flex-start;
+  gap: 11px;
+  min-height: 91px;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 12px rgba(19, 34, 65, .02) !important;
+}
+.admin-detail-metric-icon {
+  width: 34px;
+  height: 34px;
+  flex-basis: 34px;
+  border-radius: 10px;
+  background: var(--secondary, #eff3fb);
+  color: var(--detail-muted);
+}
+.admin-detail-metric-icon svg {
+  width: 17px;
+  height: 17px;
+}
+.admin-detail-metric > div:last-child {
+  gap: 4px;
+}
+.admin-detail-metric span {
+  font-size: 11px;
+}
+.admin-detail-metric strong {
+  font-size: 22px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+.admin-detail-metric small {
+  font-size: 10px;
+  line-height: 1.4;
+}
+.admin-detail-booking-breakdown {
+  margin-top: 16px;
+}
+.admin-detail-booking-breakdown h3 {
+  margin: 0 0 9px;
+  color: var(--detail-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+.admin-detail-booking-statuses {
+  gap: 8px;
+  margin: 0;
+}
+.admin-detail-booking-statuses > div {
+  min-width: 0;
+  padding: 10px 12px;
+  gap: 7px;
+  border: 1px solid var(--detail-border);
+  border-radius: 9px;
+  background: var(--detail-surface);
+}
+.admin-detail-booking-statuses span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+}
+.admin-detail-booking-statuses span::before {
+  content: "";
+  display: inline-block;
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--detail-muted);
+}
+.admin-detail-booking-status--pending span::before { background: #d99a2d; }
+.admin-detail-booking-status--confirmed span::before { background: #506bdc; }
+.admin-detail-booking-status--in_progress span::before { background: #8c69c9; }
+.admin-detail-booking-status--completed span::before { background: #2da66d; }
+.admin-detail-booking-status--cancelled span::before { background: #e16a6a; }
+.admin-detail-booking-status--no_show span::before { background: #8490a5; }
+.admin-detail-booking-statuses strong {
+  font-weight: 650;
+  font-size: 12px;
+}
+.admin-detail-lists {
+  gap: 13px;
+  margin-top: 22px;
+}
+.admin-detail-list-panel {
+  padding: 18px;
+  border: 1px solid var(--detail-border);
+  border-radius: 12px;
+  background: var(--detail-surface);
+}
+.admin-detail-list-heading {
+  padding: 0 0 12px;
+}
+.admin-detail-list-heading h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+}
+.admin-detail-list-heading span { font-size: 10px; }
+.admin-detail-list-empty {
+  display: flex;
+  min-height: 130px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 17px;
+  text-align: center;
+}
+.admin-detail-list-empty .admin-detail-empty-icon {
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  border-radius: 10px;
+}
+.admin-detail-list-empty .admin-detail-empty-icon svg {
+  width: 17px;
+  height: 17px;
+}
+.admin-detail-list-empty strong {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--detail-ink);
+}
+.admin-detail-list-empty p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--detail-muted);
+}
+.admin-detail-row .ui-button { border-radius: 9px !important; }
+
+@media (max-width: 1080px) {
+  .admin-detail-profile-controls { gap: 10px; }
+  .admin-detail-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .admin-detail-booking-statuses { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .admin-detail-header { align-items: flex-start; }
+  .admin-detail-profile {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+    padding: 15px;
+  }
+  .admin-detail-profile > .profile-avatar {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+  .admin-detail-profile-controls {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--detail-border);
+  }
+  .admin-detail-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-detail-currency-grid, .admin-detail-lists { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .admin-detail-header .admin-detail-refresh { margin-top: 2px; }
+  .admin-detail-profile-text h2 { font-size: 15px; }
+  .admin-detail-profile-controls {
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .admin-detail-profile-actions { width: 100%; justify-content: flex-start; }
+  .admin-detail-profile-actions .ui-button { flex: 0 0 auto; }
+  .admin-detail-sales-empty { padding: 17px; align-items: flex-start; }
+  .admin-detail-empty-icon { width: 36px; height: 36px; flex-basis: 36px; }
+  .admin-detail-metrics { gap: 9px; }
+  .admin-detail-metric.ui-card { min-height: 87px; padding: 12px; gap: 9px; }
+  .admin-detail-metric-icon { width: 30px; height: 30px; flex-basis: 30px; }
+  .admin-detail-metric strong { font-size: 19px; }
+  .admin-detail-booking-statuses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-detail-booking-statuses > div { padding: 9px 10px; }
+  .admin-detail-list-panel { padding: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-detail-refresh.is-loading svg { animation: none; }
+}
