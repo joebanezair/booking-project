@@ -1046,99 +1046,100 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics .dashboard-
 }
 
 
-/* Flat Quick Access links: full-row pointer targets. */
+/* Quick Access: wide, flat two-column link rows.
+   No nested cards, redundant action labels, or extra CTA buttons. */
 html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-route-grid {
   display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 0 18px !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  column-gap: 28px !important;
+  row-gap: 0 !important;
+  width: 100%;
 }
 html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link {
   display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) auto 14px;
+  grid-template-columns: 40px minmax(0, 1fr) 18px;
   align-items: center;
-  gap: 12px;
+  gap: 13px;
   min-width: 0;
-  min-height: 74px;
-  padding: 12px 3px;
+  min-height: 80px;
+  padding: 14px 12px;
   border: 0 !important;
   border-bottom: 1px solid var(--border) !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  text-decoration: none !important;
   color: var(--foreground);
+  text-decoration: none !important;
   cursor: pointer !important;
-  transition: color .15s ease, background-color .15s ease;
+  transition: background-color .15s ease, color .15s ease;
 }
 html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link:hover {
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 4%, transparent) !important;
+  background: color-mix(in srgb, var(--primary) 5%, transparent) !important;
 }
 html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link:focus-visible {
   outline: 2px solid var(--ring, var(--primary));
-  outline-offset: 2px;
-  border-radius: 5px !important;
+  outline-offset: -2px;
+  border-radius: 6px !important;
 }
 html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link .route-card-icon {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
-  background: var(--secondary);
+  background: color-mix(in srgb, var(--primary) 9%, var(--card));
   color: var(--primary);
 }
 html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link .route-card-icon svg {
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
 }
 html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-copy {
   display: grid;
-  gap: 4px;
+  gap: 5px;
   min-width: 0;
+  line-height: 1.4;
 }
 html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-copy strong {
-  font-size: 12px;
-  line-height: 1.35;
+  color: var(--foreground);
+  font-size: 13px;
   font-weight: 650;
-  color: inherit;
+  line-height: 1.35;
 }
 html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-copy small {
-  font-size: 10px;
-  line-height: 1.45;
   color: var(--muted-foreground);
-}
-html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-cta {
   font-size: 11px;
-  font-weight: 600;
-  color: var(--primary);
-  white-space: nowrap;
+  line-height: 1.5;
+  max-width: 54ch;
 }
 html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-arrow {
-  width: 14px;
-  height: 14px;
-  flex: 0 0 14px;
+  width: 17px;
+  height: 17px;
+  justify-self: end;
+  color: var(--muted-foreground);
+  transition: transform .15s ease, color .15s ease;
+}
+html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link:hover .dashboard-quick-arrow {
   color: var(--primary);
+  transform: translateX(3px);
 }
-@media (max-width: 1100px) {
-  html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-route-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-@media (max-width: 700px) {
+@media (max-width: 820px) {
   html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-route-grid {
     grid-template-columns: minmax(0, 1fr) !important;
   }
   html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link {
-    grid-template-columns: 36px minmax(0, 1fr) 14px;
-    min-height: 66px;
-  }
-  html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-cta {
-    display: none;
+    min-height: 72px;
+    padding: 12px 6px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link {
+  html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link,
+  html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-arrow {
     transition: none;
+  }
+  html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .dashboard-quick-link:hover .dashboard-quick-arrow {
+    transform: none;
   }
 }
