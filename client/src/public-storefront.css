@@ -156,6 +156,16 @@ html body #root .bookflow-storefront .storefront-hero.has-cover .storefront-prof
   object-fit: cover;
   box-shadow: 0 4px 15px rgba(15, 23, 42, .11);
 }
+/* Keep initials centered for every business storefront without an uploaded photo.
+   The shared .profile-avatar can be a span (fallback) or img (uploaded photo);
+   override the storefront's display:block only for the fallback span. */
+html body #root .bookflow-storefront .storefront-hero .storefront-profile-info > .profile-avatar.avatar {
+  display: grid !important;
+  place-items: center !important;
+  text-align: center !important;
+  line-height: 1;
+  padding: 0 !important;
+}
 html body #root .bookflow-storefront .storefront-profile-info .public-profile-copy {
   box-sizing: border-box;
   flex: 1 1 auto !important;
