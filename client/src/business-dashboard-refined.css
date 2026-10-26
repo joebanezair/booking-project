@@ -80,8 +80,7 @@ html body #root .dashboard-v2-analytics .dashboard-v2-stats {
   gap: 10px !important;
   margin-bottom: 11px !important;
 }
-html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="3"],
-html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-visible-count="3"] .dashboard-v2-analysis-grid {
+html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="3"] {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
 }
 html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="2"] {
@@ -364,13 +363,17 @@ html body .business-dashboard-dialog .business-dashboard-widget-footer .ui-butto
   }
 }
 @media (max-width: 800px) {
-  html body #root .dashboard-v2-analytics .dashboard-v2-stats {
+  html body #root .dashboard-v2-analytics .dashboard-v2-stats,
+  html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="3"],
+  html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="2"] {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
   html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="1"] {
     grid-template-columns: minmax(0,1fr) !important;
   }
-  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid {
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid,
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-visible-count="2"],
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-visible-count="3"] {
     grid-template-columns: 1fr !important;
   }
 }
@@ -389,7 +392,9 @@ html body .business-dashboard-dialog .business-dashboard-widget-footer .ui-butto
   html body .business-dashboard-dialog .business-dashboard-widget-footer { align-items: stretch; }
 }
 @media (max-width: 420px) {
-  html body #root .dashboard-v2-analytics .dashboard-v2-stats {
+  html body #root .dashboard-v2-analytics .dashboard-v2-stats,
+  html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="2"],
+  html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="3"] {
     grid-template-columns: minmax(0, 1fr) !important;
   }
   html body .business-dashboard-dialog .business-dashboard-widget-name > span { font-size: 11px; }
