@@ -1,6 +1,6 @@
 import { Button } from "./ui/button.jsx";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiShoppingCart, FiShoppingBag, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX, FiChevronDown, FiMoreHorizontal, FiLogOut, FiArrowRight, FiAlertCircle } from "react-icons/fi";
+import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiShoppingCart, FiShoppingBag, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX, FiChevronDown, FiMoreHorizontal, FiLogOut, FiArrowRight } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
@@ -133,7 +133,7 @@ export default function AppLayout({ children, user, onLogout }) {
       detail: "Service posting and new bookings are disabled"
     },
     !hasBusinessFeature(user, "pos") && {
-      key: "pos", label: "Products & POS", icon: FiShoppingBag,
+      key: "pos", label: "Products & POS", icon: FiPackage,
       detail: "Products, checkout and online orders are disabled"
     }
   ].filter(Boolean) : [];
@@ -346,27 +346,18 @@ export default function AppLayout({ children, user, onLogout }) {
     <section className="content-shell">
       {user?.role === "business" && user?.accountStatus === "paused" && <div className="account-status-banner">Your business is temporarily paused. Existing data stays available, but publishing services and new guest bookings are disabled.</div>}
       {unavailableFeatures.length > 0 && (
-        <section className="feature-access-notice" role="status" aria-label="Feature access restrictions">
-          <div className="feature-access-heading">
-            <span className="feature-access-alert-icon"><FiAlertCircle aria-hidden="true" /></span>
-            <div className="feature-access-heading-text">
-              <strong>Feature access limited</strong>
-              <span>Existing records are safe. Contact your administrator to restore access.</span>
-            </div>
-          </div>
-          <div className="feature-access-items">
-            {unavailableFeatures.map(({ key, label, icon: Icon, detail }) => (
-              <div className="feature-access-item" key={key}>
-                <span className="feature-access-item-icon"><Icon aria-hidden="true" /></span>
-                <div className="feature-access-item-copy">
-                  <strong>{label}</strong>
-                  <span>{detail}</span>
-                </div>
-                <span className="feature-access-state">Inactive</span>
+        <aside className="feature-access-popups" role="status" aria-label="Inactive feature plans">
+          {unavailableFeatures.map(({ key, label, icon: Icon, detail }) => (
+            <article className="feature-access-popup" key={key}>
+              <span className="feature-access-popup-icon"><Icon aria-hidden="true" /></span>
+              <div className="feature-access-popup-copy">
+                <strong>{label}</strong>
+                <span>{detail}</span>
               </div>
-            ))}
-          </div>
-        </section>
+              <span className="feature-access-popup-state">Inactive</span>
+            </article>
+          ))}
+        </aside>
       )}
       {children}
     </section>
