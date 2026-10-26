@@ -123,6 +123,9 @@ export default function App() {
   const servicesPage = Component => user?.role === "business" && hasBusinessFeature(user, "booking", featureClock)
     ? <Component {...pageProps} />
     : <Navigate to={user ? "/dashboard" : "/login"} replace />;
+  const productsPage = Component => user?.role === "business" && hasBusinessFeature(user, "pos", featureClock)
+    ? <Component {...pageProps} />
+    : <Navigate to={user ? "/dashboard" : "/login"} replace />;
   const adminPage = Component => user ? (user.role === "admin" ? <Component {...pageProps} /> : <Navigate to="/dashboard" replace />) : <Navigate to="/login" replace />;
 
   return <Routes>
@@ -144,8 +147,8 @@ export default function App() {
     <Route path="/dashboard/bookings" element={servicesPage(BookingsPage)} />
     <Route path="/dashboard/bookings/:bookingId" element={servicesPage(BookingDetailPage)} />
     <Route path="/dashboard/sales" element={businessPage(SalesPage)} />
-    <Route path="/dashboard/products" element={businessPage(ProductsPage)} />
-    <Route path="/dashboard/online-orders" element={businessPage(OnlineOrdersPage)} />
+    <Route path="/dashboard/products" element={productsPage(ProductsPage)} />
+    <Route path="/dashboard/online-orders" element={productsPage(OnlineOrdersPage)} />
     <Route path="/dashboard/messages" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/messages/:userId" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/profile" element={businessPage(ProfilePage)} />
