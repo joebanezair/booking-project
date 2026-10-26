@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
 import ProfileAvatar from "./ProfileAvatar.jsx";
+import { hasBusinessFeature } from "../featureAccess.js";
 
 const navigation = [
   { to: "/dashboard", label: "Dashboard", icon: FiHome, end: true },
@@ -118,7 +119,9 @@ export default function AppLayout({ children, user, onLogout }) {
 
   const visibleNavigation = navigation.filter(item => {
     if (item.adminOnly) return user?.role === "admin";
-    if (item.businessOnly) return user?.role === "business";
+    if (item.businessOnly && user?.role !== "business") return false;
+    // Disabling the Booking plan also hides My Services and My Bookings.
+    if (item.label === "Services" && !hasBusinessFeature(user, "booking")) return false;
     return true;
   });
 
@@ -329,6 +332,7 @@ export default function AppLayout({ children, user, onLogout }) {
 
     <section className="content-shell">
       {user?.role === "business" && user?.accountStatus === "paused" && <div className="account-status-banner">Your business is temporarily paused. Existing data stays available, but publishing services and new guest bookings are disabled.</div>}
+      {user?.role === "business" && !hasBusinessFeature(user, "booking") && <div className="account-status-banner" role="status">Booking plan inactive. Services and new bookings are unavailable. Existing records are preserved; contact your administrator to reactivate access.</div>}
       {children}
     </section>
 
