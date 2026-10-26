@@ -1,6 +1,7 @@
 import { Router } from "express";
 import Sale, { Product, PosSale, ProductOrder, InventoryMovement } from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
+import { requireFeature } from "../middleware/requireFeature.js";
 import { requireBusiness } from "../middleware/requireRole.js";
 import { storeImageFields } from "../lib/mediaStore.js";
 import { orderTrackingToken } from "../lib/orderTracking.js";
@@ -209,7 +210,7 @@ router.get("/pos", async(req,res) => {
   try { res.json(await PosSale.find({businessOwner:req.user.id}).sort({soldAt:-1}).limit(200).lean()); }
   catch(error){console.error(error);res.status(500).json({message:"Unable to load POS sales."});}
 });
-router.post("/pos", bookingMutationGuard(req => req.user.id), async(req,res) => {
+router.post("/pos", requireFeature("pos"), bookingMutationGuard(req => req.user.id), async(req,res) => {
   try {
     const rows=Array.isArray(req.body.items)?req.body.items:[];
     if(!rows.length)return res.status(400).json({message:"Add at least one product."});
