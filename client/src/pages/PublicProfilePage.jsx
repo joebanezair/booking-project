@@ -202,7 +202,7 @@ export default function PublicProfilePage({ user }) {
                  <Button variant="plain" className="primary-button icon-link" disabled={friendBusy || friendship.requestSent || friendship.blocked} onClick={() => friendAction("add")}><FiUserPlus aria-hidden="true" />{friendship.requestSent ? "Request Sent" : "Add Friend"}</Button>}
                 {canMessage && <Button asChild variant="outline"><Link className="secondary button-link icon-link" to={conversationPath}><FiMessageSquare aria-hidden="true" />Message</Link></Button>}
               </div>}
-              {!paused && <Button asChild variant="default"><Link className="public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
+              {profile.bookingAvailable && <Button asChild variant="default"><Link className="public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
             </div>
           </div>
           {paused && <div className="paused-public-banner">Temporarily unavailable — this business is not accepting new bookings right now.</div>}
