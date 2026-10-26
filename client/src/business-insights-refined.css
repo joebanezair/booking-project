@@ -1,0 +1,450 @@
+/* Business Insights design system — scoped to the administrator's business detail page.
+   This stylesheet intentionally loads after legacy detail styles. */
+#root .admin-detail-page {
+  width: min(100%, 1240px);
+  margin-inline: auto;
+  padding: 10px 0 44px;
+  --detail-radius: 16px;
+  --detail-subtle: color-mix(in srgb, var(--detail-surface) 83%, var(--secondary));
+}
+#root .admin-detail-page .admin-detail-header {
+  align-items: end;
+  margin-bottom: 20px;
+  gap: 14px;
+}
+#root .admin-detail-page .admin-detail-header .eyebrow,
+#root .admin-detail-page .admin-detail-section-heading .eyebrow {
+  margin: 0 0 7px;
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: .105em;
+  text-transform: uppercase;
+}
+#root .admin-detail-page .admin-detail-header h1 {
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.14;
+  letter-spacing: -.035em;
+  font-weight: 720;
+  margin: 0 0 7px;
+}
+#root .admin-detail-page .admin-detail-header .muted {
+  line-height: 1.55;
+  font-size: 12px;
+}
+html body #root .admin-detail-page .admin-detail-refresh.ui-button {
+  min-height: 37px;
+  padding: 8px 13px;
+  border: 1px solid var(--detail-border);
+  border-radius: 10px !important;
+  background: var(--detail-surface);
+  font-size: 12px;
+}
+#root .admin-detail-page .admin-detail-back.ui-button { margin-bottom: 9px; }
+#root .admin-detail-page .admin-detail-profile {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 15px;
+  min-height: 105px;
+  padding: 20px 22px;
+  border: 1px solid var(--detail-border);
+  border-radius: 16px !important;
+  background: var(--detail-surface);
+  box-shadow: 0 3px 18px rgba(24, 42, 75, .035);
+}
+#root .admin-detail-page .admin-detail-profile > .profile-avatar {
+  height: 56px !important;
+  width: 56px !important;
+  min-height: 56px !important;
+  min-width: 56px !important;
+  border-radius: 50% !important;
+}
+#root .admin-detail-page .admin-detail-profile-text h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 700;
+}
+#root .admin-detail-page .admin-detail-profile-text p,
+#root .admin-detail-page .admin-detail-profile-text small {
+  display: block;
+  margin: 0 0 3px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--detail-muted);
+}
+#root .admin-detail-page .admin-detail-profile-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 13px;
+}
+#root .admin-detail-page .admin-detail-profile-actions {
+  display: flex;
+  padding: 0;
+  gap: 7px;
+  border: 0;
+}
+#root .admin-detail-page .admin-detail-status.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 9999px !important;
+  padding: 8px 12px;
+  font-weight: 650;
+  font-size: 11px;
+  white-space: nowrap;
+}
+#root .admin-detail-page .admin-detail-status.status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+html body #root .admin-detail-page .admin-detail-profile-actions .ui-button {
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 10px !important;
+  font-size: 12px;
+  font-weight: 550;
+}
+/* Section shells create clear visual groups without nested heavy outlines. */
+html body #root .admin-detail-page > .admin-detail-section {
+  margin-top: 16px;
+  padding: 21px 22px;
+  background: var(--detail-surface);
+  border: 1px solid var(--detail-border);
+  border-radius: 16px !important;
+  box-shadow: 0 3px 18px rgba(24, 42, 75, .025);
+}
+#root .admin-detail-page .admin-detail-section-heading {
+  align-items: flex-end;
+  margin-bottom: 17px;
+  gap: 12px;
+}
+#root .admin-detail-page .admin-detail-section-heading h2 {
+  margin: 0 0 5px;
+  font-size: 18px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  font-weight: 700;
+}
+#root .admin-detail-page .admin-detail-section-heading .muted {
+  font-size: 12px;
+  line-height: 1.6;
+}
+#root .admin-detail-page .admin-detail-subtle {
+  font-size: 11px;
+  color: var(--detail-muted);
+}
+#root .admin-detail-page .admin-detail-sales-empty {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 100px;
+  padding: 20px;
+  background: var(--detail-subtle);
+  border: 1px solid var(--detail-border);
+  border-radius: 13px !important;
+  box-shadow: none;
+}
+#root .admin-detail-page .admin-detail-sales-empty strong {
+  font-size: 13px;
+  font-weight: 675;
+  margin-bottom: 5px;
+}
+#root .admin-detail-page .admin-detail-sales-empty p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+#root .admin-detail-page .admin-detail-empty-icon,
+#root .admin-detail-page .admin-detail-finance-icon,
+#root .admin-detail-page .admin-detail-metric-icon,
+#root .admin-detail-page .admin-detail-feature-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  flex-basis: 40px;
+  border-radius: 12px !important;
+  background: var(--secondary, #eef2fa);
+  color: var(--detail-ink);
+  overflow: hidden;
+}
+#root .admin-detail-page .admin-detail-empty-icon svg,
+#root .admin-detail-page .admin-detail-finance-icon svg,
+#root .admin-detail-page .admin-detail-metric-icon svg,
+#root .admin-detail-page .admin-detail-feature-icon svg {
+  width: 19px;
+  height: 19px;
+  stroke-width: 1.75;
+}
+#root .admin-detail-page .admin-detail-disclaimer {
+  margin-top: 12px;
+}
+#root .admin-detail-page .admin-detail-disclaimer summary {
+  font-size: 11px;
+  gap: 8px;
+}
+/* KPI tiles: comfortable figures and consistent icon alignment. */
+#root .admin-detail-page .admin-detail-metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+html body #root .admin-detail-page .admin-detail-metric.ui-card {
+  display: flex;
+  align-items: flex-start;
+  min-height: 112px;
+  gap: 11px;
+  padding: 16px 13px;
+  border: 1px solid var(--detail-border) !important;
+  border-radius: 13px !important;
+  background: var(--detail-surface);
+  box-shadow: none !important;
+}
+#root .admin-detail-page .admin-detail-metric > div:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+#root .admin-detail-page .admin-detail-metric span { font-size: 11px; line-height: 1.3; }
+#root .admin-detail-page .admin-detail-metric strong {
+  font-size: 23px;
+  letter-spacing: -.025em;
+  line-height: 1.2;
+  font-weight: 700;
+}
+#root .admin-detail-page .admin-detail-metric small {
+  font-size: 10px;
+  line-height: 1.4;
+}
+#root .admin-detail-page .admin-detail-booking-breakdown { margin-top: 20px; }
+#root .admin-detail-page .admin-detail-booking-breakdown h3 {
+  margin: 0 0 11px;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--detail-ink);
+}
+#root .admin-detail-page .admin-detail-booking-statuses {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 9px;
+}
+#root .admin-detail-page .admin-detail-booking-statuses > div {
+  padding: 11px 12px;
+  gap: 9px;
+  min-height: 42px;
+  border-radius: 10px !important;
+  background: var(--detail-subtle);
+  border: 1px solid var(--detail-border);
+}
+#root .admin-detail-page .admin-detail-booking-statuses span { color: var(--detail-muted); }
+#root .admin-detail-page .admin-detail-booking-statuses strong { font-size: 12px; }
+/* Feature cards place independent actions in a deliberate control footer. */
+#root .admin-detail-page .admin-detail-feature-plan .admin-detail-section-heading {
+  margin-bottom: 16px;
+}
+#root .admin-detail-page .admin-detail-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+#root .admin-detail-page .admin-detail-feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 18px;
+  min-width: 0;
+  border: 1px solid var(--detail-border);
+  border-radius: 14px !important;
+  background: var(--detail-surface);
+  box-shadow: none;
+}
+#root .admin-detail-page .admin-detail-feature-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+#root .admin-detail-page .admin-detail-feature-info { min-width: 0; flex: 1 1 auto; }
+#root .admin-detail-page .admin-detail-feature-info h3 {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0 0 5px;
+}
+#root .admin-detail-page .admin-detail-feature-info p {
+  font-size: 11px;
+  line-height: 1.55;
+}
+#root .admin-detail-page .admin-detail-feature-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border-radius: 9999px !important;
+  font-size: 11px;
+  white-space: nowrap;
+}
+#root .admin-detail-page .admin-detail-feature-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+#root .admin-detail-page .admin-detail-feature-expiry {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--detail-muted);
+  font-size: 11px;
+  line-height: 1.4;
+  min-height: 42px;
+  margin: 7px 0 12px;
+  padding: 12px 0 10px;
+  border-bottom: 1px solid var(--detail-border);
+}
+#root .admin-detail-page .admin-detail-feature-expiry svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+}
+#root .admin-detail-page .admin-detail-feature-controls {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  column-gap: 13px;
+  row-gap: 12px;
+}
+#root .admin-detail-page .admin-detail-feature-duration {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1 1 132px;
+  min-width: 115px;
+}
+#root .admin-detail-page .admin-detail-feature-duration label {
+  color: var(--detail-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+#root .admin-detail-page .admin-detail-feature-controls select {
+  width: 100%;
+  max-width: none;
+  min-height: 37px;
+  padding: 8px 12px;
+  border-radius: 10px !important;
+  background: var(--detail-surface);
+  color: var(--detail-ink);
+  border: 1px solid var(--detail-border);
+  font-size: 12px;
+  box-shadow: none;
+}
+#root .admin-detail-page .admin-detail-feature-buttons {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button {
+  min-height: 37px;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 625;
+  border-radius: 10px !important;
+  white-space: nowrap;
+}
+#root .admin-detail-page .admin-detail-feature-buttons .ui-button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+#root .admin-detail-page .admin-detail-feature-feedback {
+  border: 1px solid color-mix(in srgb, #167f50 22%, var(--detail-border));
+  border-radius: 10px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+}
+#root .admin-detail-page .admin-detail-finance-card.ui-card {
+  border-radius: 13px !important;
+}
+#root .admin-detail-page .admin-detail-lists {
+  gap: 14px;
+  margin-top: 16px;
+}
+#root .admin-detail-page .admin-detail-list-panel {
+  padding: 19px;
+  border-radius: 16px !important;
+  border: 1px solid var(--detail-border);
+  box-shadow: 0 3px 18px rgba(24, 42, 75, .025);
+}
+#root .admin-detail-page .admin-detail-list-heading {
+  padding-bottom: 13px;
+}
+#root .admin-detail-page .admin-detail-list-heading h2 { font-size: 15px; font-weight: 700; }
+#root .admin-detail-page .admin-detail-list-heading span { font-size: 11px; }
+#root .admin-detail-page .admin-detail-list-empty {
+  min-height: 155px;
+  padding: 20px 12px 10px;
+  gap: 8px;
+}
+#root .admin-detail-page .admin-detail-list-empty .admin-detail-empty-icon {
+  min-width: 39px;
+  width: 39px;
+  height: 39px;
+  flex-basis: 39px;
+}
+#root .admin-detail-page .admin-detail-list-empty strong { font-size: 12px; font-weight: 650; }
+#root .admin-detail-page .admin-detail-list-empty p { font-size: 11px; }
+/* Tablet & narrow desktops: avoid six cramped booking pills. */
+@media (max-width: 1140px) {
+  #root .admin-detail-page .admin-detail-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #root .admin-detail-page .admin-detail-booking-statuses { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 850px) {
+  #root .admin-detail-page .admin-detail-feature-grid,
+  #root .admin-detail-page .admin-detail-lists,
+  #root .admin-detail-page .admin-detail-currency-grid { grid-template-columns: 1fr; }
+  #root .admin-detail-page .admin-detail-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #root .admin-detail-page .admin-detail-profile {
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 12px;
+  }
+  #root .admin-detail-page .admin-detail-profile-controls {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--detail-border);
+  }
+}
+@media (max-width: 560px) {
+  #root .admin-detail-page { padding-top: 4px; }
+  #root .admin-detail-page .admin-detail-header { align-items: start; }
+  #root .admin-detail-page .admin-detail-header h1 { font-size: 25px; }
+  #root .admin-detail-page .admin-detail-profile,
+  html body #root .admin-detail-page > .admin-detail-section,
+  #root .admin-detail-page .admin-detail-list-panel { padding: 15px; }
+  #root .admin-detail-page .admin-detail-profile-controls {
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  #root .admin-detail-page .admin-detail-profile-actions { justify-content: flex-start; flex-wrap: wrap; }
+  #root .admin-detail-page .admin-detail-booking-statuses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #root .admin-detail-page .admin-detail-metric.ui-card { min-height: 104px; padding: 12px 10px; flex-direction: column; gap: 9px; }
+  #root .admin-detail-page .admin-detail-metric strong { font-size: 20px; }
+  #root .admin-detail-page .admin-detail-metric-icon { width: 34px; height: 34px; min-width: 34px; flex-basis: 34px; }
+  #root .admin-detail-page .admin-detail-feature-controls { align-items: stretch; }
+  #root .admin-detail-page .admin-detail-feature-duration { flex: 1 1 100%; }
+  #root .admin-detail-page .admin-detail-feature-buttons { margin-left: 0; width: 100%; }
+  html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button { flex: 1 1 auto; }
+  #root .admin-detail-page .admin-detail-sales-empty { padding: 16px; }
+  #root .admin-detail-page .admin-detail-section-heading { align-items: start; }
+}
