@@ -26,7 +26,8 @@ import SalesPage from "./pages/SalesPage.jsx";
 import ProductsPage from "./pages/ProductsPage.jsx";
 import OnlineOrdersPage from "./pages/OnlineOrdersPage.jsx";
 import OrderStatusPage from "./pages/OrderStatusPage.jsx";
-import { disconnectRealtime } from "./realtime.js";
+import { disconnectRealtime, getRealtimeSocket } from "./realtime.js";
+import { hasBusinessFeature } from "./featureAccess.js";
 import { api } from "./api.js";
 
 function readUser() {
@@ -40,6 +41,7 @@ function readTheme() {
 export default function App() {
   const [user, setUser] = useState(readUser);
   const [theme, setTheme] = useState(readTheme);
+  const [featureClock, setFeatureClock] = useState(() => Date.now());
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -58,6 +60,56 @@ export default function App() {
     });
   }, []);
 
+  // Keep the sidebar and route guards in sync with admin changes and expiring plans.
+  useEffect(() => {
+    const tick = setInterval(() => setFeatureClock(Date.now()), 30_000);
+    return () => clearInterval(tick);
+  }, []);
+
+  useEffect(() => {
+    if (user?.role !== "business") return;
+    let active = true;
+    const socket = getRealtimeSocket();
+    const onFeatureChange = featureAccess => {
+      if (!featureAccess || typeof featureAccess !== "object") return;
+      setUser(current => {
+        if (!current || current.role !== "business") return current;
+        const updated = { ...current, featureAccess };
+        localStorage.setItem("booking_user", JSON.stringify(updated));
+        return updated;
+      });
+    };
+    const refresh = async () => {
+      if (!localStorage.getItem("booking_token")) return;
+      try {
+        const current = await api.me();
+        if (!active) return;
+        localStorage.setItem("booking_user", JSON.stringify(current));
+        setUser(current);
+      } catch (error) {
+        if (active && (error.status === 401 || (error.status === 403 && /disabled/i.test(error.message || "")))) {
+          setUser(null);
+        }
+      }
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+    socket?.on("features:updated", onFeatureChange);
+    socket?.on("connect", refresh);
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", onVisibility);
+    const interval = setInterval(refresh, 60_000);
+    return () => {
+      active = false;
+      socket?.off("features:updated", onFeatureChange);
+      socket?.off("connect", refresh);
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", onVisibility);
+      clearInterval(interval);
+    };
+  }, [user?.id, user?.role]);
+
   function logout() {
     disconnectRealtime();
     localStorage.removeItem("booking_token");
@@ -68,6 +120,9 @@ export default function App() {
   const pageProps = { user, onLogout: logout, onUserUpdate: setUser, theme, onThemeChange: setTheme };
   const protectedPage = Component => user ? <Component {...pageProps} /> : <Navigate to="/login" replace />;
   const businessPage = Component => user ? (user.role === "business" ? <Component {...pageProps} /> : <Navigate to="/dashboard" replace />) : <Navigate to="/login" replace />;
+  const servicesPage = Component => user?.role === "business" && hasBusinessFeature(user, "booking", featureClock)
+    ? <Component {...pageProps} />
+    : <Navigate to={user ? "/dashboard" : "/login"} replace />;
   const adminPage = Component => user ? (user.role === "admin" ? <Component {...pageProps} /> : <Navigate to="/dashboard" replace />) : <Navigate to="/login" replace />;
 
   return <Routes>
@@ -79,15 +134,15 @@ export default function App() {
     <Route path="/register/admin/:inviteKey" element={<InviteRegisterPage user={user} onAuthenticated={setUser} />} />
 
     <Route path="/dashboard" element={protectedPage(DashboardPage)} />
-    <Route path="/dashboard/services" element={businessPage(ContentManagementPage)} />
-    <Route path="/dashboard/services/new" element={businessPage(CreateContentPage)} />
-    <Route path="/dashboard/services/:contentId/edit" element={businessPage(EditContentPage)} />
+    <Route path="/dashboard/services" element={servicesPage(ContentManagementPage)} />
+    <Route path="/dashboard/services/new" element={servicesPage(CreateContentPage)} />
+    <Route path="/dashboard/services/:contentId/edit" element={servicesPage(EditContentPage)} />
     <Route path="/dashboard/content" element={<Navigate to="/dashboard/services" replace />} />
     <Route path="/dashboard/content/new" element={<Navigate to="/dashboard/services/new" replace />} />
     <Route path="/dashboard/content/:contentId/edit" element={<Navigate to="/dashboard/services" replace />} />
 
-    <Route path="/dashboard/bookings" element={businessPage(BookingsPage)} />
-    <Route path="/dashboard/bookings/:bookingId" element={businessPage(BookingDetailPage)} />
+    <Route path="/dashboard/bookings" element={servicesPage(BookingsPage)} />
+    <Route path="/dashboard/bookings/:bookingId" element={servicesPage(BookingDetailPage)} />
     <Route path="/dashboard/sales" element={businessPage(SalesPage)} />
     <Route path="/dashboard/products" element={businessPage(ProductsPage)} />
     <Route path="/dashboard/online-orders" element={businessPage(OnlineOrdersPage)} />
