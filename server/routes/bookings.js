@@ -7,6 +7,7 @@ import Content from "../models/Content.js";
 import Review from "../models/Review.js";
 import Sale from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
+import { requireFeature } from "../middleware/requireFeature.js";
 import { requireActiveBusiness, requireBusiness } from "../middleware/requireRole.js";
 import { syncSaleForBooking } from "../lib/sales.js";
 import { calculateBookingEndsAt, makeBookingReference, validateBookingWindow } from "../lib/scheduling.js";
@@ -307,7 +308,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", requireActiveBusiness, async (req, res) => {
+router.post("/", requireActiveBusiness, requireFeature("booking"), async (req, res) => {
   try {
     const input = normalizeBooking(req.body);
     const validationError = validateBooking(input);
