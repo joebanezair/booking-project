@@ -3,8 +3,8 @@ import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  FiArrowLeft, FiBriefcase, FiCalendar, FiCheckCircle, FiClock,
-  FiCreditCard, FiEye, FiInfo, FiInbox, FiLayers, FiPause, FiPlay, FiRefreshCw,
+  FiArrowLeft, FiBarChart2, FiCalendar, FiCheckCircle, FiClock,
+  FiCreditCard, FiPause, FiPlay, FiRefreshCw,
   FiShoppingBag, FiSlash, FiStar, FiTrendingUp
 } from "react-icons/fi";
 import { PiCoin } from "react-icons/pi";
@@ -31,8 +31,8 @@ function dateLabel(date) {
     : parsed.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
 
-function Metric({ icon: Icon, label, value, note }) {
-  return <Card as="article" className="admin-detail-metric">
+function Metric({ icon: Icon, label, value, note, tone = "neutral" }) {
+  return <Card as="article" className={`admin-detail-metric admin-detail-metric--${tone}`}>
     <div className="admin-detail-metric-icon"><Icon aria-hidden="true" /></div>
     <div>
       <span>{label}</span>
@@ -166,7 +166,10 @@ export default function BusinessDetailPage({ user, onLogout }) {
                 <h2 id="admin-earnings-title">Recorded gross sales</h2>
                 <p className="muted">Service sales, recorded POS transactions, and completed online product orders.</p>
               </div>
-              <span className="admin-detail-subtle"><FiTrendingUp aria-hidden="true" /> All-time figures</span>
+              <details className="admin-detail-financial-info">
+                <summary className="admin-detail-subtle"><FiTrendingUp aria-hidden="true" /> All-time figures</summary>
+                <p>Gross sales represent recorded operational activity, not net profit or verified payouts. Completed online orders may include unpaid or partially paid orders. Expenses, fees, and partial refunds are not deducted; currencies remain separate.</p>
+              </details>
             </div>
 
             {currencies.length === 0 ?
@@ -191,35 +194,29 @@ export default function BusinessDetailPage({ user, onLogout }) {
                   </div>
                 </Card>)}
               </div>}
-            <details className="admin-detail-disclaimer">
-              <summary><FiInfo aria-hidden="true" /> How gross sales are calculated</summary>
-              <p>
-                Gross operational sales are not net profit, verified payments, or payouts. Online totals use completed orders
-                (excluding fully refunded or voided orders), which may include unpaid or partially paid orders.
-                Expenses, processing fees and partial refunds are not deducted. Currencies are displayed separately.
-              </p>
-            </details>
-          </section>
+           </section>
 
           <section className="admin-detail-section" aria-labelledby="admin-activity-title">
             <div className="admin-detail-section-heading">
-              <div><p className="eyebrow">ACCOUNT ACTIVITY</p><h2 id="admin-activity-title">Business statistics</h2></div>
+              <div><p className="eyebrow">BUSINESS STATISTICS</p><h2 id="admin-activity-title">Business statistics</h2></div>
             </div>
             <div className="admin-detail-metrics">
-              <Metric icon={FiBriefcase} label="Services" value={data.serviceCount ?? data.services.length} note="Created services" />
-              <Metric icon={FiCalendar} label="Total bookings" value={bookingSummary?.total ?? data.recentBookings.length} note="All booking statuses" />
-              <Metric icon={FiCheckCircle} label="Completed bookings" value={bookingsCompleted} note="Completed services" />
-              <Metric icon={FiShoppingBag} label="Sales transactions" value={recordedTransactions} note="Recorded / completed" />
-              <Metric icon={FiStar} label="Verified rating" value={verifiedReviews ? `${data.reviewSummary.averageRating.toFixed(1)} / 5` : "—"}
+              <Metric tone="blue" icon={FiBarChart2} label="Services" value={data.serviceCount ?? data.services.length} note="Created services" />
+              <Metric tone="purple" icon={FiCalendar} label="Total bookings" value={bookingSummary?.total ?? data.recentBookings.length} note="All booking statuses" />
+              <Metric tone="green" icon={FiCheckCircle} label="Completed bookings" value={bookingsCompleted} note="Completed services" />
+              <Metric tone="blue" icon={FiCreditCard} label="Sales transactions" value={recordedTransactions} note="Recorded / completed" />
+              <Metric tone="neutral" icon={FiStar} label="Verified rating" value={verifiedReviews ? `${data.reviewSummary.averageRating.toFixed(1)} / 5` : "—"}
                 note={`${verifiedReviews} verified review${verifiedReviews === 1 ? "" : "s"}`} />
             </div>
-            <div className="admin-detail-booking-breakdown"><h3>Booking breakdown</h3><div className="admin-detail-booking-statuses" aria-label="Booking statuses">
-              {["pending", "confirmed", "in_progress", "completed", "cancelled", "no_show"].map(status =>
-                <div key={status} className={`admin-detail-booking-status admin-detail-booking-status--${status}`}>
-                  <span>{status.replaceAll("_", " ")}</span>
-                  <strong>{bookingSummary?.statuses?.[status] || 0}</strong>
-                </div>
-              )}
+            <div className="admin-detail-booking-breakdown">
+              <h3>Booking breakdown</h3>
+              <div className="admin-detail-booking-statuses" aria-label="Booking statuses">
+                {["pending", "confirmed", "in_progress", "completed", "cancelled", "no_show"].map(status =>
+                  <div key={status} className={`admin-detail-booking-status admin-detail-booking-status--${status}`}>
+                    <span>{status.replaceAll("_", " ")}</span>
+                    <strong>{bookingSummary?.statuses?.[status] || 0}</strong>
+                  </div>
+                )}
               </div>
             </div>
           </section>
@@ -252,12 +249,10 @@ export default function BusinessDetailPage({ user, onLogout }) {
                     </div>
                     <span className={`admin-detail-feature-badge ${active ? "active" : expired ? "expired" : "inactive"}`}>{status}</span>
                   </div>
-                  <div className="admin-detail-feature-expiry">
+                  {plan.expiresAt && <div className="admin-detail-feature-expiry">
                     <FiClock aria-hidden="true" />
-                    <span>{plan.expiresAt
-                      ? `${expired ? "Expired" : "Expires"} on ${dateLabel(plan.expiresAt)}`
-                      : active ? "No expiration set" : "Access deactivated"}</span>
-                  </div>
+                    <span>{expired ? "Expired" : "Expires"} on {dateLabel(plan.expiresAt)}</span>
+                  </div>}
                   <div className="admin-detail-feature-controls">
                     <div className="admin-detail-feature-duration">
                       <label htmlFor={`feature-duration-${key}`}>Access duration</label>
@@ -285,32 +280,6 @@ export default function BusinessDetailPage({ user, onLogout }) {
             </div>
           </section>
 
-          <div className="admin-detail-lists">
-            <section className="admin-detail-list-panel" aria-labelledby="admin-services-title">
-              <div className="admin-detail-list-heading"><h2 id="admin-services-title">Recent services</h2><span>Latest 50</span></div>
-              {data.services.length === 0 ? <div className="admin-detail-list-empty"><span className="admin-detail-empty-icon"><FiLayers aria-hidden="true" /></span><strong>No services yet</strong><p>Created services will show up here.</p></div> :
-                <div className="admin-detail-rows">{data.services.map(service =>
-                  <div key={service._id} className="admin-detail-row">
-                    <div><strong>{service.title}</strong><small>{service.category || "General"} · {service.published ? "Published" : "Draft"} · {service.visibility || "public"}</small></div>
-                    <Button asChild variant="ghost" size="sm"><Link to={`/services/${service._id}`}><FiEye aria-hidden="true" /> View</Link></Button>
-                  </div>
-                )}</div>}
-            </section>
-
-            <section className="admin-detail-list-panel" aria-labelledby="admin-bookings-title">
-              <div className="admin-detail-list-heading"><h2 id="admin-bookings-title">Recent bookings</h2><span>Latest 20</span></div>
-              {data.recentBookings.length === 0 ? <div className="admin-detail-list-empty"><span className="admin-detail-empty-icon"><FiInbox aria-hidden="true" /></span><strong>No bookings yet</strong><p>New bookings will appear here.</p></div> :
-                <div className="admin-detail-rows">{data.recentBookings.map(booking =>
-                  <div key={booking._id} className="admin-detail-row">
-                    <div>
-                      <strong>{booking.service || "Service booking"}</strong>
-                      <small>{dateLabel(booking.bookingDate)} · {money(booking.servicePrice, booking.currency)}</small>
-                    </div>
-                    <span className={`status ${booking.status}`}>{booking.status?.replaceAll("_", " ")}</span>
-                  </div>
-                )}</div>}
-            </section>
-          </div>
         </>}
     </div>
   </AppLayout>;
