@@ -124,10 +124,6 @@ function readVisibleMetrics(key) {
 
 export default function DashboardPage({ user, onLogout }) {
   const isAdmin = user.role === "admin";
-  const sections = isAdmin ? adminSections : businessSections.filter(section =>
-    (!section.feature || hasBusinessFeature(user, section.feature)) &&
-    visibleBusinessWidgets[section.widgetKey] !== false
-  );
   const [overview, setOverview] = useState(null);
   const [businessSales, setBusinessSales] = useState(null);
   const [bookingSummary, setBookingSummary] = useState(null);
@@ -149,6 +145,10 @@ export default function DashboardPage({ user, onLogout }) {
   const [draftBusinessWidgets, setDraftBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
   const [businessCustomizeOpen, setBusinessCustomizeOpen] = useState(false);
   const [expandedBusinessGroup, setExpandedBusinessGroup] = useState("Key metrics");
+  const sections = isAdmin ? adminSections : businessSections.filter(section =>
+    (!section.feature || hasBusinessFeature(user, section.feature)) &&
+    visibleBusinessWidgets[section.widgetKey] !== false
+  );
   useEffect(() => {
     const stored = readBusinessWidgets(businessWidgetKey);
     setVisibleBusinessWidgets(stored);
