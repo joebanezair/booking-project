@@ -19,3 +19,24 @@ test("admin and anonymous users are never granted business-only routes", () => {
   assert.equal(hasBusinessFeature({ role: "admin" }, "booking"), false);
   assert.equal(hasBusinessFeature(null, "booking"), false);
 });
+
+test("deactivating POS blocks Products while Services stays accessible", () => {
+  const user = { role: "business", featureAccess: {
+    pos: { enabled: false, active: false },
+    booking: { enabled: true, active: true }
+  } };
+  assert.equal(hasBusinessFeature(user, "pos"), false);
+  assert.equal(hasBusinessFeature(user, "booking"), true);
+});
+
+test("an expired POS plan blocks products at the expiration boundary", () => {
+  const user = { role: "business", featureAccess: {
+    pos: { enabled: true, active: true, expiresAt: "2026-11-01T00:00:00Z" }
+  } };
+  assert.equal(hasBusinessFeature(user, "pos", Date.parse("2026-10-31T23:59:59Z")), true);
+  assert.equal(hasBusinessFeature(user, "pos", Date.parse("2026-11-01T00:00:00Z")), false);
+});
+
+test("legacy business accounts retain Products access", () => {
+  assert.equal(hasBusinessFeature({ role: "business" }, "pos"), true);
+});
