@@ -639,3 +639,228 @@ html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button:disa
 @media (prefers-reduced-motion: reduce) {
   #root .admin-detail-page * { animation: none !important; transition: none !important; }
 }
+
+
+/* Final layout corrections: fixed-height plan inputs and restored activity views. */
+/* The legacy feature select had flex: 1 1 100px while inside a column layout.
+   Disable that rule so dropdowns stay the same height as the action buttons. */
+html body #root .admin-detail-page .admin-detail-feature-card {
+  padding: 16px 18px 17px;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  min-height: 0;
+}
+html body #root .admin-detail-page .admin-detail-feature-head {
+  padding-bottom: 13px;
+  min-height: 48px;
+}
+html body #root .admin-detail-page .admin-detail-feature-icon {
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 12px !important;
+}
+html body #root .admin-detail-page .admin-detail-feature-icon svg {
+  width: 19px;
+  height: 19px;
+}
+html body #root .admin-detail-page .admin-detail-feature-controls {
+  display: grid !important;
+  grid-template-columns: minmax(170px, 240px) max-content !important;
+  justify-content: space-between;
+  align-items: end !important;
+  gap: 12px;
+  width: 100%;
+  margin-top: 13px;
+  padding: 0;
+}
+html body #root .admin-detail-page .admin-detail-feature-duration {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  width: 100%;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+html body #root .admin-detail-page .admin-detail-feature-duration label {
+  display: block;
+  flex: 0 0 auto;
+  font-size: 11px;
+  line-height: 1.4;
+  margin: 0;
+}
+html body #root .admin-detail-page .admin-detail-feature-duration select {
+  display: block !important;
+  flex: 0 0 40px !important;
+  align-self: stretch;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  margin: 0 !important;
+  padding: 0 12px !important;
+  border-radius: 10px !important;
+  background-color: var(--detail-surface);
+  line-height: normal !important;
+  font-size: 12px;
+  appearance: auto;
+}
+html body #root .admin-detail-page .admin-detail-feature-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  width: auto;
+  margin: 0;
+  padding: 0;
+}
+html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+  padding: 0 12px !important;
+  font-size: 11px;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button svg {
+  width: 14px;
+  height: 14px;
+}
+/* Previous update removed both datasets. Restore them as one simple
+   two-column activity area: no additional boxed cards inside a card. */
+html body #root .admin-detail-page .admin-detail-recent {
+  padding-bottom: 22px;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-lists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+}
+html body #root .admin-detail-page .admin-detail-recent .admin-detail-list-panel {
+  padding: 0 24px 0 0;
+  background: transparent;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  min-width: 0;
+}
+html body #root .admin-detail-page .admin-detail-recent .admin-detail-list-panel + .admin-detail-list-panel {
+  padding: 0 0 0 24px;
+  border-left: 1px solid var(--detail-border) !important;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 12px;
+  margin: 0;
+  border-bottom: 1px solid var(--detail-border);
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-list-heading h3 {
+  color: var(--detail-ink);
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-list-heading span {
+  color: var(--detail-muted);
+  font-size: 11px;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-list-empty {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  min-height: 90px;
+  padding: 18px 2px 6px;
+  text-align: left;
+  background: transparent;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-list-empty .admin-detail-empty-icon {
+  flex: 0 0 36px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 10px !important;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-list-empty .admin-detail-empty-icon svg {
+  width: 17px;
+  height: 17px;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-list-empty > div {
+  display: grid;
+  gap: 4px;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-list-empty strong {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 650;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-list-empty p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--detail-muted);
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-row {
+  gap: 12px;
+  padding: 12px 2px;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-row strong {
+  font-size: 12px;
+  font-weight: 650;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-row small {
+  font-size: 11px;
+}
+html body #root .admin-detail-page .admin-detail-recent .admin-detail-row .ui-button {
+  border-radius: 9px !important;
+}
+@media (max-width: 1150px) {
+  #root .admin-detail-page .admin-detail-feature-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+@media (max-width: 850px) {
+  #root .admin-detail-page .admin-detail-recent .admin-detail-lists {
+    grid-template-columns: 1fr;
+  }
+  html body #root .admin-detail-page .admin-detail-recent .admin-detail-list-panel {
+    padding: 0 !important;
+  }
+  html body #root .admin-detail-page .admin-detail-recent .admin-detail-list-panel + .admin-detail-list-panel {
+    margin-top: 16px;
+    padding-top: 16px !important;
+    border-left: 0 !important;
+    border-top: 1px solid var(--detail-border) !important;
+  }
+}
+@media (max-width: 560px) {
+  html body #root .admin-detail-page .admin-detail-feature-controls {
+    grid-template-columns: minmax(0,1fr) !important;
+    justify-content: stretch;
+  }
+  html body #root .admin-detail-page .admin-detail-feature-buttons {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  html body #root .admin-detail-page .admin-detail-feature-buttons .ui-button {
+    flex: 1 1 auto;
+  }
+}
