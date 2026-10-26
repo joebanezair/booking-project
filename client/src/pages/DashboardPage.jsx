@@ -556,7 +556,6 @@ export default function DashboardPage({ user, onLogout }) {
                 <strong>{section.title}</strong>
                 <small>{section.text}</small>
               </span>
-              <span className="dashboard-quick-cta">{section.action}</span>
               <FiArrowRight className="dashboard-quick-arrow" aria-hidden="true" />
             </Link>
           ))}
