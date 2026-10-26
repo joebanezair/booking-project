@@ -1,162 +1,119 @@
-/* Business feature availability — one compact, accessible notice. */
-#root .content-shell .feature-access-notice {
-  display: grid;
-  grid-template-columns: minmax(210px, .72fr) minmax(0, 2fr);
-  align-items: center;
-  column-gap: 22px;
-  row-gap: 10px;
-  width: 100%;
-  margin: 0 0 18px;
-  padding: 15px 18px;
-  border: 1px solid color-mix(in srgb, var(--border, #e2e8f2) 85%, #e8b971);
-  border-radius: 13px;
-  background: var(--card, #fff);
-  box-shadow: 0 2px 12px rgba(24, 39, 73, .03);
-  color: var(--foreground, #17243b);
-}
-#root .content-shell .feature-access-heading {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  gap: 11px;
-}
-#root .content-shell .feature-access-alert-icon {
-  display: grid;
-  place-items: center;
-  flex: 0 0 36px;
-  height: 36px;
-  width: 36px;
-  border-radius: 11px;
-  background: color-mix(in srgb, #e6a33d 12%, var(--card, #fff));
-  color: #a36a17;
-}
-#root .content-shell .feature-access-alert-icon svg {
-  height: 18px;
-  width: 18px;
-  stroke-width: 1.8;
-}
-#root .content-shell .feature-access-heading-text,
-#root .content-shell .feature-access-item-copy {
+/* Persistent feature-plan alerts.
+   Only rendered for inactive/expired features; no timeout or close control.
+   Positioned outside the document layout so dashboard content never shifts. */
+html body #root .content-shell .feature-access-popups {
+  position: fixed !important;
+  right: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 55;
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  gap: 3px;
+  gap: 10px;
+  width: min(430px, calc(100vw - 40px));
+  max-height: calc(100dvh - 60px);
+  overflow-y: auto;
+  pointer-events: none;
 }
-#root .content-shell .feature-access-heading-text strong {
-  font-size: 12px;
-  line-height: 1.35;
-  font-weight: 680;
-  color: var(--foreground, #17243b);
-}
-#root .content-shell .feature-access-heading-text > span {
-  font-size: 11px;
-  line-height: 1.5;
-  color: var(--muted-foreground, #71809a);
-}
-#root .content-shell .feature-access-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
-  align-items: center;
-  min-width: 0;
-}
-#root .content-shell .feature-access-item {
+html body #root .content-shell .feature-access-popup {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  width: 100%;
   min-width: 0;
-  padding: 3px 14px;
+  min-height: 74px;
+  padding: 13px 14px;
+  border: 1px solid var(--border, #e2e8f1);
+  border-radius: 13px !important;
+  background: var(--card, #fff);
+  box-shadow: 0 8px 25px rgba(15, 33, 65, .105);
+  color: var(--foreground, #17243b);
+  pointer-events: auto;
 }
-#root .content-shell .feature-access-item:first-child {
-  border-left: 1px solid var(--border, #e2e8f2);
-}
-#root .content-shell .feature-access-item + .feature-access-item {
-  border-left: 1px solid var(--border, #e2e8f2);
-}
-#root .content-shell .feature-access-item-icon {
+html body #root .content-shell .feature-access-popup-icon {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  border-radius: 10px;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px !important;
+  background: var(--secondary, #edf2f9);
   color: var(--muted-foreground, #71809a);
-  background: var(--secondary, #eff3f9);
 }
-#root .content-shell .feature-access-item-icon svg {
-  height: 16px;
-  width: 16px;
+html body #root .content-shell .feature-access-popup-icon svg {
+  width: 18px;
+  height: 18px;
   stroke-width: 1.8;
 }
-#root .content-shell .feature-access-item-copy {
+html body #root .content-shell .feature-access-popup-copy {
+  display: flex;
   flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
 }
-#root .content-shell .feature-access-item-copy strong {
+html body #root .content-shell .feature-access-popup-copy strong {
   font-size: 12px;
-  font-weight: 640;
+  font-weight: 650;
   line-height: 1.35;
   color: var(--foreground, #17243b);
 }
-#root .content-shell .feature-access-item-copy span {
+html body #root .content-shell .feature-access-popup-copy span {
   font-size: 10px;
-  line-height: 1.4;
+  line-height: 1.45;
   color: var(--muted-foreground, #71809a);
+  overflow-wrap: anywhere;
 }
-#root .content-shell .feature-access-state {
+html body #root .content-shell .feature-access-popup-state {
   display: inline-flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   gap: 6px;
   flex: 0 0 auto;
-  padding: 6px 9px;
-  border-radius: 999px;
-  background: var(--secondary, #f0f3f9);
+  align-self: center;
+  padding: 7px 10px;
+  border-radius: 9999px !important;
+  background: var(--secondary, #eff3f8);
   color: var(--muted-foreground, #71809a);
   font-size: 10px;
-  line-height: 1;
   font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
 }
-#root .content-shell .feature-access-state::before {
+html body #root .content-shell .feature-access-popup-state::before {
   content: "";
   display: block;
-  flex: 0 0 6px;
   width: 6px;
   height: 6px;
-  background: currentColor;
+  flex: 0 0 6px;
   border-radius: 50%;
+  background: currentColor;
 }
-@media (max-width: 1190px) {
-  #root .content-shell .feature-access-notice {
-    grid-template-columns: 1fr;
-    padding: 14px;
-    row-gap: 12px;
-  }
-  #root .content-shell .feature-access-items {
-    border-top: 1px solid var(--border, #e2e8f2);
-    padding-top: 11px;
-  }
-  #root .content-shell .feature-access-item:first-child {
-    border-left: 0;
-    padding-left: 0;
+/* Keep permanent status cards above the mobile bottom menu. */
+@media (max-width: 800px) {
+  html body #root .content-shell .feature-access-popups {
+    right: 12px;
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    width: min(400px, calc(100vw - 24px));
+    max-height: calc(100dvh - 110px);
   }
 }
-@media (max-width: 680px) {
-  #root .content-shell .feature-access-notice {
-    padding: 13px;
-    border-radius: 12px;
+@media (max-width: 480px) {
+  html body #root .content-shell .feature-access-popup {
+    min-height: 64px;
+    padding: 10px 11px;
+    gap: 9px;
+    border-radius: 12px !important;
   }
-  #root .content-shell .feature-access-items {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 8px;
+  html body #root .content-shell .feature-access-popup-icon {
+    flex-basis: 33px;
+    width: 33px;
+    height: 33px;
+    border-radius: 9px !important;
   }
-  #root .content-shell .feature-access-item {
-    padding: 0;
-  }
-  #root .content-shell .feature-access-item + .feature-access-item {
-    border-left: 0;
-    padding-top: 9px;
-    border-top: 1px solid var(--border, #e2e8f2);
-  }
-  #root .content-shell .feature-access-state {
-    padding: 6px 8px;
+  html body #root .content-shell .feature-access-popup-copy strong { font-size: 11px; }
+  html body #root .content-shell .feature-access-popup-copy span { font-size: 10px; }
+  html body #root .content-shell .feature-access-popup-state {
+    padding: 6px 7px;
+    font-size: 9px;
   }
 }
