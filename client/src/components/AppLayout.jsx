@@ -122,6 +122,8 @@ export default function AppLayout({ children, user, onLogout }) {
     if (item.businessOnly && user?.role !== "business") return false;
     // Disabling the Booking plan also hides My Services and My Bookings.
     if (item.label === "Services" && !hasBusinessFeature(user, "booking")) return false;
+    // POS plan controls the entire Products group: POS and Online Orders.
+    if (item.label === "Products" && !hasBusinessFeature(user, "pos")) return false;
     return true;
   });
 
