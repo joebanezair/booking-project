@@ -11,6 +11,7 @@ import requireAuth from "../middleware/auth.js";
 import { requireAdmin } from "../middleware/requireRole.js";
 import { notify } from "../lib/notifications.js";
 import { readPageSize } from "../lib/pagination.js";
+import { featureNames, featureDurations, featureSummary } from "../lib/featureAccess.js";
 
 const router = Router();
 router.use(requireAuth, requireAdmin);
@@ -230,7 +231,7 @@ router.get("/businesses/:id", async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid business ID." });
     const user = await User.findOne({ _id: req.params.id, role: "business" })
-      .select("name username email accountStatus profileImage createdAt updatedAt")
+      .select("name username email accountStatus profileImage featureAccess createdAt updatedAt")
       .lean();
     if (!user) return res.status(404).json({ message: "Business account not found." });
 
@@ -307,7 +308,7 @@ router.get("/businesses/:id", async (req, res) => {
 
     res.set("Cache-Control", "no-store");
     res.json({
-      user: { ...user, accountStatus: user.accountStatus || "active" },
+      user: { ...user, accountStatus: user.accountStatus || "active", featureAccess: featureSummary(user) },
       business,
       services,
       recentBookings,
@@ -331,6 +332,36 @@ router.get("/businesses/:id", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to load business details." });
+  }
+});
+
+// Admin feature plans: start or renew a fixed-duration entitlement, or deactivate immediately.
+// Updates only this business and this feature. Existing historical records are unaffected.
+router.patch("/businesses/:id/features/:feature", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ message: "Invalid business ID." });
+    const feature = String(req.params.feature || "");
+    if (!featureNames.includes(feature)) return res.status(400).json({ message: "Unknown feature." });
+    const { enabled, days } = req.body || {};
+    if (typeof enabled !== "boolean") return res.status(400).json({ message: "enabled must be true or false." });
+    if (enabled && (!Number.isInteger(days) || !featureDurations.includes(days))) {
+      return res.status(400).json({ message: "Duration must be 7, 30, 90, or 365 days." });
+    }
+
+    const expiresAt = enabled ? new Date(Date.now() + days * 24 * 60 * 60 * 1000) : null;
+    const base = `featureAccess.${feature}`;
+    const account = await User.findOneAndUpdate(
+      { _id: req.params.id, role: "business" },
+      { $set: { [`${base}.enabled`]: enabled, [`${base}.expiresAt`]: expiresAt } },
+      { new: true, runValidators: true }
+    ).select("featureAccess").lean();
+    if (!account) return res.status(404).json({ message: "Business account not found." });
+
+    res.set("Cache-Control", "no-store");
+    res.json({ featureAccess: featureSummary(account) });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to update feature plan." });
   }
 });
 
