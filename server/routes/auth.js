@@ -5,6 +5,7 @@ import { timingSafeEqual } from "node:crypto";
 import User from "../models/User.js";
 import Business from "../models/Business.js";
 import requireAuth from "../middleware/auth.js";
+import { featureSummary } from "../lib/featureAccess.js";
 
 const router = Router();
 
@@ -23,6 +24,7 @@ async function publicUser(user) {
     email: user.email,
     role: user.role,
     accountStatus: user.accountStatus || "active",
+    featureAccess: user.role === "business" ? featureSummary(user) : null,
     business: business ? { id: business._id, name: business.name, category: business.category } : null
   };
 }
