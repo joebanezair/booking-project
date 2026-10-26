@@ -549,14 +549,20 @@ export default function DashboardPage({ user, onLogout }) {
               </CardHeader>
             </Card>
           ) : (
-            <Link to={section.to} className="dashboard-quick-link" key={section.to} aria-label={section.action}>
-              <span className="route-card-icon"><Icon aria-hidden="true" /></span>
-              <span className="dashboard-quick-copy">
-                <strong>{section.title}</strong>
-                <small>{section.text}</small>
-              </span>
-              <FiArrowRight className="dashboard-quick-arrow" aria-hidden="true" />
-            </Link>
+            <Card className="dashboard-shadcn-card" key={section.to}>
+              <CardHeader className="dashboard-shadcn-card-header">
+                <span className="route-card-icon"><Icon aria-hidden="true" /></span>
+                <div>
+                  <CardTitle>{section.title}</CardTitle>
+                  <CardDescription>{section.text}</CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="dashboard-shadcn-card-content">
+                <Button asChild variant="outline" size="sm">
+                  <Link to={section.to} aria-label={section.action}>{section.action}<FiArrowRight aria-hidden="true" /></Link>
+                </Button>
+              </CardContent>
+            </Card>
           ))}
         </section>
       </section>}
