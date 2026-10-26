@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   FiArrowLeft, FiBarChart2, FiCalendar, FiCheckCircle, FiClock,
-  FiCreditCard, FiPause, FiPlay, FiRefreshCw,
+  FiCreditCard, FiEye, FiInbox, FiLayers, FiPause, FiPlay, FiRefreshCw,
   FiShoppingBag, FiSlash, FiStar, FiTrendingUp
 } from "react-icons/fi";
 import { PiCoin } from "react-icons/pi";
@@ -277,6 +277,55 @@ export default function BusinessDetailPage({ user, onLogout }) {
                   </div>
                 </article>;
               })}
+            </div>
+          </section>
+
+          <section className="admin-detail-section admin-detail-recent" aria-labelledby="admin-recent-title">
+            <div className="admin-detail-section-heading">
+              <div>
+                <p className="eyebrow">RECENT ACTIVITY</p>
+                <h2 id="admin-recent-title">Services & bookings</h2>
+                <p className="muted">Review the business's latest services and booking activity.</p>
+              </div>
+            </div>
+            <div className="admin-detail-lists">
+              <section className="admin-detail-list-panel" aria-labelledby="admin-services-title">
+                <div className="admin-detail-list-heading"><h3 id="admin-services-title">Recent services</h3><span>Latest 50</span></div>
+                {data.services.length === 0 ?
+                  <div className="admin-detail-list-empty">
+                    <span className="admin-detail-empty-icon"><FiLayers aria-hidden="true" /></span>
+                    <div><strong>No services yet</strong><p>Created services will appear here.</p></div>
+                  </div>
+                  : <div className="admin-detail-rows">{data.services.map(service =>
+                    <div key={service._id} className="admin-detail-row">
+                      <div>
+                        <strong>{service.title}</strong>
+                        <small>{service.category || "General"} · {service.published ? "Published" : "Draft"} · {service.visibility || "public"}</small>
+                      </div>
+                      {service.published && service.visibility !== "private" &&
+                        <Button asChild variant="ghost" size="sm">
+                          <Link to={`/services/${service._id}`}><FiEye aria-hidden="true" /> View</Link>
+                        </Button>}
+                    </div>
+                  )}</div>}
+              </section>
+              <section className="admin-detail-list-panel" aria-labelledby="admin-bookings-title">
+                <div className="admin-detail-list-heading"><h3 id="admin-bookings-title">Recent bookings</h3><span>Latest 20</span></div>
+                {data.recentBookings.length === 0 ?
+                  <div className="admin-detail-list-empty">
+                    <span className="admin-detail-empty-icon"><FiInbox aria-hidden="true" /></span>
+                    <div><strong>No bookings yet</strong><p>New bookings will appear here.</p></div>
+                  </div>
+                  : <div className="admin-detail-rows">{data.recentBookings.map(booking =>
+                    <div key={booking._id} className="admin-detail-row">
+                      <div>
+                        <strong>{booking.service || "Service booking"}</strong>
+                        <small>{dateLabel(booking.bookingDate)} · {money(booking.servicePrice, booking.currency)}</small>
+                      </div>
+                      <span className={`status ${booking.status}`}>{booking.status?.replaceAll("_", " ")}</span>
+                    </div>
+                  )}</div>}
+              </section>
             </div>
           </section>
 
