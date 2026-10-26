@@ -357,8 +357,11 @@ router.patch("/businesses/:id/features/:feature", async (req, res) => {
     ).select("featureAccess").lean();
     if (!account) return res.status(404).json({ message: "Business account not found." });
 
+    const featureAccess = featureSummary(account);
+    // Connected business dashboards update immediately without a page reload.
+    req.app.get("io")?.to(`user:${req.params.id}`).emit("features:updated", featureAccess);
     res.set("Cache-Control", "no-store");
-    res.json({ featureAccess: featureSummary(account) });
+    res.json({ featureAccess });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to update feature plan." });
