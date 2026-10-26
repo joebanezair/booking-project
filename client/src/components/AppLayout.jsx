@@ -351,7 +351,7 @@ export default function AppLayout({ children, user, onLogout }) {
             <span className="feature-access-alert-icon"><FiAlertCircle aria-hidden="true" /></span>
             <div className="feature-access-heading-text">
               <strong>Feature access limited</strong>
-              <span>Some workspace tools are temporarily unavailable.</span>
+              <span>Existing records are safe. Contact your administrator to restore access.</span>
             </div>
           </div>
           <div className="feature-access-items">
@@ -366,7 +366,6 @@ export default function AppLayout({ children, user, onLogout }) {
               </div>
             ))}
           </div>
-          <p className="feature-access-footnote">Your existing records are preserved. Contact your administrator to restore access.</p>
         </section>
       )}
       {children}
