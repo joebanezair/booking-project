@@ -92,17 +92,23 @@ function BookingStatus({ summary, loading }) {
     start += total ? group.value / total * 100 : 0;
     return total && group.value ? `${group.color} ${from}% ${start}%` : "";
   }).filter(Boolean);
-  return <Card as="section" className="dashboard-v2-status" aria-labelledby="dashboard-service-status-title">
-    <h3 id="dashboard-service-status-title">Service status</h3>
-    <p className="dashboard-v2-muted">Booking status for the selected period</p>
+  const empty = !loading && total === 0;
+  return <Card as="section" className={`dashboard-v2-status${empty ? " is-empty" : ""}`} aria-labelledby="dashboard-service-status-title">
+    <h3 id="dashboard-service-status-title">Booking status</h3>
+    <p className="dashboard-v2-muted">Booking activity for this period</p>
     <div className="dashboard-status-content">
-      <div className="dashboard-status-donut"
-        style={{ background: segments.length ? `conic-gradient(${segments.join(", ")})` : "var(--dashboard-track)" }}
-        role="img" aria-label={total ? `${total} bookings: ${groups.map(item => `${item.label} ${item.value}`).join(", ")}` : "No bookings in this period"}>
-        <div className="dashboard-status-hole">
-          <strong>{loading ? "—" : total}</strong><span>Total</span>
-        </div>
-      </div>
+      {empty
+        ? <div className="dashboard-status-zero" role="status">
+            <strong>0</strong>
+            <span>No bookings in this period</span>
+          </div>
+        : <div className="dashboard-status-donut"
+            style={{ background: segments.length ? `conic-gradient(${segments.join(", ")})` : "var(--dashboard-track)" }}
+            role="img" aria-label={total ? `${total} bookings: ${groups.map(item => `${item.label} ${item.value}`).join(", ")}` : "No bookings in this period"}>
+            <div className="dashboard-status-hole">
+              <strong>{loading ? "—" : total}</strong><span>Total</span>
+            </div>
+          </div>}
       <div className="dashboard-status-legend">
         {groups.map(item => <div className="dashboard-status-row" key={item.key}>
           <span className="dashboard-status-dot" style={{ backgroundColor: item.color }} aria-hidden="true" />
@@ -124,15 +130,25 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
   const salesTrend = data?.trend || [];
   const metrics = [
     { key: "sales", label: "This period", value: summary ? currencyFormat(summary.totalSales, primaryCurrency) : "—", description: "Recorded service and product sales", icon: FaMoneyBillTrendUp, tone: "blue", series: salesTrend.map(item => item.revenue) },
-    { key: "completed", label: "Completed", value: summary?.completedServices ?? "—", description: "Services completed this period", icon: FiCalendar, tone: "blue", series: completedTrend.map(item => item.revenue) },
-    { key: "average", label: "Average sale", value: summary ? currencyFormat(summary.averageSale, primaryCurrency) : "—", description: "Primary currency", icon: FiTrendingUp, tone: "blue", series: [] },
-    { key: "services", label: "Services sold", value: summary?.servicesSold ?? "—", description: "Distinct services this period", icon: FiBriefcase, tone: "blue", series: [] }
+    { key: "completed", label: "Completed", value: summary?.completedServices ?? "—", description: "Services completed this period", icon: FiCalendar, tone: "green", series: completedTrend.map(item => item.revenue) },
+    { key: "average", label: "Average sale", value: summary ? currencyFormat(summary.averageSale, primaryCurrency) : "—", description: "Primary currency", icon: FiTrendingUp, tone: "purple", series: [] },
+    { key: "services", label: "Services sold", value: summary?.servicesSold ?? "—", description: "Distinct services this period", icon: FiBriefcase, tone: "orange", series: [] }
   ];
   const title = DASHBOARD_RANGES.find(item => item.value === range)?.label || "This month";
   const statKeys = { sales: "statSales", completed: "statCompleted", average: "statAverage", services: "statServices" };
   const visibleMetrics = metrics.filter(metric => visibility[statKeys[metric.key]] !== false);
   const panelKeys = ["salesOverview", "serviceStatus", "topServices"];
   const visiblePanels = panelKeys.filter(key => visibility[key] !== false);
+  const chartHasData = chartTab === "services"
+    ? realServices.length > 0
+    : chartTab === "completed" ? completedTrend.length > 0 : salesTrend.length > 0;
+  const statusEmpty = !statusLoading && !Number(statusSummary?.total || 0);
+  const topServicesEmpty = !realServices.length;
+  const allPanelsEmpty = visiblePanels.length > 0 && visiblePanels.every(key =>
+    key === "salesOverview" ? !chartHasData && !loading
+      : key === "serviceStatus" ? statusEmpty
+      : topServicesEmpty && !loading
+  );
   if (!visibleMetrics.length && !visiblePanels.length) return null;
   return <section className="business-dashboard-analytics dashboard-v2-analytics" aria-label="Business analytics">
     {visibleMetrics.length > 0 && <div className="dashboard-v2-stats" data-visible-count={visibleMetrics.length}>
@@ -146,8 +162,8 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
         <small>{metric.description}</small>
       </Card>)}
     </div>}
-    {visiblePanels.length > 0 && <div className="dashboard-v2-analysis-grid" data-visible-count={visiblePanels.length}>
-      {visibility.salesOverview !== false && <Card as="section" className="dashboard-v2-sales" aria-labelledby="dashboard-sales-heading">
+    {visiblePanels.length > 0 && <div className="dashboard-v2-analysis-grid" data-visible-count={visiblePanels.length} data-all-empty={allPanelsEmpty ? "true" : "false"}>
+      {visibility.salesOverview !== false && <Card as="section" className={`dashboard-v2-sales${!chartHasData && !loading ? " is-empty" : ""}`} aria-labelledby="dashboard-sales-heading">
         <div className="dashboard-v2-panel-head">
           <div><h3 id="dashboard-sales-heading">Sales Overview</h3>
             <p className="dashboard-v2-muted">Recorded sales activity · {title.toLowerCase()}</p></div>
@@ -161,24 +177,24 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
         <div className="dashboard-v2-chart-area">
           {loading && !data ? <div className="dashboard-v2-empty">Loading analytics…</div>
             : chartTab === "services" ?
-              realServices.length ? <ServiceSalesChart data={realServices} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No service sales yet</strong><span>Top services will appear after a completed sale.</span></div>
+              realServices.length ? <ServiceSalesChart data={realServices} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No service sales yet</strong><span>Completed service sales appear here.</span></div>
             : chartTab === "completed" ?
               completedTrend.length === 1
                 ? <SinglePeriodSummary point={completedTrend[0]} value={String(completedTrend[0].revenue)} unit="completed services" />
-                : completedTrend.length ? <SalesTrendChart data={completedTrend} currency="" formatValue={number => String(Math.round(number))} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed services in this period</strong><span>Completed services will appear here when recorded.</span></div>
+                : completedTrend.length ? <SalesTrendChart data={completedTrend} currency="" formatValue={number => String(Math.round(number))} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed services yet</strong><span>Activity will appear after service completion.</span></div>
             : salesTrend.length === 1
               ? <SinglePeriodSummary point={salesTrend[0]} value={currencyFormat(salesTrend[0].revenue, primaryCurrency)} unit="recorded sales" />
-              : salesTrend.length ? <SalesTrendChart data={salesTrend} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed sales in this period</strong><span>Recorded sales will appear here after completing services or product orders.</span></div>}
+              : salesTrend.length ? <SalesTrendChart data={salesTrend} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No recorded sales this period</strong><span>Completed transactions will appear here.</span></div>}
         </div>
         <div className="dashboard-v2-sales-footer"><Button asChild variant="link" size="sm"><Link to="/dashboard/sales">Full analytics <FiArrowRight aria-hidden="true" /></Link></Button></div>
       </Card>}
       {visibility.serviceStatus !== false && <BookingStatus summary={statusSummary} loading={statusLoading} />}
-      {visibility.topServices !== false && <Card as="section" className="dashboard-v2-top-services" aria-labelledby="dashboard-top-services-heading">
+      {visibility.topServices !== false && <Card as="section" className={`dashboard-v2-top-services${topServicesEmpty && !loading ? " is-empty" : ""}`} aria-labelledby="dashboard-top-services-heading">
         <h3 id="dashboard-top-services-heading">Top Services</h3>
         <p className="dashboard-v2-muted">Most sold services · {title.toLowerCase()}</p>
         {realServices.length ? <ol className="dashboard-v2-top-list">{realServices.slice(0,5).map((item, index) =>
           <li key={item.service}><span>{index+1}</span><div><strong>{item.service}</strong><small>{item.sales} completed · {currencyFormat(item.revenue,primaryCurrency)}</small></div></li>)}</ol>
-        : <div className="dashboard-v2-top-empty"><FiBarChart2 aria-hidden="true"/><strong>No service data yet</strong><p>Completed service sales will appear here.</p></div>}
+        : <div className="dashboard-v2-top-empty"><FiBarChart2 aria-hidden="true"/><strong>No services sold yet</strong><p>Top-selling services will appear here.</p></div>}
       </Card>}
     </div>}
   </section>;
