@@ -4,7 +4,6 @@ import {
   FiClock, FiFileText, FiLink, FiSend, FiSettings
 } from "react-icons/fi";
 import { Button } from "./ui/button.jsx";
-import { Card } from "./ui/card.jsx";
 
 const stepIcons = [FiBriefcase, FiFileText, FiCamera, FiClock, FiSettings, FiSend, FiLink];
 
@@ -37,7 +36,7 @@ export default function BusinessSetupChecklist({ items, expanded, onToggle }) {
   const completed = items.filter(item => item.done).length;
   const percentage = Math.round((completed / Math.max(items.length, 1)) * 100);
 
-  return <Card as="section" className="panel onboarding-panel onboarding-relaunch" aria-labelledby="business-setup-title">
+  return <section className="panel onboarding-panel onboarding-relaunch" aria-labelledby="business-setup-title">
     <div className="onboarding-launch-hero">
       <Button type="button" variant="ghost" className="onboarding-collapse-trigger onboarding-launch-trigger"
         onClick={onToggle} aria-expanded={expanded} aria-controls="business-onboarding-steps"
@@ -77,5 +76,5 @@ export default function BusinessSetupChecklist({ items, expanded, onToggle }) {
         </Button>;
       })}
     </div>
-  </Card>;
+  </section>;
 }
