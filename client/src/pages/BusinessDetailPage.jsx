@@ -195,7 +195,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
             </div>
             <div className="admin-detail-booking-breakdown"><h3>Booking breakdown</h3><div className="admin-detail-booking-statuses" aria-label="Booking statuses">
               {["pending", "confirmed", "in_progress", "completed", "cancelled", "no_show"].map(status =>
-                <div key={status}>
+                <div key={status} className={`admin-detail-booking-status admin-detail-booking-status--${status}`}>
                   <span>{status.replaceAll("_", " ")}</span>
                   <strong>{bookingSummary?.statuses?.[status] || 0}</strong>
                 </div>
