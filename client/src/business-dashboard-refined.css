@@ -887,3 +887,160 @@ html body #root .dashboard-v2-analytics .dashboard-status-row small {
     transition: none !important;
   }
 }
+
+
+/* Minimal analytics group: unified KPI strip and shared sales/status/services surface. */
+/* Four KPIs share a single rounded boundary, without individual card outlines. */
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  margin: 0 0 14px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="1"] {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card {
+  display: grid;
+  align-content: center;
+  gap: 0;
+  min-width: 0;
+  min-height: 105px !important;
+  margin: 0 !important;
+  padding: 15px 18px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card + .dashboard-v2-stat.ui-card {
+  border-left: 1px solid var(--border) !important;
+}
+
+/* Sales, Booking Status, and Top Services form one surface with separators.
+   All React components, charts, data, and Customize toggles remain intact. */
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.75fr) minmax(210px, .9fr) minmax(210px, .9fr) !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="1"] {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) {
+  display: flex !important;
+  flex-direction: column;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  min-width: 0;
+  min-height: 185px !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 17px 18px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  align-self: stretch !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-all-empty="false"] > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) {
+  min-height: 270px !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) + :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) {
+  border-left: 1px solid var(--border) !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics .dashboard-v2-sales.is-empty .dashboard-v2-chart-area {
+  flex: 0 0 auto;
+  min-height: 87px !important;
+}
+html body #root .business-dashboard-analytics.dashboard-v2-analytics .dashboard-v2-top-services.is-empty .dashboard-v2-top-empty {
+  flex: 0 0 auto;
+  min-height: 95px !important;
+}
+
+/* Narrower desktop: full-width last analytic segment, then single column. */
+@media (max-width: 1120px) {
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="3"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="3"] > :last-child {
+    grid-column: 1 / -1 !important;
+    border-left: 0 !important;
+    border-top: 1px solid var(--border) !important;
+  }
+}
+@media (max-width: 760px) {
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats,
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="3"],
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="1"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card {
+    border-left: 0 !important;
+    border-top: 1px solid var(--border) !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card:nth-child(-n+2) {
+    border-top: 0 !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card:nth-child(even) {
+    border-left: 1px solid var(--border) !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card:nth-child(odd) {
+    border-left: 0 !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid,
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="2"],
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="3"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services),
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="3"] > :last-child {
+    grid-column: auto !important;
+    border-left: 0 !important;
+    border-top: 1px solid var(--border) !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid > :first-child {
+    border-top: 0 !important;
+  }
+}
+@media (max-width: 420px) {
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats,
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="2"],
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="3"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card {
+    border-left: 0 !important;
+    border-top: 1px solid var(--border) !important;
+  }
+  html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card:first-child {
+    border-top: 0 !important;
+  }
+}
