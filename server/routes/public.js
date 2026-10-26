@@ -54,18 +54,18 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
       username: String(req.params.username).toLowerCase(),
       role: "business",
       accountStatus: { $in: ["active", "paused"] }
-    }).select("name username bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage accountStatus createdAt friendRequests");
+    }).select("name username bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage accountStatus featureAccess createdAt friendRequests");
 
     if (!user) return res.status(404).json({ message: "Business profile not found." });
 
-    const business = await Business.findOne({ owner: user._id }).select("name category description location website logo").lean();
+    const business = await Business.findOne({ owner: user._id }).select("name category description location website logo workingHours").lean();
     if (!business) return res.status(404).json({ message: "Business profile not found." });
 
     const items = await Content.find({
       user: user._id,
       published: true,
       visibility: { $ne: "private" }
-    }).select("title description price currency category coverImage createdAt updatedAt").sort({ updatedAt: -1 });
+    }).select("title description price currency category coverImage allowBookings createdAt updatedAt").sort({ updatedAt: -1 });
 
     const [summary, reviewSummary, reviews, businessRatingRows, currentBusinessRating, products] = await Promise.all([
       ratingSummary(items.map(item => item._id)),
@@ -79,6 +79,13 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
       req.user ? Rating.findOne({ business: business._id, user: req.user.id }).select("rating") : null,
       Product.find({ user: user._id, published: true }).select("name sku description image images price currency stock updatedAt").sort({ updatedAt: -1 }).lean()
     ]);
+
+    // The profile CTA reflects configured booking capability, not just a visible service.
+    // Actual date/time availability is validated by /book/:userId/slots.
+    const bookingAvailable = user.accountStatus === "active" &&
+      featureStatus(user, "booking").active &&
+      items.some(item => item.allowBookings === true) &&
+      Array.isArray(business.workingHours) && business.workingHours.some(day => day.enabled);
 
     res.json({
       profile: {
@@ -94,6 +101,7 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
         profileImagePositionY: user.profileImagePositionY,
         coverImage: user.coverImage,
         accountStatus: user.accountStatus || "active",
+        bookingAvailable,
         createdAt: user.createdAt,
         ratingSummary: reviewSummary,
         businessId: business._id,
