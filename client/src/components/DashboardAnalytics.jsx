@@ -115,7 +115,7 @@ function BookingStatus({ summary, loading }) {
   </Card>;
 }
 
-export default function DashboardAnalytics({ data, statusSummary, range = "month", loading, statusLoading }) {
+export default function DashboardAnalytics({ data, statusSummary, range = "month", loading, statusLoading, visibility = {} }) {
   const [chartTab, setChartTab] = useState("sales");
   const primaryCurrency = data?.primaryCurrency || "PHP";
   const summary = data?.summary;
@@ -129,9 +129,14 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
     { key: "services", label: "Services sold", value: summary?.servicesSold ?? "—", description: "Distinct services this period", icon: FiBriefcase, tone: "blue", series: [] }
   ];
   const title = DASHBOARD_RANGES.find(item => item.value === range)?.label || "This month";
+  const statKeys = { sales: "statSales", completed: "statCompleted", average: "statAverage", services: "statServices" };
+  const visibleMetrics = metrics.filter(metric => visibility[statKeys[metric.key]] !== false);
+  const panelKeys = ["salesOverview", "serviceStatus", "topServices"];
+  const visiblePanels = panelKeys.filter(key => visibility[key] !== false);
+  if (!visibleMetrics.length && !visiblePanels.length) return null;
   return <section className="business-dashboard-analytics dashboard-v2-analytics" aria-label="Business analytics">
-    <div className="dashboard-v2-stats">
-      {metrics.map(({ icon: Icon, ...metric }) => <Card key={metric.key} as="article" className={`dashboard-v2-stat tone-${metric.tone}`}>
+    {visibleMetrics.length > 0 && <div className="dashboard-v2-stats" data-visible-count={visibleMetrics.length}>
+      {visibleMetrics.map(({ icon: Icon, ...metric }) => <Card key={metric.key} as="article" className={`dashboard-v2-stat tone-${metric.tone}`}>
         <div className="dashboard-v2-stat-heading">
           <span className="dashboard-v2-stat-icon"><Icon aria-hidden="true" /></span>
           <span className="dashboard-v2-stat-label">{metric.label === "This period" ? title : metric.label}</span>
@@ -140,9 +145,9 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
         <MetricSparkline points={metric.series} tone={metric.tone} />
         <small>{metric.description}</small>
       </Card>)}
-    </div>
-    <div className="dashboard-v2-analysis-grid">
-      <Card as="section" className="dashboard-v2-sales" aria-labelledby="dashboard-sales-heading">
+    </div>}
+    {visiblePanels.length > 0 && <div className="dashboard-v2-analysis-grid" data-visible-count={visiblePanels.length}>
+      {visibility.salesOverview !== false && <Card as="section" className="dashboard-v2-sales" aria-labelledby="dashboard-sales-heading">
         <div className="dashboard-v2-panel-head">
           <div><h3 id="dashboard-sales-heading">Sales Overview</h3>
             <p className="dashboard-v2-muted">Recorded sales activity · {title.toLowerCase()}</p></div>
@@ -166,15 +171,15 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
               : salesTrend.length ? <SalesTrendChart data={salesTrend} currency={primaryCurrency} /> : <div className="dashboard-v2-empty"><FiBarChart2 aria-hidden="true"/><strong>No completed sales in this period</strong><span>Recorded sales will appear here after completing services or product orders.</span></div>}
         </div>
         <div className="dashboard-v2-sales-footer"><Button asChild variant="link" size="sm"><Link to="/dashboard/sales">Full analytics <FiArrowRight aria-hidden="true" /></Link></Button></div>
-      </Card>
-      <BookingStatus summary={statusSummary} loading={statusLoading} />
-      <Card as="section" className="dashboard-v2-top-services" aria-labelledby="dashboard-top-services-heading">
+      </Card>}
+      {visibility.serviceStatus !== false && <BookingStatus summary={statusSummary} loading={statusLoading} />}
+      {visibility.topServices !== false && <Card as="section" className="dashboard-v2-top-services" aria-labelledby="dashboard-top-services-heading">
         <h3 id="dashboard-top-services-heading">Top Services</h3>
         <p className="dashboard-v2-muted">Most sold services · {title.toLowerCase()}</p>
         {realServices.length ? <ol className="dashboard-v2-top-list">{realServices.slice(0,5).map((item, index) =>
           <li key={item.service}><span>{index+1}</span><div><strong>{item.service}</strong><small>{item.sales} completed · {currencyFormat(item.revenue,primaryCurrency)}</small></div></li>)}</ol>
         : <div className="dashboard-v2-top-empty"><FiBarChart2 aria-hidden="true"/><strong>No service data yet</strong><p>Completed service sales will appear here.</p></div>}
-      </Card>
-    </div>
+      </Card>}
+    </div>}
   </section>;
 }
