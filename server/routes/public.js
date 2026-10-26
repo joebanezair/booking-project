@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { featureStatus } from "../lib/featureAccess.js";
 import { publicJsonCache } from "../middleware/publicJsonCache.js";
 import mongoose from "mongoose";
 import Booking from "../models/Booking.js";
@@ -337,9 +338,10 @@ router.get("/book/:userId", async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Booking page not found." });
 
-    const user = await User.findOne({ _id: req.params.userId, role: "business" }).select("name accountStatus");
+    const user = await User.findOne({ _id: req.params.userId, role: "business" }).select("name accountStatus featureAccess");
     if (!user || user.accountStatus === "disabled") return res.status(404).json({ message: "Booking page not found." });
     if (user.accountStatus === "paused") return res.status(409).json({ message: "This business is temporarily unavailable for new bookings." });
+    if (!featureStatus(user, "booking").active) return res.status(403).json({ message: "Booking access is not currently available for this business." });
 
     const [business, bookableServices] = await Promise.all([
       Business.findOne({ owner: user._id }).select("name timezone workingHours blackoutDates leadTimeMinutes maxAdvanceDays slotIntervalMinutes").lean(),
@@ -393,7 +395,8 @@ router.get("/book/:userId", async (req, res) => {
 router.get("/book/:userId/slots", async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Booking page not found." });
-    const owner = await User.findOne({ _id: req.params.userId, role: "business", accountStatus: "active" }).select("_id");
+    const owner = await User.findOne({ _id: req.params.userId, role: "business", accountStatus: "active" }).select("_id featureAccess");
+    if (owner && !featureStatus(owner, "booking").active) return res.status(403).json({ message: "Booking access is not currently available for this business." });
     if (!owner || !await isActiveProvider(owner._id)) return res.status(409).json({ message: "This business is unavailable for new bookings." });
 
     const business = await Business.findOne({ owner: owner._id });
@@ -429,8 +432,9 @@ router.post("/book/:userId", bookingMutationGuard(req => req.params.userId), asy
   try {
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Booking page not found." });
 
-    const owner = await User.findOne({ _id: req.params.userId, role: "business" }).select("_id accountStatus");
+    const owner = await User.findOne({ _id: req.params.userId, role: "business" }).select("_id accountStatus featureAccess");
     if (!owner || owner.accountStatus === "disabled") return res.status(404).json({ message: "Booking page not found." });
+    if (!featureStatus(owner, "booking").active) return res.status(403).json({ message: "Booking access is not currently available for this business." });
     if (!await isActiveProvider(owner._id)) return res.status(409).json({ message: "This business is temporarily unavailable for new bookings." });
 
     const business = await Business.findOne({ owner: owner._id });
