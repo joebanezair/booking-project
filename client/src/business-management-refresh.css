@@ -2925,3 +2925,8 @@ html body .business-admin-page .business-admin-card-footer .business-admin-actio
     flex: 0 1 auto;
   }
 }
+
+/* Fully rounded ACTIVE badge in Business Directory, grid and list views. */
+html body #root .business-admin-page .business-admin-status.status.active {
+  border-radius: 9999px !important;
+}
