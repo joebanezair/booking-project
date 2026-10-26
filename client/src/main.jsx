@@ -35,6 +35,7 @@ import "./forum-refresh.css";
 import "./business-management-refresh.css";
 import "./business-detail-refresh.css";
 import "./business-insights-refined.css";
+import "./feature-access-notice.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
