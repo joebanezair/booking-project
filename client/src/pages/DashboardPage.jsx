@@ -125,7 +125,8 @@ function readVisibleMetrics(key) {
 export default function DashboardPage({ user, onLogout }) {
   const isAdmin = user.role === "admin";
   const sections = isAdmin ? adminSections : businessSections.filter(section =>
-    !section.feature || hasBusinessFeature(user, section.feature)
+    (!section.feature || hasBusinessFeature(user, section.feature)) &&
+    visibleBusinessWidgets[section.widgetKey] !== false
   );
   const [overview, setOverview] = useState(null);
   const [businessSales, setBusinessSales] = useState(null);
@@ -262,6 +263,20 @@ export default function DashboardPage({ user, onLogout }) {
     completedOrders: countText(overview?.sales?.completedOnlineOrders)
   };
 
+  const businessSummary = businessSales?.summary;
+  const liveBusinessValues = {
+    setupChecklist: setupLoaded ? (setupComplete ? "Complete" : `${onboarding.filter(item => item.done).length}/${onboarding.length} done`) : "Loading…",
+    statSales: businessSummary ? money(businessSummary.totalSales, businessSales?.primaryCurrency || "PHP") : salesLoading ? "Loading…" : "—",
+    statCompleted: businessSummary?.completedServices ?? (salesLoading ? "Loading…" : "—"),
+    statAverage: businessSummary ? money(businessSummary.averageSale, businessSales?.primaryCurrency || "PHP") : salesLoading ? "Loading…" : "—",
+    statServices: businessSummary?.servicesSold ?? (salesLoading ? "Loading…" : "—"),
+    salesOverview: "Chart",
+    serviceStatus: statusLoading ? "Loading…" : `${bookingSummary?.total ?? 0} bookings`,
+    topServices: "Top 5"
+  };
+  const businessWidgetCount = Object.values(visibleBusinessWidgets).filter(Boolean).length;
+  const businessAnalyticsVisible = businessWidgetGroups[1].widgets.concat(businessWidgetGroups[2].widgets)
+    .some(([key]) => visibleBusinessWidgets[key] !== false);
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
       <div>
@@ -427,13 +442,77 @@ export default function DashboardPage({ user, onLogout }) {
         </DialogContent>
       </Dialog>}
 
-      {!isAdmin && setupLoaded && !setupComplete && <BusinessSetupChecklist
+      {!isAdmin && <Dialog open={businessCustomizeOpen} onOpenChange={setBusinessCustomizeOpen}
+        className="business-dashboard-dialog" title="Customize business dashboard">
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Customize dashboard</DialogTitle>
+            <DialogDescription>Choose which information you want to see. Hidden sections remain saved; no business data is deleted.</DialogDescription>
+          </DialogHeader>
+          <div className="business-dashboard-widget-list">
+            {businessWidgetGroups.map(group => {
+              const id = `business-widget-${group.title.toLowerCase().replaceAll(" ", "-")}`;
+              const expanded = expandedBusinessGroup === group.title;
+              const shown = group.widgets.filter(([key]) => draftBusinessWidgets[key] !== false).length;
+              return <section className="business-dashboard-widget-group" key={group.title}>
+                <button className="business-dashboard-widget-trigger" type="button"
+                  aria-controls={id} aria-expanded={expanded}
+                  onClick={() => setExpandedBusinessGroup(current => current === group.title ? null : group.title)}>
+                  <span>{group.title}</span>
+                  <span className="business-dashboard-widget-count">{shown}/{group.widgets.length} shown</span>
+                  <FiChevronDown className={expanded ? "is-expanded" : ""} aria-hidden="true" />
+                </button>
+                <div id={id} className="business-dashboard-widget-rows" hidden={!expanded}>
+                  {group.widgets.map(([key, label]) => {
+                    const related = businessSections.find(item => item.widgetKey === key);
+                    const value = related?.feature && !hasBusinessFeature(user, related.feature)
+                      ? "Plan inactive" : (liveBusinessValues[key] ?? "Shortcut");
+                    return <label className="business-dashboard-widget-row" key={key}>
+                      <span className="business-dashboard-widget-name">
+                        <input type="checkbox"
+                          checked={draftBusinessWidgets[key] !== false}
+                          onChange={event => setDraftBusinessWidgets(current => ({ ...current, [key]: event.target.checked }))}
+                          aria-label={`Show ${label}`} />
+                        <span>{label}</span>
+                      </span>
+                      <span className="business-dashboard-widget-value" title={String(value)}>{value}</span>
+                    </label>;
+                  })}
+                </div>
+              </section>;
+            })}
+          </div>
+          <DialogFooter className="business-dashboard-widget-footer">
+            <div className="business-dashboard-widget-helpers">
+              <Button type="button" variant="ghost" size="sm"
+                onClick={() => setDraftBusinessWidgets(defaultBusinessWidgets())}>
+                <FiCheckSquare aria-hidden="true" /> Select all
+              </Button>
+              <Button type="button" variant="ghost" size="sm"
+                onClick={() => setDraftBusinessWidgets({ ...visibleBusinessWidgets })}>
+                <FiRotateCcw aria-hidden="true" /> Reset changes
+              </Button>
+            </div>
+            <div className="business-dashboard-widget-actions">
+              <Button type="button" variant="outline" size="sm" onClick={() => setBusinessCustomizeOpen(false)}>
+                <FiX aria-hidden="true" /> Cancel
+              </Button>
+              <Button type="button" size="sm" onClick={saveBusinessCustomize}>
+                <FiSave aria-hidden="true" /> Save changes
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>}
+
+            {!isAdmin && visibleBusinessWidgets.setupChecklist !== false && setupLoaded && !setupComplete && <BusinessSetupChecklist
         items={onboarding}
         expanded={setupExpanded}
         onToggle={() => setSetupExpanded(value => !value)}
       />}
 
-      {!isAdmin && <DashboardAnalytics
+      {!isAdmin && businessAnalyticsVisible && <DashboardAnalytics
+        visibility={visibleBusinessWidgets}
         data={businessSales}
         statusSummary={bookingSummary}
         range={dashboardRange}
@@ -441,7 +520,7 @@ export default function DashboardPage({ user, onLogout }) {
         statusLoading={statusLoading}
       />}
 
-      <section className={"dashboard-route-section" + (isAdmin ? " dashboard-route-section--admin" : "")}>
+      {(isAdmin || sections.length > 0) && <section className={"dashboard-route-section" + (isAdmin ? " dashboard-route-section--admin" : "")}>
         <div className="dashboard-section-heading">
           <div>
             <p className="eyebrow">QUICK ACCESS</p>
@@ -478,7 +557,13 @@ export default function DashboardPage({ user, onLogout }) {
             </Card>
           ))}
         </section>
-      </section>
+      </section>}
+      {!isAdmin && businessWidgetCount === 0 && <div className="business-dashboard-all-hidden">
+        <FiSettings aria-hidden="true" />
+        <strong>Your dashboard is customized</strong>
+        <p>No sections are selected. Use Customize to choose what you want to see.</p>
+        <Button size="sm" variant="outline" type="button" onClick={openBusinessCustomize}>Customize dashboard</Button>
+      </div>}
     </div>
   </AppLayout>;
 }
