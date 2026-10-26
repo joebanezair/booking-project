@@ -93,7 +93,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
 
   async function updateFeature(feature, enabled) {
     if (featureSaving) return;
-    if (!enabled && !window.confirm(`Deactivate the ${feature === "pos" ? "POS" : "booking"} feature for this business? New transactions will be blocked.`)) return;
+    if (!enabled && !window.confirm(`Deactivate ${feature === "pos" ? "POS" : "Bookings & Services"} access for this business? ${feature === "pos" ? "New POS checkouts" : "Service posting and new bookings"} will be blocked until reactivated.`)) return;
     setFeatureSaving(feature);
     setFeatureMessage("");
     setError("");
@@ -129,7 +129,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
         </div>
         <Button type="button" variant="outline" size="sm" disabled={loading}
           className={`admin-detail-refresh ${loading ? "is-loading" : ""}`} onClick={load}>
-          <FiRefreshCw aria-hidden="true" /> Refresh data
+          <FiRefreshCw aria-hidden="true" /> Refresh
         </Button>
       </header>
 
@@ -140,7 +140,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
             <ProfileAvatar profile={{ name: business.name, profileImage: userInfo.profileImage || business.logo }} size="lg" />
             <div className="admin-detail-profile-text">
               <h2>{business.name}</h2>
-              <p>{business.category || "General"} · {business.location || "Location not specified"}</p>
+              <p>{business.category || "General"} <span aria-hidden="true">·</span> {business.location || "Location not specified"}</p>
               <small>{userInfo.email}</small>
             </div>
             <div className="admin-detail-profile-controls">
@@ -229,47 +229,56 @@ export default function BusinessDetailPage({ user, onLogout }) {
               <div>
                 <p className="eyebrow">ACCESS MANAGEMENT</p>
                 <h2 id="feature-plan-title">Feature plan</h2>
-                <p className="muted">Enable features per business, set their duration, or deactivate access.</p>
+                <p className="muted">Control access independently for each feature. Changes take effect immediately.</p>
               </div>
             </div>
             {featureMessage && <p className="admin-detail-feature-feedback" role="status">{featureMessage}</p>}
             <div className="admin-detail-feature-grid">
               {[
-                { key: "pos", label: "Point of sale", Icon: FiCreditCard, description: "Allow new in-person POS checkouts." },
-                { key: "booking", label: "Bookings", Icon: FiCalendar, description: "Allow new service bookings and public reservations." }
+                { key: "pos", label: "Point of sale", Icon: FiCreditCard, description: "Accept in-person POS payments and checkouts." },
+                { key: "booking", label: "Bookings & services", Icon: FiCalendar, description: "Manage services, post listings, and accept bookings." }
               ].map(({ key, label, Icon, description }) => {
                 const plan = userInfo.featureAccess?.[key] || { enabled: true, active: true, expiresAt: null, expired: false };
-                const active = plan.active !== false;
-                const status = active ? "Active" : plan.expired ? "Expired" : "Inactive";
-                return <article className="admin-detail-feature-card" key={key}>
+                const pastExpiry = plan.expiresAt && new Date(plan.expiresAt).getTime() <= Date.now();
+                const active = plan.enabled !== false && plan.active !== false && !pastExpiry;
+                const expired = plan.enabled !== false && (plan.expired || pastExpiry);
+                const status = active ? "Active" : expired ? "Expired" : "Inactive";
+                return <article className={`admin-detail-feature-card ${active ? "is-active" : "is-inactive"}`} key={key}>
                   <div className="admin-detail-feature-head">
                     <span className="admin-detail-feature-icon"><Icon aria-hidden="true" /></span>
                     <div className="admin-detail-feature-info">
                       <h3>{label}</h3>
                       <p>{description}</p>
                     </div>
-                    <span className={`admin-detail-feature-badge ${active ? "active" : plan.expired ? "expired" : "inactive"}`}>{status}</span>
+                    <span className={`admin-detail-feature-badge ${active ? "active" : expired ? "expired" : "inactive"}`}>{status}</span>
                   </div>
-                  <p className="admin-detail-feature-expiry">{plan.expiresAt
-                    ? `${plan.expired ? "Expired" : "Expires"} on ${dateLabel(plan.expiresAt)}`
-                    : active ? "No expiration set" : "Access deactivated"}</p>
+                  <div className="admin-detail-feature-expiry">
+                    <FiClock aria-hidden="true" />
+                    <span>{plan.expiresAt
+                      ? `${expired ? "Expired" : "Expires"} on ${dateLabel(plan.expiresAt)}`
+                      : active ? "No expiration set" : "Access deactivated"}</span>
+                  </div>
                   <div className="admin-detail-feature-controls">
-                    <label htmlFor={`feature-duration-${key}`}>Plan duration</label>
-                    <select id={`feature-duration-${key}`} value={featureDays[key]}
-                      disabled={Boolean(featureSaving)}
-                      onChange={event => setFeatureDays(current => ({ ...current, [key]: Number(event.target.value) }))}>
-                      {[7, 30, 90, 365].map(days => <option key={days} value={days}>{days} days</option>)}
-                    </select>
-                    <Button type="button" variant="default" size="sm"
-                      disabled={Boolean(featureSaving)}
-                      onClick={() => updateFeature(key, true)}>
-                      <FiPlay aria-hidden="true" /> {featureSaving === key ? "Saving..." : active ? "Set / renew" : "Activate"}
-                    </Button>
-                    <Button type="button" variant="outline" size="sm"
-                      disabled={Boolean(featureSaving) || plan.enabled === false}
-                      onClick={() => updateFeature(key, false)}>
-                      <FiSlash aria-hidden="true" /> Deactivate
-                    </Button>
+                    <div className="admin-detail-feature-duration">
+                      <label htmlFor={`feature-duration-${key}`}>Access duration</label>
+                      <select id={`feature-duration-${key}`} value={featureDays[key]}
+                        disabled={Boolean(featureSaving)}
+                        onChange={event => setFeatureDays(current => ({ ...current, [key]: Number(event.target.value) }))}>
+                        {[7, 30, 90, 365].map(days => <option key={days} value={days}>{days === 365 ? "1 year" : `${days} days`}</option>)}
+                      </select>
+                    </div>
+                    <div className="admin-detail-feature-buttons">
+                      <Button type="button" variant="default" size="sm"
+                        disabled={Boolean(featureSaving)}
+                        onClick={() => updateFeature(key, true)}>
+                        <FiPlay aria-hidden="true" /> {featureSaving === key ? "Saving..." : active ? "Renew" : "Activate"}
+                      </Button>
+                      <Button type="button" variant="outline" size="sm"
+                        disabled={Boolean(featureSaving) || plan.enabled === false}
+                        onClick={() => updateFeature(key, false)}>
+                        <FiSlash aria-hidden="true" /> Deactivate
+                      </Button>
+                    </div>
                   </div>
                 </article>;
               })}
