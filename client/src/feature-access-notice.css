@@ -1,119 +1,147 @@
-/* Persistent feature-plan alerts.
-   Only rendered for inactive/expired features; no timeout or close control.
-   Positioned outside the document layout so dashboard content never shifts. */
+/* Persistent lower-right warnings for inactive business features.
+   Individual alerts only render while their associated plan is unavailable.
+   The container is visually transparent; no backdrop, dismiss, or timer. */
 html body #root .content-shell .feature-access-popups {
   position: fixed !important;
-  right: 20px;
-  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  right: 18px;
+  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
   z-index: 55;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: min(430px, calc(100vw - 40px));
-  max-height: calc(100dvh - 60px);
+  gap: 9px;
+  width: min(385px, calc(100vw - 36px));
+  max-height: calc(100dvh - 50px);
   overflow-y: auto;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
   pointer-events: none;
 }
+
 html body #root .content-shell .feature-access-popup {
   display: flex;
+  position: relative;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   min-width: 0;
-  min-height: 74px;
-  padding: 13px 14px;
-  border: 1px solid var(--border, #e2e8f1);
-  border-radius: 13px !important;
-  background: var(--card, #fff);
-  box-shadow: 0 8px 25px rgba(15, 33, 65, .105);
-  color: var(--foreground, #17243b);
+  min-height: 65px;
+  box-sizing: border-box;
+  padding: 12px 13px;
+  border: 1px solid #f0dbba !important;
+  border-left: 3px solid #e0a13b !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #17243b;
+  box-shadow: 0 4px 16px rgba(20, 31, 56, .09) !important;
+  backdrop-filter: none !important;
+  opacity: 1 !important;
   pointer-events: auto;
 }
+
 html body #root .content-shell .feature-access-popup-icon {
   display: grid;
   place-items: center;
-  flex: 0 0 38px;
-  width: 38px;
-  height: 38px;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #f5ddb7;
   border-radius: 10px !important;
-  background: var(--secondary, #edf2f9);
-  color: var(--muted-foreground, #71809a);
+  background: #fffaf2 !important;
+  color: #b7781f !important;
 }
+
 html body #root .content-shell .feature-access-popup-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   stroke-width: 1.8;
 }
+
 html body #root .content-shell .feature-access-popup-copy {
   display: flex;
   flex: 1 1 auto;
   min-width: 0;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
+
 html body #root .content-shell .feature-access-popup-copy strong {
   font-size: 12px;
   font-weight: 650;
   line-height: 1.35;
-  color: var(--foreground, #17243b);
+  color: #19243a;
 }
+
 html body #root .content-shell .feature-access-popup-copy span {
   font-size: 10px;
   line-height: 1.45;
-  color: var(--muted-foreground, #71809a);
+  color: #65738c;
   overflow-wrap: anywhere;
 }
+
 html body #root .content-shell .feature-access-popup-state {
   display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
   flex: 0 0 auto;
   align-self: center;
-  padding: 7px 10px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 8px;
+  border: 1px solid #f0d5ad;
   border-radius: 9999px !important;
-  background: var(--secondary, #eff3f8);
-  color: var(--muted-foreground, #71809a);
+  background: #ffffff !important;
+  color: #97621c !important;
   font-size: 10px;
   font-weight: 650;
   line-height: 1;
   white-space: nowrap;
 }
+
 html body #root .content-shell .feature-access-popup-state::before {
   content: "";
   display: block;
+  flex: 0 0 6px;
   width: 6px;
   height: 6px;
-  flex: 0 0 6px;
   border-radius: 50%;
-  background: currentColor;
+  background: #d29232;
 }
-/* Keep permanent status cards above the mobile bottom menu. */
+
+/* Float above the bottom navigation on mobile, without dimming the page. */
 @media (max-width: 800px) {
   html body #root .content-shell .feature-access-popups {
     right: 12px;
     bottom: calc(84px + env(safe-area-inset-bottom, 0px));
-    width: min(400px, calc(100vw - 24px));
-    max-height: calc(100dvh - 110px);
+    width: min(385px, calc(100vw - 24px));
+    max-height: calc(100dvh - 105px);
   }
 }
+
 @media (max-width: 480px) {
   html body #root .content-shell .feature-access-popup {
-    min-height: 64px;
-    padding: 10px 11px;
-    gap: 9px;
-    border-radius: 12px !important;
+    min-height: 61px;
+    padding: 10px;
+    gap: 8px;
   }
   html body #root .content-shell .feature-access-popup-icon {
-    flex-basis: 33px;
-    width: 33px;
-    height: 33px;
+    flex-basis: 31px;
+    width: 31px;
+    height: 31px;
     border-radius: 9px !important;
   }
-  html body #root .content-shell .feature-access-popup-copy strong { font-size: 11px; }
-  html body #root .content-shell .feature-access-popup-copy span { font-size: 10px; }
+  html body #root .content-shell .feature-access-popup-copy strong {
+    font-size: 11px;
+  }
+  html body #root .content-shell .feature-access-popup-copy span {
+    font-size: 10px;
+  }
   html body #root .content-shell .feature-access-popup-state {
-    padding: 6px 7px;
+    padding: 5px 7px;
     font-size: 9px;
   }
 }
