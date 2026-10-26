@@ -552,8 +552,9 @@ router.post("/products/:userId/order", async (req, res) => {
   res.set("Cache-Control", "no-store");
   try {
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Business not found." });
-    const owner = await User.findOne({ _id:req.params.userId, role:"business", accountStatus:"active" }).select("_id");
+    const owner = await User.findOne({ _id:req.params.userId, role:"business", accountStatus:"active" }).select("_id featureAccess");
     if (!owner) return res.status(409).json({ message:"This business is unavailable for product orders." });
+    if (!featureStatus(owner, "pos").active) return res.status(403).json({ code: "FEATURE_ACCESS_DENIED", message: "Product orders are temporarily unavailable for this business." });
     const rows=Array.isArray(req.body.items)?req.body.items:[];
     const customerName=String(req.body.customerName||"").trim(), customerPhone=String(req.body.customerPhone||"").trim(), customerEmail=String(req.body.customerEmail||"").trim().toLowerCase(), deliveryLocation=String(req.body.deliveryLocation||"").trim();
     if(!customerName||!customerPhone||!deliveryLocation||!rows.length) return res.status(400).json({message:"Name, phone number, delivery location and at least one product are required."});
