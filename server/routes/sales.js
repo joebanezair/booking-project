@@ -14,6 +14,15 @@ const router = Router();
 router.use(requireAuth, requireBusiness);
 // Stock, orders, payments and sales are never HTTP/browser/proxy cacheable.
 router.use((_req, res, next) => { res.set("Cache-Control", "no-store"); next(); });
+// An inactive POS plan also disables creating and managing product listings.
+// Keep reads and historical sales available for reporting and reconciliation.
+const requireProductPlan = requireFeature("pos");
+router.use((req, res, next) => {
+  if (/^\/products(?:\/|$)/.test(req.path) && ["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
+    return requireProductPlan(req, res, next);
+  }
+  return next();
+});
 router.use(storeImageFields(["images", "image"]));
 
 function productImages(body){return (Array.isArray(body.images)?body.images:[]).map(value=>String(value||"").trim()).filter(Boolean).slice(0,8);}
