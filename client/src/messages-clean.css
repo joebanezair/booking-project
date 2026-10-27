@@ -154,7 +154,8 @@ html body #root .messages-page-refine .user-row.ui-button {
   font-weight: 750;
   overflow: hidden;
 }
-#root .messages-page-refine .user-row .avatar > .ui-image {
+#root .messages-page-refine .user-row .avatar > .ui-image,
+#root .messages-page-refine .user-row .avatar > .ui-image img {
   display: block;
   width: 100%;
   height: 100%;
@@ -746,17 +747,20 @@ html body #root .messages-page-refine .user-row.ui-button {
   flex: 0 0 40px;
   display: grid;
   place-items: center;
-  border-radius: 50%;
+  border-radius: 50% !important;
   overflow: hidden;
   background: var(--primary);
   color: var(--primary-foreground);
   font-size: 14px;
   font-weight: 650;
 }
-#root .messages-page-refine .conversation-peer-avatar .ui-image {
+#root .messages-page-refine .conversation-peer-avatar .ui-image,
+#root .messages-page-refine .conversation-peer-avatar .ui-image img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50% !important;
 }
 #root .messages-page-refine .conversation-peer-info {
   min-width: 0;
