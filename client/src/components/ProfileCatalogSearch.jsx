@@ -12,7 +12,8 @@ export default function ProfileCatalogSearch({
   minRating,
   onRatingChange,
   matchingCount,
-  totalCount
+  totalCount,
+  hasProducts = true
 }) {
   const hasFilters = Boolean(value.trim() || classification !== "all" || minRating !== "0");
 
@@ -33,7 +34,7 @@ export default function ProfileCatalogSearch({
         >
           <option value="all">All offerings</option>
           <option value="services">Services</option>
-          <option value="products">Products</option>
+          {hasProducts && <option value="products">Products</option>}
         </Select>
       </Label>
       <Label className="profile-catalog-search-filter">
@@ -54,7 +55,7 @@ export default function ProfileCatalogSearch({
       <p id="profile-service-rating-help" className="profile-catalog-search-help muted">
         {classification === "products"
           ? "Products do not have individual ratings."
-          : "Rating filters services only; products remain visible under All offerings."}
+          : hasProducts ? "Rating filters services only; products remain visible under All offerings." : "Rating filters services only."}
       </p>
       {hasFilters && (
         <p className="profile-catalog-search-count muted" role="status" aria-live="polite">
