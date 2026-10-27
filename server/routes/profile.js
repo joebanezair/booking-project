@@ -1,5 +1,6 @@
 import { Router } from "express";
 import User from "../models/User.js";
+import { normalizeDashboardPreferences } from "../lib/dashboardPreferences.js";
 import requireAuth from "../middleware/auth.js";
 import { storeImageFields, publicMediaInput } from "../lib/mediaStore.js";
 
@@ -16,6 +17,44 @@ function imageError(value) {
   if (!imagePattern.test(value)) return "Profile image must be a JPEG, PNG, WebP, or GIF.";
   return Math.ceil((value.split(",")[1] || "").length * 3 / 4) > 2 * 1024 * 1024 ? "Profile image must be 2 MB or smaller." : null;
 }
+
+// The logged-in account owns its visibility settings; these are never shared across users.
+router.get("/dashboard-preferences", async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("dashboardPreferences").lean();
+    if (!user) return res.status(401).json({ message: "Please sign in again." });
+    res.set("Cache-Control", "no-store");
+    return res.json({
+      businessWidgets: user.dashboardPreferences?.businessWidgets ?? null,
+      adminMetrics: user.dashboardPreferences?.adminMetrics ?? null
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Unable to load dashboard preferences." });
+  }
+});
+
+router.put("/dashboard-preferences", async (req, res) => {
+  const kind = req.body?.kind;
+  const preferences = normalizeDashboardPreferences(kind, req.body?.preferences);
+  if (!preferences) return res.status(400).json({ message: "Invalid dashboard preferences." });
+  if ((kind === "businessWidgets" && req.user.role !== "business") ||
+      (kind === "adminMetrics" && req.user.role !== "admin")) {
+    return res.status(403).json({ message: "These dashboard preferences do not belong to your account type." });
+  }
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id, { $set: { [`dashboardPreferences.${kind}`]: preferences } },
+      { new: true, runValidators: true }
+    ).select("_id");
+    if (!user) return res.status(401).json({ message: "Please sign in again." });
+    res.set("Cache-Control", "no-store");
+    return res.json({ preferences });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Unable to save dashboard preferences." });
+  }
+});
 
 router.get("/", async (req,res)=>{
   try {
