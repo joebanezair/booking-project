@@ -1,5 +1,9 @@
 import { Router } from "express";
 import Business from "../models/Business.js";
+import Content from "../models/Content.js";
+import Booking from "../models/Booking.js";
+import Message from "../models/Message.js";
+import { Product } from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireBusiness } from "../middleware/requireRole.js";
 import { storeImageFields, publicMediaInput } from "../lib/mediaStore.js";
@@ -72,6 +76,28 @@ function validate(input) {
   if (input.blackoutDates.some(value => !/^\d{4}-\d{2}-\d{2}$/.test(value))) return "Blackout dates must use YYYY-MM-DD.";
   return null;
 }
+
+// Small, account-scoped lifetime totals for business Quick Access. Never download
+// full collections or use month-filtered analytics for these badges.
+router.get("/quick-access-counts", async (req, res) => {
+  res.set("Cache-Control", "private, no-store");
+  try {
+    const owner = req.user.id;
+    const [services, bookings, products, messages] = await Promise.all([
+      Content.countDocuments({ user: owner }),
+      Booking.countDocuments({ user: owner }),
+      Product.countDocuments({ user: owner }),
+      Message.countDocuments({
+        $or: [{ sender: owner }, { recipient: owner }],
+        deletedFor: { $ne: owner }
+      })
+    ]);
+    res.json({ services, bookings, products, messages });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to load Quick Access totals." });
+  }
+});
 
 router.get("/mine", async (req, res) => {
   try {
