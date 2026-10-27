@@ -203,3 +203,30 @@ html body #root .bookflow-discover-v2 .admin-results .admin-result:focus-visible
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
+
+/* Keep the public administrator footer on the floor even when the bio is short.
+   The page grows normally for longer profile content. */
+html body #root main.admin-public-page.bookflow-storefront {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+}
+html body #root main.admin-public-page.bookflow-storefront > .admin-public-hero {
+  flex: 0 0 auto;
+}
+html body #root main.admin-public-page.bookflow-storefront > .admin-public-about {
+  flex: 0 0 auto;
+  margin-bottom: 22px !important;
+}
+html body #root main.admin-public-page.bookflow-storefront > .storefront-footer {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: 100%;
+  margin-top: auto !important;
+}
+@media (max-width: 680px) {
+  html body #root main.admin-public-page.bookflow-storefront > .admin-public-about {
+    margin-bottom: 16px !important;
+  }
+}
