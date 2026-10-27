@@ -355,17 +355,16 @@ export default function PublicProfilePage({ user }) {
 
     <section id="storefront-reviews" className="public-content-section verified-reviews-section storefront-reviews storefront-container">
       <div className="section-heading storefront-section-heading">
-        <div><p className="eyebrow">VERIFIED REVIEWS</p><h2>What customers are saying</h2><p className="storefront-section-description muted">Feedback from completed BookFlow bookings.</p></div>
-        <span className="storefront-section-count"><FiStar aria-hidden="true"/> {reviews.length} reviews</span>
+        <div><h2>Customer reviews</h2><p className="storefront-section-description muted">Verified feedback from completed bookings.</p></div>
+        <span className="storefront-section-count"><FiStar aria-hidden="true"/> {reviews.length} {reviews.length === 1 ? "review" : "reviews"}</span>
       </div>
-      {reviews.length === 0 ? <div className="panel empty-state"><p className="muted">No verified reviews yet.</p></div> :
+      {reviews.length === 0 ? <div className="storefront-reviews-empty" role="status"><span className="storefront-reviews-empty-icon"><FiStar aria-hidden="true" /></span><div><strong>No verified reviews yet</strong><p>Reviews from completed bookings will appear here.</p></div></div> :
         <div className="verified-review-list">{reviews.map(review => <Card as="article" className="panel verified-review-card" key={review._id}><RatingSummary averageRating={review.rating} ratingCount={1} />{review.comment && <p>{review.comment}</p>}<small>Verified booking · {new Date(review.submittedAt).toLocaleDateString()}</small></Card>)}</div>}
     </section>
     <footer className="storefront-footer">
       <div className="storefront-container storefront-footer-inner">
-        <div className="storefront-footer-brand"><Link className="brand-row" to="/search"><span className="brand-mark small">B</span><strong>BookFlow</strong></Link><p>Discover, book and shop from local businesses.</p></div>
+        <div className="storefront-footer-brand"><Link className="brand-row" to="/search"><span className="brand-mark small">B</span><strong>BookFlow</strong></Link><p>Discover, book and shop from local businesses.</p><small className="storefront-footer-copyright">© {new Date().getFullYear()} BookFlow. All rights reserved.</small></div>
         <div className="storefront-footer-links"><Link to="/search">Explore businesses</Link><a href="#storefront-top">Back to top</a></div>
-        <small>© {new Date().getFullYear()} BookFlow. All rights reserved.</small>
       </div>
     </footer>
   </main>;
