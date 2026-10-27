@@ -67,6 +67,9 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
       visibility: { $ne: "private" }
     }).select("title description price currency category coverImage allowBookings createdAt updatedAt").sort({ updatedAt: -1 });
 
+    // A business's POS entitlement controls whether its published products may
+    // appear on the public storefront. Keep inventory in MongoDB unchanged.
+    const posActive = featureStatus(user, "pos").active;
     const [summary, reviewSummary, reviews, businessRatingRows, currentBusinessRating, products] = await Promise.all([
       ratingSummary(items.map(item => item._id)),
       verifiedReviewSummary(business._id),
@@ -77,7 +80,9 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
         .lean(),
       Rating.aggregate([{ $match: { business: business._id } }, { $group: { _id: "$business", averageRating: { $avg: "$rating" }, ratingCount: { $sum: 1 } } }]),
       req.user ? Rating.findOne({ business: business._id, user: req.user.id }).select("rating") : null,
-      Product.find({ user: user._id, published: true }).select("name sku description image images price currency stock updatedAt").sort({ updatedAt: -1 }).lean()
+      posActive
+        ? Product.find({ user: user._id, published: true }).select("name sku description image images price currency stock updatedAt").sort({ updatedAt: -1 }).lean()
+        : Promise.resolve([])
     ]);
 
     // The profile CTA reflects configured booking capability, not just a visible service.
@@ -102,6 +107,7 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
         coverImage: user.coverImage,
         accountStatus: user.accountStatus || "active",
         bookingAvailable,
+        posAvailable: posActive && products.length > 0,
         createdAt: user.createdAt,
         ratingSummary: reviewSummary,
         businessId: business._id,
@@ -258,11 +264,20 @@ router.get("/search", async (req, res) => {
         accountStatus: 1, businessId: "$business._id"
       } }
     ];
-    const discoveryPipeline = (collection, match, searchFields, filterServiceRating = false) => [
+    const discoveryPipeline = (collection, match, searchFields, filterServiceRating = false, requireActivePos = false) => [
       { $match: match },
       { $lookup: { from: "users", localField: "user", foreignField: "_id", as: "provider" } },
       { $unwind: "$provider" },
       { $match: { "provider.role": "business", "provider.accountStatus": { $in: ["active", "paused"] } } },
+      // Filter POS entitlement before pagination so disabled vendors do not
+      // leak public products or displace eligible results.
+      ...(requireActivePos ? [{ $match: {
+        "provider.featureAccess.pos.enabled": { $ne: false },
+        $or: [
+          { "provider.featureAccess.pos.expiresAt": null },
+          { "provider.featureAccess.pos.expiresAt": { $gt: new Date() } }
+        ]
+      } }] : []),
       ...(regex ? [
         { $lookup: { from: "businesses", localField: "user", foreignField: "owner", as: "business" } },
         { $unwind: { path: "$business", preserveNullAndEmptyArrays: true } },
@@ -305,7 +320,7 @@ router.get("/search", async (req, res) => {
       Content.aggregate(discoveryPipeline("contents", {
         published: true, visibility: { $ne: "private" }, ...(category ? { category } : {})
       }, ["title", "description", "category"], true)),
-      Product.aggregate(discoveryPipeline("products", { published: true }, ["name", "description", "sku"]))
+      Product.aggregate(discoveryPipeline("products", { published: true }, ["name", "description", "sku"], false, true))
     ]);
     const hasMoreByType = {
       users: userRows.length > limit,
