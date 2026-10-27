@@ -1,0 +1,8 @@
+/* Sidebar navigation typography only: use normal text weight throughout.
+   Keep labels, links, active states, layout, colors, icons and behavior unchanged. */
+html body #root .page-shell > aside.sidebar,
+html body #root .page-shell > aside.sidebar *,
+html body #root .page-shell > .mobile-app-header .sidebar-brand,
+html body #root .page-shell > .mobile-app-header .sidebar-brand * {
+  font-weight: 400 !important;
+}
