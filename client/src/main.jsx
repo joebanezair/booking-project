@@ -37,6 +37,7 @@ import "./business-detail-refresh.css";
 import "./business-insights-refined.css";
 import "./feature-access-notice.css";
 import "./business-dashboard-refined.css";
+import "./notifications-typography.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
