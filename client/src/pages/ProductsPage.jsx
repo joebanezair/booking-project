@@ -138,6 +138,90 @@ export default function ProductsPage({user,onLogout}){
   const [productView,setProductView]=useState("grid");
   const [deleteTarget,setDeleteTarget]=useState(null);
   const [productMenu,setProductMenu]=useState(null);
+  const [section,setSection]=useState(() => window.location.hash==="#pos-charts"?"charts":"inventory");
+  const [compactPos,setCompactPos]=useState(() => window.matchMedia("(max-width: 1023px)").matches);
+  const [posPopupOpen,setPosPopupOpen]=useState(() =>
+    window.location.hash==="#pos-checkout" && window.matchMedia("(max-width: 1023px)").matches);
+  const posCartRef=useRef(null);
+  const popupTriggerRef=useRef(null);
+  const [posRange,setPosRange]=useState("all");
+  const [posReport,setPosReport]=useState(null);
+  const [posReportLoading,setPosReportLoading]=useState(false);
+  const [posReportError,setPosReportError]=useState("");
+  const [posReportRevision,setPosReportRevision]=useState(0);
+
+  useEffect(() => {
+    const matcher=window.matchMedia("(max-width: 1023px)");
+    const changed=event => {
+      setCompactPos(event.matches);
+      if(!event.matches)setPosPopupOpen(false);
+    };
+    matcher.addEventListener("change",changed);
+    return () => matcher.removeEventListener("change",changed);
+  }, []);
+  useEffect(() => {
+    const syncHash=() => {
+      const hash=window.location.hash;
+      const isPopup=hash==="#pos-checkout" && window.matchMedia("(max-width: 1023px)").matches;
+      setSection(hash==="#pos-charts"?"charts":"inventory");
+      setPosPopupOpen(isPopup);
+    };
+    window.addEventListener("hashchange",syncHash);
+    window.addEventListener("popstate",syncHash);
+    return () => { window.removeEventListener("hashchange",syncHash); window.removeEventListener("popstate",syncHash); };
+  }, []);
+  useEffect(() => {
+    if(!posPopupOpen || !compactPos)return;
+    const oldOverflow=document.body.style.overflow;
+    document.body.style.overflow="hidden";
+    const onKeyDown=event => {
+      if(event.key==="Escape"){setPosPopupOpen(false);if(window.location.hash==="#pos-checkout")window.location.hash="inventory";}
+      if(event.key==="Tab"){
+        const panel=posCartRef.current;
+        const items=panel?.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex="0"]');
+        if(!items?.length)return;
+        const first=items[0],last=items[items.length-1];
+        if(event.shiftKey && document.activeElement===first){event.preventDefault();last.focus();}
+        else if(!event.shiftKey && document.activeElement===last){event.preventDefault();first.focus();}
+      }
+    };
+    document.addEventListener("keydown",onKeyDown);
+    requestAnimationFrame(()=>posCartRef.current?.querySelector(".pos-cart-dismiss")?.focus());
+    return () => {document.body.style.overflow=oldOverflow;document.removeEventListener("keydown",onKeyDown);};
+  },[posPopupOpen,compactPos]);
+  useEffect(() => {
+    if(section!=="charts")return;
+    let cancelled=false;
+    setPosReportLoading(true);
+    setPosReportError("");
+    api.sales.posEarnings(posRange)
+      .then(data=>{if(!cancelled)setPosReport(data);})
+      .catch(err=>{if(!cancelled){setPosReport(null);setPosReportError(err.message||"Unable to load POS earnings.");}})
+      .finally(()=>{if(!cancelled)setPosReportLoading(false);});
+    return ()=>{cancelled=true;};
+  },[section,posRange,posReportRevision]);
+
+  function openPosPopup() {
+    setPosPopupOpen(true);
+    if(window.location.hash!=="#pos-checkout")window.location.hash="pos-checkout";
+  }
+  function closePosPopup() {
+    setPosPopupOpen(false);
+    if(window.location.hash==="#pos-checkout")window.location.hash="inventory";
+    popupTriggerRef.current?.focus();
+  }
+  function navigateProducts(next) {
+    if(next==="pos-checkout"){
+      if(compactPos){openPosPopup();return;}
+      setSection("inventory");
+      window.location.hash="pos-checkout";
+      requestAnimationFrame(()=>posCartRef.current?.scrollIntoView({behavior:"smooth",block:"nearest"}));
+      return;
+    }
+    setPosPopupOpen(false);
+    setSection(next==="pos-charts"?"charts":"inventory");
+    window.location.hash=next;
+  }
 
   async function refresh(){setProducts(await api.sales.products());}
   useEffect(()=>{refresh().catch(e=>setError(e.message));},[]);
@@ -183,6 +267,8 @@ export default function ProductsPage({user,onLogout}){
       setConfirmCheckout(false);
       setMessage("");
       setCheckoutSuccess({invoiceNumber:sale.invoiceNumber});
+      setPosReportRevision(v=>v+1);
+      if(posPopupOpen)closePosPopup();
       // Show the success dialog immediately; refresh inventory without delaying it.
       void refresh().catch(()=>setError("Checkout succeeded, but inventory could not be refreshed. Please reload the page."));
     }catch(e){
