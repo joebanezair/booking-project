@@ -52,7 +52,7 @@ export const PosSale = mongoose.models.PosSale || mongoose.model("PosSale", posS
 const productOrderSchema = new mongoose.Schema({
   businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   orderNumber:{type:String,required:true,unique:true,index:true},
-  items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number}],
+  items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number,unitCost:{type:Number,min:0,default:null},lineCost:{type:Number,min:0,default:null}}],
   total:{type:Number,min:0,required:true}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
   customerName:{type:String,required:true,trim:true,maxlength:120}, customerEmail:{type:String,trim:true,lowercase:true,maxlength:150,default:""},
   customerPhone:{type:String,required:true,trim:true,maxlength:30}, deliveryLocation:{type:String,required:true,trim:true,maxlength:250}, notes:{type:String,trim:true,maxlength:500,default:""},
