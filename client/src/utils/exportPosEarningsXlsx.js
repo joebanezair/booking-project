@@ -45,7 +45,6 @@ function number(value, money = false) {
   return Number.isFinite(Number(value)) && value !== null && value !== undefined
     ? { type: "number", value: Number(value), money } : { type: "text", value: "Not available" };
 }
-const toCents = x => Math.round((Number(x) + Number.EPSILON) * 100) / 100;
 function crc32(bytes) {
   let result = 0xFFFFFFFF;
   for (let i = 0; i < bytes.length; i++) {
@@ -96,7 +95,7 @@ function zipWorkbook(files) {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   });
 }
-function workbookBlob(sheets) {
+function workbookBlob(sheets, currency) {
   const workbook = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
@@ -114,9 +113,11 @@ ${sheets.map((_, i) => `<Relationship Id="rId${i+1}" Type="http://schemas.openxm
 <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
 ${sheets.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}
 </Types>`;
+  const currencyMark = currency === "PHP" ? "₱" : currency === "USD" ? "$" : currency === "EUR" ? "€" : currency;
+  const safeMark = escapeXml(currencyMark.replace(/"/g, ""));
   const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-<numFmts count="1"><numFmt numFmtId="164" formatCode="&quot;₱&quot;#,##0.00;[Red](&quot;₱&quot;#,##0.00)"/></numFmts>
+<numFmts count="1"><numFmt numFmtId="164" formatCode="&quot;${safeMark}&quot;#,##0.00;[Red](&quot;${safeMark}&quot;#,##0.00)"/></numFmts>
 <fonts count="2"><font><sz val="11"/><name val="Aptos"/></font><font><b/><sz val="11"/><name val="Aptos"/></font></fonts>
 <fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>
 <borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
@@ -187,7 +188,7 @@ export function exportPosEarningsXlsx({ report, current, rows, products, range, 
     ...rows.map(row => {
       const product = rowsByProduct.get(String(row.productId));
       return [
-        row.name, number(row.unitsSold), number(product?.price, true),
+        row.name, number(row.unitsSold), number(product && (product.currency || currency) === currency ? product.price : null, true),
         number(product?.unitCost, true), number(row.revenue, true),
         number(row.cost, true), number(row.grossEarnings, true),
         row.unresolvedCostUnits > 0 ? "Cost unavailable" : row.isEstimate ? "Estimated" : "Recorded",
@@ -203,7 +204,7 @@ export function exportPosEarningsXlsx({ report, current, rows, products, range, 
   const workbook = workbookBlob([
     { name: "POS Summary", xml: sheetXml(summary, [42, 28], [1, 6]) },
     { name: "Earnings by Product", xml: sheetXml(table, [30, 15, 19, 22, 19, 25, 21, 21, 19, 20, 13], [1, 5]) }
-  ]);
+  ], currency);
   const fileDate = new Date().toISOString().slice(0, 10);
   downloadWorkbook(workbook, `BookFlow-POS-Earnings-${range}-${currency}-${fileDate}.xlsx`);
 }
