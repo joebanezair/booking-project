@@ -109,6 +109,7 @@ export const api = {
   },
   business: {
     mine: () => request("/businesses/mine"),
+    quickAccessCounts: () => request("/businesses/quick-access-counts"),
     update: async body => request("/businesses/mine", { method: "PUT", body: JSON.stringify(await uploadedFields(body, ["logo"])) })
   },
   content: {
