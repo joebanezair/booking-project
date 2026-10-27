@@ -228,8 +228,9 @@ router.delete("/products/:id", bookingMutationGuard(req => req.user.id), async(r
     const product=await Product.findOneAndDelete({_id:req.params.id,user:req.user.id}); if(!product)return res.status(404).json({message:"Product not found."}); res.status(204).end(); }
   catch(error){console.error(error);res.status(500).json({message:"Unable to delete product."});}
 });
-// Aggregate the owning business's recorded POS sales, retaining the unit-cost
-// snapshots captured at checkout. Legacy lines without costs remain unknown.
+// POS earnings use the unit cost captured at checkout whenever available.
+// Legacy sale lines predate cost tracking; estimate only their missing portions
+// from today's private product cost. Never mutate historical checkout records.
 router.get("/pos/earnings", async (req, res) => {
   try {
     const range = ["7d", "30d", "all"].includes(req.query.range) ? req.query.range : "all";
@@ -251,28 +252,66 @@ router.get("/pos/earnings", async (req, res) => {
       } },
       { $sort: { revenue: -1 } }
     ]);
+
+    // Using the ID and owner prevents matching a similarly named business's
+    // product. If currency was changed later, no cost estimate is made.
+    const productIds = rows.map(row => row._id.product).filter(Boolean);
+    const currentProducts = productIds.length ? await Product.find({
+      user: req.user.id, _id: { $in: productIds }
+    }).select("_id unitCost currency").lean() : [];
+    const costByProduct = new Map(currentProducts.map(product => [String(product._id), product]));
+    const cents = value => Math.round((value + Number.EPSILON) * 100) / 100;
     const currencies = new Map();
     const products = rows.map(row => {
       const currency = row._id.currency || "PHP";
+      const productId = String(row._id.product || "");
+      const currentProduct = costByProduct.get(productId);
       const unitsSold = Number(row.unitsSold || 0);
-      const revenue = Number(row.revenue || 0);
-      const knownCost = Number(row.knownCost || 0);
+      const revenue = cents(Number(row.revenue || 0));
+      const knownCost = cents(Number(row.knownCost || 0));
       const unknownCostUnits = Number(row.unknownCostUnits || 0);
-      const current = currencies.get(currency) || { currency, revenue: 0, knownCost: 0, unitsSold: 0, unknownCostUnits: 0 };
-      current.revenue += revenue;
-      current.knownCost += knownCost;
-      current.unitsSold += unitsSold;
-      current.unknownCostUnits += unknownCostUnits;
-      currencies.set(currency, current);
-      return { productId: String(row._id.product || ""), name: row.name || "Product",
-        currency, unitsSold, revenue, unknownCostUnits,
-        cost: unknownCostUnits ? null : knownCost,
-        grossEarnings: unknownCostUnits ? null : revenue - knownCost };
+      const hasCurrentCost = currentProduct?.unitCost != null &&
+        Number.isFinite(Number(currentProduct.unitCost)) &&
+        Number(currentProduct.unitCost) >= 0 &&
+        (currentProduct.currency || "PHP") === currency;
+      const estimatedUnits = hasCurrentCost ? unknownCostUnits : 0;
+      const unresolvedCostUnits = unknownCostUnits - estimatedUnits;
+      const estimatedCost = cents(estimatedUnits * (hasCurrentCost ? Number(currentProduct.unitCost) : 0));
+      const fullCost = cents(knownCost + estimatedCost);
+
+      const totals = currencies.get(currency) || {
+        currency, revenue: 0, knownCost: 0, estimatedCost: 0,
+        unitsSold: 0, unknownCostUnits: 0, estimatedUnits: 0, unresolvedCostUnits: 0
+      };
+      totals.revenue = cents(totals.revenue + revenue);
+      totals.knownCost = cents(totals.knownCost + knownCost);
+      totals.estimatedCost = cents(totals.estimatedCost + estimatedCost);
+      totals.unitsSold += unitsSold;
+      totals.unknownCostUnits += unknownCostUnits;
+      totals.estimatedUnits += estimatedUnits;
+      totals.unresolvedCostUnits += unresolvedCostUnits;
+      currencies.set(currency, totals);
+      return {
+        productId, name: row.name || "Product", currency, unitsSold, revenue,
+        knownCost, estimatedCost, unknownCostUnits, estimatedUnits, unresolvedCostUnits,
+        isEstimate: estimatedUnits > 0,
+        cost: unresolvedCostUnits > 0 ? null : fullCost,
+        grossEarnings: unresolvedCostUnits > 0 ? null : cents(revenue - fullCost)
+      };
     });
-    res.json({ range, currencies: [...currencies.values()].map(row => ({
-      ...row, cost: row.unknownCostUnits ? null : row.knownCost,
-      grossEarnings: row.unknownCostUnits ? null : row.revenue - row.knownCost
-    })), products: products.slice(0, 250) });
+
+    res.json({
+      range,
+      currencies: [...currencies.values()].map(row => {
+        const cost = cents(row.knownCost + row.estimatedCost);
+        return {
+          ...row, isEstimate: row.estimatedUnits > 0,
+          cost: row.unresolvedCostUnits > 0 ? null : cost,
+          grossEarnings: row.unresolvedCostUnits > 0 ? null : cents(row.revenue - cost)
+        };
+      }),
+      products: products.slice(0, 250)
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to load POS earnings." });
