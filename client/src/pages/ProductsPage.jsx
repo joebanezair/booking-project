@@ -147,8 +147,7 @@ export default function ProductsPage({user,onLogout}){
   const [productMenu,setProductMenu]=useState(null);
   const [section,setSection]=useState(() => window.location.hash==="#pos-charts"?"charts":"inventory");
   const [compactPos,setCompactPos]=useState(() => window.matchMedia("(max-width: 1023px)").matches);
-  const [posPopupOpen,setPosPopupOpen]=useState(() =>
-    window.location.hash==="#pos-checkout" && window.matchMedia("(max-width: 1023px)").matches);
+  const [posPopupOpen,setPosPopupOpen]=useState(false);
   const posCartRef=useRef(null);
   const popupTriggerRef=useRef(null);
   const [posRange,setPosRange]=useState("all");
@@ -168,10 +167,9 @@ export default function ProductsPage({user,onLogout}){
   }, []);
   useEffect(() => {
     const syncHash=() => {
-      const hash=window.location.hash;
-      const isPopup=hash==="#pos-checkout" && window.matchMedia("(max-width: 1023px)").matches;
-      setSection(hash==="#pos-charts"?"charts":"inventory");
-      setPosPopupOpen(isPopup);
+      const next=window.location.hash==="#pos-charts"?"charts":"inventory";
+      setSection(next);
+      if(next==="charts")setPosPopupOpen(false);
     };
     window.addEventListener("hashchange",syncHash);
     window.addEventListener("popstate",syncHash);
@@ -182,7 +180,7 @@ export default function ProductsPage({user,onLogout}){
     const oldOverflow=document.body.style.overflow;
     document.body.style.overflow="hidden";
     const onKeyDown=event => {
-      if(event.key==="Escape"){setPosPopupOpen(false);if(window.location.hash==="#pos-checkout")window.location.hash="inventory";}
+      if(event.key==="Escape"){setPosPopupOpen(false);popupTriggerRef.current?.focus();}
       if(event.key==="Tab"){
         const panel=posCartRef.current;
         const items=panel?.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex="0"]');
@@ -210,24 +208,16 @@ export default function ProductsPage({user,onLogout}){
 
   function openPosPopup() {
     setPosPopupOpen(true);
-    if(window.location.hash!=="#pos-checkout")window.location.hash="pos-checkout";
   }
   function closePosPopup() {
     setPosPopupOpen(false);
-    if(window.location.hash==="#pos-checkout")window.location.hash="inventory";
     popupTriggerRef.current?.focus();
   }
   function navigateProducts(next) {
-    if(next==="pos-checkout"){
-      if(compactPos){openPosPopup();return;}
-      setSection("inventory");
-      window.location.hash="pos-checkout";
-      requestAnimationFrame(()=>posCartRef.current?.scrollIntoView({behavior:"smooth",block:"nearest"}));
-      return;
-    }
+    const target=next==="pos-charts"?"charts":"inventory";
     setPosPopupOpen(false);
-    setSection(next==="pos-charts"?"charts":"inventory");
-    window.location.hash=next;
+    setSection(target);
+    if(window.location.hash!==`#${next}`)window.location.hash=next;
   }
 
   async function refresh(){setProducts(await api.sales.products());}
@@ -294,17 +284,11 @@ export default function ProductsPage({user,onLogout}){
           aria-label="Open POS checkout" aria-haspopup="dialog" aria-expanded={posPopupOpen}
           onClick={openPosPopup}><FiShoppingCart aria-hidden="true"/><span>Cart ({cartLines.reduce((sum,item)=>sum+item.quantity,0)})</span><strong>{money(cartTotal,currency)}</strong></Button>
       </div></header>
-    <nav className="products-pos-breadcrumb" aria-label="Products section navigation">
-      <span className="products-pos-breadcrumb-root">Products</span>
-      <FiChevronRight aria-hidden="true"/>
+    <nav className="products-pos-breadcrumb" aria-label="Products sections">
       <Button variant="ghost" type="button" className={section==="inventory"?"is-active":""}
         aria-current={section==="inventory"?"page":undefined} onClick={()=>navigateProducts("inventory")}>
-        <FiPackage aria-hidden="true"/>Inventory
+        <FiPackage aria-hidden="true"/>Products
       </Button>
-      <FiChevronRight aria-hidden="true"/>
-      <Button variant="ghost" type="button" className={posPopupOpen || window.location.hash==="#pos-checkout"?"is-active":""}
-        aria-haspopup={compactPos?"dialog":undefined} aria-expanded={compactPos?posPopupOpen:undefined}
-        onClick={()=>navigateProducts("pos-checkout")}><FiShoppingCart aria-hidden="true"/>POS Checkout</Button>
       <FiChevronRight aria-hidden="true"/>
       <Button variant="ghost" type="button" className={section==="charts"?"is-active":""}
         aria-current={section==="charts"?"page":undefined} onClick={()=>navigateProducts("pos-charts")}>
