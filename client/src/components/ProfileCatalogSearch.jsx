@@ -13,16 +13,17 @@ export default function ProfileCatalogSearch({
   onRatingChange,
   matchingCount,
   totalCount,
-  hasProducts = true
+  hasProducts = true,
+  hasServices = true
 }) {
   const hasFilters = Boolean(value.trim() || classification !== "all" || minRating !== "0");
 
   return (
-    <div className="profile-catalog-search" role="search" aria-label="Search this business's products and services">
+    <div className="profile-catalog-search" role="search" aria-label="Search this business's published offerings">
       <div className="profile-catalog-search-field">
         <Label htmlFor="profile-catalog-keyword">Search</Label>
         <SearchField id="profile-catalog-keyword" className="profile-catalog-shadcn-search"
-          placeholder="Search products or services..." aria-label="Search products or services"
+          placeholder={hasServices && hasProducts ? "Search products or services..." : hasServices ? "Search services..." : "Search products..."} aria-label="Search published offerings"
           value={value} onValueChange={onChange} />
       </div>
       <Label className="profile-catalog-search-filter">
@@ -33,11 +34,11 @@ export default function ProfileCatalogSearch({
           onChange={event => onClassificationChange(event.target.value)}
         >
           <option value="all">All offerings</option>
-          <option value="services">Services</option>
+          {hasServices && <option value="services">Services</option>}
           {hasProducts && <option value="products">Products</option>}
         </Select>
       </Label>
-      <Label className="profile-catalog-search-filter">
+      {hasServices && <Label className="profile-catalog-search-filter">
         <span>Service rating</span>
         <Select
           className="ui-input"
@@ -51,12 +52,12 @@ export default function ProfileCatalogSearch({
           <option value="4">4+ stars</option>
           <option value="5">5 stars</option>
         </Select>
-      </Label>
-      <p id="profile-service-rating-help" className="profile-catalog-search-help muted">
+      </Label>}
+      {hasServices && <p id="profile-service-rating-help" className="profile-catalog-search-help muted">
         {classification === "products"
           ? "Products do not have individual ratings."
           : hasProducts ? "Rating filters services only; products remain visible under All offerings." : "Rating filters services only."}
-      </p>
+      </p>}
       {hasFilters && (
         <p className="profile-catalog-search-count muted" role="status" aria-live="polite">
           {matchingCount} of {totalCount} offerings shown
