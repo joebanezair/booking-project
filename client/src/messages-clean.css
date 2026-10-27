@@ -945,3 +945,156 @@ html body #root .messages-page-refine .message-compose > .ui-button,
     max-width: 120px;
   }
 }
+
+/* Compact messenger refresh: one continuous surface, flat contact rows, minimal empty state. */
+#root .messages-page-refine .messages-topbar {
+  align-items: center !important;
+  margin: 0 0 13px !important;
+  padding: 0 !important;
+}
+#root .messages-page-refine .messages-topbar h1 {
+  margin: 0 !important;
+  font-size: clamp(23px, 2.4vw, 27px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+html body #root .messages-page-refine .messages-clean {
+  height: clamp(480px, calc(100dvh - 177px), 690px);
+  min-height: 480px;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+#root .messages-page-refine .messages-layout {
+  grid-template-columns: 310px minmax(0, 1fr);
+}
+#root .messages-page-refine .messenger-sidebar {
+  background: color-mix(in srgb, var(--card) 97%, var(--muted-bg));
+}
+#root .messages-page-refine .message-sidebar-heading {
+  padding: 17px 16px 8px;
+}
+#root .messages-page-refine .message-sidebar-heading > span:first-child {
+  font-size: 13px;
+  font-weight: 650;
+}
+#root .messages-page-refine .message-thread-count {
+  width: auto;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+#root .messages-page-refine .message-search {
+  padding: 8px 13px 12px;
+}
+#root .messages-page-refine .messenger-sidebar .user-list {
+  gap: 3px;
+  padding: 8px;
+}
+html body #root .messages-page-refine .user-row.ui-button {
+  min-height: 66px;
+  gap: 11px;
+  padding: 10px 12px;
+  border: 0 !important;
+  border-radius: 9px !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+#root .messages-page-refine .user-row:hover {
+  background: color-mix(in srgb, var(--primary) 5%, var(--card)) !important;
+}
+#root .messages-page-refine .user-row.active {
+  background: color-mix(in srgb, var(--primary) 10%, var(--card)) !important;
+}
+#root .messages-page-refine .user-row .avatar {
+  display: grid !important;
+  place-items: center !important;
+  width: 41px;
+  height: 41px;
+  font-weight: 650;
+  border-radius: 50% !important;
+}
+#root .messages-page-refine .user-row-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+#root .messages-page-refine .user-row-title strong {
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: 13px;
+  font-weight: 650;
+}
+#root .messages-page-refine .user-row small {
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+#root .messages-page-refine .message-welcome {
+  gap: 9px;
+  padding: 24px;
+}
+#root .messages-page-refine .message-welcome-icon {
+  width: 58px;
+  height: 58px;
+  margin-bottom: 9px;
+  border: 1px solid color-mix(in srgb, var(--primary) 15%, var(--border));
+  border-radius: 50% !important;
+  background: color-mix(in srgb, var(--primary) 6%, var(--card));
+}
+#root .messages-page-refine .message-welcome-icon svg {
+  width: 25px;
+  height: 25px;
+}
+#root .messages-page-refine .message-welcome h2 {
+  font-size: 18px;
+  font-weight: 650;
+}
+#root .messages-page-refine .message-welcome p {
+  max-width: 300px;
+  font-size: 12px;
+  line-height: 1.55;
+}
+#root .messages-page-refine .conversation-header {
+  min-height: 66px;
+  padding: 12px 18px;
+}
+#root .messages-page-refine .message-thread-empty > span {
+  border-radius: 50% !important;
+}
+#root .messages-page-refine .message-bubble {
+  border-radius: 10px !important;
+}
+html body #root .messages-page-refine .conversation-actions > .ui-button,
+html body #root .messages-page-refine .message-compose > .ui-button,
+html body #root .messages-page-refine .message-compose > .ui-input {
+  border-radius: 10px !important;
+}
+@media (max-width: 800px) and (min-width: 701px) {
+  #root .messages-page-refine .messages-layout {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  html body #root .messages-page-refine .messages-clean {
+    height: max(440px, calc(100dvh - 154px));
+    min-height: 440px;
+  }
+  #root .messages-page-refine .messages-layout {
+    display: block;
+  }
+  html body #root .messages-page-refine .user-row.ui-button {
+    min-height: 65px;
+  }
+  #root .messages-page-refine .conversation-header {
+    padding: 10px 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .messages-page-refine .user-row.ui-button {
+    transition: none;
+  }
+}
