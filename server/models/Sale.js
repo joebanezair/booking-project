@@ -29,7 +29,7 @@ export const Product = mongoose.models.Product || mongoose.model("Product", new 
   user:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   name:{type:String,required:true,trim:true,maxlength:120}, sku:{type:String,trim:true,maxlength:80,default:""},
   description:{type:String,trim:true,maxlength:1200,default:""}, image:{type:String,default:""}, images:{type:[String],default:[],validate:{validator:value=>value.length<=8,message:"A product can have up to 8 images."}},
-  price:{type:Number,min:0,default:0}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
+  price:{type:Number,min:0,default:0}, unitCost:{type:Number,min:0,default:null}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
   stock:{type:Number,min:0,default:0}, published:{type:Boolean,default:false,index:true}
 },{timestamps:true}));
 
@@ -38,7 +38,7 @@ Product.schema.index({ user: 1, published: 1, updatedAt: -1 });
 const posSaleSchema = new mongoose.Schema({
   businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   invoiceNumber:{type:String,required:true,unique:true,index:true},
-  items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number}],
+  items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number,unitCost:{type:Number,min:0,default:null},lineCost:{type:Number,min:0,default:null}}],
   total:{type:Number,min:0,required:true}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
   paymentMethod:{type:String,enum:["cash","gcash","maya","card","other"],default:"cash"},
   customerName:{type:String,trim:true,maxlength:120,default:""}, soldAt:{type:Date,default:Date.now,index:true},
