@@ -334,11 +334,28 @@ export default function AppLayout({ children, user, onLogout }) {
             <FiChevronDown aria-hidden="true"/>
           </summary>
           <div className="workspace-account-popover">
-            <div className="workspace-account-identity"><strong>{profile?.name || user?.name}</strong><span>{user?.email}</span><span className={isOnline ? "workspace-account-connection" : "workspace-account-connection offline"}>{isOnline ? "Connected to network" : "Network offline"}</span></div>
-            <Link to="/dashboard/profile" onClick={() => { profileMenuRef.current.open = false; }}><FiUser aria-hidden="true"/>My profile</Link>
-            {user?.role === "admin" && user?.username && <Link to={`/admin/${encodeURIComponent(user.username)}`} onClick={() => { profileMenuRef.current.open = false; }}><FiUsers aria-hidden="true" />Public admin profile</Link>}
-            <Link to="/dashboard/settings" onClick={() => { profileMenuRef.current.open = false; }}><FiSettings aria-hidden="true"/>Settings</Link>
-            <Button variant="ghost" type="button" onClick={() => { profileMenuRef.current.open = false; onLogout?.(); }}><FiLogOut aria-hidden="true"/>Sign out</Button>
+            <div className="workspace-account-identity">
+              <span className="workspace-account-identity-avatar" aria-hidden="true">
+                <ProfileAvatar profile={profile || user} size="sm" />
+              </span>
+              <div className="workspace-account-identity-info">
+                <strong>{profile?.name || user?.name || "Account"}</strong>
+                <span className="workspace-account-email" title={user?.email}>{user?.email}</span>
+                <span className="workspace-account-role">{user?.role === "admin" ? "Administrator" : "Business account"}</span>
+              </div>
+            </div>
+            <div className={isOnline ? "workspace-account-presence" : "workspace-account-presence offline"}>
+              <span className="workspace-account-presence-dot" aria-hidden="true" />
+              <span>{isOnline ? "Connected to network" : "Network offline"}</span>
+            </div>
+            <nav className="workspace-account-items" aria-label="Account navigation">
+              <Link to="/dashboard/profile" onClick={() => { profileMenuRef.current.open = false; }}><FiUser aria-hidden="true"/>My profile</Link>
+              {user?.role === "admin" && user?.username && <Link to={`/admin/${encodeURIComponent(user.username)}`} onClick={() => { profileMenuRef.current.open = false; }}><FiUsers aria-hidden="true" />Public admin profile</Link>}
+              <Link to="/dashboard/settings" onClick={() => { profileMenuRef.current.open = false; }}><FiSettings aria-hidden="true"/>Settings</Link>
+            </nav>
+            <div className="workspace-account-footer">
+              <Button className="workspace-account-signout" variant="ghost" type="button" onClick={() => { profileMenuRef.current.open = false; onLogout?.(); }}><FiLogOut aria-hidden="true"/>Sign out</Button>
+            </div>
           </div>
         </details>
       </div>
