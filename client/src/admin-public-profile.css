@@ -1,0 +1,173 @@
+/* Public administrator profile: reuse the BookFlow business storefront profile
+   composition while keeping admin identity separate from business sales UI. */
+html body #root main.admin-public-page.bookflow-storefront {
+  min-height: 100vh;
+  background: var(--background) !important;
+}
+html body #root .admin-public-page .admin-public-hero {
+  border: 0 !important;
+  background: var(--card) !important;
+}
+html body #root .admin-public-page .admin-public-cover {
+  height: 300px !important;
+  min-height: 300px !important;
+  overflow: hidden;
+}
+html body #root .admin-public-page .admin-public-profile-info {
+  box-sizing: border-box;
+  padding-bottom: 32px !important;
+}
+html body #root .admin-public-page .admin-public-profile-info > .profile-avatar {
+  flex-shrink: 0;
+}
+html body #root .admin-public-page .admin-public-copy { min-width: 0; }
+html body #root .admin-public-page .admin-public-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+html body #root .admin-public-page .admin-public-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 5px 11px;
+  border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 7%, var(--card));
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+html body #root .admin-public-page .admin-public-role svg {
+  width: 13px; height: 13px; flex-shrink: 0;
+}
+html body #root .admin-public-page .admin-public-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+html body #root .admin-public-page .admin-public-actions .ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 10px !important;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+html body #root .admin-public-page .admin-public-actions .ui-button svg {
+  width: 15px; height: 15px;
+}
+html body #root .admin-public-page .admin-public-headline {
+  margin-top: 12px !important;
+}
+html body #root .admin-public-page .admin-public-meta {
+  gap: 10px 16px;
+}
+html body #root .admin-public-page .admin-public-meta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--primary);
+  text-decoration: none;
+}
+html body #root .admin-public-page .admin-public-meta a:hover { text-decoration: underline; }
+html body #root .admin-public-page .admin-public-about {
+  box-sizing: border-box;
+  margin-top: 24px !important;
+  margin-bottom: 40px !important;
+  padding-top: 26px !important;
+  padding-bottom: 28px !important;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+html body #root .admin-public-page .admin-public-about-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+html body #root .admin-public-page .admin-public-about-heading > svg {
+  width: 20px; height: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--primary);
+}
+html body #root .admin-public-page .admin-public-about-heading h2 {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.3;
+  font-weight: 650;
+}
+html body #root .admin-public-page .admin-public-about-heading p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+html body #root .admin-public-page .admin-public-about > p {
+  margin: 17px 0 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+html body #root main.admin-public-loading,
+html body #root main.admin-public-error {
+  display: grid;
+  place-items: center;
+  min-height: 75vh;
+  padding: 24px;
+  color: var(--muted-foreground);
+}
+html body #root .admin-public-error-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 460px;
+  text-align: center;
+}
+html body #root .admin-public-error-body > svg {
+  width: 32px; height: 32px; color: var(--primary);
+}
+html body #root .admin-public-error-body h1 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--foreground);
+}
+html body #root .admin-public-error-body p { margin: 0; }
+html body #root .admin-public-page .storefront-cover-brand { border-radius: 10px; }
+@media (max-width: 680px) {
+  html body #root .admin-public-page .admin-public-cover {
+    height: 220px !important;
+    min-height: 220px !important;
+  }
+  html body #root .admin-public-page .admin-public-profile-info {
+    gap: 12px !important;
+    padding-bottom: 24px !important;
+  }
+  html body #root .admin-public-page .admin-public-copy {
+    width: 100% !important;
+    margin-top: 0 !important;
+  }
+  html body #root .admin-public-page .admin-public-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  html body #root .admin-public-page .admin-public-about {
+    margin-top: 16px !important;
+    margin-bottom: 24px !important;
+    padding: 22px 18px !important;
+  }
+}
