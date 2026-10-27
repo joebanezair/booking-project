@@ -13,9 +13,12 @@ import { notify } from "../lib/notifications.js";
 import { readPageSize } from "../lib/pagination.js";
 import { featureNames, featureDurations, featureSummary } from "../lib/featureAccess.js";
 import { invalidatePublicJsonCaches } from "../middleware/publicJsonCache.js";
+import transparencyRouter from "./adminTransparency.js";
+import BusinessAuditEvent from "../models/BusinessAuditEvent.js";
 
 const router = Router();
 router.use(requireAuth, requireAdmin);
+router.use('/businesses', transparencyRouter);
 
 const accountStatuses = new Set(["active", "paused", "disabled"]);
 
@@ -357,6 +360,13 @@ router.patch("/businesses/:id/features/:feature", async (req, res) => {
       { new: true, runValidators: true }
     ).select("featureAccess").lean();
     if (!account) return res.status(404).json({ message: "Business account not found." });
+    try {
+      await BusinessAuditEvent.create({
+        businessOwner: req.params.id, actor: req.user.id,
+        action: enabled ? "feature.activated" : "feature.deactivated",
+        detail: `${feature}: ${enabled ? `${days} days` : "disabled"}`
+      });
+    } catch (auditError) { console.error("Could not write feature audit event", auditError); }
 
     // Revoke cached public service listings immediately after any POS/booking
     // change; Redis cache versioning handles multi-server deployments.
@@ -384,6 +394,12 @@ router.patch("/businesses/:id/status", async (req, res) => {
       { new: true, runValidators: true }
     ).select("name username email accountStatus");
     if (!user) return res.status(404).json({ message: "Business account not found." });
+    try {
+      await BusinessAuditEvent.create({
+        businessOwner: req.params.id, actor: req.user.id,
+        action: "account.status_changed", detail: accountStatus
+      });
+    } catch (auditError) { console.error("Could not write account audit event", auditError); }
     await invalidatePublicJsonCaches("public");
 
     const title = accountStatus === "active" ? "Business account reactivated" : accountStatus === "paused" ? "Business account paused" : "Business account disabled";
