@@ -11,6 +11,7 @@ import { PiCoin } from "react-icons/pi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { api } from "../api.js";
+import BusinessTransparency from "../components/BusinessTransparency.jsx";
 
 function money(value, currency = "PHP") {
   const amount = Number(value || 0);
@@ -45,6 +46,7 @@ function Metric({ icon: Icon, label, value, note, tone = "neutral" }) {
 export default function BusinessDetailPage({ user, onLogout }) {
   const { businessId } = useParams();
   const [data, setData] = useState(null);
+  const [detailTab, setDetailTab] = useState("overview");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -173,6 +175,19 @@ export default function BusinessDetailPage({ user, onLogout }) {
             </div>
           </section>
 
+          <nav className="admin-transparency-tabs" aria-label="Business insights sections">
+            {[
+              ["overview", "Overview"], ["financials", "Financials"], ["products", "Products & Inventory"],
+              ["services", "Services"], ["bookings", "Bookings"], ["transactions", "Transactions"],
+              ["audit", "Audit Logs"]
+            ].map(([key, label]) =>
+              <button type="button" key={key} aria-current={detailTab === key ? "page" : undefined}
+                className={detailTab === key ? "is-active" : ""}
+                onClick={() => setDetailTab(key)}>{label}</button>
+            )}
+          </nav>
+
+          {detailTab === "overview" ? <>
           <section className="admin-detail-section admin-detail-sales-section" aria-labelledby="admin-earnings-title">
             <div className="admin-detail-section-heading">
               <div>
@@ -341,6 +356,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
               </section>
             </div>
           </section>
+          </> : <BusinessTransparency businessId={businessId} section={detailTab} businessName={business.name} />}
 
         </div>}
       {featureToast && <div className="admin-detail-feature-toast" role="status" aria-live="polite">
