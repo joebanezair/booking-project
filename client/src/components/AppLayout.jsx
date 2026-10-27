@@ -14,7 +14,7 @@ const navigation = [
   { to: "/dashboard/sales", label: "Sales", icon: FiBarChart2, businessOnly: true },
   { to: "/dashboard/businesses", label: "Businesses", icon: FiUsers, adminOnly: true },
   { to: "/dashboard/messages", label: "Messages", icon: FiMessageSquare },
-  { to: "/dashboard/profile", label: "Profile", icon: FiUser, businessOnly: true },
+  { to: "/dashboard/profile", label: "Profile", icon: FiUser },
   { to: "/dashboard/notifications", label: "Notifications", icon: FiBell },
   { to: "/forum", label: "Forum", icon: FiMessageCircle },
   { to: "/dashboard/settings", label: "Settings", icon: FiSettings },
@@ -335,7 +335,7 @@ export default function AppLayout({ children, user, onLogout }) {
           </summary>
           <div className="workspace-account-popover">
             <div className="workspace-account-identity"><strong>{profile?.name || user?.name}</strong><span>{user?.email}</span><span className={isOnline ? "workspace-account-connection" : "workspace-account-connection offline"}>{isOnline ? "Connected to network" : "Network offline"}</span></div>
-            {user?.role === "business" && <Link to="/dashboard/profile" onClick={() => { profileMenuRef.current.open = false; }}><FiUser aria-hidden="true"/>My profile</Link>}
+            <Link to="/dashboard/profile" onClick={() => { profileMenuRef.current.open = false; }}><FiUser aria-hidden="true"/>My profile</Link>
             <Link to="/dashboard/settings" onClick={() => { profileMenuRef.current.open = false; }}><FiSettings aria-hidden="true"/>Settings</Link>
             <Button variant="ghost" type="button" onClick={() => { profileMenuRef.current.open = false; onLogout?.(); }}><FiLogOut aria-hidden="true"/>Sign out</Button>
           </div>
