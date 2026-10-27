@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckSquare, FiChevronDown, FiDollarSign, FiMessageSquare, FiPackage, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSettings, FiStar, FiUser, FiUsers, FiX } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckSquare, FiChevronDown, FiChevronRight, FiDollarSign, FiGrid, FiList, FiMessageSquare, FiPackage, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSettings, FiStar, FiUser, FiUsers, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import BusinessSetupChecklist from "../components/BusinessSetupChecklist.jsx";
 import DashboardAnalytics from "../components/DashboardAnalytics.jsx";
@@ -12,13 +12,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 
 const businessSections = [
-  { title: "Services", text: "Create and manage your public, private, or draft services.", to: "/dashboard/services", action: "Manage services", icon: FiBriefcase, widgetKey: "quickServices", feature: "booking" },
-  { title: "Bookings", text: "Manage guest booking requests and service status.", to: "/dashboard/bookings", action: "Manage bookings", icon: FiCalendar, widgetKey: "quickBookings", feature: "booking" },
-  { title: "Products", text: "Manage products, inventory, pricing, and items available for sale.", to: "/dashboard/products", action: "Manage products", icon: FiPackage, widgetKey: "quickProducts", feature: "pos" },
-  { title: "Sales & Analytics", text: "Track completed-service sales, trends, and spreadsheet reports.", to: "/dashboard/sales", action: "View sales", icon: FiBarChart2, widgetKey: "quickSales" },
-  { title: "Messages", text: "Chat with other registered businesses and administrators.", to: "/dashboard/messages", action: "Open messages", icon: FiMessageSquare, widgetKey: "quickMessages" },
-  { title: "Business profile", text: "Update your public profile, contact details, photos, and business information.", to: "/dashboard/profile", action: "Manage profile", icon: FiUser, widgetKey: "quickProfile" },
-  { title: "Search", text: "Explore other businesses and public services.", to: "/search", action: "Browse BookFlow", icon: FiSearch, widgetKey: "quickSearch" }
+  { title: "Services", text: "Create and manage your services.", to: "/dashboard/services", action: "Manage services", icon: FiBriefcase, widgetKey: "quickServices", feature: "booking", countKey: "services", color: "#2563EB", tint: "rgba(37,99,235,0.10)" },
+  { title: "Bookings", text: "Manage booking requests and status.", to: "/dashboard/bookings", action: "Manage bookings", icon: FiCalendar, widgetKey: "quickBookings", feature: "booking", countKey: "bookings", color: "#7C3AED", tint: "rgba(124,58,237,0.10)" },
+  { title: "Products", text: "Manage products, pricing and inventory.", to: "/dashboard/products", action: "Manage products", icon: FiPackage, widgetKey: "quickProducts", feature: "pos", countKey: "products", color: "#EA580C", tint: "rgba(234,88,12,0.10)" },
+  { title: "Sales & Analytics", text: "Track sales, revenue and reports.", to: "/dashboard/sales", action: "View sales", icon: FiBarChart2, widgetKey: "quickSales", color: "#059669", tint: "rgba(5,150,105,0.10)" },
+  { title: "Messages", text: "Chat with businesses and administrators.", to: "/dashboard/messages", action: "Open messages", icon: FiMessageSquare, widgetKey: "quickMessages", countKey: "messages", color: "#DB2777", tint: "rgba(219,39,119,0.10)" },
+  { title: "Business profile", text: "Update your public business information.", to: "/dashboard/profile", action: "Manage profile", icon: FiUser, widgetKey: "quickProfile", color: "#0D9488", tint: "rgba(13,148,136,0.10)" },
+  { title: "Search", text: "Explore businesses and public services.", to: "/search", action: "Browse BookFlow", icon: FiSearch, widgetKey: "quickSearch", color: "#B45309", tint: "rgba(180,83,9,0.10)" }
 ];
 
 const adminSections = [
@@ -145,6 +145,30 @@ export default function DashboardPage({ user, onLogout }) {
   const [draftBusinessWidgets, setDraftBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
   const [businessCustomizeOpen, setBusinessCustomizeOpen] = useState(false);
   const [expandedBusinessGroups, setExpandedBusinessGroups] = useState({ "Key metrics": true });
+  const quickAccessViewKey = `bookflow:quick-access-view:v1:${user._id || user.id || user.email}`;
+  const [quickAccessView, setQuickAccessView] = useState(() => {
+    try { return window.localStorage.getItem(quickAccessViewKey) === "list" ? "list" : "grid"; }
+    catch { return "grid"; }
+  });
+  const [quickAccessCounts, setQuickAccessCounts] = useState(null);
+  useEffect(() => {
+    try { setQuickAccessView(window.localStorage.getItem(quickAccessViewKey) === "list" ? "list" : "grid"); }
+    catch { setQuickAccessView("grid"); }
+  }, [quickAccessViewKey]);
+  function changeQuickAccessView(view) {
+    setQuickAccessView(view);
+    try { window.localStorage.setItem(quickAccessViewKey, view); }
+    catch { /* View switching still works when browser storage is disabled. */ }
+  }
+  useEffect(() => {
+    if (isAdmin) return;
+    let active = true;
+    setQuickAccessCounts(null);
+    api.business.quickAccessCounts()
+      .then(counts => { if (active) setQuickAccessCounts(counts); })
+      .catch(() => { if (active) setQuickAccessCounts(null); });
+    return () => { active = false; };
+  }, [isAdmin, user._id, user.id, user.email]);
   const sections = isAdmin ? adminSections : businessSections.filter(section =>
     (!section.feature || hasBusinessFeature(user, section.feature)) &&
     visibleBusinessWidgets[section.widgetKey] !== false
@@ -528,15 +552,25 @@ export default function DashboardPage({ user, onLogout }) {
         statusLoading={statusLoading}
       />}
 
-      {(isAdmin || sections.length > 0) && <section className={"dashboard-route-section" + (isAdmin ? " dashboard-route-section--admin" : "")}>
+      {(isAdmin || sections.length > 0) && <section className={"dashboard-route-section" + (isAdmin ? " dashboard-route-section--admin" : " dashboard-route-section--business")}>
         <div className="dashboard-section-heading">
           <div>
             <p className="eyebrow">QUICK ACCESS</p>
             <h2>{isAdmin ? "Administration" : "Manage your business"}</h2>
             <p className="muted">{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
           </div>
+          {!isAdmin && <div className="dashboard-quick-view-toggle" role="group" aria-label="Quick Access view">
+            <Button type="button" variant="ghost" size="sm" className={quickAccessView === "grid" ? "is-active" : ""}
+              aria-pressed={quickAccessView === "grid"} onClick={() => changeQuickAccessView("grid")}>
+              <FiGrid aria-hidden="true" /> Grid
+            </Button>
+            <Button type="button" variant="ghost" size="sm" className={quickAccessView === "list" ? "is-active" : ""}
+              aria-pressed={quickAccessView === "list"} onClick={() => changeQuickAccessView("list")}>
+              <FiList aria-hidden="true" /> List
+            </Button>
+          </div>}
         </div>
-        <section className="dashboard-route-grid">
+        <section className={"dashboard-route-grid" + (isAdmin ? "" : ` dashboard-quick-grid dashboard-quick-grid--${quickAccessView}`)}>
           {sections.map(({ icon: Icon, ...section }) => isAdmin ? (
             <Card as={Link} to={section.to} className="dashboard-shadcn-card admin-tool-link" key={section.to}
               aria-label={section.action}>
@@ -550,17 +584,26 @@ export default function DashboardPage({ user, onLogout }) {
             </Card>
           ) : (
             <Link to={section.to} className="dashboard-quick-link" key={section.to}
+              style={{ "--quick-color": section.color, "--quick-tint": section.tint }}
               aria-label={section.action}>
               <span className="route-card-icon"><Icon aria-hidden="true" /></span>
               <span className="dashboard-quick-copy">
-                <strong>{section.title}</strong>
+                <span className="dashboard-quick-title-row">
+                  <strong>{section.title}</strong>
+                  {section.countKey && quickAccessView === "grid" && <span className="dashboard-quick-count" aria-label={`Total ${section.title.toLowerCase()}`}>
+                    {typeof quickAccessCounts?.[section.countKey] === "number" ? quickAccessCounts[section.countKey].toLocaleString() : "—"}
+                  </span>}
+                </span>
                 <small>{section.text}</small>
               </span>
-              <FiArrowRight className="dashboard-quick-arrow" aria-hidden="true" />
+              {section.countKey && quickAccessView === "list" && <span className="dashboard-quick-count" aria-label={`Total ${section.title.toLowerCase()}`}>
+                {typeof quickAccessCounts?.[section.countKey] === "number" ? quickAccessCounts[section.countKey].toLocaleString() : "—"}
+              </span>}
+              <FiChevronRight className="dashboard-quick-arrow" aria-hidden="true" />
             </Link>
           ))}
         </section>
-      </section>}
+      </section>
       {!isAdmin && businessWidgetCount === 0 && <div className="business-dashboard-all-hidden">
         <FiSettings aria-hidden="true" />
         <strong>Your dashboard is customized</strong>
