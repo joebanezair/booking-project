@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { featureStatus } from "../lib/featureAccess.js";
-import { publicJsonCache } from "../middleware/publicJsonCache.js";
 import mongoose from "mongoose";
 import Booking from "../models/Booking.js";
 import Business from "../models/Business.js";
@@ -61,15 +60,17 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
     const business = await Business.findOne({ owner: user._id }).select("name category description location website logo workingHours").lean();
     if (!business) return res.status(404).json({ message: "Business profile not found." });
 
-    const items = await Content.find({
-      user: user._id,
-      published: true,
-      visibility: { $ne: "private" }
-    }).select("title description price currency category coverImage allowBookings createdAt updatedAt").sort({ updatedAt: -1 });
-
-    // A business's POS entitlement controls whether its published products may
-    // appear on the public storefront. Keep inventory in MongoDB unchanged.
+    // Feature access controls public discovery, not the stored service or inventory.
+    // Disabling booking hides every published service until an admin re-enables it.
+    const bookingActive = featureStatus(user, "booking").active;
     const posActive = featureStatus(user, "pos").active;
+    const items = bookingActive
+      ? await Content.find({
+          user: user._id,
+          published: true,
+          visibility: { $ne: "private" }
+        }).select("title description price currency category coverImage allowBookings createdAt updatedAt").sort({ updatedAt: -1 })
+      : [];
     const [summary, reviewSummary, reviews, businessRatingRows, currentBusinessRating, products] = await Promise.all([
       ratingSummary(items.map(item => item._id)),
       verifiedReviewSummary(business._id),
@@ -88,7 +89,7 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
     // The profile CTA reflects configured booking capability, not just a visible service.
     // Actual date/time availability is validated by /book/:userId/slots.
     const bookingAvailable = user.accountStatus === "active" &&
-      featureStatus(user, "booking").active &&
+      bookingActive &&
       items.some(item => item.allowBookings === true) &&
       Array.isArray(business.workingHours) && business.workingHours.some(day => day.enabled);
 
@@ -107,6 +108,7 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
         coverImage: user.coverImage,
         accountStatus: user.accountStatus || "active",
         bookingAvailable,
+        servicesAvailable: bookingActive && items.length > 0,
         posAvailable: posActive && products.length > 0,
         createdAt: user.createdAt,
         ratingSummary: reviewSummary,
@@ -129,6 +131,7 @@ router.get("/profile/:username", optionalAuth, async (req, res) => {
 });
 
 router.get("/content/:contentId", optionalAuth, async (req, res) => {
+  res.set("Cache-Control", "no-store");
   try {
     if (!mongoose.isValidObjectId(req.params.contentId)) return res.status(404).json({ message: "Service not found." });
 
@@ -136,9 +139,10 @@ router.get("/content/:contentId", optionalAuth, async (req, res) => {
       _id: req.params.contentId,
       published: true,
       visibility: { $ne: "private" }
-    }).populate("user", "name username role accountStatus bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage");
+    }).populate("user", "name username role accountStatus featureAccess bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage");
 
-    if (!item || !item.user || !await isProviderOwner(item.user._id)) {
+    if (!item || !item.user || !featureStatus(item.user, "booking").active ||
+        !await isProviderOwner(item.user._id)) {
       return res.status(404).json({ message: "Service not found." });
     }
 
@@ -207,13 +211,21 @@ router.get("/content/:contentId", optionalAuth, async (req, res) => {
   }
 });
 
-router.get("/browse", publicJsonCache(), async (_req, res) => {
+router.get("/browse", async (_req, res) => {
+  res.set("Cache-Control", "no-store");
   try {
     const items = await Content.aggregate([
       { $match: { published: true, visibility: { $ne: "private" } } },
       { $lookup: { from: "users", localField: "user", foreignField: "_id", as: "provider" } },
       { $unwind: "$provider" },
       { $match: { "provider.role": "business", "provider.accountStatus": { $in: ["active", "paused"] } } },
+      { $match: {
+        "provider.featureAccess.booking.enabled": { $ne: false },
+        $or: [
+          { "provider.featureAccess.booking.expiresAt": null },
+          { "provider.featureAccess.booking.expiresAt": { $gt: new Date() } }
+        ]
+      } },
       { $sort: { updatedAt: -1, _id: -1 } },
       { $limit: 60 },
       { $addFields: { user: {
@@ -235,6 +247,7 @@ router.get("/browse", publicJsonCache(), async (_req, res) => {
 
 // Search stays database-paginated. Never materialize every eligible provider in Node.js.
 router.get("/search", async (req, res) => {
+  res.set("Cache-Control", "no-store");
   try {
     const q = String(req.query.q || "").trim().slice(0, 100);
     const category = String(req.query.category || "").trim().slice(0, 80);
@@ -264,7 +277,7 @@ router.get("/search", async (req, res) => {
         accountStatus: 1, businessId: "$business._id"
       } }
     ];
-    const discoveryPipeline = (collection, match, searchFields, filterServiceRating = false, requireActivePos = false) => [
+    const discoveryPipeline = (collection, match, searchFields, filterServiceRating = false, requireActivePos = false, requireActiveBooking = false) => [
       { $match: match },
       { $lookup: { from: "users", localField: "user", foreignField: "_id", as: "provider" } },
       { $unwind: "$provider" },
@@ -276,6 +289,14 @@ router.get("/search", async (req, res) => {
         $or: [
           { "provider.featureAccess.pos.expiresAt": null },
           { "provider.featureAccess.pos.expiresAt": { $gt: new Date() } }
+        ]
+      } }] : []),
+      // Exclude deactivated service providers before paginating search results.
+      ...(requireActiveBooking ? [{ $match: {
+        "provider.featureAccess.booking.enabled": { $ne: false },
+        $or: [
+          { "provider.featureAccess.booking.expiresAt": null },
+          { "provider.featureAccess.booking.expiresAt": { $gt: new Date() } }
         ]
       } }] : []),
       ...(regex ? [
@@ -319,7 +340,7 @@ router.get("/search", async (req, res) => {
       User.aggregate(usersPipeline),
       Content.aggregate(discoveryPipeline("contents", {
         published: true, visibility: { $ne: "private" }, ...(category ? { category } : {})
-      }, ["title", "description", "category"], true)),
+      }, ["title", "description", "category"], true, false, true)),
       Product.aggregate(discoveryPipeline("products", { published: true }, ["name", "description", "sku"], false, true))
     ]);
     const hasMoreByType = {
