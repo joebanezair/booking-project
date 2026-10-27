@@ -245,7 +245,7 @@ for (const required of ["Add Friend", "Accept Friend", "Message", "Remove rating
   if (!publicProfileSource.includes(required))
     failures.push("Public profile social/rating action missing: " + required);
 }
-const publicRoute = readFileSync(resolve(root, "../server/routes/public.js"), "utf8");
+const publicRoute = readFileSync(resolve(root, "../../server/routes/public.js"), "utf8");
 for (const marker of ['featureStatus(user, "booking").active', "items.some(item => item.allowBookings === true)", "bookingAvailable,"]) {
   if (!publicRoute.includes(marker))
     failures.push("Public profile booking availability must honor published services and admin feature access: " + marker);
