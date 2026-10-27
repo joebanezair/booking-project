@@ -1353,3 +1353,152 @@ html body #root .content-shell:has(.admin-dashboard-platform) .dashboard-content
 html body #root .content-shell:has(.admin-dashboard-platform) .dashboard-content-rail * {
   font-weight: 400 !important;
 }
+
+
+/* Business Quick Access refresh: one cohesive navigation surface, not seven
+   competing cards. All links, counts and user-selected grid/list modes remain. */
+html body #root .dashboard-route-section--business .dashboard-quick-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+  min-height: 34px;
+  padding: 3px;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-button.ui-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 70px;
+  min-height: 28px !important;
+  height: 28px;
+  margin: 0 !important;
+  padding: 5px 10px !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--muted-foreground) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1;
+  cursor: pointer;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-button.ui-button[aria-pressed="true"] {
+  background: var(--secondary) !important;
+  color: var(--foreground) !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-button.ui-button:hover:not([aria-pressed="true"]) {
+  background: color-mix(in srgb, var(--secondary) 65%, transparent) !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-button.ui-button:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-view-button svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
+  gap: 4px !important;
+  padding: 6px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link {
+  gap: 11px;
+  min-height: 72px !important;
+  padding: 10px 11px !important;
+  border: 1px solid transparent !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transition: background-color .16s ease, border-color .16s ease !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link:hover {
+  border-color: color-mix(in srgb, var(--primary) 13%, transparent) !important;
+  background: color-mix(in srgb, var(--primary) 5%, var(--card)) !important;
+  box-shadow: none !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link .route-card-icon {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px !important;
+  background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+  color: var(--primary) !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .route-card-icon svg {
+  width: 19px !important;
+  height: 19px !important;
+  stroke-width: 1.8;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-copy {
+  gap: 3px;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-title-row strong {
+  color: var(--foreground) !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  line-height: 1.35;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-copy small {
+  color: var(--muted-foreground) !important;
+  font-size: 11px !important;
+  line-height: 1.35;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-count {
+  min-width: 26px;
+  min-height: 22px;
+  margin-left: auto;
+  padding: 3px 8px;
+  background: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+  color: var(--primary) !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-arrow {
+  flex: 0 0 14px;
+  width: 14px !important;
+  height: 14px !important;
+  color: var(--muted-foreground) !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link:hover .dashboard-quick-arrow {
+  color: var(--primary) !important;
+}
+html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid--list {
+  gap: 0 !important;
+  padding: 5px 10px !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid--list .dashboard-quick-link {
+  min-height: 61px !important;
+  border-radius: 6px !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid--list .dashboard-quick-link + .dashboard-quick-link {
+  border-top: 1px solid var(--border) !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+@media (max-width: 560px) {
+  html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
+    padding: 5px !important;
+  }
+  html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link {
+    min-height: 65px !important;
+    padding: 9px 10px !important;
+  }
+  html body #root .dashboard-route-section--business .dashboard-quick-view-toggle {
+    margin-left: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link {
+    transition: none !important;
+  }
+}
