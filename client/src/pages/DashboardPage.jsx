@@ -560,20 +560,19 @@ export default function DashboardPage({ user, onLogout }) {
             <p className="muted">{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
           </div>
           {!isAdmin && <div className="dashboard-quick-view-toggle" role="group" aria-label="Quick Access layout">
-            <span className={"dashboard-quick-view-label" + (quickAccessView === "grid" ? " is-active" : "")}>
-              <FiGrid aria-hidden="true" /> Grid
-            </span>
             <Button type="button" variant="ghost" size="sm"
-              className="dashboard-quick-view-switch"
-              role="switch" aria-checked={quickAccessView === "list"}
-              aria-label="List view" title={quickAccessView === "grid" ? "Switch to list view" : "Switch to grid view"}
-              onClick={() => changeQuickAccessView(quickAccessView === "grid" ? "list" : "grid")}>
-              <span className="dashboard-quick-view-knob" aria-hidden="true" />
+              className={"dashboard-quick-view-button" + (quickAccessView === "grid" ? " is-active" : "")}
+              aria-pressed={quickAccessView === "grid"} title="Grid view"
+              onClick={() => changeQuickAccessView("grid")}>
+              <FiGrid aria-hidden="true" /> Grid
             </Button>
-            <span className={"dashboard-quick-view-label" + (quickAccessView === "list" ? " is-active" : "")}>
+            <Button type="button" variant="ghost" size="sm"
+              className={"dashboard-quick-view-button" + (quickAccessView === "list" ? " is-active" : "")}
+              aria-pressed={quickAccessView === "list"} title="List view"
+              onClick={() => changeQuickAccessView("list")}>
               <FiList aria-hidden="true" /> List
-            </span>
-          </div>}
+            </Button>
+          </div>
         </div>
         <section className={"dashboard-route-grid" + (isAdmin ? "" : ` dashboard-quick-grid dashboard-quick-grid--${quickAccessView}`)}>
           {sections.map(({ icon: Icon, ...section }) => isAdmin ? (
@@ -592,15 +591,10 @@ export default function DashboardPage({ user, onLogout }) {
               aria-label={section.action}>
               <span className="route-card-icon"><Icon aria-hidden="true" /></span>
               <span className="dashboard-quick-copy">
-                <span className="dashboard-quick-title-row">
-                  <strong>{section.title}</strong>
-                  {section.countKey && quickAccessView === "grid" && <span className="dashboard-quick-count" aria-label={`Total ${section.title.toLowerCase()}`}>
-                    {typeof quickAccessCounts?.[section.countKey] === "number" ? quickAccessCounts[section.countKey].toLocaleString() : "—"}
-                  </span>}
-                </span>
+                <span className="dashboard-quick-title-row"><strong>{section.title}</strong></span>
                 <small>{section.text}</small>
               </span>
-              {section.countKey && quickAccessView === "list" && <span className="dashboard-quick-count" aria-label={`Total ${section.title.toLowerCase()}`}>
+              {section.countKey && <span className="dashboard-quick-count" aria-label={`Total ${section.title.toLowerCase()}`}>
                 {typeof quickAccessCounts?.[section.countKey] === "number" ? quickAccessCounts[section.countKey].toLocaleString() : "—"}
               </span>}
               <FiChevronRight className="dashboard-quick-arrow" aria-hidden="true" />
