@@ -280,11 +280,35 @@ export default function ProductsPage({user,onLogout}){
   }
 
   return <AppLayout user={user} onLogout={onLogout}>
-    <header className="topbar products-pos-header"><div><p className="eyebrow">PRODUCTS & POS</p><h1>Products</h1><p className="muted">Manage inventory, select products, add quantities to the cart, and check out in-store sales.</p></div><div className="cart-header-badge"><FiShoppingCart/><strong>{cartLines.reduce((s,x)=>s+x.quantity,0)}</strong><span>{money(cartTotal,currency)}</span></div></header>
+    <header className="topbar products-pos-header"><div><p className="eyebrow">PRODUCTS & POS</p><h1>Products</h1><p className="muted">Manage inventory, select products, add quantities to the cart, and check out in-store sales.</p></div>
+      <div className="pos-header-cart-actions">
+        <div className="cart-header-badge pos-desktop-cart"><FiShoppingCart/><strong>{cartLines.reduce((sum,item)=>sum+item.quantity,0)}</strong><span>{money(cartTotal,currency)}</span></div>
+        <Button ref={popupTriggerRef} variant="outline" type="button" className="pos-responsive-cart-button"
+          aria-label="Open POS checkout" aria-haspopup="dialog" aria-expanded={posPopupOpen}
+          onClick={openPosPopup}><FiShoppingCart aria-hidden="true"/><span>Cart ({cartLines.reduce((sum,item)=>sum+item.quantity,0)})</span><strong>{money(cartTotal,currency)}</strong></Button>
+      </div></header>
+    <nav className="products-pos-breadcrumb" aria-label="Products section navigation">
+      <span className="products-pos-breadcrumb-root">Products</span>
+      <FiChevronRight aria-hidden="true"/>
+      <Button variant="ghost" type="button" className={section==="inventory"?"is-active":""}
+        aria-current={section==="inventory"?"page":undefined} onClick={()=>navigateProducts("inventory")}>
+        <FiPackage aria-hidden="true"/>Inventory
+      </Button>
+      <FiChevronRight aria-hidden="true"/>
+      <Button variant="ghost" type="button" className={posPopupOpen || window.location.hash==="#pos-checkout"?"is-active":""}
+        aria-haspopup={compactPos?"dialog":undefined} aria-expanded={compactPos?posPopupOpen:undefined}
+        onClick={()=>navigateProducts("pos-checkout")}><FiShoppingCart aria-hidden="true"/>POS Checkout</Button>
+      <FiChevronRight aria-hidden="true"/>
+      <Button variant="ghost" type="button" className={section==="charts"?"is-active":""}
+        aria-current={section==="charts"?"page":undefined} onClick={()=>navigateProducts("pos-charts")}>
+        <FiBarChart2 aria-hidden="true"/>POS Charts
+      </Button>
+    </nav>
     {error&&<p className="error">{error}</p>}{message&&<p className="success products-pos-success" role="status"><FiCheckCircle aria-hidden="true"/><span>{message}</span></p>}
 
-    <div className="products-page-grid">
-      <section className="panel">
+    {section==="charts" ? <PosEarningsPanel report={posReport} loading={posReportLoading} error={posReportError}
+      range={posRange} onRangeChange={setPosRange} onRetry={()=>setPosReportRevision(v=>v+1)} products={products}/> : <div className="products-page-grid">
+      <section className="panel" id="inventory">
         <div className="panel-title"><div><p className="eyebrow product-catalog-label">CATALOG</p><h2 className="product-inventory-title">Product inventory</h2></div><div className="row-actions product-toolbar"><Button variant="plain" type="button" className="icon-action product-add-icon" aria-label="Add product" data-tooltip="Add product" onClick={()=>{setForm(blank);setError("");setCreating(true);}}><FiPlus/><span className="product-add-label"><span className="product-add-short">Add</span><span className="product-add-full"> Product</span></span></Button><div className="product-view-toggle" role="group" aria-label="Product view"><Button variant="plain" type="button" className={"icon-action "+(productView==="grid"?"active":"")} aria-label="Grid view" data-tooltip="Grid view" aria-pressed={productView==="grid"} onClick={()=>setProductView("grid")}><FiGrid/></Button><Button variant="plain" type="button" className={"icon-action "+(productView==="list"?"active":"")} aria-label="List view" data-tooltip="List view" aria-pressed={productView==="list"} onClick={()=>setProductView("list")}><FiList/></Button></div><span className="count product-count-icon" aria-label={`${products.length} products`} data-tooltip={`${products.length} products`}><FiShoppingBag/><strong>{products.length}</strong></span></div></div>
         <SearchField className="product-ui-search" value={search} onValueChange={setSearch} placeholder="Search products..." aria-label="Search products" />{filteredProducts.length===0&&search?<p className="muted search-empty">No products match “{search}”.</p>:<div className={"product-shop-grid "+(productView==="list"?"product-shop-list":"")}>{filteredProducts.map(item=><Card as="article" key={item._id} className={"product-shop-card product-inventory-tile "+(item.stock<=0?"out-of-stock":"")}><Button type="button" variant="plain" className="product-card-primary" disabled={item.stock<=0} aria-label={`Select ${item.name} for checkout`} onClick={()=>openProduct(item)}>
           <div className="product-shop-image">{(item.images?.[0]||item.image)?<Image src={item.images?.[0]||item.image} alt={item.name}/>:<FiPackage/>}</div><div className="product-shop-info"><strong>{item.name}</strong><small>{item.sku||"No SKU"}</small><span>{money(item.price,item.currency)}</span><small>{item.stock>0?`${item.stock} in stock`:"Out of stock"}</small></div>
@@ -292,7 +316,14 @@ export default function ProductsPage({user,onLogout}){
         </Card>)}</div>}
       </section>
 
-      <aside className="panel products-cart-panel"><div className="panel-title"><div><p className="eyebrow">CART</p><h2>Current sale</h2></div><FiShoppingCart/></div>
+      {posPopupOpen && compactPos && <div className="pos-checkout-backdrop" aria-hidden="true" onClick={closePosPopup}/>}
+      <aside ref={posCartRef} className={"panel products-cart-panel"+(posPopupOpen?" pos-popup-visible":"")}
+        id="pos-checkout" role={compactPos?"dialog":undefined} aria-modal={compactPos?posPopupOpen:undefined}
+        aria-label={compactPos?"POS checkout":undefined}>
+        <div className="panel-title"><div><p className="eyebrow">CART</p><h2>Current sale</h2></div>
+          <FiShoppingCart aria-hidden="true"/>
+          <Button variant="ghost" size="icon-sm" className="pos-cart-dismiss" type="button" aria-label="Close POS checkout" onClick={closePosPopup}><FiX aria-hidden="true"/></Button>
+        </div>
         <div className="cart-checkout-details"><Label>Customer name <span className="muted">(optional)</span><Input value={customerName} onChange={e=>setCustomerName(e.target.value)}/></Label>
         <Label>Payment method<Select value={paymentMethod} onChange={e=>setPaymentMethod(e.target.value)}><option value="cash">Cash</option><option value="gcash">GCash</option><option value="maya">Maya</option><option value="card">Card</option><option value="other">Other</option></Select></Label></div>
         <Button variant="plain" type="button" className="cart-items-toggle" onClick={()=>setCartOpen(v=>!v)} aria-expanded={cartOpen}><span>Cart items <strong>({cartLines.reduce((s,x)=>s+x.quantity,0)})</strong></span>{cartOpen?<FiChevronDown/>:<FiChevronRight/>}</Button>
@@ -301,7 +332,7 @@ export default function ProductsPage({user,onLogout}){
         <div className="pos-total"><span>Total</span><strong>{money(cartTotal,currency)}</strong></div>
         <Button variant="plain" className="primary-button checkout-button" type="button" disabled={!cartLines.length} onClick={()=>setConfirmCheckout(true)}>Check out</Button>
       </aside>
-    </div>
+    </div>}
 
     {deleteTarget&&<Dialog open={Boolean(deleteTarget)} title="Delete product" onOpenChange={open=>{if(!open)setDeleteTarget(null);}}><DialogContent className="ui-product-confirm"><div className="panel-title"><div><p className="eyebrow">DELETE PRODUCT</p><h2 id="delete-product-title">Delete {deleteTarget.name}?</h2></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close delete confirmation" data-tooltip="Close" onClick={()=>setDeleteTarget(null)}><FiX/></Button></div><p className="muted">This product will be permanently removed from your inventory. This action cannot be undone.</p><div className="delete-product-actions"><Button variant="plain" type="button" className="secondary" onClick={()=>setDeleteTarget(null)}>Cancel</Button><Button variant="plain" type="button" className="danger" onClick={()=>removeProduct(deleteTarget)}><FiTrash2/>Delete product</Button></div></DialogContent></Dialog>}
       {confirmCheckout&&<Dialog open={confirmCheckout} title="Confirm checkout" dismissible={!checkoutBusy} onOpenChange={open=>{if(!open&&!checkoutBusy)setConfirmCheckout(false);}}><DialogContent className="ui-product-confirm"><div className="panel-title"><div><p className="eyebrow">FINAL CHECK</p><h2>Confirm checkout</h2></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close checkout confirmation" onClick={()=>setConfirmCheckout(false)}><FiX/></Button></div><p className="muted">Review this sale before completing the transaction.</p><div className="checkout-confirm-summary"><div><span>Customer</span><strong>{customerName.trim()||"Walk-in"}</strong></div><div><span>Payment</span><strong>{paymentMethod.charAt(0).toUpperCase()+paymentMethod.slice(1)}</strong></div><div><span>Items</span><strong>{cartLines.reduce((s,x)=>s+x.quantity,0)}</strong></div></div><div className="checkout-confirm-items">{cartLines.map(item=><div key={item._id}><span>{item.name} × {item.quantity}</span><strong>{money(item.price*item.quantity,item.currency)}</strong></div>)}</div><div className="pos-total"><span>Total</span><strong>{money(cartTotal,currency)}</strong></div><div className="checkout-confirm-actions"><Button variant="plain" type="button" className="secondary" onClick={()=>setConfirmCheckout(false)}>Cancel</Button>{error&&<p className="error" role="alert">{error}</p>}<Button variant="plain" type="button" className="primary-button" disabled={checkoutBusy} onClick={checkout}>{checkoutBusy?"Processing checkout…":"Confirm checkout"}</Button></div></DialogContent></Dialog>}
