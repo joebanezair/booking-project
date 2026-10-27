@@ -559,15 +559,20 @@ export default function DashboardPage({ user, onLogout }) {
             <h2>{isAdmin ? "Administration" : "Manage your business"}</h2>
             <p className="muted">{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
           </div>
-          {!isAdmin && <div className="dashboard-quick-view-toggle" role="group" aria-label="Quick Access view">
-            <Button type="button" variant="ghost" size="sm" className={quickAccessView === "grid" ? "is-active" : ""}
-              aria-pressed={quickAccessView === "grid"} onClick={() => changeQuickAccessView("grid")}>
+          {!isAdmin && <div className="dashboard-quick-view-toggle" role="group" aria-label="Quick Access layout">
+            <span className={"dashboard-quick-view-label" + (quickAccessView === "grid" ? " is-active" : "")}>
               <FiGrid aria-hidden="true" /> Grid
+            </span>
+            <Button type="button" variant="ghost" size="sm"
+              className="dashboard-quick-view-switch"
+              role="switch" aria-checked={quickAccessView === "list"}
+              aria-label="List view" title={quickAccessView === "grid" ? "Switch to list view" : "Switch to grid view"}
+              onClick={() => changeQuickAccessView(quickAccessView === "grid" ? "list" : "grid")}>
+              <span className="dashboard-quick-view-knob" aria-hidden="true" />
             </Button>
-            <Button type="button" variant="ghost" size="sm" className={quickAccessView === "list" ? "is-active" : ""}
-              aria-pressed={quickAccessView === "list"} onClick={() => changeQuickAccessView("list")}>
+            <span className={"dashboard-quick-view-label" + (quickAccessView === "list" ? " is-active" : "")}>
               <FiList aria-hidden="true" /> List
-            </Button>
+            </span>
           </div>}
         </div>
         <section className={"dashboard-route-grid" + (isAdmin ? "" : ` dashboard-quick-grid dashboard-quick-grid--${quickAccessView}`)}>
