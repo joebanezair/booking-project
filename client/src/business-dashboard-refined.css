@@ -1046,18 +1046,20 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics .dashboard-
 }
 
 
-/* Business Quick Access — balanced four-column grid and streamlined list.
-   Preserve the white surface, seven accent colors and account-level badges.
-   Admin Quick Access is unchanged. */
+/* Business Quick Access — flat section, seven independent white shortcuts,
+   and a shared blue accent. Admin Quick Access remains unchanged. */
 html body #root .dashboard-route-section.dashboard-route-section--business {
+  --quick-color: #2563eb;
+  --quick-tint: rgba(37, 99, 235, .10);
   box-sizing: border-box;
   display: grid !important;
   gap: 14px !important;
   width: 100%;
-  padding: 16px !important;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 10px !important;
-  background: #ffffff !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 html body #root .dashboard-route-section--business .dashboard-section-heading {
   box-sizing: border-box;
@@ -1163,7 +1165,7 @@ html body #root .dashboard-route-section--business .dashboard-quick-grid .dashbo
   transition: border-color .15s ease, box-shadow .15s ease;
 }
 html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link:hover {
-  border-color: color-mix(in srgb, var(--quick-color) 28%, #e5e7eb) !important;
+  border-color: #bfcef4 !important;
   background: #fff !important;
   box-shadow: 0 3px 9px rgba(15, 23, 42, .045) !important;
 }
@@ -1290,7 +1292,7 @@ html body #root .dashboard-route-section--business .dashboard-quick-grid--list .
     grid-template-columns: minmax(0, 1fr) !important;
   }
   html body #root .dashboard-route-section.dashboard-route-section--business {
-    padding: 12px !important;
+    padding: 0 !important;
   }
 }
 @media (max-width: 600px) {
