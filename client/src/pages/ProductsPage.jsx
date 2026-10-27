@@ -8,9 +8,10 @@ import { Textarea } from "../components/ui/textarea.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FiArrowRight, FiBarChart2, FiCheckCircle, FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiCheckCircle, FiChevronDown, FiChevronRight, FiDownload, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
+import { exportPosEarningsXlsx } from "../utils/exportPosEarningsXlsx.js";
 
 function money(value,currency="PHP"){try{return new Intl.NumberFormat(undefined,{style:"currency",currency,maximumFractionDigits:2}).format(value||0);}catch{return `${currency} ${Number(value||0).toLocaleString()}`;}}
 const blank={name:"",sku:"",description:"",price:"",unitCost:"",currency:"PHP",stock:"",published:true,images:[]};
@@ -37,6 +38,15 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
   const estimatedUnits = Number(current?.estimatedUnits || 0);
   const unresolvedUnits = Number(current?.unresolvedCostUnits || 0);
   const isEstimate = Boolean(current?.isEstimate);
+  const [exportError, setExportError] = useState("");
+  function downloadExcel() {
+    setExportError("");
+    try {
+      exportPosEarningsXlsx({ report, current, rows, products, range, currency });
+    } catch (error) {
+      setExportError(error?.message || "Excel export could not be created.");
+    }
+  }
 
   return <section className="panel pos-earnings-panel" id="pos-charts" aria-labelledby="pos-charts-heading">
     <div className="pos-earnings-heading">
@@ -55,8 +65,14 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
           onChange={e => setSelectedCurrency(e.target.value)}>
           {currencies.map(item => <option key={item.currency} value={item.currency}>{item.currency}</option>)}
         </Select>}
+        <Button type="button" variant="outline" size="sm" className="pos-earnings-excel-button"
+          disabled={loading || Boolean(error) || !current} onClick={downloadExcel}
+          title="Download this period's POS data as an Excel workbook">
+          <FiDownload aria-hidden="true"/> Export Excel
+        </Button>
       </div>
     </div>
+    {exportError && <p className="pos-earnings-export-error" role="alert">{exportError}</p>}
     {loading ? <p className="muted" role="status">Loading POS earnings…</p> :
       error ? <div className="pos-earnings-note" role="alert">{error}
         <Button type="button" variant="outline" size="sm" onClick={onRetry}>Retry</Button>
@@ -108,20 +124,21 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
             </div>
             <div className="pos-earnings-table-wrap">
               <table className="pos-earnings-table">
-                <thead><tr><th scope="col">Product</th><th scope="col">Sold</th><th scope="col">Unit cost now</th><th scope="col">Sales</th><th scope="col">Gross earnings</th></tr></thead>
+                <thead><tr><th scope="col">Product</th><th scope="col">Sold</th><th scope="col">Store price</th><th scope="col">Unit cost now</th><th scope="col">Sales</th><th scope="col">Gross earnings</th></tr></thead>
                 <tbody>{rows.length ? rows.map(item => {
                   const currentProduct = products.find(product => product._id === item.productId);
                   return <tr key={item.productId + ":" + item.currency}>
                     <td>{item.name}</td>
                     <td>{Number(item.unitsSold || 0).toLocaleString()}</td>
+                    <td>{currentProduct?.price == null ? "Not available" : money(currentProduct.price,currentProduct.currency||currency)}</td>
                     <td>{currentProduct?.unitCost == null ? "Not set" : money(currentProduct.unitCost,currency)}</td>
                     <td>{money(item.revenue,currency)}</td>
                     <td className={typeof item.grossEarnings === "number" && item.grossEarnings < 0 ? "pos-earnings-loss" : "pos-earnings-profit"}>{typeof item.grossEarnings === "number" ? <>{money(item.grossEarnings,currency)}{item.isEstimate && <small className="pos-earnings-estimated-label"> Estimated</small>}</> : "Not available"}</td>
                   </tr>;
-                }) : <tr><td colSpan="5" className="pos-earnings-table-empty">No POS sales recorded for this period.</td></tr>}</tbody>
+                }) : <tr><td colSpan="6" className="pos-earnings-table-empty">No POS sales recorded for this period.</td></tr>}</tbody>
               </table>
             </div>
-            <p className="pos-earnings-explanation">Unit cost now is the optional cost saved on each product. Newer sales use the cost captured at checkout; older sales without a saved cost are estimated using today’s cost, if available. Estimates never overwrite previous transactions. Gross earnings exclude other operating expenses and online orders.</p>
+            <p className="pos-earnings-explanation">Store price is the product’s current listed selling price, not its historical checkout price. Unit cost now is the optional acquisition cost per unit. Newer sales use the cost captured at checkout; older sales without a saved cost are estimated using today’s cost, if available. Estimates never overwrite previous transactions. Gross earnings exclude other operating expenses and online orders.</p>
           </div>
         </div>
       </>}
