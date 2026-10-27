@@ -57,12 +57,13 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
     persist({ ...profile, profileImage: "", profileImagePositionX: 50, profileImagePositionY: 50 }, "Profile photo deleted.");
   }
 
-  const publicPath = profile?.username ? "/profile/" + profile.username : "";
+  const isAdmin = user.role === "admin";
+  const publicPath = profile?.username ? (isAdmin ? "/admin/" : "/profile/") + encodeURIComponent(profile.username) : "";
 
   return <AppLayout user={user} onLogout={onLogout}>
     <div className="profile-page-redesign profile-overview-clean">
     <header className="topbar profile-page-topbar">
-      <div><p className="eyebrow">PROFILE</p><h1>Your profile</h1><p className="muted">Manage how your account appears across BookFlow.</p></div>
+      <div><p className="eyebrow">{isAdmin ? "ADMIN PROFILE" : "PROFILE"}</p><h1>Your profile</h1><p className="muted">{isAdmin ? "Manage the public profile that everyone can view." : "Manage how your account appears across BookFlow."}</p></div>
       <Button asChild variant="default"><Link  className="primary-button button-link icon-link" to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit profile</Link></Button>
     </header>
 
@@ -93,7 +94,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
           {profile.bio && <p className="profile-overview-bio">{profile.bio}</p>}
           {profile.website && <a className="profile-website-link" href={profile.website} target="_blank" rel="noreferrer">{profile.website}</a>}
         </div>
-        <nav className="profile-home-actions" aria-label="Manage your profile and business">
+        {!isAdmin && <nav className="profile-home-actions" aria-label="Manage your profile and business">
           <Link className="profile-business-link" to="/dashboard/profile/business">
             <span className="profile-business-icon" aria-hidden="true"><FiBriefcase /></span>
             <span className="profile-business-copy">
@@ -102,9 +103,9 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
             </span>
             <FiArrowUpRight className="profile-business-arrow" aria-hidden="true" />
           </Link>
-        </nav>
+        </nav>}
 
-        <BookingQrCard bookingUrl={window.location.origin + "/b/" + (user.id || user._id)} businessName={profile.name} />
+        {!isAdmin && <BookingQrCard bookingUrl={window.location.origin + "/b/" + (user.id || user._id)} businessName={profile.name} />}
       </Card>
 
       {error && <p className="error profile-feedback">{error}</p>}
