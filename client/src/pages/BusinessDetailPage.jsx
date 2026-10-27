@@ -32,14 +32,14 @@ function dateLabel(date) {
 }
 
 function Metric({ icon: Icon, label, value, note, tone = "neutral" }) {
-  return <Card as="article" className={`admin-detail-metric admin-detail-metric--${tone}`}>
+  return <div className={`admin-detail-metric admin-detail-metric--${tone}`}>
     <div className="admin-detail-metric-icon"><Icon aria-hidden="true" /></div>
     <div>
       <span>{label}</span>
       <strong>{value}</strong>
       {note && <small>{note}</small>}
     </div>
-  </Card>;
+  </div>;
 }
 
 export default function BusinessDetailPage({ user, onLogout }) {
@@ -210,9 +210,9 @@ export default function BusinessDetailPage({ user, onLogout }) {
               </div>}
            </section>
 
-          <section className="admin-detail-section" aria-labelledby="admin-activity-title">
+          <section className="admin-detail-section admin-detail-statistics-section" aria-labelledby="admin-activity-title">
             <div className="admin-detail-section-heading">
-              <div><p className="eyebrow">BUSINESS STATISTICS</p><h2 id="admin-activity-title">Business statistics</h2></div>
+              <div><h2 id="admin-activity-title">Business statistics</h2></div>
             </div>
             <div className="admin-detail-metrics">
               <Metric tone="blue" icon={FiBarChart2} label="Services" value={data.serviceCount ?? data.services.length} note="Created services" />
