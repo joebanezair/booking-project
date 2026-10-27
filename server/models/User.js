@@ -31,7 +31,12 @@ const userSchema = new mongoose.Schema(
     friendRequests: [{ from: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, createdAt: { type: Date, default: Date.now } }],
     blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     restrictedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    pinnedConversations: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
+    pinnedConversations: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    // Persist dashboard checkboxes per account so they survive sign-out and other devices.
+    dashboardPreferences: {
+      businessWidgets: { type: mongoose.Schema.Types.Mixed, default: null },
+      adminMetrics: { type: mongoose.Schema.Types.Mixed, default: null }
+    }
   },
   { timestamps: true }
 );
