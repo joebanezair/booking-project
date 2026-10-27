@@ -1507,3 +1507,10 @@ html body #root .admin-detail-page .admin-detail-major-cards .admin-detail-recen
     padding: 12px !important;
   }
 }
+
+
+/* Business Insights only: unbold all text without changing layout or controls. */
+html body #root .admin-detail-page,
+html body #root .admin-detail-page * {
+  font-weight: 400 !important;
+}
