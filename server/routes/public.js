@@ -368,7 +368,7 @@ router.get("/search", async (req, res) => {
         _id: "$provider._id", name: "$provider.name", username: "$provider.username",
         profileImage: "$provider.profileImage", accountStatus: "$provider.accountStatus"
       } } },
-      { $project: { provider: 0, business: 0 } }
+      { $project: { provider: 0, business: 0, ...(requireActivePos ? { unitCost: 0 } : {}) } }
     ];
 
     // Active administrator profiles are publicly discoverable, but the result
