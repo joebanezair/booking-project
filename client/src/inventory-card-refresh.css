@@ -917,3 +917,97 @@ html body #root .pos-earnings-note {
     flex-basis: 155px;
   }
 }
+
+/* Excel actions and soft, rounded analytics surfaces (including earnings table).
+   Keep the section's content and existing responsive behavior unchanged. */
+html body #root .pos-earnings-controls .pos-earnings-excel-button.ui-button {
+  box-sizing: border-box;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-height: 35px !important;
+  width: auto !important;
+  padding: 8px 13px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  color: var(--primary) !important;
+  font-size: 12px;
+  font-weight: 400 !important;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none !important;
+}
+html body #root .pos-earnings-controls .pos-earnings-excel-button.ui-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--primary) 6%, var(--card)) !important;
+}
+html body #root .pos-earnings-controls .pos-earnings-excel-button.ui-button:disabled {
+  color: var(--muted-foreground) !important;
+  opacity: .55;
+  cursor: not-allowed;
+}
+html body #root .pos-earnings-controls .pos-earnings-excel-button.ui-button svg {
+  display: block;
+  flex: 0 0 15px;
+  width: 15px;
+  height: 15px;
+}
+html body #root .pos-earnings-export-error {
+  margin: 0 0 10px;
+  color: var(--destructive);
+  font-size: 12px;
+}
+html body #root .pos-earnings-panel.panel {
+  border-radius: 14px !important;
+}
+html body #root .pos-earnings-summary {
+  overflow: hidden !important;
+  border-radius: 12px !important;
+}
+html body #root .pos-earnings-bottom {
+  overflow: hidden !important;
+  border-radius: 12px !important;
+}
+html body #root .pos-earnings-table-wrap {
+  box-sizing: border-box;
+  overflow-x: auto;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card);
+}
+html body #root .pos-earnings-table {
+  margin: 0 !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  min-width: 660px;
+}
+html body #root .pos-earnings-table th:first-child {
+  border-top-left-radius: 9px !important;
+}
+html body #root .pos-earnings-table th:last-child {
+  border-top-right-radius: 9px !important;
+}
+html body #root .pos-earnings-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 9px !important;
+}
+html body #root .pos-earnings-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 9px !important;
+}
+html body #root .pos-earnings-explanation {
+  border-radius: 10px !important;
+}
+html body #root .pos-earnings-table td,
+html body #root .pos-earnings-table th {
+  border-radius: 0;
+}
+@media (max-width: 560px) {
+  html body #root .pos-earnings-controls {
+    width: 100%;
+  }
+  html body #root .pos-earnings-controls .pos-earnings-excel-button.ui-button {
+    flex: 1 1 auto;
+    min-width: 125px !important;
+  }
+}
