@@ -12,6 +12,8 @@ import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
 
 const statuses=[["pending","Pending"],["confirmed","Confirmed"],["in_progress","In Progress"],["completed","Completed"],["cancelled","Cancelled"],["no_show","No Show"]];
+const activeStatuses=new Set(["pending","confirmed","in_progress"]);
+const guestBookingStatuses=statuses.filter(([value])=>value!=="completed");
 const empty={contentId:"",guestName:"",guestEmail:"",guestPhone:"",locationLabel:"",locationLatitude:null,locationLongitude:null,locationAccuracy:null,service:"Consultation",servicePrice:0,currency:"PHP",serviceDurationMinutes:60,bufferMinutes:0,bookingDate:"",notes:"",internalNotes:"",status:"pending"};
 
 function money(value,currency="PHP"){try{return new Intl.NumberFormat(undefined,{style:"currency",currency,maximumFractionDigits:2}).format(value||0);}catch{return `${currency} ${Number(value||0).toLocaleString()}`;}}
@@ -30,13 +32,13 @@ export default function BookingManager({user}){
   const [view,setView]=useState("list");
   const [bookingLayout,setBookingLayout]=useState("grid");
   const [search,setSearch]=useState("");
-  const [statusFilter,setStatusFilter]=useState("");
+  const [statusFilter,setStatusFilter]=useState("active");
   const [month,setMonth]=useState(()=>new Date().toISOString().slice(0,7));
   const [error,setError]=useState("");
   const [bookingModalOpen,setBookingModalOpen]=useState(false);
   const [availability,setAvailability]=useState(null);
   const [availabilitySavedAt,setAvailabilitySavedAt]=useState(null);
-  const [historyOpen,setHistoryOpen]=useState(true);
+  const [historyOpen,setHistoryOpen]=useState(false);
   const [historyDateOpen,setHistoryDateOpen]=useState(false);
   const [historyFrom,setHistoryFrom]=useState("");
   const [historyTo,setHistoryTo]=useState("");
@@ -87,8 +89,12 @@ export default function BookingManager({user}){
   },[]);
 
   const stats=useMemo(()=>({total:items.length,pending:items.filter(i=>i.status==="pending").length,confirmed:items.filter(i=>i.status==="confirmed").length,inProgress:items.filter(i=>i.status==="in_progress").length,completed:items.filter(i=>i.status==="completed").length}),[items]);
+  // Guest bookings is the action queue. Once completed, a booking only lives
+  // in Booking history; cancelled/no-show items can be reviewed via filters.
   const filtered=useMemo(()=>items.filter(item=>{
-    if(statusFilter&&item.status!==statusFilter)return false;
+    if(item.status==="completed")return false;
+    if(statusFilter==="active"&&!activeStatuses.has(item.status))return false;
+    if(statusFilter&&statusFilter!=="active"&&item.status!==statusFilter)return false;
     if(!search)return true;
     const q=search.toLowerCase();return [item.bookingReference,item.guestName,item.guestEmail,item.guestPhone,item.service,item.locationLabel].some(v=>String(v||"").toLowerCase().includes(q));
   }),[items,search,statusFilter]);
@@ -122,7 +128,7 @@ export default function BookingManager({user}){
     if(form.status==="completed"&&original?.status!=="completed"){
       requestConfirmation({
         title:"Complete this service?",
-        description:"The booking will be marked completed and BookFlow will record a sale.",
+        description:"This booking will move to Booking history and BookFlow will record a sale.",
         service:form.service,
         saleAmount:money(form.servicePrice,form.currency),
         confirmLabel:"Complete service",
@@ -167,7 +173,7 @@ export default function BookingManager({user}){
     if(status==="completed"){
       requestConfirmation({
         title:"Complete this service?",
-        description:"The booking will be marked completed and BookFlow will record a sale.",
+        description:"This booking will move to Booking history and BookFlow will record a sale.",
         service:booking.service,
         saleAmount:money(booking.servicePrice,booking.currency),
         confirmLabel:"Complete service",
@@ -357,7 +363,7 @@ export default function BookingManager({user}){
 
         <section className="panel booking-list-panel booking-compact-panel">
           <div className="booking-section-heading">
-            <div><h2>Guest bookings</h2><p>Manage your customer appointments</p></div>
+            <div><h2>Guest bookings</h2><p>Manage active appointments. Completed bookings move to history.</p></div>
             <div className="booking-list-heading-actions">
               <span className="booking-total-pill">{filtered.length} {filtered.length===1?"booking":"bookings"}</span>
               <div className="booking-layout-switch" role="group" aria-label="Guest booking layout">
@@ -368,10 +374,17 @@ export default function BookingManager({user}){
           </div>
           <div className="booking-controls">
             <label className="booking-inline-search"><FiSearch aria-hidden="true"/><Input aria-label="Search guest bookings" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search bookings..."/></label>
-            <label className="booking-inline-select"><FiFilter aria-hidden="true"/><Select aria-label="Filter bookings by status" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}><option value="">All statuses</option>{statuses.map(([value,label])=><option key={value} value={value}>{label}</option>)}</Select></label>
+            <label className="booking-inline-select"><FiFilter aria-hidden="true"/><Select aria-label="Filter bookings by status" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}><option value="active">Active bookings</option><option value="">All except completed</option>{guestBookingStatuses.map(([value,label])=><option key={value} value={value}>{label}</option>)}</Select></label>
           </div>
           <div className={"booking-list booking-compact-list "+(bookingLayout==="grid"?"booking-layout-grid":"booking-layout-list")}>
-            {filtered.length===0?<p className="booking-empty-message">No matching bookings.</p>:filtered.map(booking=>{
+            {filtered.length===0?<div className="booking-queue-empty" role="status">
+              <FiCheckCircle aria-hidden="true"/>
+              <div>
+                <p>{statusFilter==="active"&&!search?"No active bookings to manage.":"No bookings match your filters."}</p>
+                <small>{statusFilter==="active"&&!search?"Completed services are saved in Booking history.":"Try another status or search term."}</small>
+              </div>
+              {statusFilter==="active"&&!search&&<Button type="button" variant="outline" size="sm" onClick={()=>setHistoryOpen(true)}>View history</Button>}
+            </div>:filtered.map(booking=>{
               const customer=customerMap.get(customerKey(booking));
               return <Card as="article" className="booking-card booking-lifecycle-card booking-compact-card" key={booking._id}>
                 <div className="booking-card-top">
@@ -414,7 +427,7 @@ export default function BookingManager({user}){
         </section>
         <section className="panel booking-history-panel booking-compact-panel">
           <div className="booking-section-heading booking-history-heading">
-            <div><h2>Booking history</h2><p>Completed and previously recorded bookings</p></div>
+            <div><h2>Booking history</h2><p>Completed bookings · available for reference and export</p></div>
             <div className="booking-history-heading-actions">
               <span className="booking-record-count">{completedHistory.length} {completedHistory.length===1?"record":"records"}</span>
               <Button type="button" variant="outline" className="booking-history-collapse" aria-label={historyOpen?"Collapse booking history":"Expand booking history"} aria-expanded={historyOpen} onClick={()=>setHistoryOpen(v=>!v)}>{historyOpen?<FiChevronUp/>:<FiChevronDown/>}</Button>
