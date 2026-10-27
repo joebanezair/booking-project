@@ -10,6 +10,7 @@ import { bookingMutationGuard } from "../middleware/bookingMutationGuard.js";
 import { resolveOrderedProduct, exactInventoryPattern } from "../lib/resolveOrderedProduct.js";
 import { addInventoryDeductionLine } from "../lib/inventoryDeductionLines.js";
 import { databaseFingerprint } from "../lib/databaseFingerprint.js";
+import BusinessAuditEvent from "../models/BusinessAuditEvent.js";
 
 const router = Router();
 router.use(requireAuth, requireBusiness);
@@ -25,6 +26,18 @@ router.use((req, res, next) => {
   return next();
 });
 router.use(storeImageFields(["images", "image"]));
+
+async function recordCatalogEvent(owner, action, detail) {
+  try {
+    await BusinessAuditEvent.create({
+      businessOwner: owner, actor: owner, action,
+      detail: String(detail || "").slice(0, 500)
+    });
+  } catch (error) {
+    // An unavailable audit store must not create a false product-mutation failure.
+    console.error("Unable to record catalog audit event", error);
+  }
+}
 
 function productImages(body){return (Array.isArray(body.images)?body.images:[]).map(value=>String(value||"").trim()).filter(Boolean).slice(0,8);}
 // Optional per-unit acquisition cost. An omitted cost means "unknown", not zero.
@@ -200,6 +213,7 @@ router.post("/products", async (req,res) => {
     const unitCost=parseProductUnitCost(req.body.unitCost);
     if (Number.isNaN(unitCost)) return res.status(400).json({message:"Initial unit cost must be a non-negative amount with up to two decimal places."});
     const product=await Product.create({user:req.user.id,name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),images:productImages(req.body),image:productImages(req.body)[0]||"",price:Math.max(0,Number(req.body.price||0)),unitCost,currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)});
+    await recordCatalogEvent(req.user.id, "product.created", `${product.name} (${product._id}), price: ${product.price}, cost: ${product.unitCost ?? "not provided"}, stock: ${product.stock}`);
     res.status(201).json(product);
   } catch(error) { console.error(error); res.status(500).json({message:"Unable to create product."}); }
 });
@@ -210,8 +224,15 @@ router.put("/products/:id", bookingMutationGuard(req => req.user.id), async (req
     if(!name) return res.status(400).json({message:"Product name is required."});
     const unitCost=parseProductUnitCost(req.body.unitCost);
     if (Number.isNaN(unitCost)) return res.status(400).json({message:"Initial unit cost must be a non-negative amount with up to two decimal places."});
+    const before=await Product.findOne({_id:req.params.id,user:req.user.id})
+      .select("name price unitCost stock published").lean();
     const product=await Product.findOneAndUpdate({_id:req.params.id,user:req.user.id},{$set:{name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),images:productImages(req.body),image:productImages(req.body)[0]||"",price:Math.max(0,Number(req.body.price||0)),...(Object.hasOwn(req.body,"unitCost")?{unitCost}:{}),currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)}},{new:true,runValidators:true});
     if(!product) return res.status(404).json({message:"Product not found."});
+    const fields=["name","price","unitCost","stock","published"];
+    const differences=fields.filter(key => String(before?.[key] ?? "") !== String(product[key] ?? ""))
+      .map(key => `${key}: ${before?.[key] ?? "not provided"} -> ${product[key] ?? "not provided"}`);
+    if(differences.length) await recordCatalogEvent(req.user.id, "product.updated",
+      `${product.name} (${product._id}): ${differences.join("; ")}`);
     res.json(product);
   } catch(error){console.error(error);res.status(500).json({message:"Unable to update product."});}
 });
@@ -225,7 +246,10 @@ router.delete("/products/:id", bookingMutationGuard(req => req.user.id), async(r
     if (activeOrders) return res.status(409).json({
       message: "This product belongs to " + activeOrders + " active online order(s). Complete or cancel those orders before deleting it."
     });
-    const product=await Product.findOneAndDelete({_id:req.params.id,user:req.user.id}); if(!product)return res.status(404).json({message:"Product not found."}); res.status(204).end(); }
+    const product=await Product.findOneAndDelete({_id:req.params.id,user:req.user.id});
+    if(!product)return res.status(404).json({message:"Product not found."});
+    await recordCatalogEvent(req.user.id, "product.deleted", `${product.name} (${product._id})`);
+    res.status(204).end(); }
   catch(error){console.error(error);res.status(500).json({message:"Unable to delete product."});}
 });
 // POS earnings use the unit cost captured at checkout whenever available.
