@@ -230,3 +230,42 @@ html body #root main.admin-public-page.bookflow-storefront > .storefront-footer 
     margin-bottom: 16px !important;
   }
 }
+
+/* Public admin profile polish: restrained header, lighter typography, cleaner
+   About section and a compact footer, without moving or hiding content. */
+html body #root main.admin-public-page.bookflow-storefront .admin-public-cover {
+  height: clamp(195px, 24vw, 255px) !important;
+  min-height: 195px !important;
+}
+html body #root main.admin-public-page.bookflow-storefront .admin-public-title-row h1,
+html body #root main.admin-public-page.bookflow-storefront .admin-public-about-heading h2,
+html body #root main.admin-public-page.bookflow-storefront .admin-public-role,
+html body #root main.admin-public-page.bookflow-storefront .admin-public-actions .ui-button {
+  font-weight: 400 !important;
+}
+html body #root main.admin-public-page.bookflow-storefront .admin-public-profile-info {
+  padding-bottom: 22px !important;
+}
+html body #root main.admin-public-page.bookflow-storefront .admin-public-about {
+  margin-top: 16px !important;
+  padding: 20px 22px !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+html body #root main.admin-public-page.bookflow-storefront .admin-public-about-heading {
+  margin-bottom: 12px;
+}
+html body #root main.admin-public-page.bookflow-storefront .storefront-footer-inner {
+  min-height: 0;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+@media (max-width: 680px) {
+  html body #root main.admin-public-page.bookflow-storefront .admin-public-cover {
+    height: 190px !important;
+    min-height: 190px !important;
+  }
+  html body #root main.admin-public-page.bookflow-storefront .admin-public-about {
+    padding: 16px !important;
+  }
+}
