@@ -141,7 +141,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
 
       {error && <p className="error" role="alert">{error}</p>}
       {loading && !data ? <p className="admin-detail-loading" role="status">Loading business statistics...</p> :
-        !data ? !error && <p>No business data available.</p> : <>
+        !data ? !error && <p>No business data available.</p> : <div className="admin-detail-unified-card">
           <section className="admin-detail-profile" aria-label="Business account">
             <ProfileAvatar profile={{ name: business.name, profileImage: userInfo.profileImage || business.logo }} size="lg" />
             <div className="admin-detail-profile-text">
@@ -342,7 +342,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
             </div>
           </section>
 
-        </>}
+        </div>}
       {featureToast && <div className="admin-detail-feature-toast" role="status" aria-live="polite">
         <span className="admin-detail-feature-toast-icon" aria-hidden="true">
           {featureToast.enabled ? <FiCheckCircle /> : <FiAlertCircle />}
