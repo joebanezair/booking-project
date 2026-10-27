@@ -1,0 +1,133 @@
+/* Public administrator profile, built on the business storefront shell. */
+html body #root .admin-public-page {
+  min-height: 100vh;
+  background: var(--background, #f4f6fb);
+  color: var(--foreground, #18233a);
+}
+html body #root .admin-public-page .admin-public-hero > .admin-public-cover {
+  height: 260px !important;
+  min-height: 260px !important;
+  background: color-mix(in srgb, var(--primary, #516ef0) 16%, var(--secondary, #eef2fb));
+}
+html body #root .admin-public-page .admin-public-cover .storefront-cover-placeholder {
+  background: linear-gradient(115deg, #e7ecff 0%, #dfeaf7 56%, #eef1ff 100%);
+}
+html body #root .admin-public-page .admin-public-profile-info {
+  padding-bottom: 25px !important;
+}
+html body #root .admin-public-page .admin-public-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin-bottom: 4px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary, #516ef0) 11%, var(--card, #fff));
+  color: var(--primary, #516ef0);
+  font-size: 11px;
+  font-weight: 550;
+}
+#root .admin-public-page .admin-public-role svg { width: 13px; height: 13px; }
+#root .admin-public-page .admin-public-headline {
+  margin: 12px 0 7px;
+  color: var(--foreground);
+  font-size: 14px;
+}
+#root .admin-public-page .admin-public-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+html body #root .admin-public-page .admin-public-actions .ui-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 10px !important;
+  font-weight: 450;
+  cursor: pointer;
+}
+#root .admin-public-page .admin-public-actions svg { width: 15px; height: 15px; }
+#root .admin-public-page .admin-public-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-top: 13px;
+  font-size: 12px;
+}
+#root .admin-public-page .admin-public-meta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+#root .admin-public-page .admin-public-meta svg { width: 15px; height: 15px; }
+html body #root .admin-public-page .admin-public-about {
+  box-sizing: border-box;
+  min-height: 135px;
+  margin-top: 20px !important;
+  margin-bottom: 50px !important;
+  padding: 22px !important;
+  border: 1px solid var(--border);
+  border-radius: 15px !important;
+  background: var(--card, #fff);
+  box-shadow: none;
+}
+#root .admin-public-page .admin-public-about-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+#root .admin-public-page .admin-public-about-heading > svg {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--secondary, #edf2fb);
+  color: var(--primary, #516ef0);
+}
+#root .admin-public-page .admin-public-about-heading h2 {
+  margin: 0 0 3px;
+  font-size: 18px;
+  font-weight: 600;
+}
+#root .admin-public-page .admin-public-about-heading p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+#root .admin-public-page .admin-public-about > p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-size: 13px;
+  line-height: 1.65;
+}
+#root .admin-public-error, #root .admin-public-loading {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 32px;
+  text-align: center;
+}
+#root .admin-public-error-body { display: grid; justify-items: center; gap: 12px; }
+#root .admin-public-error-body > svg { width: 36px; height: 36px; color: var(--muted-foreground); }
+#root .admin-public-error-body h1 { margin: 0; font-size: 24px; }
+#root .admin-public-error-body p { margin: 0 0 10px; color: var(--muted-foreground); }
+@media (max-width: 700px) {
+  html body #root .admin-public-page .admin-public-hero > .admin-public-cover {
+    height: 170px !important;
+    min-height: 170px !important;
+  }
+  html body #root .admin-public-page .admin-public-about {
+    margin-top: 14px !important;
+    padding: 16px !important;
+  }
+  #root .admin-public-page .admin-public-actions { margin-top: 4px; }
+  #root .admin-public-page .admin-public-about-heading h2 { font-size: 16px; }
+}
