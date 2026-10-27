@@ -1,4 +1,5 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 import Sale, { Product, PosSale, ProductOrder, InventoryMovement } from "../models/Sale.js";
 import requireAuth from "../middleware/auth.js";
 import { requireFeature } from "../middleware/requireFeature.js";
@@ -26,6 +27,14 @@ router.use((req, res, next) => {
 router.use(storeImageFields(["images", "image"]));
 
 function productImages(body){return (Array.isArray(body.images)?body.images:[]).map(value=>String(value||"").trim()).filter(Boolean).slice(0,8);}
+// Optional per-unit acquisition cost. An omitted cost means "unknown", not zero.
+function parseProductUnitCost(value) {
+  if (value == null || value === "") return null;
+  const amount = Number(value);
+  if (!Number.isFinite(amount) || amount < 0 || amount > 1_000_000_000 ||
+      Math.abs(Math.round(amount * 100) - amount * 100) > 0.000001) return NaN;
+  return Math.round(amount * 100) / 100;
+}
 
 function offsetMinutes(req) {
   const value = Number(req.query.offset || 0);
@@ -188,7 +197,9 @@ router.post("/products", async (req,res) => {
   try {
     const name=String(req.body.name||"").trim();
     if(!name) return res.status(400).json({message:"Product name is required."});
-    const product=await Product.create({user:req.user.id,name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),images:productImages(req.body),image:productImages(req.body)[0]||"",price:Math.max(0,Number(req.body.price||0)),currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)});
+    const unitCost=parseProductUnitCost(req.body.unitCost);
+    if (Number.isNaN(unitCost)) return res.status(400).json({message:"Initial unit cost must be a non-negative amount with up to two decimal places."});
+    const product=await Product.create({user:req.user.id,name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),images:productImages(req.body),image:productImages(req.body)[0]||"",price:Math.max(0,Number(req.body.price||0)),unitCost,currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)});
     res.status(201).json(product);
   } catch(error) { console.error(error); res.status(500).json({message:"Unable to create product."}); }
 });
@@ -197,7 +208,9 @@ router.put("/products/:id", bookingMutationGuard(req => req.user.id), async (req
   try {
     const name=String(req.body.name||"").trim();
     if(!name) return res.status(400).json({message:"Product name is required."});
-    const product=await Product.findOneAndUpdate({_id:req.params.id,user:req.user.id},{$set:{name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),images:productImages(req.body),image:productImages(req.body)[0]||"",price:Math.max(0,Number(req.body.price||0)),currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)}},{new:true,runValidators:true});
+    const unitCost=parseProductUnitCost(req.body.unitCost);
+    if (Number.isNaN(unitCost)) return res.status(400).json({message:"Initial unit cost must be a non-negative amount with up to two decimal places."});
+    const product=await Product.findOneAndUpdate({_id:req.params.id,user:req.user.id},{$set:{name,sku:String(req.body.sku||"").trim(),description:String(req.body.description||"").trim(),images:productImages(req.body),image:productImages(req.body)[0]||"",price:Math.max(0,Number(req.body.price||0)),...(Object.hasOwn(req.body,"unitCost")?{unitCost}:{}),currency:String(req.body.currency||"PHP").toUpperCase().slice(0,3),stock:Math.max(0,Math.floor(Number(req.body.stock||0))),published:Boolean(req.body.published)}},{new:true,runValidators:true});
     if(!product) return res.status(404).json({message:"Product not found."});
     res.json(product);
   } catch(error){console.error(error);res.status(500).json({message:"Unable to update product."});}
@@ -215,6 +228,57 @@ router.delete("/products/:id", bookingMutationGuard(req => req.user.id), async(r
     const product=await Product.findOneAndDelete({_id:req.params.id,user:req.user.id}); if(!product)return res.status(404).json({message:"Product not found."}); res.status(204).end(); }
   catch(error){console.error(error);res.status(500).json({message:"Unable to delete product."});}
 });
+// Aggregate the owning business's recorded POS sales, retaining the unit-cost
+// snapshots captured at checkout. Legacy lines without costs remain unknown.
+router.get("/pos/earnings", async (req, res) => {
+  try {
+    const range = ["7d", "30d", "all"].includes(req.query.range) ? req.query.range : "all";
+    const since = range === "7d" ? new Date(Date.now() - 7 * 86400000)
+      : range === "30d" ? new Date(Date.now() - 30 * 86400000) : null;
+    const match = { businessOwner: new mongoose.Types.ObjectId(req.user.id), status: "recorded" };
+    if (since) match.soldAt = { $gte: since };
+    const costIsKnown = { $ne: [{ $ifNull: ["$items.unitCost", null] }, null] };
+    const rows = await PosSale.aggregate([
+      { $match: match },
+      { $unwind: "$items" },
+      { $group: {
+        _id: { product: "$items.product", currency: { $ifNull: ["$currency", "PHP"] } },
+        name: { $last: "$items.name" },
+        unitsSold: { $sum: "$items.quantity" },
+        revenue: { $sum: "$items.lineTotal" },
+        knownCost: { $sum: { $cond: [costIsKnown, { $multiply: ["$items.unitCost", "$items.quantity"] }, 0] } },
+        unknownCostUnits: { $sum: { $cond: [costIsKnown, 0, "$items.quantity"] } }
+      } },
+      { $sort: { revenue: -1 } }
+    ]);
+    const currencies = new Map();
+    const products = rows.map(row => {
+      const currency = row._id.currency || "PHP";
+      const unitsSold = Number(row.unitsSold || 0);
+      const revenue = Number(row.revenue || 0);
+      const knownCost = Number(row.knownCost || 0);
+      const unknownCostUnits = Number(row.unknownCostUnits || 0);
+      const current = currencies.get(currency) || { currency, revenue: 0, knownCost: 0, unitsSold: 0, unknownCostUnits: 0 };
+      current.revenue += revenue;
+      current.knownCost += knownCost;
+      current.unitsSold += unitsSold;
+      current.unknownCostUnits += unknownCostUnits;
+      currencies.set(currency, current);
+      return { productId: String(row._id.product || ""), name: row.name || "Product",
+        currency, unitsSold, revenue, unknownCostUnits,
+        cost: unknownCostUnits ? null : knownCost,
+        grossEarnings: unknownCostUnits ? null : revenue - knownCost };
+    });
+    res.json({ range, currencies: [...currencies.values()].map(row => ({
+      ...row, cost: row.unknownCostUnits ? null : row.knownCost,
+      grossEarnings: row.unknownCostUnits ? null : row.revenue - row.knownCost
+    })), products: products.slice(0, 250) });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to load POS earnings." });
+  }
+});
+
 router.get("/pos", async(req,res) => {
   try { res.json(await PosSale.find({businessOwner:req.user.id}).sort({soldAt:-1}).limit(200).lean()); }
   catch(error){console.error(error);res.status(500).json({message:"Unable to load POS sales."});}
@@ -232,7 +296,9 @@ router.post("/pos", requireFeature("pos"), bookingMutationGuard(req => req.user.
       if(!product)return res.status(404).json({message:"Product not found."});
       if(product.stock<quantity)return res.status(409).json({message:product.name+" has insufficient stock."});
       const lineTotal=Number(product.price||0)*quantity;
-      lines.push({product:product._id,name:product.name,sku:product.sku,quantity,unitPrice:product.price,lineTotal}); total+=lineTotal; currency=product.currency||currency;
+      const unitCost=product.unitCost==null?null:Number(product.unitCost);
+      const lineCost=unitCost==null?null:Math.round(unitCost*quantity*100)/100;
+      lines.push({product:product._id,name:product.name,sku:product.sku,quantity,unitPrice:product.price,lineTotal,unitCost,lineCost}); total+=lineTotal; currency=product.currency||currency;
     }
     const deducted=await deductInventory(lines,req.user.id);
     try {
