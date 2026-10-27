@@ -31,7 +31,8 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
   const earnings = current?.grossEarnings;
   const complete = typeof cost === "number" && typeof earnings === "number";
   const positivePie = complete && earnings >= 0 && revenue > 0;
-  const costAngle = positivePie ? Math.min(360, Math.max(0, cost / revenue * 360)) : 0;
+  const costShare = positivePie ? Math.min(1, Math.max(0, cost / revenue)) : 0;
+  const ringCircumference = 2 * Math.PI * 80;
   const unknownUnits = Number(current?.unknownCostUnits || 0);
   const estimatedUnits = Number(current?.estimatedUnits || 0);
   const unresolvedUnits = Number(current?.unresolvedCostUnits || 0);
@@ -61,10 +62,10 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
         <Button type="button" variant="outline" size="sm" onClick={onRetry}>Retry</Button>
       </div> : <>
         <div className="pos-earnings-summary">
-          <div><span>Total POS sales</span><strong>{money(revenue,currency)}</strong><small>Recorded checkout revenue</small></div>
-          <div><span>Product costs</span><strong>{complete ? money(cost,currency) : "—"}</strong><small>{!complete ? "Unit cost missing for some sales" : isEstimate ? "Includes estimated historical costs" : "Cost of units sold"}</small></div>
-          <div><span>Gross earnings</span><strong>{complete ? money(earnings,currency) : "—"}</strong><small>{isEstimate ? "Estimate · sales minus unit costs" : "Sales minus product costs"}</small></div>
-          <div><span>Units sold</span><strong>{Number(current?.unitsSold || 0).toLocaleString()}</strong><small>Completed POS quantities</small></div>
+          <div className="pos-earnings-metric"><div className="pos-earnings-metric-label"><span>Total POS sales</span><FiShoppingBag aria-hidden="true"/></div><strong>{money(revenue,currency)}</strong><small>Recorded checkout revenue</small></div>
+          <div className="pos-earnings-metric"><div className="pos-earnings-metric-label"><span>Product costs</span><FiPackage aria-hidden="true"/></div><strong>{complete ? money(cost,currency) : "—"}</strong><small>{!complete ? "Unit cost missing for some sales" : isEstimate ? "Includes estimated historical costs" : "Cost of units sold"}</small></div>
+          <div className="pos-earnings-metric"><div className="pos-earnings-metric-label"><span>Gross earnings</span><FiBarChart2 aria-hidden="true"/></div><strong>{complete ? money(earnings,currency) : "—"}</strong><small>{isEstimate ? "Estimate · sales minus unit costs" : "Sales minus product costs"}</small></div>
+          <div className="pos-earnings-metric"><div className="pos-earnings-metric-label"><span>Units sold</span><FiShoppingCart aria-hidden="true"/></div><strong>{Number(current?.unitsSold || 0).toLocaleString()}</strong><small>Completed POS quantities</small></div>
         </div>
         <div className="pos-earnings-bottom">
           <div className="pos-earnings-pie-card">
@@ -74,8 +75,13 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
             </div>
             {positivePie ? <>
               <div className="pos-earnings-donut" role="img"
-                aria-label={"Product costs " + money(cost,currency) + "; gross earnings " + money(earnings,currency)}
-                style={{"--cost-angle":String(costAngle)+"deg"}}>
+                aria-label={"Product costs " + money(cost,currency) + "; gross earnings " + money(earnings,currency)}>
+                <svg className="pos-earnings-donut-svg" viewBox="0 0 220 220" aria-hidden="true" focusable="false">
+                  <circle cx="110" cy="110" r="80" fill="none" stroke="#a5b4fc" strokeWidth="23"/>
+                  <circle cx="110" cy="110" r="80" fill="none" stroke="#5267dc" strokeWidth="23"
+                    strokeDasharray={`${ringCircumference * costShare} ${ringCircumference}`}
+                    transform="rotate(-90 110 110)"/>
+                </svg>
                 <div className="pos-earnings-donut-center"><small>{isEstimate ? "Est. earnings" : "Gross earnings"}</small><strong>{money(earnings,currency)}</strong></div>
               </div>
               <div className="pos-earnings-legend">
@@ -110,7 +116,7 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
                     <td>{Number(item.unitsSold || 0).toLocaleString()}</td>
                     <td>{currentProduct?.unitCost == null ? "Not set" : money(currentProduct.unitCost,currency)}</td>
                     <td>{money(item.revenue,currency)}</td>
-                    <td>{typeof item.grossEarnings === "number" ? <>{money(item.grossEarnings,currency)}{item.isEstimate && <small className="pos-earnings-estimated-label"> Estimated</small>}</> : "Not available"}</td>
+                    <td className={typeof item.grossEarnings === "number" && item.grossEarnings < 0 ? "pos-earnings-loss" : "pos-earnings-profit"}>{typeof item.grossEarnings === "number" ? <>{money(item.grossEarnings,currency)}{item.isEstimate && <small className="pos-earnings-estimated-label"> Estimated</small>}</> : "Not available"}</td>
                   </tr>;
                 }) : <tr><td colSpan="5" className="pos-earnings-table-empty">No POS sales recorded for this period.</td></tr>}</tbody>
               </table>
