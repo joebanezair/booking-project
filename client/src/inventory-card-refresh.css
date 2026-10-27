@@ -734,3 +734,286 @@ html body #root .pos-earnings-explanation strong {
   font-weight: 500;
   color: var(--foreground);
 }
+
+/* POS Charts refinement: retain every stat, note, table row and control while
+   removing the nested-box appearance and making the donut a true circle. */
+html body #root .pos-earnings-panel.panel {
+  padding: 22px !important;
+  border-radius: 12px !important;
+}
+html body #root .pos-earnings-heading {
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 14px;
+}
+html body #root .pos-earnings-heading .eyebrow {
+  margin: 0 0 7px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .08em;
+}
+html body #root .pos-earnings-heading h2 {
+  margin-bottom: 5px;
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 400 !important;
+}
+html body #root .pos-earnings-controls select {
+  padding: 8px 12px;
+  min-height: 36px;
+  border-radius: 9px !important;
+  background: var(--card);
+}
+html body #root .pos-earnings-summary {
+  gap: 10px;
+  margin-bottom: 16px;
+}
+html body #root .pos-earnings-summary > .pos-earnings-metric {
+  gap: 8px;
+  min-height: 118px;
+  padding: 15px 17px;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .pos-earnings-metric-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+html body #root .pos-earnings-metric-label span {
+  font-size: 12px;
+  font-weight: 400 !important;
+  line-height: 1.4;
+}
+html body #root .pos-earnings-metric-label svg {
+  display: block;
+  flex: 0 0 31px;
+  box-sizing: border-box;
+  width: 31px;
+  height: 31px;
+  padding: 8px;
+  border-radius: 9px !important;
+  background: rgba(82, 103, 220, .10);
+  color: #5267dc;
+}
+html body #root .pos-earnings-summary strong {
+  font-size: clamp(19px, 1.65vw, 25px);
+  font-weight: 500 !important;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+}
+html body #root .pos-earnings-summary small {
+  min-height: 15px;
+  line-height: 1.45;
+}
+html body #root .pos-earnings-bottom {
+  grid-template-columns: minmax(290px, .85fr) minmax(0, 1.6fr);
+  align-items: stretch;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  overflow: hidden;
+}
+html body #root .pos-earnings-bottom > .pos-earnings-pie-card,
+html body #root .pos-earnings-bottom > .pos-earnings-products {
+  box-sizing: border-box;
+  height: auto !important;
+  min-width: 0;
+  padding: 20px 22px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root .pos-earnings-bottom > .pos-earnings-products {
+  border-left: 1px solid var(--border) !important;
+}
+html body #root .pos-earnings-subheading {
+  margin-bottom: 14px;
+}
+html body #root .pos-earnings-subheading h3 {
+  margin: 0 0 5px;
+  font-size: 14px;
+  font-weight: 500 !important;
+  line-height: 1.4;
+}
+html body #root .pos-earnings-subheading .muted {
+  font-size: 11px;
+  line-height: 1.5;
+}
+html body #root .pos-earnings-donut {
+  display: grid !important;
+  position: relative;
+  place-items: center;
+  width: min(100%, 208px) !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: 10px auto 15px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root .pos-earnings-donut > svg.pos-earnings-donut-svg {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+  max-width: 208px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: visible;
+}
+html body #root .pos-earnings-donut .pos-earnings-donut-center {
+  display: grid !important;
+  position: absolute !important;
+  inset: 22% !important;
+  place-content: center;
+  align-items: center;
+  width: auto !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  margin: 0 !important;
+  padding: 8px !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  text-align: center;
+}
+html body #root .pos-earnings-donut-center small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+html body #root .pos-earnings-donut-center strong {
+  font-size: clamp(14px, 1.1vw, 17px);
+  font-weight: 500 !important;
+  line-height: 1.3;
+}
+html body #root .pos-earnings-legend {
+  gap: 7px;
+  width: 100%;
+  margin-top: 4px;
+}
+html body #root .pos-earnings-legend > div {
+  gap: 9px;
+  padding: 3px 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+html body #root .pos-earnings-dot {
+  border-radius: 50% !important;
+}
+html body #root .pos-earnings-legend strong {
+  font-weight: 500 !important;
+  font-variant-numeric: tabular-nums;
+}
+html body #root .pos-earnings-table-wrap {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  overflow-x: auto;
+}
+html body #root .pos-earnings-table {
+  min-width: 565px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+html body #root .pos-earnings-table th,
+html body #root .pos-earnings-table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+html body #root .pos-earnings-table thead th {
+  background: color-mix(in srgb, var(--primary) 3%, var(--card)) !important;
+  color: var(--muted-foreground);
+  font-size: 10px;
+  font-weight: 500 !important;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+html body #root .pos-earnings-table th:not(:first-child),
+html body #root .pos-earnings-table td:not(:first-child) {
+  text-align: right;
+}
+html body #root .pos-earnings-table td:first-child {
+  font-weight: 500 !important;
+}
+html body #root .pos-earnings-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+html body #root .pos-earnings-table tbody tr:hover {
+  background: color-mix(in srgb, var(--primary) 3%, var(--card));
+}
+html body #root .pos-earnings-table .pos-earnings-loss {
+  color: #c2410c !important;
+}
+html body #root .pos-earnings-table .pos-earnings-profit {
+  font-weight: 500 !important;
+}
+html body #root .pos-earnings-table .pos-earnings-estimated-label {
+  vertical-align: middle;
+  font-size: 10px;
+}
+html body #root .pos-earnings-explanation {
+  max-width: 100%;
+  margin-top: 15px;
+  padding-left: 10px;
+  border-left: 2px solid rgba(82, 103, 220, .30);
+  font-size: 11px;
+  line-height: 1.6;
+}
+html body #root .pos-earnings-chart-empty {
+  min-height: 210px;
+}
+@media (max-width: 1130px) {
+  html body #root .pos-earnings-bottom {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  html body #root .pos-earnings-bottom > .pos-earnings-products {
+    border-left: 0 !important;
+    border-top: 1px solid var(--border) !important;
+  }
+}
+@media (max-width: 900px) {
+  html body #root .pos-earnings-summary {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+@media (max-width: 560px) {
+  html body #root .pos-earnings-panel.panel {
+    padding: 14px !important;
+  }
+  html body #root .pos-earnings-heading {
+    align-items: stretch;
+    gap: 12px;
+  }
+  html body #root .pos-earnings-controls select {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  html body #root .pos-earnings-summary {
+    gap: 8px;
+  }
+  html body #root .pos-earnings-summary > .pos-earnings-metric {
+    padding: 12px !important;
+    min-height: 112px;
+  }
+  html body #root .pos-earnings-metric-label svg {
+    width: 27px;
+    height: 27px;
+    flex-basis: 27px;
+    padding: 7px;
+  }
+  html body #root .pos-earnings-bottom > .pos-earnings-pie-card,
+  html body #root .pos-earnings-bottom > .pos-earnings-products {
+    padding: 16px 12px !important;
+  }
+}
