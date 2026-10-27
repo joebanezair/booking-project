@@ -38,6 +38,9 @@ jobs:
         working-directory: client
         run: npm run build
 
+      - name: Verify POS Excel export workbook
+        run: node --test client/scripts/verify-pos-earnings-xlsx.mjs
+
       - name: Install server dependencies
         working-directory: server
         run: npm ci
