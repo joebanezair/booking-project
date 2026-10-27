@@ -1,6 +1,6 @@
 import { Button } from "./ui/button.jsx";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiShoppingCart, FiShoppingBag, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX, FiChevronDown, FiMoreHorizontal, FiLogOut, FiArrowRight } from "react-icons/fi";
+import { FiBarChart2, FiBell, FiBriefcase, FiCalendar, FiHome, FiMessageCircle, FiMessageSquare, FiPackage, FiShoppingCart, FiShoppingBag, FiSearch, FiSettings, FiUser, FiUsers, FiMenu, FiX, FiChevronDown, FiChevronRight, FiMoreHorizontal, FiLogOut, FiArrowRight } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
 import { getRealtimeSocket } from "../realtime.js";
@@ -339,22 +339,40 @@ export default function AppLayout({ children, user, onLogout }) {
                 <ProfileAvatar profile={profile || user} size="sm" />
               </span>
               <div className="workspace-account-identity-info">
-                <strong>{profile?.name || user?.name || "Account"}</strong>
+                <strong title={profile?.name || user?.name}>{profile?.name || user?.name || "Account"}</strong>
                 <span className="workspace-account-email" title={user?.email}>{user?.email}</span>
-                <span className="workspace-account-role">{user?.role === "admin" ? "Administrator" : "Business account"}</span>
+                <div className="workspace-account-badges">
+                  <span className="workspace-account-role">{user?.role === "admin" ? "Administrator" : "Business account"}</span>
+                  <span className={isOnline ? "workspace-account-presence" : "workspace-account-presence offline"}
+                    title={isOnline ? "Connected to network" : "Network offline"}>
+                    <span className="workspace-account-presence-dot" aria-hidden="true" />
+                    {isOnline ? "Online" : "Offline"}
+                  </span>
+                </div>
               </div>
             </div>
-            <div className={isOnline ? "workspace-account-presence" : "workspace-account-presence offline"}>
-              <span className="workspace-account-presence-dot" aria-hidden="true" />
-              <span>{isOnline ? "Connected to network" : "Network offline"}</span>
-            </div>
             <nav className="workspace-account-items" aria-label="Account navigation">
-              <Link to="/dashboard/profile" onClick={() => { profileMenuRef.current.open = false; }}><FiUser aria-hidden="true"/>My profile</Link>
-              {user?.role === "admin" && user?.username && <Link to={`/admin/${encodeURIComponent(user.username)}`} onClick={() => { profileMenuRef.current.open = false; }}><FiUsers aria-hidden="true" />Public admin profile</Link>}
-              <Link to="/dashboard/settings" onClick={() => { profileMenuRef.current.open = false; }}><FiSettings aria-hidden="true"/>Settings</Link>
+              <Link to="/dashboard/profile" onClick={() => { profileMenuRef.current.open = false; }}>
+                <span className="workspace-account-menu-icon"><FiUser aria-hidden="true" /></span>
+                <span className="workspace-account-menu-label">My profile</span>
+                <FiChevronRight className="workspace-account-menu-chevron" aria-hidden="true" />
+              </Link>
+              {user?.role === "admin" && user?.username && <Link to={`/admin/${encodeURIComponent(user.username)}`} onClick={() => { profileMenuRef.current.open = false; }}>
+                <span className="workspace-account-menu-icon"><FiUsers aria-hidden="true" /></span>
+                <span className="workspace-account-menu-label">Public admin profile</span>
+                <FiChevronRight className="workspace-account-menu-chevron" aria-hidden="true" />
+              </Link>}
+              <Link to="/dashboard/settings" onClick={() => { profileMenuRef.current.open = false; }}>
+                <span className="workspace-account-menu-icon"><FiSettings aria-hidden="true" /></span>
+                <span className="workspace-account-menu-label">Settings</span>
+                <FiChevronRight className="workspace-account-menu-chevron" aria-hidden="true" />
+              </Link>
             </nav>
             <div className="workspace-account-footer">
-              <Button className="workspace-account-signout" variant="ghost" type="button" onClick={() => { profileMenuRef.current.open = false; onLogout?.(); }}><FiLogOut aria-hidden="true"/>Sign out</Button>
+              <Button className="workspace-account-signout" variant="ghost" type="button" onClick={() => { profileMenuRef.current.open = false; onLogout?.(); }}>
+                <span className="workspace-account-menu-icon"><FiLogOut aria-hidden="true" /></span>
+                <span className="workspace-account-menu-label">Sign out</span>
+              </Button>
             </div>
           </div>
         </details>
