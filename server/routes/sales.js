@@ -310,7 +310,7 @@ router.get("/pos/earnings", async (req, res) => {
           grossEarnings: row.unresolvedCostUnits > 0 ? null : cents(row.revenue - cost)
         };
       }),
-      products: products.slice(0, 250)
+      products
     });
   } catch (error) {
     console.error(error);
