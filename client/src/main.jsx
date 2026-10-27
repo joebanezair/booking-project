@@ -39,6 +39,7 @@ import "./feature-access-notice.css";
 import "./business-dashboard-refined.css";
 import "./notifications-typography.css";
 import "./sidebar-typography.css";
+import "./public-admin-profile.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
