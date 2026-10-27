@@ -41,6 +41,7 @@ import "./business-dashboard-refined.css";
 import "./notifications-typography.css";
 import "./sidebar-typography.css";
 import "./public-admin-profile.css";
+import "./workspace-account-menu.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
