@@ -2930,3 +2930,77 @@ html body .business-admin-page .business-admin-card-footer .business-admin-actio
 html body #root .business-admin-page .business-admin-status.status.active {
   border-radius: 9999px !important;
 }
+
+
+/* Business Management confirmations: compact, bottom-right notification,
+   no full-width banner or page-dimming overlay. */
+html body .business-admin-toast {
+  position: fixed !important;
+  right: calc(16px + env(safe-area-inset-right, 0px)) !important;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+  left: auto !important;
+  z-index: 1500;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(310px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  min-height: 54px;
+  margin: 0 !important;
+  padding: 11px 12px;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 5px !important;
+  background: #fff !important;
+  color: #111827 !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .14);
+  animation: business-admin-toast-in .18s ease-out both;
+}
+html body .business-admin-toast-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 22px;
+  color: #16a34a !important;
+}
+html body .business-admin-toast-icon svg { width: 21px; height: 21px; }
+html body .business-admin-toast-message {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+html body .business-admin-toast-close.ui-button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 24px;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 5px !important;
+  background: transparent !important;
+  color: #64748b !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+html body .business-admin-toast-close.ui-button:hover {
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+  transform: none;
+}
+html body .business-admin-toast-close.ui-button:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 2px;
+}
+html body .business-admin-toast-close svg { width: 15px; height: 15px; }
+@keyframes business-admin-toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body .business-admin-toast { animation: none; }
+}
