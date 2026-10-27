@@ -832,8 +832,8 @@ html body #root .admin-detail-feature-controls .ui-button {
 /* Floating confirmation for Feature Plan changes: white surface, orange icon only. */
 html body #root .admin-detail-feature-toast {
   position: fixed !important;
-  left: calc(16px + env(safe-area-inset-left, 0px)) !important;
-  right: auto !important;
+  left: auto !important;
+  right: calc(16px + env(safe-area-inset-right, 0px)) !important;
   bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
   z-index: 150;
   display: flex !important;
