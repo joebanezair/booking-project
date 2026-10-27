@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { FiArrowRight, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiLock, FiMapPin, FiMessageSquare, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowRight, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiLock, FiMapPin, FiMessageSquare, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
@@ -218,7 +218,7 @@ export default function PublicProfilePage({ user }) {
               {profile.bookingAvailable && <Button asChild variant="default"><Link className="public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
             </div>
           </div>
-          {paused && <div className="paused-public-banner">Temporarily unavailable — this business is not accepting new bookings right now.</div>}
+          {paused && <div className="paused-public-banner" role="status" title="This business is not accepting new bookings right now."><FiAlertCircle aria-hidden="true" /><span>Bookings temporarily unavailable</span><span className="visually-hidden"> — this business is not accepting new bookings right now.</span></div>}
           {profile.headline && <p className="profile-headline">{profile.headline}</p>}
           <div className="profile-reputation-panel">
             <div className="profile-reputation-row">
