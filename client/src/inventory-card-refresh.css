@@ -287,3 +287,428 @@ html body #root .page-shell > .content-shell > .products-pos-header.topbar > .ca
   margin-left: auto !important;
   flex: 0 0 auto;
 }
+
+/* Products: accessible in-page breadcrumb, not a device selection control. */
+html body #root .products-pos-header .pos-header-cart-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+html body #root .products-pos-header .pos-header-cart-actions .cart-header-badge {
+  margin: 0 !important;
+}
+html body #root .products-pos-header .pos-responsive-cart-button.ui-button {
+  display: none !important;
+}
+html body #root .products-pos-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin: -4px 0 16px;
+  padding: 5px 7px;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+html body #root .products-pos-breadcrumb > svg {
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  color: var(--muted-foreground);
+}
+html body #root .products-pos-breadcrumb-root {
+  padding: 7px 8px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+html body #root .products-pos-breadcrumb .ui-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: auto !important;
+  min-height: 32px !important;
+  padding: 6px 10px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: var(--muted-foreground) !important;
+  font-size: 12px;
+  font-weight: 400 !important;
+  cursor: pointer;
+}
+html body #root .products-pos-breadcrumb .ui-button.is-active,
+html body #root .products-pos-breadcrumb .ui-button:hover {
+  background: color-mix(in srgb, var(--primary) 9%, var(--card)) !important;
+  color: var(--primary) !important;
+}
+html body #root .products-pos-breadcrumb .ui-button svg {
+  flex: 0 0 15px;
+  width: 15px;
+  height: 15px;
+}
+
+/* Initial cost belongs to each product, not a single global capital amount. */
+html body #root .product-create-form .product-cost-grid.product-form-grid {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+}
+html body #root .product-edit-form .product-edit-cost-grid.two-col {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+}
+html body #root .product-create-form .product-cost-hint {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* Tablet: show the existing cart in a real modal panel, never as a second
+   side card; desktop retains the original right-hand POS layout. */
+html body #root .products-page-grid .pos-cart-dismiss.ui-button { display: none !important; }
+html body #root .pos-checkout-backdrop { display: none; }
+@media (max-width: 1023px) {
+  html body #root .products-page-grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  html body #root .products-pos-header .pos-header-cart-actions .pos-desktop-cart { display: none !important; }
+  html body #root .products-pos-header .pos-header-cart-actions .pos-responsive-cart-button.ui-button {
+    display: inline-flex !important;
+    width: auto !important;
+    min-height: 36px !important;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 7px 11px !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    background: var(--card) !important;
+    color: var(--primary) !important;
+    font-size: 12px;
+    font-weight: 400 !important;
+    white-space: nowrap;
+  }
+  html body #root .pos-responsive-cart-button svg {
+    width: 15px;
+    height: 15px;
+  }
+  html body #root .pos-checkout-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    background: rgba(9, 18, 36, .38);
+    backdrop-filter: blur(2px);
+  }
+  html body #root .products-page-grid .products-cart-panel {
+    display: none !important;
+    position: static;
+  }
+  html body #root .products-page-grid .products-cart-panel.pos-popup-visible {
+    box-sizing: border-box;
+    display: block !important;
+    position: fixed !important;
+    z-index: 1201;
+    top: 50%;
+    right: 24px;
+    width: min(420px, calc(100vw - 48px)) !important;
+    max-width: none !important;
+    max-height: calc(100dvh - 48px);
+    margin: 0 !important;
+    padding: 20px !important;
+    overflow: auto;
+    border: 1px solid var(--border) !important;
+    border-radius: 15px !important;
+    background: var(--card) !important;
+    box-shadow: 0 22px 65px rgba(12, 23, 48, .2) !important;
+    transform: translateY(-50%);
+  }
+  html body #root .products-page-grid .pos-popup-visible .panel-title {
+    position: relative;
+    padding-right: 30px;
+  }
+  html body #root .products-page-grid .pos-popup-visible .pos-cart-dismiss.ui-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 29px !important;
+    min-width: 29px !important;
+    height: 29px !important;
+    min-height: 29px !important;
+    padding: 5px !important;
+    border-radius: 8px !important;
+  }
+}
+@media (max-width: 767px) {
+  html body #root .products-page-grid .products-cart-panel.pos-popup-visible {
+    top: auto !important;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100% !important;
+    max-height: 94dvh;
+    max-height: 94svh;
+    border-radius: 16px 16px 0 0 !important;
+    padding: 18px 16px calc(18px + env(safe-area-inset-bottom,0px)) !important;
+    transform: none !important;
+  }
+}
+@media (max-width: 640px) {
+  html body #root .product-create-form .product-cost-grid.product-form-grid,
+  html body #root .product-edit-form .product-edit-cost-grid.two-col {
+    grid-template-columns: minmax(0,1fr);
+  }
+  html body #root .products-pos-breadcrumb {
+    gap: 0;
+  }
+  html body #root .products-pos-breadcrumb .ui-button {
+    padding: 6px !important;
+    gap: 4px;
+    font-size: 11px;
+  }
+  html body #root .products-pos-header .pos-header-cart-actions {
+    margin-left: 0;
+  }
+}
+
+/* POS Charts: same white surfaces and blue accents as current inventory. */
+html body #root .pos-earnings-panel.panel {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 24px;
+  padding: 20px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .pos-earnings-heading,
+html body #root .pos-earnings-subheading {
+  min-width: 0;
+}
+html body #root .pos-earnings-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+html body #root .pos-earnings-heading h2 {
+  margin: 0 0 5px;
+  font-size: 19px;
+  font-weight: 500;
+}
+html body #root .pos-earnings-heading .eyebrow {
+  color: var(--primary);
+}
+html body #root .pos-earnings-heading .muted,
+html body #root .pos-earnings-subheading .muted {
+  margin: 0;
+  font-size: 12px;
+}
+html body #root .pos-earnings-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+html body #root .pos-earnings-controls select {
+  width: auto;
+  min-width: 112px;
+  min-height: 36px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+html body #root .pos-earnings-summary {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+html body #root .pos-earnings-summary > div {
+  display: grid;
+  align-content: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 14px 15px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+html body #root .pos-earnings-summary span {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+html body #root .pos-earnings-summary strong {
+  overflow-wrap: anywhere;
+  font-size: clamp(17px,2vw,25px);
+  line-height: 1.3;
+  color: var(--foreground);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+html body #root .pos-earnings-summary small {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+html body #root .pos-earnings-bottom {
+  display: grid;
+  grid-template-columns: minmax(265px, .85fr) minmax(0, 1.55fr);
+  gap: 12px;
+  align-items: start;
+}
+html body #root .pos-earnings-pie-card,
+html body #root .pos-earnings-products {
+  min-width: 0;
+  height: 100%;
+  padding: 17px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+html body #root .pos-earnings-subheading h3 {
+  margin: 0 0 5px;
+  font-size: 14px;
+  font-weight: 500;
+}
+html body #root .pos-earnings-donut {
+  --cost-angle: 0deg;
+  display: grid;
+  place-items: center;
+  width: min(100%, 215px);
+  aspect-ratio: 1;
+  margin: 22px auto 14px;
+  border-radius: 50%;
+  background: conic-gradient(#5267dc 0deg var(--cost-angle), #9ba8f5 var(--cost-angle) 360deg);
+}
+html body #root .pos-earnings-donut-center {
+  box-sizing: border-box;
+  display: grid;
+  place-content: center;
+  gap: 5px;
+  width: 68%;
+  aspect-ratio: 1;
+  padding: 10px;
+  border-radius: 50%;
+  background: var(--card);
+  text-align: center;
+}
+html body #root .pos-earnings-donut-center small {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+html body #root .pos-earnings-donut-center strong {
+  overflow-wrap: anywhere;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+html body #root .pos-earnings-legend {
+  display: grid;
+  gap: 9px;
+}
+html body #root .pos-earnings-legend > div {
+  display: grid;
+  grid-template-columns: 9px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+html body #root .pos-earnings-legend strong {
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 500;
+}
+html body #root .pos-earnings-dot {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+html body #root .pos-earnings-dot.is-cost { background: #5267dc; }
+html body #root .pos-earnings-dot.is-profit { background: #9ba8f5; }
+html body #root .pos-earnings-chart-empty {
+  display: grid;
+  place-items: center;
+  justify-items: center;
+  gap: 10px;
+  min-height: 195px;
+  padding: 24px;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+html body #root .pos-earnings-chart-empty svg {
+  width: 29px;
+  height: 29px;
+  color: var(--primary);
+}
+html body #root .pos-earnings-explanation {
+  margin: 14px 0 0;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+}
+html body #root .pos-earnings-table-wrap {
+  overflow-x: auto;
+  margin-top: 14px;
+}
+html body #root .pos-earnings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+html body #root .pos-earnings-table th,
+html body #root .pos-earnings-table td {
+  padding: 11px 9px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+html body #root .pos-earnings-table th {
+  font-weight: 500;
+  color: var(--muted-foreground);
+  background: var(--secondary);
+}
+html body #root .pos-earnings-table td {
+  font-weight: 400;
+  color: var(--foreground);
+}
+html body #root .pos-earnings-table-empty {
+  padding: 25px 10px !important;
+  text-align: center !important;
+  color: var(--muted-foreground) !important;
+}
+html body #root .pos-earnings-note {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+}
+@media (max-width: 1100px) {
+  html body #root .pos-earnings-bottom {
+    grid-template-columns: minmax(0,1fr);
+  }
+}
+@media (max-width: 770px) {
+  html body #root .pos-earnings-summary {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+@media (max-width: 560px) {
+  html body #root .pos-earnings-panel.panel {
+    padding: 14px !important;
+  }
+  html body #root .pos-earnings-summary > div {
+    padding: 12px;
+  }
+}
