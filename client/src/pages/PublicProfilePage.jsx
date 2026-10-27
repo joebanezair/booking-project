@@ -4,7 +4,7 @@ import { Textarea } from "../components/ui/textarea.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
@@ -16,6 +16,7 @@ import { Button } from "../components/ui/button.jsx";
 
 export default function PublicProfilePage({ user }) {
   const { username } = useParams();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const resolvedUsername = username || "";
   const [data, setData] = useState(null);
@@ -38,14 +39,27 @@ export default function PublicProfilePage({ user }) {
   const [minServiceRating, setMinServiceRating] = useState("0");
 
   useEffect(() => {
+    let active = true;
+    setData(null);
+    setError("");
     setCatalogSearch("");
     setCatalogType("all");
     setMinServiceRating("0");
     api.publicProfile(resolvedUsername).then(result => {
-      setData(result);
-      setError("");
-    }).catch(e => setError(e.message));
-  }, [resolvedUsername]);
+      if (active) { setData(result); setError(""); }
+    }).catch(async e => {
+      if (e.status === 404) {
+        try {
+          // Existing /profile/:username links should also work for admins.
+          await api.publicAdminProfile(resolvedUsername);
+          if (active) navigate(`/admin/${encodeURIComponent(resolvedUsername)}`, { replace: true });
+          return;
+        } catch { /* No public admin profile by this username either. */ }
+      }
+      if (active) setError(e.message);
+    });
+    return () => { active = false; };
+  }, [resolvedUsername, navigate]);
 
   useEffect(() => {
     if (!data) return;
