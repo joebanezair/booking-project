@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { FiArrowLeft, FiCalendar, FiCheck, FiCopy, FiEdit3, FiMapPin, FiShield } from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiCheck, FiCopy, FiEdit3, FiGlobe, FiMapPin, FiShield } from "react-icons/fi";
 import { Button } from "../components/ui/button.jsx";
 import { Image } from "../components/ui/image.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
@@ -27,6 +27,7 @@ export default function PublicAdminProfilePage({ user }) {
   }, [username]);
 
   const isOwner = user?.role === "admin" && user?.username === profile?.username;
+  const publicWebsite = /^https?:\/\//i.test(profile?.website || "") ? profile.website : "";
   const joined = profile?.joinedAt && !Number.isNaN(new Date(profile.joinedAt).getTime())
     ? new Date(profile.joinedAt).toLocaleDateString(undefined, { month: "long", year: "numeric" })
     : "";
@@ -84,6 +85,7 @@ export default function PublicAdminProfilePage({ user }) {
           {profile.headline && <p className="profile-headline admin-public-headline">{profile.headline}</p>}
           <div className="profile-meta storefront-meta admin-public-meta">
             {profile.location && <span><FiMapPin aria-hidden="true" /> {profile.location}</span>}
+            {publicWebsite && <a href={publicWebsite} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true" /> Website</a>}
             {joined && <span><FiCalendar aria-hidden="true" /> Joined {joined}</span>}
           </div>
         </div>
