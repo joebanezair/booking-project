@@ -12,13 +12,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 
 const businessSections = [
-  { title: "Services", text: "Create and manage your services.", to: "/dashboard/services", action: "Manage services", icon: FiBriefcase, widgetKey: "quickServices", feature: "booking", countKey: "services", color: "#2563EB", tint: "rgba(37,99,235,0.10)" },
-  { title: "Bookings", text: "Manage booking requests and status.", to: "/dashboard/bookings", action: "Manage bookings", icon: FiCalendar, widgetKey: "quickBookings", feature: "booking", countKey: "bookings", color: "#7C3AED", tint: "rgba(124,58,237,0.10)" },
-  { title: "Products", text: "Manage products, pricing and inventory.", to: "/dashboard/products", action: "Manage products", icon: FiPackage, widgetKey: "quickProducts", feature: "pos", countKey: "products", color: "#EA580C", tint: "rgba(234,88,12,0.10)" },
-  { title: "Sales & Analytics", text: "Track sales, revenue and reports.", to: "/dashboard/sales", action: "View sales", icon: FiBarChart2, widgetKey: "quickSales", color: "#059669", tint: "rgba(5,150,105,0.10)" },
-  { title: "Messages", text: "Chat with businesses and administrators.", to: "/dashboard/messages", action: "Open messages", icon: FiMessageSquare, widgetKey: "quickMessages", countKey: "messages", color: "#DB2777", tint: "rgba(219,39,119,0.10)" },
-  { title: "Business profile", text: "Update your public business information.", to: "/dashboard/profile", action: "Manage profile", icon: FiUser, widgetKey: "quickProfile", color: "#0D9488", tint: "rgba(13,148,136,0.10)" },
-  { title: "Search", text: "Explore businesses and public services.", to: "/search", action: "Browse BookFlow", icon: FiSearch, widgetKey: "quickSearch", color: "#B45309", tint: "rgba(180,83,9,0.10)" }
+  { title: "Services", text: "Create and manage your services.", to: "/dashboard/services", action: "Manage services", icon: FiBriefcase, widgetKey: "quickServices", feature: "booking", countKey: "services" },
+  { title: "Bookings", text: "Manage booking requests and status.", to: "/dashboard/bookings", action: "Manage bookings", icon: FiCalendar, widgetKey: "quickBookings", feature: "booking", countKey: "bookings" },
+  { title: "Products", text: "Manage products, pricing and inventory.", to: "/dashboard/products", action: "Manage products", icon: FiPackage, widgetKey: "quickProducts", feature: "pos", countKey: "products" },
+  { title: "Sales & Analytics", text: "Track sales, revenue and reports.", to: "/dashboard/sales", action: "View sales", icon: FiBarChart2, widgetKey: "quickSales" },
+  { title: "Messages", text: "Chat with businesses and administrators.", to: "/dashboard/messages", action: "Open messages", icon: FiMessageSquare, widgetKey: "quickMessages", countKey: "messages" },
+  { title: "Business profile", text: "Update your public business information.", to: "/dashboard/profile", action: "Manage profile", icon: FiUser, widgetKey: "quickProfile" },
+  { title: "Search", text: "Explore businesses and public services.", to: "/search", action: "Browse BookFlow", icon: FiSearch, widgetKey: "quickSearch" }
 ];
 
 const adminSections = [
@@ -584,7 +584,6 @@ export default function DashboardPage({ user, onLogout }) {
             </Card>
           ) : (
             <Link to={section.to} className="dashboard-quick-link" key={section.to}
-              style={{ "--quick-color": section.color, "--quick-tint": section.tint }}
               aria-label={section.action}>
               <span className="route-card-icon"><Icon aria-hidden="true" /></span>
               <span className="dashboard-quick-copy">
