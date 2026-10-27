@@ -6,7 +6,8 @@ import { Label } from "../components/ui/label.jsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiCopy, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPackage, FiPauseCircle, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers } from "react-icons/fi";
+import { createPortal } from "react-dom";
+import { FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiCopy, FiEye, FiGrid, FiKey, FiList, FiMoreHorizontal, FiPause, FiPackage, FiPauseCircle, FiPlay, FiRefreshCw, FiSearch, FiSlash, FiStar, FiUsers, FiX } from "react-icons/fi";
 import { PiCoin } from "react-icons/pi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
@@ -73,7 +74,7 @@ export default function BusinessManagementPage({ user, onLogout }) {
   const [items,setItems] = useState([]);
   const [overview,setOverview] = useState(null);
   const [error,setError] = useState("");
-  const [message,setMessage] = useState("");
+  const [message,setMessage] = useState(null);
   const [pendingStatus,setPendingStatus] = useState(null);
   const [passwordTarget,setPasswordTarget] = useState(null);
   const [newPassword,setNewPassword] = useState("");
@@ -87,6 +88,14 @@ export default function BusinessManagementPage({ user, onLogout }) {
   // The list/grid buttons still switch views for the current visit.
   const [viewMode,setViewMode] = useState("grid");
   const [openActions,setOpenActions] = useState(null);
+
+  // A compact, dismissible success toast replaces the old full-width banner.
+  // Each new notification resets its dismissal timer.
+  useEffect(() => {
+    if (!message) return undefined;
+    const timeout = window.setTimeout(() => setMessage(null), 5000);
+    return () => window.clearTimeout(timeout);
+  }, [message]);
 
   useEffect(() => {
     // Drop the legacy persisted list preference that overrode the new grid default.
@@ -148,26 +157,28 @@ export default function BusinessManagementPage({ user, onLogout }) {
 
   async function applyStatus() {
     if (!pendingStatus || busy) return;
+    setMessage(null);
     setBusy(true);
     try {
       const {id,accountStatus} = pendingStatus;
       await api.admin.setBusinessStatus(id, accountStatus);
       setPendingStatus(null);
       await load(); // Keep the global account counts and directory synchronized.
-      setMessage("Business status updated.");
+      setMessage({ text: "Business status updated." });
     } catch(e) { setError(e.message); }
     finally { setBusy(false); }
   }
   async function resetPassword(e) {
     e.preventDefault();
     if (!passwordTarget || busy) return;
+    setMessage(null);
     if (newPassword.length < 8) { setError("Password must be at least 8 characters."); return; }
     if (newPassword !== confirmPassword) { setError("Passwords do not match."); return; }
     setBusy(true);
     try {
       await api.admin.resetBusinessPassword(passwordTarget.id,newPassword);
       setPasswordTarget(null); setNewPassword(""); setConfirmPassword("");
-      setMessage("Password reset successfully."); setError("");
+      setMessage({ text: "Password reset successfully." }); setError("");
     } catch(e) { setError(e.message); }
     finally { setBusy(false); }
   }
@@ -201,7 +212,6 @@ export default function BusinessManagementPage({ user, onLogout }) {
       </header>
 
       {error && <p className="error" role="alert">{error}</p>}
-      {message && <p className="success" role="status">{message}</p>}
 
       <section className="business-admin-directory" aria-labelledby="business-directory-title">
         <div className="business-admin-toolbar">
@@ -386,5 +396,17 @@ export default function BusinessManagementPage({ user, onLogout }) {
       </DialogContent>
     </Dialog>
     </div>
+    {message && createPortal(
+      <div className="business-admin-toast" role="status" aria-live="polite" aria-atomic="true">
+        <span className="business-admin-toast-icon" aria-hidden="true"><FiCheckCircle /></span>
+        <span className="business-admin-toast-message">{message.text}</span>
+        <Button type="button" variant="ghost" size="icon-sm"
+          className="business-admin-toast-close" aria-label="Dismiss notification"
+          onClick={() => setMessage(null)}>
+          <FiX aria-hidden="true" />
+        </Button>
+      </div>,
+      document.body
+    )}
   </AppLayout>;
 }
