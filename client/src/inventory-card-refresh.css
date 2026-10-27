@@ -1011,3 +1011,33 @@ html body #root .pos-earnings-table th {
     min-width: 125px !important;
   }
 }
+
+/* POS Charts icon tiles and estimate badges: restore rounded corners even if
+   global SVG, small, or table styles are loaded later. No data/layout changes. */
+html body #root .pos-earnings-panel .pos-earnings-summary .pos-earnings-metric-label > svg {
+  border-radius: 11px !important;
+  background: rgba(82, 103, 220, .10) !important;
+  overflow: visible;
+}
+html body #root .pos-earnings-panel .pos-earnings-table td .pos-earnings-estimated-label {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 7px !important;
+  padding: 4px 9px !important;
+  min-height: 23px;
+  box-sizing: border-box;
+  border: 1px solid rgba(82, 103, 220, .12) !important;
+  border-radius: 999px !important;
+  background: rgba(82, 103, 220, .09) !important;
+  color: #5267dc !important;
+  font-size: 10px !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap;
+  box-shadow: none !important;
+}
+html body #root .pos-earnings-panel .pos-earnings-table td.pos-earnings-loss {
+  color: #c2410c !important;
+}
