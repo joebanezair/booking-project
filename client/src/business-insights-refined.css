@@ -864,3 +864,318 @@ html body #root .admin-detail-page .admin-detail-recent .admin-detail-row .ui-bu
     flex: 1 1 auto;
   }
 }
+
+/*
+ * Business Insights / compact admin polish.
+ * Kept to this page: no functional changes to account, feature, or sales actions.
+ * Nested cards are replaced by slim rows and a unified statistics strip.
+ */
+html body #root .admin-detail-page {
+  width: min(100%, 1240px);
+  padding: 0 0 28px;
+}
+#root .admin-detail-page .admin-detail-header {
+  align-items: end;
+  margin-bottom: 13px;
+  gap: 12px;
+}
+#root .admin-detail-page .admin-detail-header h1 {
+  margin-bottom: 4px;
+  font-size: clamp(23px, 2vw, 28px);
+  letter-spacing: -.03em;
+  font-weight: 680;
+}
+#root .admin-detail-page .admin-detail-header .eyebrow {
+  margin-bottom: 3px;
+  font-size: 10px;
+  letter-spacing: .075em;
+}
+html body #root .admin-detail-page .admin-detail-back.ui-button {
+  margin-bottom: 7px;
+}
+html body #root .admin-detail-page .admin-detail-refresh.ui-button {
+  min-height: 34px;
+  padding: 6px 11px !important;
+  border-radius: 9px !important;
+  box-shadow: none;
+}
+
+/* Compact identity strip: status belongs to the business name, not the action area. */
+html body #root .admin-detail-page .admin-detail-profile {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 0;
+  padding: 14px 18px;
+  border: 1px solid var(--detail-border);
+  border-radius: 10px !important;
+  background: var(--detail-surface);
+  box-shadow: none;
+}
+html body #root .admin-detail-page .admin-detail-profile > .profile-avatar {
+  width: 52px !important;
+  min-width: 52px !important;
+  height: 52px !important;
+  min-height: 52px !important;
+}
+#root .admin-detail-page .admin-detail-profile-identity-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 11px;
+  margin-bottom: 4px;
+}
+#root .admin-detail-page .admin-detail-profile-identity-heading h2 {
+  margin: 0;
+  color: var(--detail-ink);
+  font-size: 16px;
+  font-weight: 680;
+  line-height: 1.25;
+}
+#root .admin-detail-page .admin-detail-profile-text p,
+#root .admin-detail-page .admin-detail-profile-text small {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 11px;
+}
+html body #root .admin-detail-page .admin-detail-status.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 5px 10px;
+  border-radius: 999px !important;
+  font-size: 11px;
+  font-weight: 600;
+}
+#root .admin-detail-page .admin-detail-status.status::before {
+  width: 6px;
+  height: 6px;
+  flex-basis: 6px;
+}
+#root .admin-detail-page .admin-detail-profile-controls {
+  display: flex;
+  grid-column: auto;
+  justify-content: flex-end;
+  align-items: center;
+  width: auto;
+  padding: 0;
+  border: 0;
+}
+#root .admin-detail-page .admin-detail-profile-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+html body #root .admin-detail-page .admin-detail-profile-actions .ui-button {
+  min-height: 34px;
+  padding: 7px 11px;
+  gap: 6px;
+  border-radius: 8px !important;
+  font-size: 11px;
+  font-weight: 550;
+  white-space: nowrap;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+html body #root .admin-detail-page .admin-detail-view-profile.ui-button {
+  color: var(--primary, #4266db);
+  border-color: color-mix(in srgb, var(--primary, #4266db) 25%, var(--detail-border));
+  background: color-mix(in srgb, var(--primary, #4266db) 4%, var(--detail-surface));
+}
+html body #root .admin-detail-page .admin-detail-view-profile.ui-button:hover {
+  background: color-mix(in srgb, var(--primary, #4266db) 9%, var(--detail-surface));
+}
+html body #root .admin-detail-page .admin-detail-profile-actions .ui-button:focus-visible {
+  outline: 2px solid var(--ring, #4266db);
+  outline-offset: 2px;
+}
+
+/* Remove oversized wrappers and the second tinted box from empty sales. */
+html body #root .admin-detail-page > .admin-detail-section {
+  margin-top: 12px;
+  padding: 16px 18px;
+  border: 1px solid var(--detail-border);
+  border-radius: 10px !important;
+  background: var(--detail-surface);
+  box-shadow: none !important;
+}
+#root .admin-detail-page > .admin-detail-section .admin-detail-section-heading {
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 13px;
+}
+#root .admin-detail-page .admin-detail-section-heading h2 {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 670;
+  line-height: 1.28;
+  letter-spacing: -.02em;
+}
+#root .admin-detail-page .admin-detail-section-heading .eyebrow {
+  margin: 0 0 4px;
+  font-size: 9px;
+}
+#root .admin-detail-page .admin-detail-section-heading .muted {
+  font-size: 11px;
+  line-height: 1.45;
+}
+html body #root .admin-detail-page .admin-detail-sales-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 0;
+  padding: 12px 2px 0;
+  border: 0 !important;
+  border-top: 1px solid var(--detail-border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#root .admin-detail-page .admin-detail-sales-empty .admin-detail-empty-icon {
+  flex: 0 0 34px;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  border-radius: 9px !important;
+  background: var(--secondary, #f1f4f8);
+}
+#root .admin-detail-page .admin-detail-sales-empty .admin-detail-empty-icon svg {
+  width: 17px;
+  height: 17px;
+}
+#root .admin-detail-page .admin-detail-sales-empty strong {
+  margin: 0 0 2px;
+  font-size: 12px;
+  font-weight: 630;
+}
+#root .admin-detail-page .admin-detail-sales-empty p {
+  font-size: 11px;
+  line-height: 1.45;
+}
+html body #root .admin-detail-page .admin-detail-finance-card.ui-card {
+  padding: 14px;
+  border-radius: 10px !important;
+}
+
+/* One quiet statistics strip rather than five framed boxes. */
+#root .admin-detail-page .admin-detail-metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  padding: 1px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--detail-border);
+}
+html body #root .admin-detail-page .admin-detail-metric.ui-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  min-height: 85px;
+  padding: 12px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: var(--detail-surface) !important;
+  box-shadow: none !important;
+}
+#root .admin-detail-page .admin-detail-metric-icon {
+  flex: 0 0 34px;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  border-radius: 9px !important;
+}
+#root .admin-detail-page .admin-detail-metric-icon svg {
+  width: 17px;
+  height: 17px;
+}
+#root .admin-detail-page .admin-detail-metric > div:last-child { gap: 4px; }
+#root .admin-detail-page .admin-detail-metric strong { font-size: 21px; }
+#root .admin-detail-page .admin-detail-metric span { font-size: 11px; }
+#root .admin-detail-page .admin-detail-metric small { font-size: 10px; }
+
+#root .admin-detail-page .admin-detail-booking-breakdown { margin-top: 16px; }
+#root .admin-detail-page .admin-detail-booking-statuses {
+  min-height: 47px;
+  border-radius: 9px !important;
+  background: var(--detail-surface);
+}
+#root .admin-detail-page .admin-detail-booking-statuses > div { padding: 9px 11px; }
+
+/* Compact but still separate access management controls. */
+#root .admin-detail-page .admin-detail-feature-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+html body #root .admin-detail-page .admin-detail-feature-card {
+  padding: 14px;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+html body #root .admin-detail-page .admin-detail-feature-icon {
+  flex-basis: 36px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 9px !important;
+}
+#root .admin-detail-page .admin-detail-feature-head { gap: 9px; min-height: 38px; }
+#root .admin-detail-page .admin-detail-feature-info h3 { font-size: 13px; }
+#root .admin-detail-page .admin-detail-feature-info p { font-size: 11px; }
+#root .admin-detail-page .admin-detail-feature-badge {
+  padding: 6px 9px;
+  font-size: 10px;
+}
+#root .admin-detail-page .admin-detail-recent .admin-detail-list-panel {
+  min-height: 0;
+}
+
+/* Respect small screens without horizontally clipping account actions. */
+@media (max-width: 960px) {
+  #root .admin-detail-page .admin-detail-profile { grid-template-columns: 52px minmax(0, 1fr); }
+  #root .admin-detail-page .admin-detail-profile-controls {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: flex-start;
+    padding-top: 11px;
+    border-top: 1px solid var(--detail-border);
+  }
+  #root .admin-detail-page .admin-detail-profile-actions { justify-content: flex-start; }
+  #root .admin-detail-page .admin-detail-feature-grid { grid-template-columns: 1fr; }
+  #root .admin-detail-page .admin-detail-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 650px) {
+  html body #root .admin-detail-page .admin-detail-profile {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 11px;
+    padding: 13px;
+  }
+  html body #root .admin-detail-page .admin-detail-profile > .profile-avatar {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+  #root .admin-detail-page .admin-detail-header { align-items: flex-start; }
+  #root .admin-detail-page .admin-detail-profile-identity-heading { align-items: flex-start; }
+  #root .admin-detail-page .admin-detail-section-heading { flex-wrap: wrap; }
+  #root .admin-detail-page .admin-detail-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html body #root .admin-detail-page .admin-detail-metric.ui-card {
+    flex-direction: row;
+    min-height: 76px;
+    padding: 10px;
+  }
+}
+@media (max-width: 420px) {
+  #root .admin-detail-page .admin-detail-profile-actions { width: 100%; }
+  html body #root .admin-detail-page .admin-detail-view-profile.ui-button { width: 100%; }
+  #root .admin-detail-page .admin-detail-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html body #root .admin-detail-page > .admin-detail-section { padding: 14px; }
+}
