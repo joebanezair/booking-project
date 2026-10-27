@@ -139,10 +139,10 @@ html body #root .services-controls-card .content-admin-list {
   margin: 0 !important;
 }
 
-/* Capped at five columns by the 1720px parent, shrinking naturally at narrower widths. */
+/* Reserve columns even when only one service exists, so a lone card never stretches across the panel. */
 html body #root .page-shell .services-controls-card .services-view-grid.content-admin-list {
   display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)) !important;
   align-items: stretch !important;
   gap: 12px !important;
 }
@@ -168,9 +168,10 @@ html body #root .page-shell .services-controls-card .services-view-grid .admin-c
   width: calc(100% - 20px) !important;
   max-width: calc(100% - 20px) !important;
   min-width: 0 !important;
-  height: auto !important;
-  min-height: 0 !important;
-  aspect-ratio: 4 / 3;
+  height: 150px !important;
+  min-height: 150px !important;
+  max-height: 150px !important;
+  aspect-ratio: auto !important;
   object-fit: cover !important;
   flex: 0 0 auto !important;
   margin: 10px 10px 0 !important;
