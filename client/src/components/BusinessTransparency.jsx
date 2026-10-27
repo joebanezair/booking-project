@@ -95,7 +95,7 @@ export default function BusinessTransparency({ businessId, section, businessName
     { key: "items", label: "Items / Service", render: r => r.items?.length
       ? <details><summary>{r.items.length} item(s)</summary><div className="admin-transparency-history">{r.items.map((item, i) =>
           <p key={i}>{item.quantity} × {item.name} · {formatAmount(item.lineTotal, currencyFor(r))}
-            {channel === "pos" ? ` · Cost: ${item.unitCost == null ? "Not recorded" : formatAmount(item.unitCost, currencyFor(r))}` : ""}</p>)}</div></details>
+            {channel !== "services" ? ` · Historical unit cost: ${item.unitCost == null ? "Not recorded" : formatAmount(item.unitCost, currencyFor(r))}` : ""}</p>)}</div></details>
       : r.serviceName || "—" },
     { key: "amount", label: "Gross amount", render: r => formatAmount(r.amount, currencyFor(r)) },
     { key: "paymentMethod", label: "Payment", render: r => r.paymentMethod || "—" },
@@ -147,10 +147,13 @@ export default function BusinessTransparency({ businessId, section, businessName
               <div><dt>POS sales (gross)</dt><dd>{formatAmount(row.pos, row.currency)}</dd></div>
               <div><dt>Completed online orders (value)</dt><dd>{formatAmount(row.online, row.currency)}</dd></div>
               <div className="admin-transparency-total"><dt>Total gross operational sales</dt><dd>{formatAmount(row.gross, row.currency)}</dd></div>
-              <div><dt>Known POS cost of goods sold</dt><dd>{formatAmount(row.knownPosCost, row.currency)}</dd></div>
+              <div><dt>Recorded POS cost of goods sold</dt><dd>{formatAmount(row.knownPosCost, row.currency)}</dd></div>
+              <div><dt>Recorded online order costs</dt><dd>{formatAmount(row.knownOnlineCost, row.currency)}</dd></div>
               <div><dt>POS gross profit</dt><dd>{formatAmount(row.posGrossProfit, row.currency)}</dd></div>
-              <div><dt>Combined gross profit</dt><dd>{formatAmount(row.overallGrossProfit, row.currency)}</dd></div>
+              <div><dt>Online order gross profit</dt><dd>{formatAmount(row.onlineGrossProfit, row.currency)}</dd></div>
+              <div><dt>Combined gross profit (if complete)</dt><dd>{formatAmount(row.overallGrossProfit, row.currency)}</dd></div>
               <div><dt>Uncosted POS item lines</dt><dd>{row.missingPosCostLines}</dd></div>
+              <div><dt>Uncosted online item lines</dt><dd>{row.missingOnlineCostLines}</dd></div>
               <div><dt>Recorded sales transactions</dt><dd>{row.transactions}</dd></div>
             </dl>
           </article>) : <p className="muted">No recorded sales in this period.</p>}
