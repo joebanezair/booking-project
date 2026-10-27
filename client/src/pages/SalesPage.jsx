@@ -419,7 +419,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
       </div>
       <div id="sales-online-orders-content" className="sales-online-orders-content" hidden={!ordersExpanded}>
         {activeOrders.length===0
-          ? <div className="sales-orders-empty"><FiInbox aria-hidden="true"/><p className="muted">No active orders. Completed sales are available below.</p></div>
+          ? <div className="sales-orders-empty"><FiInbox aria-hidden="true"/><p className="muted">{completedOrders.length ? "No active orders. Completed sales are available below." : "No orders need attention right now."}</p></div>
           : <>
             <div className="sales-orders-toolbar">
               <div className="sales-orders-filters" role="group" aria-label="Filter online orders">
@@ -452,7 +452,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
           </>}
       </div>
     </section>}
-    {ordersOnly && <CompletedOnlineSales orders={completedOrders} expanded={completedSalesExpanded}
+    {ordersOnly && completedOrders.length > 0 && <CompletedOnlineSales orders={completedOrders} expanded={completedSalesExpanded}
       onToggle={()=>setCompletedSalesExpanded(value=>!value)} onOpen={openOrder}/>}
 
     {!ordersOnly && !loading && data && <>
