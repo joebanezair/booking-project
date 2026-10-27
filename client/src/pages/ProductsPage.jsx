@@ -8,13 +8,112 @@ import { Textarea } from "../components/ui/textarea.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FiArrowRight, FiCheckCircle, FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiCheckCircle, FiChevronDown, FiChevronRight, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
 
 function money(value,currency="PHP"){try{return new Intl.NumberFormat(undefined,{style:"currency",currency,maximumFractionDigits:2}).format(value||0);}catch{return `${currency} ${Number(value||0).toLocaleString()}`;}}
-const blank={name:"",sku:"",description:"",price:"",currency:"PHP",stock:"",published:true,images:[]};
+const blank={name:"",sku:"",description:"",price:"",unitCost:"",currency:"PHP",stock:"",published:true,images:[]};
 function readProductImages(files,current,done){const remaining=Math.max(0,8-(current||[]).length);const selected=Array.from(files||[]).filter(file=>file.type.startsWith("image/")).slice(0,remaining);if(!selected.length)return;Promise.all(selected.map(file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file);}))).then(images=>done([...(current||[]),...images]));}
+
+
+// POS sales are reported from saved checkout snapshots rather than today's
+// product costs. Missing historical costs must not imply zero spending.
+function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetry, products }) {
+  const currencies = report?.currencies || [];
+  const [selectedCurrency, setSelectedCurrency] = useState("PHP");
+  const current = currencies.find(row => row.currency === selectedCurrency) || currencies[0];
+  const currency = current?.currency || selectedCurrency;
+  const rows = (report?.products || []).filter(row => row.currency === currency);
+  const revenue = Number(current?.revenue || 0);
+  const cost = current?.cost;
+  const earnings = current?.grossEarnings;
+  const complete = typeof cost === "number" && typeof earnings === "number";
+  const positivePie = complete && earnings >= 0 && revenue > 0;
+  const costAngle = positivePie ? Math.min(360, Math.max(0, cost / revenue * 360)) : 0;
+  const unknownUnits = Number(current?.unknownCostUnits || 0);
+
+  return <section className="panel pos-earnings-panel" id="pos-charts" aria-labelledby="pos-charts-heading">
+    <div className="pos-earnings-heading">
+      <div>
+        <p className="eyebrow">POS ANALYTICS</p>
+        <h2 id="pos-charts-heading">Revenue &amp; earnings</h2>
+        <p className="muted">In-store POS sales, unit costs and gross earnings by product.</p>
+      </div>
+      <div className="pos-earnings-controls">
+        <Select aria-label="POS reporting period" value={range} onChange={e => onRangeChange(e.target.value)}>
+          <option value="7d">Last 7 days</option>
+          <option value="30d">Last 30 days</option>
+          <option value="all">All time</option>
+        </Select>
+        {currencies.length > 1 && <Select aria-label="POS reporting currency" value={currency}
+          onChange={e => setSelectedCurrency(e.target.value)}>
+          {currencies.map(item => <option key={item.currency} value={item.currency}>{item.currency}</option>)}
+        </Select>}
+      </div>
+    </div>
+    {loading ? <p className="muted" role="status">Loading POS earnings…</p> :
+      error ? <div className="pos-earnings-note" role="alert">{error}
+        <Button type="button" variant="outline" size="sm" onClick={onRetry}>Retry</Button>
+      </div> : <>
+        <div className="pos-earnings-summary">
+          <div><span>Total POS sales</span><strong>{money(revenue,currency)}</strong><small>Recorded checkout revenue</small></div>
+          <div><span>Product costs</span><strong>{complete ? money(cost,currency) : "—"}</strong><small>{complete ? "Cost of units sold" : "Some costs not recorded"}</small></div>
+          <div><span>Gross earnings</span><strong>{complete ? money(earnings,currency) : "—"}</strong><small>Sales minus product costs</small></div>
+          <div><span>Units sold</span><strong>{Number(current?.unitsSold || 0).toLocaleString()}</strong><small>Completed POS quantities</small></div>
+        </div>
+        <div className="pos-earnings-bottom">
+          <div className="pos-earnings-pie-card">
+            <div className="pos-earnings-subheading">
+              <h3>Cost vs earnings</h3>
+              <p className="muted">How completed POS revenue is distributed</p>
+            </div>
+            {positivePie ? <>
+              <div className="pos-earnings-donut" role="img"
+                aria-label={"Product costs " + money(cost,currency) + "; gross earnings " + money(earnings,currency)}
+                style={{"--cost-angle":String(costAngle)+"deg"}}>
+                <div className="pos-earnings-donut-center"><small>Gross earnings</small><strong>{money(earnings,currency)}</strong></div>
+              </div>
+              <div className="pos-earnings-legend">
+                <div><i className="pos-earnings-dot is-cost" aria-hidden="true"/>Product costs <strong>{money(cost,currency)}</strong></div>
+                <div><i className="pos-earnings-dot is-profit" aria-hidden="true"/>Gross earnings <strong>{money(earnings,currency)}</strong></div>
+              </div>
+            </> : <div className="pos-earnings-chart-empty">
+              <FiBarChart2 aria-hidden="true"/>
+              <p>{!revenue ? "No POS sales in this period." :
+                !complete ? "A pie chart needs unit costs recorded for every sold product." :
+                "Product costs exceed revenue. Gross earnings are negative."}</p>
+            </div>}
+            {unknownUnits > 0 && <p className="pos-earnings-explanation">
+              {unknownUnits.toLocaleString()} unit(s) sold without a saved cost. Earnings remain unavailable for affected products and totals.
+            </p>}
+          </div>
+          <div className="pos-earnings-products">
+            <div className="pos-earnings-subheading">
+              <h3>Earnings per product</h3>
+              <p className="muted">Based on cost saved when each POS sale was made</p>
+            </div>
+            <div className="pos-earnings-table-wrap">
+              <table className="pos-earnings-table">
+                <thead><tr><th scope="col">Product</th><th scope="col">Sold</th><th scope="col">Unit cost now</th><th scope="col">Sales</th><th scope="col">Gross earnings</th></tr></thead>
+                <tbody>{rows.length ? rows.map(item => {
+                  const currentProduct = products.find(product => product._id === item.productId);
+                  return <tr key={item.productId + ":" + item.currency}>
+                    <td>{item.name}</td>
+                    <td>{Number(item.unitsSold || 0).toLocaleString()}</td>
+                    <td>{currentProduct?.unitCost == null ? "Not set" : money(currentProduct.unitCost,currency)}</td>
+                    <td>{money(item.revenue,currency)}</td>
+                    <td>{typeof item.grossEarnings === "number" ? money(item.grossEarnings,currency) : "Not available"}</td>
+                  </tr>;
+                }) : <tr><td colSpan="5" className="pos-earnings-table-empty">No POS sales recorded for this period.</td></tr>}</tbody>
+              </table>
+            </div>
+            <p className="pos-earnings-explanation">The unit cost shown is the product’s current optional cost. Historical earnings always use each checkout’s saved cost; earlier sales without a saved cost remain unknown. POS only, excluding online orders and other expenses.</p>
+          </div>
+        </div>
+      </>}
+  </section>;
+}
 
 export default function ProductsPage({user,onLogout}){
   const [products,setProducts]=useState([]);
