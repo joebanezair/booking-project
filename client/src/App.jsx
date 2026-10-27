@@ -9,6 +9,7 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import ProfileSettingsPage from "./pages/ProfileSettingsPage.jsx";
 import BusinessPage from "./pages/BusinessPage.jsx";
 import PublicProfilePage from "./pages/PublicProfilePage.jsx";
+import PublicAdminProfilePage from "./pages/PublicAdminProfilePage.jsx";
 import PublicContentPage from "./pages/PublicContentPage.jsx";
 import PublicBookingPage from "./pages/PublicBookingPage.jsx";
 import BookingsPage from "./pages/BookingsPage.jsx";
@@ -151,8 +152,8 @@ export default function App() {
     <Route path="/dashboard/online-orders" element={productsPage(OnlineOrdersPage)} />
     <Route path="/dashboard/messages" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/messages/:userId" element={protectedPage(MessagesPage)} />
-    <Route path="/dashboard/profile" element={businessPage(ProfilePage)} />
-    <Route path="/dashboard/profile/edit" element={businessPage(ProfileSettingsPage)} />
+    <Route path="/dashboard/profile" element={protectedPage(ProfilePage)} />
+    <Route path="/dashboard/profile/edit" element={protectedPage(ProfileSettingsPage)} />
     <Route path="/dashboard/profile/business" element={businessPage(BusinessPage)} />
     <Route path="/dashboard/notifications" element={protectedPage(NotificationsPage)} />
     <Route path="/dashboard/settings" element={protectedPage(SettingsPage)} />
@@ -162,6 +163,7 @@ export default function App() {
     <Route path="/dashboard/business-requests" element={<Navigate to="/dashboard/businesses" replace />} />
 
     <Route path="/profile/:username" element={<PublicProfilePage user={user} />} />
+    <Route path="/admin/:username" element={<PublicAdminProfilePage user={user} />} />
     <Route path="/content/:contentId" element={<PublicContentPage user={user} />} />
     <Route path="/services/:contentId" element={<PublicContentPage user={user} />} />
     <Route path="/b/:userId" element={<PublicBookingPage user={user} />} />
