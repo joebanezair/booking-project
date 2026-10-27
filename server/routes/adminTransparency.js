@@ -21,12 +21,18 @@ function currencyTotals(rows) {
       const currency = item._id || "PHP";
       if (!values.has(currency)) values.set(currency, {
         currency, services: 0, pos: 0, online: 0, gross: 0, transactions: 0,
-        knownPosCost: 0, missingPosCostLines: 0, posGrossProfit: null
+        knownPosCost: 0, missingPosCostLines: 0, posGrossProfit: null,
+        knownOnlineCost: 0, missingOnlineCostLines: 0, onlineGrossProfit: null
       });
       const value = values.get(currency);
-      if (key === "cost") {
-        value.knownPosCost = cents(item.knownCost);
-        value.missingPosCostLines = item.missingLines || 0;
+      if (key === "cost" || key === "onlineCost") {
+        if (key === "cost") {
+          value.knownPosCost = cents(item.knownCost);
+          value.missingPosCostLines = item.missingLines || 0;
+        } else {
+          value.knownOnlineCost = cents(item.knownCost);
+          value.missingOnlineCostLines = item.missingLines || 0;
+        }
       } else {
         value[key] = cents(item.gross);
         value.gross = cents(value.gross + item.gross);
@@ -37,9 +43,10 @@ function currencyTotals(rows) {
   return [...values.values()].map(row => ({
     ...row,
     posGrossProfit: row.missingPosCostLines === 0 ? cents(row.pos - row.knownPosCost) : null,
-    // Online order line items have no historical unit-cost snapshots in this schema.
-    overallGrossProfit: row.services === 0 && row.online === 0 && row.missingPosCostLines === 0
-      ? cents(row.gross - row.knownPosCost) : null
+    onlineGrossProfit: row.missingOnlineCostLines === 0 ? cents(row.online - row.knownOnlineCost) : null,
+    // Service delivery cost is not stored, so combined profit cannot be verified when services are sold.
+    overallGrossProfit: row.services === 0 && row.missingPosCostLines === 0 && row.missingOnlineCostLines === 0
+      ? cents(row.gross - row.knownPosCost - row.knownOnlineCost) : null
   })).sort((a, b) => a.currency.localeCompare(b.currency));
 }
 
@@ -69,13 +76,26 @@ router.get("/:id/transparency", async (req, res) => {
       { $match: match }, { $group: { _id: { $ifNull: ["$currency", "PHP"] },
         gross: { $sum: { $ifNull: [field, 0] } }, count: { $sum: 1 } } }
     ];
-    const [saleTotals, posTotals, orderTotals, posCosts, productCounts, bookingStatusRows,
+    const [saleTotals, posTotals, orderTotals, posCosts, onlineCosts, productCounts, bookingStatusRows,
       serviceCount, refundStateRows] = await Promise.all([
       Sale.aggregate(sum(saleFilter, "$saleAmount")),
       PosSale.aggregate(sum(posFilter, "$total")),
       ProductOrder.aggregate(sum(orderFilter, "$total")),
       PosSale.aggregate([
         { $match: posFilter }, { $unwind: "$items" },
+        { $group: {
+          _id: { $ifNull: ["$currency", "PHP"] },
+          knownCost: { $sum: { $cond: [
+            { $ne: [{ $ifNull: ["$items.unitCost", null] }, null] },
+            { $multiply: [{ $ifNull: ["$items.unitCost", 0] }, "$items.quantity"] }, 0
+          ] } },
+          missingLines: { $sum: { $cond: [
+            { $eq: [{ $ifNull: ["$items.unitCost", null] }, null] }, 1, 0
+          ] } }
+        } }
+      ]),
+      ProductOrder.aggregate([
+        { $match: orderFilter }, { $unwind: "$items" },
         { $group: {
           _id: { $ifNull: ["$currency", "PHP"] },
           knownCost: { $sum: { $cond: [
@@ -99,7 +119,7 @@ router.get("/:id/transparency", async (req, res) => {
         paymentStatus: { $in: ["partially_refunded", "refunded"] } } },
         { $group: { _id: "$paymentStatus", count: { $sum: 1 } } }])
     ]);
-    const totalsByCurrency = currencyTotals({ services: saleTotals, pos: posTotals, online: orderTotals, cost: posCosts });
+    const totalsByCurrency = currencyTotals({ services: saleTotals, pos: posTotals, online: orderTotals, cost: posCosts, onlineCost: onlineCosts });
     const bookingStatuses = Object.fromEntries(bookingStatusRows.map(r => [r._id, r.count]));
     const summary = {
       totalsByCurrency,
@@ -110,7 +130,7 @@ router.get("/:id/transparency", async (req, res) => {
       limitations: [
         "Online order totals are completed order value, not verified cash collected.",
         "Partially refunded amounts and processing fees cannot be calculated without recorded amounts.",
-        "Online order item costs are not historically snapshotted; combined product profit is unavailable when online sales exist.",
+        "Older online orders may lack unit-cost snapshots; profit is unavailable for uncosted item lines.",
         "Historical audit records are limited to events actually saved by the system."
       ]
     };
@@ -132,18 +152,22 @@ router.get("/:id/transparency", async (req, res) => {
           } }]);
         const onlineLines = await ProductOrder.aggregate([{ $match: orderFilter }, { $unwind: "$items" },
           { $match: { "items.product": { $in: ids } } }, { $group: { _id: "$items.product",
-            units: { $sum: "$items.quantity" }, gross: { $sum: "$items.lineTotal" } } }]);
+            units: { $sum: "$items.quantity" }, gross: { $sum: "$items.lineTotal" },
+            cost: { $sum: { $cond: [{ $ne: [{ $ifNull: ["$items.unitCost", null] }, null] },
+              { $multiply: ["$items.unitCost", "$items.quantity"] }, 0] } },
+            missingLines: { $sum: { $cond: [{ $eq: [{ $ifNull: ["$items.unitCost", null] }, null] }, 1, 0] } }
+          } }]);
         const posMap = new Map(posLines.map(row => [String(row._id), row]));
         const onlineMap = new Map(onlineLines.map(row => [String(row._id), row]));
         rows = items.map(item => {
           const pos = posMap.get(String(item._id)) || {};
           const online = onlineMap.get(String(item._id)) || {};
-          const known = (pos.missingLines || 0) === 0 && !(online.units > 0);
+          const known = (pos.missingLines || 0) === 0 && (online.missingLines || 0) === 0;
           return { ...item, sold: (pos.units || 0) + (online.units || 0),
             gross: cents((pos.gross || 0) + (online.gross || 0)),
-            recordedCost: cents(pos.cost || 0), grossProfit: known ?
-              cents((pos.gross || 0) - (pos.cost || 0)) : null,
-            profitComplete: known, posUnits: pos.units || 0, onlineUnits: online.units || 0 };
+            recordedCost: cents((pos.cost || 0) + (online.cost || 0)), grossProfit: known ?
+              cents((pos.gross || 0) + (online.gross || 0) - (pos.cost || 0) - (online.cost || 0)) : null,
+            profitComplete: known, posUnits: pos.units || 0, onlineUnits: online.units || 0, missingCostLines: (pos.missingLines || 0) + (online.missingLines || 0) };
         });
       }
     } else if (section === "services") {
