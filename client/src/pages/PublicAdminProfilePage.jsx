@@ -83,7 +83,6 @@ export default function PublicAdminProfilePage({ user }) {
             </div>
           </div>
           {profile.headline && <p className="profile-headline admin-public-headline">{profile.headline}</p>}
-          {profile.bio && <p className="public-bio admin-public-bio">{profile.bio}</p>}
           <div className="profile-meta storefront-meta admin-public-meta">
             {profile.location && <span><FiMapPin aria-hidden="true" /> {profile.location}</span>}
             {publicWebsite && <a href={publicWebsite} target="_blank" rel="noopener noreferrer">
