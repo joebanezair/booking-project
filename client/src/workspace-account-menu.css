@@ -1,29 +1,31 @@
-/* Refined workspace account dropdown.
- * Affects only the top-right account trigger and popover, not navigation or auth.
+/*
+ * Compact, keyboard-friendly account dropdown for the signed-in workspace.
+ * Scoped so it does not change sidebars, dialogs, public profiles, or mobile routes.
  */
 html body #root .page-shell > .workspace-topbar .workspace-account-menu > summary {
   gap: 9px !important;
   min-height: 44px;
   padding: 4px 8px !important;
   border: 1px solid transparent;
-  border-radius: 12px !important;
+  border-radius: 11px !important;
   background: transparent;
-  transition: background-color .15s ease, border-color .15s ease;
+  transition: background-color .16s ease, border-color .16s ease;
 }
 html body #root .page-shell > .workspace-topbar .workspace-account-menu > summary:hover,
 html body #root .page-shell > .workspace-topbar .workspace-account-menu[open] > summary {
+  border-color: color-mix(in srgb, var(--primary, #5268dc) 13%, transparent);
   background: color-mix(in srgb, var(--primary, #5268dc) 5%, var(--card, #fff));
-  border-color: color-mix(in srgb, var(--primary, #5268dc) 12%, transparent);
 }
 html body #root .workspace-account-menu > summary .workspace-user-text > strong {
-  font-weight: 400 !important;
+  font-size: 12px;
+  font-weight: 500 !important;
 }
 html body #root .workspace-account-menu > summary > svg {
   flex: 0 0 14px;
   width: 14px;
   height: 14px;
   color: var(--muted-foreground);
-  transition: transform .15s ease;
+  transition: transform .16s ease;
 }
 html body #root .workspace-account-menu[open] > summary > svg { transform: rotate(180deg); }
 
@@ -34,111 +36,131 @@ html body #root .page-shell > .workspace-topbar .workspace-account-menu > .works
   z-index: 120;
   display: block;
   box-sizing: border-box;
-  width: min(288px, calc(100vw - 24px));
+  width: min(290px, calc(100vw - 24px));
   min-width: 0;
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--border, #dce4f1);
-  border-radius: 14px !important;
+  border-radius: 13px !important;
   background: var(--card, #fff);
-  box-shadow: 0 14px 36px rgba(19, 36, 64, .12), 0 2px 7px rgba(19, 36, 64, .035);
+  box-shadow: 0 18px 42px rgba(19, 36, 64, .13), 0 3px 9px rgba(19, 36, 64, .04);
 }
 
+/* Identity is one clean header, with status and account type on the same line. */
 html body #root .workspace-account-menu .workspace-account-identity {
   display: grid;
-  grid-template-columns: 38px minmax(0, 1fr);
-  align-items: start;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
   gap: 11px;
+  min-width: 0;
   margin: 0;
-  padding: 15px 14px 5px;
+  padding: 14px 14px 13px;
   border: 0;
   background: transparent;
 }
 html body #root .workspace-account-menu .workspace-account-identity > .workspace-account-identity-avatar {
   display: grid !important;
   place-items: center;
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
-  overflow: visible !important;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  overflow: hidden !important;
+  border: 1px solid color-mix(in srgb, var(--primary, #5268dc) 20%, var(--border));
   border-radius: 50% !important;
 }
 html body #root .workspace-account-menu .workspace-account-identity-avatar > :is(.profile-avatar, .ui-image) {
-  display: grid;
-  place-items: center;
+  display: grid !important;
+  place-items: center !important;
   box-sizing: border-box;
-  width: 38px !important;
-  min-width: 38px !important;
-  max-width: 38px !important;
-  height: 38px !important;
-  min-height: 38px !important;
-  max-height: 38px !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  margin: 0 !important;
   padding: 0 !important;
-  border: 1px solid color-mix(in srgb, var(--primary, #5268dc) 20%, var(--border));
+  border: 0 !important;
   border-radius: 50% !important;
   aspect-ratio: 1 / 1;
   object-fit: cover;
 }
 html body #root .workspace-account-menu .workspace-account-identity-info {
   display: grid;
-  min-width: 0;
   gap: 3px;
+  min-width: 0;
 }
 html body #root .workspace-account-menu .workspace-account-identity-info > strong {
   display: block;
   margin: 0;
   overflow: hidden;
   color: var(--foreground);
-  font-size: 13px;
-  font-weight: 400 !important;
-  line-height: 1.4;
+  font-size: 12.5px;
+  font-weight: 500 !important;
+  line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 html body #root .workspace-account-menu .workspace-account-identity-info > .workspace-account-email {
   display: block;
+  min-width: 0;
   overflow: hidden;
   color: var(--muted-foreground);
   font-size: 11px;
   font-weight: 400 !important;
-  line-height: 1.4;
+  line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-html body #root .workspace-account-menu .workspace-account-identity-info > .workspace-account-role {
-  display: block;
-  color: var(--primary, #5168d6);
+html body #root .workspace-account-menu .workspace-account-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-top: 3px;
+}
+html body #root .workspace-account-menu .workspace-account-badges > .workspace-account-role,
+html body #root .workspace-account-menu .workspace-account-badges > .workspace-account-presence {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 19px;
+  box-sizing: border-box;
+  padding: 2px 7px;
+  border-radius: 6px !important;
   font-size: 10px;
   font-weight: 400 !important;
-  line-height: 1.45;
-}
-html body #root .workspace-account-menu .workspace-account-presence {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin: 0;
-  padding: 5px 14px 13px 63px;
-  color: #168351;
-  font-size: 10px;
-  font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.2;
   white-space: nowrap;
 }
-html body #root .workspace-account-menu .workspace-account-presence.offline {
+html body #root .workspace-account-menu .workspace-account-badges > .workspace-account-role {
   color: var(--muted-foreground);
+  background: var(--secondary, #f1f4f8);
+}
+html body #root .workspace-account-menu .workspace-account-badges > .workspace-account-presence {
+  color: #157447;
+  background: color-mix(in srgb, #16a765 10%, var(--card));
+}
+html body #root .workspace-account-menu .workspace-account-badges > .workspace-account-presence.offline {
+  color: var(--muted-foreground);
+  background: var(--secondary, #f1f4f8);
 }
 html body #root .workspace-account-menu .workspace-account-presence-dot {
-  display: block;
-  flex: 0 0 7px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #1caa68;
+  display: inline-block;
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50% !important;
+  background: #16a765;
 }
 html body #root .workspace-account-menu .workspace-account-presence.offline .workspace-account-presence-dot {
   background: #94a3b8;
 }
+
+/* Flat actions: one subtle divider above navigation and another above Sign out. */
 html body #root .workspace-account-menu .workspace-account-items {
   display: grid;
   gap: 2px;
@@ -150,68 +172,96 @@ html body #root .workspace-account-menu .workspace-account-footer {
   border-top: 1px solid var(--border);
 }
 html body #root .page-shell > .workspace-topbar .workspace-account-menu .workspace-account-popover :is(.workspace-account-items > a, .workspace-account-footer > button.ui-button) {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
   box-sizing: border-box;
   width: 100% !important;
   min-height: 40px !important;
-  margin: 0;
+  margin: 0 !important;
   padding: 5px 9px !important;
   border: 0 !important;
   border-radius: 9px !important;
   background: transparent;
+  box-shadow: none !important;
   color: var(--foreground);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 400 !important;
   line-height: 1.4;
   text-align: left;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color .15s ease, color .15s ease;
+  transition: background-color .16s ease, color .16s ease;
 }
 html body #root .page-shell > .workspace-topbar .workspace-account-menu .workspace-account-popover .workspace-account-items > a:hover {
   color: var(--primary, #5168d6);
   background: color-mix(in srgb, var(--primary, #5168d6) 7%, var(--card));
 }
-html body #root .page-shell > .workspace-topbar .workspace-account-menu .workspace-account-popover :is(.workspace-account-items > a, .workspace-account-footer > button.ui-button) > svg {
+html body #root .workspace-account-menu .workspace-account-popover .workspace-account-menu-icon {
+  display: grid !important;
+  place-items: center;
   flex: 0 0 29px;
+  width: 29px;
+  height: 29px;
   box-sizing: border-box;
-  width: 29px !important;
-  height: 29px !important;
-  padding: 7px;
   border-radius: 8px !important;
   background: color-mix(in srgb, var(--primary, #5168d6) 7%, var(--card));
   color: var(--primary, #5168d6);
-  stroke-width: 1.85;
+}
+html body #root .workspace-account-menu .workspace-account-popover .workspace-account-menu-icon > svg {
+  display: block;
+  width: 15px !important;
+  height: 15px !important;
+  flex: 0 0 15px;
+  stroke-width: 1.8;
+}
+html body #root .workspace-account-menu .workspace-account-popover .workspace-account-menu-label {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 400 !important;
+}
+html body #root .workspace-account-menu .workspace-account-popover .workspace-account-menu-chevron {
+  display: block;
+  flex: 0 0 13px;
+  width: 13px !important;
+  height: 13px !important;
+  color: var(--muted-foreground);
+  opacity: .55;
+  transition: transform .16s ease, opacity .16s ease;
+}
+html body #root .workspace-account-menu .workspace-account-items > a:hover .workspace-account-menu-chevron,
+html body #root .workspace-account-menu .workspace-account-items > a:focus-visible .workspace-account-menu-chevron {
+  opacity: 1;
+  transform: translateX(2px);
+}
+html body #root .page-shell > .workspace-topbar .workspace-account-menu .workspace-account-popover .workspace-account-footer > .workspace-account-signout.ui-button > .workspace-account-menu-icon {
+  color: #ba3541;
+  background: color-mix(in srgb, #d13f48 7%, var(--card));
 }
 html body #root .page-shell > .workspace-topbar .workspace-account-menu .workspace-account-popover .workspace-account-footer > .workspace-account-signout.ui-button:hover {
+  color: #b42330;
   background: color-mix(in srgb, #d13f48 6%, var(--card));
-  color: #b42330;
-}
-html body #root .page-shell > .workspace-topbar .workspace-account-menu .workspace-account-popover .workspace-account-footer > .workspace-account-signout.ui-button > svg {
-  color: var(--muted-foreground);
-  background: var(--secondary, #f1f4f8);
-}
-html body #root .page-shell > .workspace-topbar .workspace-account-menu .workspace-account-popover .workspace-account-footer > .workspace-account-signout.ui-button:hover > svg {
-  background: color-mix(in srgb, #d13f48 9%, var(--card));
-  color: #b42330;
 }
 html body #root .workspace-account-menu .workspace-account-popover :is(a, button.ui-button):focus-visible {
   outline: 2px solid var(--ring, var(--primary, #5168d6));
   outline-offset: -2px;
 }
-[data-theme="dark"] body #root .workspace-account-menu .workspace-account-presence {
+[data-theme="dark"] body #root .workspace-account-menu .workspace-account-badges > .workspace-account-presence {
   color: #78e1a8;
 }
-[data-theme="dark"] body #root .workspace-account-menu .workspace-account-presence.offline {
+[data-theme="dark"] body #root .workspace-account-menu .workspace-account-badges > .workspace-account-presence.offline {
   color: var(--muted-foreground);
+}
+[data-theme="dark"] body #root .workspace-account-menu .workspace-account-footer > .workspace-account-signout.ui-button > .workspace-account-menu-icon {
+  color: #f4989f;
 }
 @media (prefers-reduced-motion: reduce) {
   html body #root .workspace-account-menu > summary,
   html body #root .workspace-account-menu > summary > svg,
-  html body #root .workspace-account-menu .workspace-account-popover :is(a,button.ui-button) {
+  html body #root .workspace-account-menu .workspace-account-popover :is(a,button.ui-button),
+  html body #root .workspace-account-menu .workspace-account-popover .workspace-account-menu-chevron {
     transition: none !important;
   }
 }
