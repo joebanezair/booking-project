@@ -250,6 +250,16 @@ for (const marker of ['featureStatus(user, "booking").active', "items.some(item 
   if (!publicRoute.includes(marker))
     failures.push("Public profile booking availability must honor published services and admin feature access: " + marker);
 }
+// POS-disabled businesses should not expose public product data or storefront
+// navigation, while public messaging, friendship and ratings remain intact.
+for (const marker of ['featureStatus(user, "pos").active', "posAvailable: posActive && products.length > 0", "requireActivePos = false", '"provider.featureAccess.pos.enabled": { $ne: false }', "false, true))"]) {
+  if (!publicRoute.includes(marker))
+    failures.push("Public product discovery must respect active POS access: " + marker);
+}
+for (const marker of ["hasPublicProducts && <a", "hasPublicProducts && <section", "hasProducts={hasPublicProducts}"]) {
+  if (!publicProfileSource.includes(marker))
+    failures.push("Public storefront must hide product navigation when none are available: " + marker);
+}
 if (!avatarSource.includes("profile-avatar-fallback") ||
     !avatarSource.includes("profile-avatar-initial") ||
     !storefrontStyles.includes(".profile-avatar-fallback > .profile-avatar-initial") ||
