@@ -560,6 +560,7 @@ export default function DashboardPage({ user, onLogout }) {
             <p className="muted">{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
           </div>
           {!isAdmin && <div className="dashboard-quick-view-toggle" role="group" aria-label="Quick Access layout">
+            <span className={"dashboard-quick-view-slider" + (quickAccessView === "list" ? " is-list" : "")} aria-hidden="true" />
             <Button type="button" variant="ghost" size="sm"
               className={"dashboard-quick-view-button" + (quickAccessView === "grid" ? " is-active" : "")}
               aria-pressed={quickAccessView === "grid"} title="Grid view"
