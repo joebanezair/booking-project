@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiArrowLeft, FiCheck, FiInfo, FiSave, FiUser } from "react-icons/fi";
+import { FiArrowLeft, FiCheck, FiExternalLink, FiInfo, FiSave, FiShield, FiUser } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileMediaHeader from "../components/ProfileMediaHeader.jsx";
 import { fileToDataUrl } from "../lib.js";
@@ -19,6 +19,8 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
   const [repositionOpen, setRepositionOpen] = useState(false);
   const photoDrag = useRef(null);
   const location = useLocation();
+  const isAdmin = user?.role === "admin";
+  const publicAdminPath = isAdmin && form?.username ? `/admin/${encodeURIComponent(form.username)}` : "";
 
   function clampPosition(value) {
     return Math.min(100, Math.max(0, value));
@@ -125,15 +127,22 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
     <div className="profile-edit-shell">
       <header className="topbar profile-edit-topbar">
         <div>
-          <p className="eyebrow">PROFILE · EDIT PROFILE</p>
-          <h1>Edit Profile</h1>
-          <p className="muted">Manage your profile details, cover photo and avatar.</p>
+          <p className="eyebrow">{isAdmin ? "ADMINISTRATION · PUBLIC PROFILE" : "PROFILE · EDIT PROFILE"}</p>
+          <h1>{isAdmin ? "Edit admin profile" : "Edit Profile"}</h1>
+          <p className="muted">{isAdmin ? "Your name, username, bio, headline, location, website and photos are visible to anyone who opens your public admin profile. Your email and account permissions remain private." : "Manage your profile details, cover photo and avatar."}</p>
         </div>
-        <Button asChild variant="outline">
-          <Link className="secondary button-link icon-link" to="/dashboard/profile">
-            <FiArrowLeft aria-hidden="true" />Back to Profile
-          </Link>
-        </Button>
+        <div className="profile-edit-header-actions">
+          {publicAdminPath && <Button asChild variant="outline">
+            <Link to={publicAdminPath} target="_blank" rel="noopener noreferrer">
+              <FiExternalLink aria-hidden="true" /> View public profile
+            </Link>
+          </Button>}
+          <Button asChild variant="outline">
+            <Link className="secondary button-link icon-link" to="/dashboard/profile">
+              <FiArrowLeft aria-hidden="true" />Back to Profile
+            </Link>
+          </Button>
+        </div>
       </header>
 
       {!form ? <p role="status" className="profile-edit-loading">{error || "Loading profile…"}</p> :
@@ -182,8 +191,8 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
             <div className="profile-edit-section-heading">
               <FiUser aria-hidden="true" />
               <div>
-                <h2 id="profile-edit-details-heading">Profile information</h2>
-                <p>Your public name, introduction and contact details.</p>
+                <h2 id="profile-edit-details-heading">{isAdmin ? "Public administrator information" : "Profile information"}</h2>
+                <p>{isAdmin ? "These details appear on your public admin page. Your private email and admin controls are never included." : "Your public name, introduction and contact details."}</p>
               </div>
             </div>
             <div className="profile-edit-fields">
@@ -215,7 +224,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
           </div>}
 
           <footer className="profile-edit-save-footer">
-            <p><FiInfo aria-hidden="true" /> Changes appear on your profile after saving.</p>
+            <p>{isAdmin ? <FiShield aria-hidden="true" /> : <FiInfo aria-hidden="true" />} Changes appear on your {isAdmin ? "public administrator page" : "profile"} after saving.</p>
             <Button type="submit" disabled={saving} className="primary-button profile-edit-save-button">
               <FiSave aria-hidden="true" /> {saving ? "Saving…" : "Save profile"}
             </Button>
