@@ -47,6 +47,41 @@ async function verifiedReviewSummary(businessId) {
   };
 }
 
+// Public administrator profile. Explicit allowlist: never return admin email,
+ // credentials, permissions, contacts, sessions, or internal account metadata.
+router.get("/admin/:username", async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  try {
+    const username = String(req.params.username || "").toLowerCase().trim();
+    if (!/^[a-z0-9-]{3,40}$/.test(username)) {
+      return res.status(404).json({ message: "Admin profile not found." });
+    }
+    const admin = await User.findOne({
+      username,
+      role: "admin",
+      accountStatus: "active"
+    }).select("name username headline bio location website profileImage profileImagePositionX profileImagePositionY coverImage createdAt").lean();
+    if (!admin) return res.status(404).json({ message: "Admin profile not found." });
+    return res.json({ profile: {
+      name: admin.name,
+      username: admin.username,
+      role: "admin",
+      headline: admin.headline || "",
+      bio: admin.bio || "",
+      location: admin.location || "",
+      website: admin.website || "",
+      profileImage: admin.profileImage || "",
+      profileImagePositionX: admin.profileImagePositionX ?? 50,
+      profileImagePositionY: admin.profileImagePositionY ?? 50,
+      coverImage: admin.coverImage || "",
+      joinedAt: admin.createdAt
+    } });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Unable to load admin profile." });
+  }
+});
+
 router.get("/profile/:username", optionalAuth, async (req, res) => {
   res.set("Cache-Control", "no-store");
   try {
