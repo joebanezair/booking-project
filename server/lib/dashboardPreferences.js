@@ -13,8 +13,9 @@ export const DASHBOARD_PREFERENCE_KEYS = Object.freeze({
 });
 
 export function normalizeDashboardPreferences(kind, input) {
+  if (!Object.hasOwn(DASHBOARD_PREFERENCE_KEYS, kind)) return null;
   const allowed = DASHBOARD_PREFERENCE_KEYS[kind];
-  if (!allowed || !input || typeof input !== "object" || Array.isArray(input)) return null;
+  if (!input || typeof input !== "object" || Array.isArray(input)) return null;
   const allowedKeys = new Set(allowed);
   if (Object.entries(input).some(([key, value]) => !allowedKeys.has(key) || typeof value !== "boolean")) return null;
   return Object.fromEntries(allowed.map(key => [key, input[key] !== false]));
