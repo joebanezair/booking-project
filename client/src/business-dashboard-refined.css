@@ -1341,3 +1341,14 @@ html body #root .dashboard-route-section--business .dashboard-quick-grid .dashbo
     transition: none !important;
   }
 }
+
+/* Business dashboard only — normal text weight throughout the existing layout.
+   Keep every heading, statistic, tab, button, label, link, and value in place.
+   Match the business header instead of the analytics panels so customization
+   cannot accidentally disable the typography treatment. */
+html body #root .content-shell > .topbar:has(.business-dashboard-header-actions),
+html body #root .content-shell > .topbar:has(.business-dashboard-header-actions) *,
+html body #root .content-shell:has(> .topbar .business-dashboard-header-actions) .dashboard-content-rail,
+html body #root .content-shell:has(> .topbar .business-dashboard-header-actions) .dashboard-content-rail * {
+  font-weight: 400 !important;
+}
