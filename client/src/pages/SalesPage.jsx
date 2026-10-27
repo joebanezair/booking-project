@@ -8,7 +8,7 @@ import { Textarea } from "../components/ui/textarea.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { FiCalendar, FiChevronDown, FiChevronLeft, FiChevronRight, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
+import { FiCalendar, FiCheckCircle, FiChevronDown, FiChevronLeft, FiChevronRight, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import OnlineOrdersOverview from "../components/OnlineOrdersOverview.jsx";
@@ -29,8 +29,8 @@ const orderStatuses = [
   ["ready", "Ready"], ["out_for_delivery", "Out for delivery"],
   ["completed", "Completed"], ["cancelled", "Cancelled"]
 ];
-const commonOrderFilters = [["all","All"],["pending","Pending"],["processing","Processing"],["completed","Completed"]];
-const extraOrderFilters = orderStatuses.filter(([value])=>!commonOrderFilters.some(([common])=>common===value));
+const commonOrderFilters = [["all","All"],["pending","Pending"],["processing","Processing"]];
+const extraOrderFilters = orderStatuses.filter(([value])=>value!=="completed"&&!commonOrderFilters.some(([common])=>common===value));
 const orderStatusLabel = value => orderStatuses.find(([key])=>key===value)?.[1] || value;
 
 const groups = [
@@ -48,6 +48,71 @@ function money(value, currency) {
   }
 }
 
+// Keep search behavior identical across active and completed order lists.
+function matchesOrderSearch(order, term) {
+  return !term || [order.orderNumber,order.customerName,order.customerPhone,
+    ...(order.items||[]).map(item=>item.name)]
+    .some(value=>String(value||"").toLowerCase().includes(term));
+}
+
+// Shared rows retain order detail, status, price and click behavior.
+function OnlineOrderRows({orders,onOpen}) {
+  return orders.map(order=><tr key={order._id} className="sales-order-row"
+    onClick={()=>onOpen(order)}>
+    <td data-label="Order" className="sales-orders-ident">
+      <Button type="button" variant="plain" className="sales-orders-order-link" title={order.orderNumber}
+        onClick={event=>{event.stopPropagation();onOpen(order);}}>{order.orderNumber}</Button>
+    </td>
+    <td data-label="Product" className="sales-orders-product">
+      <span className="sales-orders-item">{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</span>
+    </td>
+    <td data-label="Customer" className="sales-orders-customer">{order.customerName}</td>
+    <td data-label="Total" className="sales-orders-amount">{money(order.total,order.currency)}</td>
+    <td data-label="Status" className="sales-orders-status-cell"><span className={"sales-orders-status is-"+order.status}>{orderStatusLabel(order.status)}</span></td>
+  </tr>);
+}
+
+// Collapsed by default to keep the working order queue uncluttered.
+function CompletedOnlineSales({orders,expanded,onToggle,onOpen}) {
+  const [search,setSearch]=useState("");
+  const filtered=useMemo(()=>orders.filter(order=>matchesOrderSearch(order,search.trim().toLowerCase())),[orders,search]);
+  return <section className="panel pos-history-panel sales-orders-panel completed-sales-panel"
+    aria-labelledby="completed-online-sales-heading">
+    <div className="panel-title sales-orders-head completed-sales-head">
+      <div>
+        <p className="eyebrow">SALES HISTORY</p>
+        <h2 id="completed-online-sales-heading"><FiCheckCircle aria-hidden="true"/> Completed sales</h2>
+        <p className="muted completed-sales-description">Finished online orders are kept here, separate from active orders.</p>
+      </div>
+      <Button type="button" variant="outline" className="sales-orders-collapse"
+        aria-expanded={expanded} aria-controls="completed-online-sales-content" onClick={onToggle}>
+        {orders.length} completed <FiChevronDown aria-hidden="true"/>
+      </Button>
+    </div>
+    <div id="completed-online-sales-content" className="sales-online-orders-content" hidden={!expanded}>
+      {!orders.length
+        ? <div className="sales-orders-empty"><FiInbox aria-hidden="true"/><p className="muted">No completed sales yet.</p></div>
+        : <>
+          <div className="sales-orders-toolbar completed-sales-toolbar">
+            <label className="sales-orders-search">
+              <FiSearch aria-hidden="true"/>
+              <Input type="search" value={search} onChange={event=>setSearch(event.target.value)}
+                placeholder="Search completed sales..." aria-label="Search completed online sales"/>
+            </label>
+          </div>
+          {filtered.length===0
+            ? <p className="muted sales-orders-no-match" role="status">No matching completed sales.</p>
+            : <div className="sales-table-wrap sales-orders-table-wrap">
+              <table className="sales-table sales-orders-table">
+                <thead><tr><th scope="col">Order</th><th scope="col">Product</th><th scope="col">Customer</th><th scope="col">Total</th><th scope="col">Status</th></tr></thead>
+                <tbody><OnlineOrderRows orders={filtered} onOpen={onOpen}/></tbody>
+              </table>
+            </div>}
+        </>}
+    </div>
+  </section>;
+}
+
 export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   const [range, setRange] = useState("month");
   const [group, setGroup] = useState("daily");
@@ -57,6 +122,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   const [loading, setLoading] = useState(true);
   const [orders,setOrders]=useState([]);
   const [ordersExpanded,setOrdersExpanded]=useState(true);
+  const [completedSalesExpanded,setCompletedSalesExpanded]=useState(false);
   const [orderFilter,setOrderFilter]=useState("all");
   const [orderSearch,setOrderSearch]=useState("");
   const [draftOrderStatus,setDraftOrderStatus]=useState("pending");
@@ -116,14 +182,15 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     if (value !== "custom") setCustom({ start: "", end: "" });
   }
 
+  // Only orders requiring attention belong in this table.
+  const activeOrders = useMemo(()=>orders.filter(order=>order.status!=="completed"),[orders]);
+  const completedOrders = useMemo(()=>orders.filter(order=>order.status==="completed"),[orders]);
   const filteredOrders = useMemo(()=>{
     const term=orderSearch.trim().toLowerCase();
-    return orders.filter(order=>
-      (orderFilter==="all"||order.status===orderFilter) &&
-      (!term || [order.orderNumber,order.customerName,order.customerPhone,
-        ...(order.items||[]).map(item=>item.name)].some(value=>String(value||"").toLowerCase().includes(term)))
+    return activeOrders.filter(order=>
+      (orderFilter==="all"||order.status===orderFilter) && matchesOrderSearch(order,term)
     );
-  },[orders,orderFilter,orderSearch]);
+  },[activeOrders,orderFilter,orderSearch]);
 
 
 
@@ -329,25 +396,30 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
       </>}
     </>}
     {ordersOnly && <OnlineOrdersOverview orders={orders} loading={ordersLoading}
-      activeStatus={orderFilter}
+      activeStatus={completedSalesExpanded ? "completed" : orderFilter}
       onStatusFilter={status=>{
+        if(status==="completed"){
+          setCompletedSalesExpanded(true);
+          return;
+        }
+        setCompletedSalesExpanded(false);
         setOrderFilter(current=>status==="all"?"all":current===status?"all":status);
         setOrderSearch("");
         setOrdersExpanded(true);
       }}/>}
     {ordersOnly && error && <p className="error" role="alert">{error}</p>}
     {ordersOnly && ordersLoading && <section className="panel sales-orders-loading" role="status">Loading online orders…</section>}
-    {ordersOnly && <section className={"panel pos-history-panel sales-orders-panel"+(!orders.length?" is-empty":"")}>
+    {ordersOnly && <section className={"panel pos-history-panel sales-orders-panel"+(!activeOrders.length?" is-empty":"")}>
       <div className="panel-title sales-orders-head">
         <div><p className="eyebrow">ONLINE ORDERS</p><h2>Public product orders</h2></div>
         <Button type="button" variant="outline" className="sales-orders-collapse" aria-expanded={ordersExpanded}
           aria-controls="sales-online-orders-content" onClick={()=>setOrdersExpanded(value=>!value)}>
-          {orders.length} order{orders.length===1?"":"s"} <FiChevronDown aria-hidden="true"/>
+          {activeOrders.length} active order{activeOrders.length===1?"":"s"} <FiChevronDown aria-hidden="true"/>
         </Button>
       </div>
       <div id="sales-online-orders-content" className="sales-online-orders-content" hidden={!ordersExpanded}>
-        {orders.length===0
-          ? <div className="sales-orders-empty"><FiInbox aria-hidden="true"/><p className="muted">No public product orders yet.</p></div>
+        {activeOrders.length===0
+          ? <div className="sales-orders-empty"><FiInbox aria-hidden="true"/><p className="muted">No active orders. Completed sales are available below.</p></div>
           : <>
             <div className="sales-orders-toolbar">
               <div className="sales-orders-filters" role="group" aria-label="Filter online orders">
@@ -355,7 +427,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
                   variant={orderFilter===value?"secondary":"outline"}
                   className={"sales-orders-filter"+(orderFilter===value?" active":"")}
                   aria-pressed={orderFilter===value} onClick={()=>setOrderFilter(value)}>
-                  {label}<span className="sales-orders-filter-count">{value==="all"?orders.length:orders.filter(o=>o.status===value).length}</span>
+                  {label}<span className="sales-orders-filter-count">{value==="all"?activeOrders.length:activeOrders.filter(o=>o.status===value).length}</span>
                 </Button>)}
                 <Select aria-label="More order statuses" className="sales-orders-more-status"
                   value={extraOrderFilters.some(([value])=>value===orderFilter)?orderFilter:""}
@@ -370,28 +442,18 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
                   placeholder="Search orders, customers, or products..." aria-label="Search online orders"/>
               </label>
             </div>
-            {filteredOrders.length===0 ? <p className="muted sales-orders-no-match" role="status">No matching orders. Adjust your search or status filter.</p> :
+            {filteredOrders.length===0 ? <p className="muted sales-orders-no-match" role="status">No matching active orders. Adjust your search or status filter.</p> :
               <div className="sales-table-wrap sales-orders-table-wrap">
                 <table className="sales-table sales-orders-table">
                   <thead><tr><th scope="col">Order</th><th scope="col">Product</th><th scope="col">Customer</th><th scope="col">Total</th><th scope="col">Status</th></tr></thead>
-                  <tbody>{filteredOrders.map(order=><tr key={order._id} className="sales-order-row"
-                    onClick={()=>openOrder(order)}>
-                    <td data-label="Order" className="sales-orders-ident">
-                      <Button type="button" variant="plain" className="sales-orders-order-link" title={order.orderNumber}
-                        onClick={event=>{event.stopPropagation();openOrder(order);}}>{order.orderNumber}</Button>
-                    </td>
-                    <td data-label="Product" className="sales-orders-product">
-                      <span className="sales-orders-item">{order.items?.map(i=>i.name+" × "+i.quantity).join(", ")}</span>
-                    </td>
-                    <td data-label="Customer" className="sales-orders-customer">{order.customerName}</td>
-                    <td data-label="Total" className="sales-orders-amount">{money(order.total,order.currency)}</td>
-                    <td data-label="Status" className="sales-orders-status-cell"><span className={"sales-orders-status is-"+order.status}>{orderStatusLabel(order.status)}</span></td>
-                  </tr>)}</tbody>
+                  <tbody><OnlineOrderRows orders={filteredOrders} onOpen={openOrder}/></tbody>
                 </table>
               </div>}
           </>}
       </div>
     </section>}
+    {ordersOnly && <CompletedOnlineSales orders={completedOrders} expanded={completedSalesExpanded}
+      onToggle={()=>setCompletedSalesExpanded(value=>!value)} onOpen={openOrder}/>}
 
     {!ordersOnly && !loading && data && <>
       {data?.totalsByCurrency?.length > 1 && <section className="panel currency-summary">
