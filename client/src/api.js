@@ -3,7 +3,7 @@ const API_URL = import.meta.env.VITE_API_URL || "/api";
 async function request(path, options = {}) {
   const token = localStorage.getItem("booking_token");
   // Never reuse browser/proxy cached inventory, sales or order information.
-  const sensitive = /^\/(?:sales(?:\/|$)|public\/profile\/|public\/products\/|public\/orders(?:\/|$))/.test(path);
+  const sensitive = /^\/(?:sales(?:\/|$)|public\/(?:profile|admin)\/|public\/products\/|public\/orders(?:\/|$))/.test(path);
   const response = await fetch(`${API_URL}${path}`, {
     ...(sensitive ? { cache: "no-store" } : {}),
     ...options,
@@ -214,7 +214,8 @@ export const api = {
     get: token => request(`/public/reviews/${encodeURIComponent(token)}`),
     submit: (token, body) => request(`/public/reviews/${encodeURIComponent(token)}`, { method: "PUT", body: JSON.stringify(body) })
   },
-  publicProfile: username => request(`/public/profile/${username}`),
+  publicProfile: username => request(`/public/profile/${encodeURIComponent(username)}`),
+  publicAdminProfile: username => request(`/public/admin/${encodeURIComponent(username)}`),
   publicProductOrder: (userId, body) => request(`/public/products/${userId}/order`, { method: "POST", body: JSON.stringify(body) }),
   publicOrderStatus: (id, token) => request(`/public/orders/${encodeURIComponent(id)}/status`, { headers:{"X-Order-Token":token} }),
   publicContent: id => request(`/public/content/${id}`),
