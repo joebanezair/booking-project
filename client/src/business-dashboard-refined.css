@@ -1216,23 +1216,6 @@ html body #root .dashboard-route-section--business .dashboard-quick-grid .dashbo
 html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link:hover .dashboard-quick-arrow {
   transform: translateX(2px);
 }
-/* List mode spans the full row; badges move to the right beside the arrow. */
-html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid--list {
-  grid-template-columns: minmax(0, 1fr) !important;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-grid--list .dashboard-quick-link {
-  min-height: 60px !important;
-  padding-top: 6px !important;
-  padding-bottom: 6px !important;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-grid--list .dashboard-quick-link .route-card-icon {
-  width: 40px;
-  height: 40px;
-  flex-basis: 40px;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-grid--list .dashboard-quick-count {
-  min-width: 32px;
-}
 /* Make the second row feel deliberate instead of leaving five tiny cards
    on the first row and two stranded on the next. */
 @media (max-width: 1240px) {
@@ -1257,9 +1240,6 @@ html body #root .dashboard-route-section--business .dashboard-quick-grid--list .
   html body #root .dashboard-route-section--business .dashboard-section-heading {
     align-items: flex-start;
   }
-  html body #root .dashboard-route-section--business .dashboard-quick-view-toggle {
-    margin-left: auto;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link,
@@ -1280,85 +1260,6 @@ html body #root .content-shell:has(.admin-dashboard-platform) .dashboard-content
 }
 
 
-/* Business Quick Access refresh: one cohesive navigation surface, not seven
-   competing cards. All links, counts and user-selected grid/list modes remain. */
-/* Single sliding segmented switch: one moving highlight, Grid on the left,
-   List on the right. Both sides are accessible buttons with saved selection. */
-html body #root .dashboard-route-section--business .dashboard-quick-view-toggle {
-  position: relative;
-  isolation: isolate;
-  box-sizing: border-box;
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: center;
-  gap: 0;
-  flex: 0 0 auto;
-  width: 154px;
-  min-height: 34px;
-  padding: 3px;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 999px !important;
-  background: #f1f5f9 !important;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-view-slider {
-  position: absolute;
-  z-index: 0;
-  top: 3px;
-  bottom: 3px;
-  left: 3px;
-  width: calc((100% - 6px) / 2);
-  border-radius: 999px;
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, .12);
-  transform: translateX(0);
-  transition: transform .2s ease;
-  pointer-events: none;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-view-slider.is-list {
-  transform: translateX(100%);
-}
-html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-button.ui-button {
-  position: relative;
-  z-index: 1;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100% !important;
-  min-width: 0;
-  min-height: 28px !important;
-  height: 28px !important;
-  margin: 0 !important;
-  padding: 5px 8px !important;
-  border: none !important;
-  border-radius: 999px !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: #667085 !important;
-  font-size: 11px !important;
-  font-weight: 400 !important;
-  line-height: 1;
-  cursor: pointer !important;
-  transition: color .2s ease;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-button.ui-button[aria-pressed="true"] {
-  background: transparent !important;
-  color: #2563eb !important;
-  font-weight: 500 !important;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-button.ui-button:hover {
-  background: transparent !important;
-  color: #2563eb !important;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-button.ui-button:focus-visible {
-  outline: 2px solid #2563eb !important;
-  outline-offset: 2px;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-button svg {
-  width: 14px !important;
-  height: 14px !important;
-  flex: 0 0 auto;
-}
 html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
   gap: 4px !important;
   padding: 6px !important;
@@ -1426,19 +1327,6 @@ html body #root .dashboard-route-section--business .dashboard-quick-grid .dashbo
 html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link:hover .dashboard-quick-arrow {
   color: var(--primary) !important;
 }
-html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid--list {
-  gap: 0 !important;
-  padding: 5px 10px !important;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-grid--list .dashboard-quick-link {
-  min-height: 61px !important;
-  border-radius: 6px !important;
-}
-html body #root .dashboard-route-section--business .dashboard-quick-grid--list .dashboard-quick-link + .dashboard-quick-link {
-  border-top: 1px solid var(--border) !important;
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
-}
 @media (max-width: 560px) {
   html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
     padding: 5px !important;
@@ -1446,15 +1334,6 @@ html body #root .dashboard-route-section--business .dashboard-quick-grid--list .
   html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link {
     min-height: 65px !important;
     padding: 9px 10px !important;
-  }
-  html body #root .dashboard-route-section--business .dashboard-quick-view-toggle {
-    margin-left: 0;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  html body #root .dashboard-route-section--business .dashboard-quick-view-slider,
-  html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-button.ui-button {
-    transition: none !important;
   }
 }
 @media (prefers-reduced-motion: reduce) {
