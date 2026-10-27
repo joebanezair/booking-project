@@ -1,0 +1,8 @@
+/* Notification Center only. Set all visible text to normal weight (400).
+   Do not change layouts, labels, colors, borders, or notification behavior. */
+html body #root .content-shell:has(> .notification-list) > .topbar,
+html body #root .content-shell:has(> .notification-list) > .topbar *,
+html body #root .content-shell > .notification-list,
+html body #root .content-shell > .notification-list * {
+  font-weight: 400 !important;
+}
