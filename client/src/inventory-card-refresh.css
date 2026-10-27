@@ -712,3 +712,21 @@ html body #root .pos-earnings-note {
     padding: 12px;
   }
 }
+
+/* Historical cost estimates are distinguishable from checkout-snapshot figures. */
+html body #root .pos-earnings-table .pos-earnings-estimated-label {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 9%, var(--card));
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+html body #root .pos-earnings-explanation strong {
+  font-weight: 500;
+  color: var(--foreground);
+}
