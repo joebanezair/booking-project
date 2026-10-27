@@ -144,6 +144,9 @@ export default function DashboardPage({ user, onLogout }) {
   const [visibleBusinessWidgets, setVisibleBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
   const [draftBusinessWidgets, setDraftBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
   const [businessCustomizeOpen, setBusinessCustomizeOpen] = useState(false);
+  const [dashboardPreferencesLoading, setDashboardPreferencesLoading] = useState(true);
+  const [dashboardPreferencesSaving, setDashboardPreferencesSaving] = useState(false);
+  const [dashboardPreferencesError, setDashboardPreferencesError] = useState("");
   const [expandedBusinessGroups, setExpandedBusinessGroups] = useState({ "Key metrics": true });
   const [quickAccessCounts, setQuickAccessCounts] = useState(null);
   useEffect(() => {
@@ -160,37 +163,100 @@ export default function DashboardPage({ user, onLogout }) {
     visibleBusinessWidgets[section.widgetKey] !== false
   );
   useEffect(() => {
-    const stored = readBusinessWidgets(businessWidgetKey);
-    setVisibleBusinessWidgets(stored);
-    setDraftBusinessWidgets(stored);
+    let active = true;
+    const localBusiness = readBusinessWidgets(businessWidgetKey);
+    const localMetrics = readVisibleMetrics(visibilityKey);
+    const kind = isAdmin ? "adminMetrics" : "businessWidgets";
+    const storageKey = isAdmin ? visibilityKey : businessWidgetKey;
+    const localPreferences = isAdmin ? localMetrics : localBusiness;
+    const originalToken = window.localStorage.getItem("booking_token");
+    setVisibleBusinessWidgets(localBusiness);
+    setDraftBusinessWidgets(localBusiness);
+    setVisibleMetrics(localMetrics);
+    setDraftMetrics(localMetrics);
     setBusinessCustomizeOpen(false);
-  }, [businessWidgetKey]);
+    setCustomizeOpen(false);
+    setDashboardPreferencesError("");
+    setDashboardPreferencesLoading(true);
+
+    async function loadPreferences() {
+      try {
+        const remote = await api.profile.getDashboardPreferences();
+        if (!active || originalToken !== window.localStorage.getItem("booking_token")) return;
+        if (remote[kind] && typeof remote[kind] === "object" && !Array.isArray(remote[kind])) {
+          const defaults = isAdmin ? defaultVisibleMetrics() : defaultBusinessWidgets();
+          const stored = Object.fromEntries(Object.keys(defaults).map(key =>
+            [key, typeof remote[kind][key] === "boolean" ? remote[kind][key] : defaults[key]]
+          ));
+          if (isAdmin) {
+            setVisibleMetrics(stored);
+            setDraftMetrics(stored);
+          } else {
+            setVisibleBusinessWidgets(stored);
+            setDraftBusinessWidgets(stored);
+          }
+          try { window.localStorage.setItem(storageKey, JSON.stringify(stored)); }
+          catch { /* Database values remain the source of truth. */ }
+        } else {
+          // Import older browser-only settings once, then use the database on future sign-ins.
+          let hasLocalSettings = false;
+          try { hasLocalSettings = window.localStorage.getItem(storageKey) !== null; }
+          catch { /* No browser storage available. */ }
+          if (hasLocalSettings) await api.profile.saveDashboardPreferences(kind, localPreferences);
+        }
+      } catch {
+        // Keep local settings when offline; saving will report an error if the API is unavailable.
+      } finally {
+        if (active) setDashboardPreferencesLoading(false);
+      }
+    }
+    loadPreferences();
+    return () => { active = false; };
+  }, [businessWidgetKey, visibilityKey, isAdmin]);
   function openBusinessCustomize() {
     setDraftBusinessWidgets({ ...visibleBusinessWidgets });
     setExpandedBusinessGroups({ "Key metrics": true });
+    setDashboardPreferencesError("");
     setBusinessCustomizeOpen(true);
   }
-  function saveBusinessCustomize() {
-    setVisibleBusinessWidgets({ ...draftBusinessWidgets });
-    try { window.localStorage.setItem(businessWidgetKey, JSON.stringify(draftBusinessWidgets)); }
-    catch { /* Keep browser-session preference when storage is unavailable. */ }
-    setBusinessCustomizeOpen(false);
+  async function saveBusinessCustomize() {
+    if (dashboardPreferencesLoading || dashboardPreferencesSaving) return;
+    setDashboardPreferencesSaving(true);
+    setDashboardPreferencesError("");
+    try {
+      const { preferences } = await api.profile.saveDashboardPreferences("businessWidgets", draftBusinessWidgets);
+      setVisibleBusinessWidgets({ ...preferences });
+      setDraftBusinessWidgets({ ...preferences });
+      try { window.localStorage.setItem(businessWidgetKey, JSON.stringify(preferences)); }
+      catch { /* Saved to the account even if browser storage is unavailable. */ }
+      setBusinessCustomizeOpen(false);
+    } catch (error) {
+      setDashboardPreferencesError(error.message || "Unable to save dashboard preferences.");
+    } finally {
+      setDashboardPreferencesSaving(false);
+    }
   }
-  useEffect(() => {
-    const saved = readVisibleMetrics(visibilityKey);
-    setVisibleMetrics(saved);
-    setDraftMetrics(saved);
-    setCustomizeOpen(false);
-  }, [visibilityKey]);
-  function saveMetrics() {
-    setVisibleMetrics({ ...draftMetrics });
-    try { window.localStorage.setItem(visibilityKey, JSON.stringify(draftMetrics)); }
-    catch { /* The customization still works for this browser session. */ }
-    setCustomizeOpen(false);
+  async function saveMetrics() {
+    if (dashboardPreferencesLoading || dashboardPreferencesSaving) return;
+    setDashboardPreferencesSaving(true);
+    setDashboardPreferencesError("");
+    try {
+      const { preferences } = await api.profile.saveDashboardPreferences("adminMetrics", draftMetrics);
+      setVisibleMetrics({ ...preferences });
+      setDraftMetrics({ ...preferences });
+      try { window.localStorage.setItem(visibilityKey, JSON.stringify(preferences)); }
+      catch { /* Saved to the account even if browser storage is unavailable. */ }
+      setCustomizeOpen(false);
+    } catch (error) {
+      setDashboardPreferencesError(error.message || "Unable to save dashboard preferences.");
+    } finally {
+      setDashboardPreferencesSaving(false);
+    }
   }
   function openMetricsDialog() {
     setDraftMetrics({ ...visibleMetrics });
     setExpandedMetricGroup("Main statistics");
+    setDashboardPreferencesError("");
     setCustomizeOpen(true);
   }
 
@@ -416,6 +482,7 @@ export default function DashboardPage({ user, onLogout }) {
                             <input type="checkbox" id={`admin-stat-show-${key}`}
                               aria-label={`Show ${label}`}
                               checked={draftMetrics[key] !== false}
+                              disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
                               onChange={event => setDraftMetrics(current => ({ ...current, [key]: event.target.checked }))} />
                             <span>{label}</span>
                           </label>
@@ -430,23 +497,27 @@ export default function DashboardPage({ user, onLogout }) {
               </section>;
             })}
           </div>
+          {dashboardPreferencesError && <p role="alert">{dashboardPreferencesError}</p>}
           <DialogFooter className="admin-stats-checklist-footer">
             <div className="admin-stats-checklist-helpers">
               <Button type="button" variant="ghost" size="sm"
+                disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
                 onClick={() => setDraftMetrics(defaultVisibleMetrics())}>
                 <FiCheckSquare aria-hidden="true" /> Select all
               </Button>
               <Button type="button" variant="ghost" size="sm"
+                disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
                 onClick={() => setDraftMetrics({ ...visibleMetrics })}>
                 <FiRotateCcw aria-hidden="true" /> Reset changes
               </Button>
             </div>
             <div className="admin-stats-checklist-actions">
               <Button type="button" variant="outline" size="sm"
+                disabled={dashboardPreferencesSaving}
                 onClick={() => setCustomizeOpen(false)}>
                 <FiX aria-hidden="true" /> Cancel
               </Button>
-              <Button type="button" size="sm" onClick={saveMetrics}>
+              <Button type="button" size="sm" disabled={dashboardPreferencesLoading || dashboardPreferencesSaving} onClick={saveMetrics}>
                 <FiSave aria-hidden="true" /> Save changes
               </Button>
             </div>
@@ -463,7 +534,7 @@ export default function DashboardPage({ user, onLogout }) {
           </DialogHeader>
           <div className="business-dashboard-widget-summary" aria-live="polite">
             <span><strong>{draftBusinessWidgetCount}</strong> of {businessWidgetTotal} widgets selected</span>
-            <span>Changes apply when saved</span>
+            <span>{dashboardPreferencesLoading ? "Loading saved settings…" : "Changes apply when saved"}</span>
           </div>
           <div className="business-dashboard-widget-list">
             {businessWidgetGroups.map(group => {
@@ -489,6 +560,7 @@ export default function DashboardPage({ user, onLogout }) {
                       <span className="business-dashboard-widget-name">
                         <input type="checkbox"
                           checked={draftBusinessWidgets[key] !== false}
+                          disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
                           onChange={event => setDraftBusinessWidgets(current => ({ ...current, [key]: event.target.checked }))}
                           aria-label={`Show ${label}`} />
                         <span>{label}</span>
@@ -500,22 +572,25 @@ export default function DashboardPage({ user, onLogout }) {
               </section>;
             })}
           </div>
+          {dashboardPreferencesError && <p role="alert">{dashboardPreferencesError}</p>}
           <DialogFooter className="business-dashboard-widget-footer">
             <div className="business-dashboard-widget-helpers">
               <Button type="button" variant="ghost" size="sm"
+                disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
                 onClick={() => setDraftBusinessWidgets(defaultBusinessWidgets())}>
                 <FiCheckSquare aria-hidden="true" /> Select all
               </Button>
               <Button type="button" variant="ghost" size="sm"
+                disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
                 onClick={() => setDraftBusinessWidgets({ ...visibleBusinessWidgets })}>
                 <FiRotateCcw aria-hidden="true" /> Undo changes
               </Button>
             </div>
             <div className="business-dashboard-widget-actions">
-              <Button type="button" variant="outline" size="sm" onClick={() => setBusinessCustomizeOpen(false)}>
+              <Button type="button" variant="outline" size="sm" disabled={dashboardPreferencesSaving} onClick={() => setBusinessCustomizeOpen(false)}>
                 <FiX aria-hidden="true" /> Cancel
               </Button>
-              <Button type="button" size="sm" onClick={saveBusinessCustomize}>
+              <Button type="button" size="sm" disabled={dashboardPreferencesLoading || dashboardPreferencesSaving} onClick={saveBusinessCustomize}>
                 <FiSave aria-hidden="true" /> Save changes
               </Button>
             </div>
