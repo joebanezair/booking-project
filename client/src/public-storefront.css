@@ -574,6 +574,106 @@ html body #root .bookflow-storefront .storefront-reviews .verified-review-card s
   margin-top: auto;
   font-size: 11px;
 }
+/* Reviews and footer: compact, borderless empty state with no oversized placeholder card. */
+html body #root .bookflow-storefront .storefront-reviews {
+  margin-bottom: 22px !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .storefront-section-heading {
+  align-items: center;
+  margin-bottom: 15px !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .storefront-section-heading h2 {
+  font-size: clamp(19px, 2vw, 23px);
+  margin-bottom: 5px;
+}
+html body #root .bookflow-storefront .storefront-reviews .storefront-section-count {
+  gap: 6px;
+  border-radius: 999px !important;
+  border-color: transparent;
+  background: var(--secondary);
+  color: var(--muted-foreground);
+  padding: 7px 11px;
+}
+html body #root .bookflow-storefront .storefront-reviews-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  min-height: 85px;
+  padding: 15px 0;
+  border-top: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+}
+html body #root .bookflow-storefront .storefront-reviews-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border-radius: 50% !important;
+  background: color-mix(in srgb, var(--primary) 8%, var(--card));
+  color: var(--primary);
+}
+html body #root .bookflow-storefront .storefront-reviews-empty-icon svg {
+  width: 18px;
+  height: 18px;
+}
+html body #root .bookflow-storefront .storefront-reviews-empty strong {
+  display: block;
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 650;
+}
+html body #root .bookflow-storefront .storefront-reviews-empty p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+html body #root .bookflow-storefront .storefront-footer-inner {
+  align-items: center;
+  min-height: 0;
+  gap: 14px 24px;
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
+}
+html body #root .bookflow-storefront .storefront-footer-brand {
+  gap: 5px;
+}
+html body #root .bookflow-storefront .storefront-footer-brand .brand-row {
+  margin: 0 0 2px;
+}
+html body #root .bookflow-storefront .storefront-footer-brand .storefront-footer-copyright {
+  display: block;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.4;
+}
+html body #root .bookflow-storefront .storefront-footer-links {
+  gap: 13px 20px;
+}
+@media (max-width: 560px) {
+  html body #root .bookflow-storefront .storefront-reviews .storefront-section-heading {
+    align-items: flex-start;
+    gap: 10px;
+  }
+  html body #root .bookflow-storefront .storefront-reviews-empty {
+    align-items: flex-start;
+    min-height: 80px;
+    padding: 13px 0;
+  }
+  html body #root .bookflow-storefront .storefront-reviews-empty-icon {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+  html body #root .bookflow-storefront .storefront-footer-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
 html body #root .bookflow-storefront .storefront-footer {
   border-top: 1px solid var(--border);
   background: var(--card);
