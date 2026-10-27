@@ -445,11 +445,10 @@ html body #root .bookflow-storefront .storefront-section-count {
   color: var(--muted-foreground);
   white-space: nowrap;
 }
-/* Compact rounded corners for the Services and Products count badges.
-   Keep the size, border, and alignment of the existing counters unchanged. */
+/* Service and product count badges use fully pill-shaped edges. */
 html body #root .bookflow-storefront .storefront-services .storefront-section-count,
 html body #root .bookflow-storefront .storefront-products .storefront-section-count {
-  border-radius: 10px !important;
+  border-radius: 9999px !important;
 }
 html body #root .bookflow-storefront .storefront-section-count svg {width:13px;height:13px;}
 /* Service and product listings: four aligned cards at desktop widths. */
