@@ -829,13 +829,87 @@ html body #root .admin-detail-feature-controls .ui-button {
   box-shadow: none;
 }
 .admin-detail-feature-controls .ui-button svg { width: 14px; height: 14px; }
-.admin-detail-feature-feedback {
-  margin: 0 0 12px;
-  padding: 8px 11px;
-  border-radius: 10px;
-  color: #157a4b;
-  background: #effbf3;
+/* Floating confirmation for Feature Plan changes: white surface, orange icon only. */
+html body #root .admin-detail-feature-toast {
+  position: fixed !important;
+  left: calc(16px + env(safe-area-inset-left, 0px)) !important;
+  right: auto !important;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index: 150;
+  display: flex !important;
+  align-items: center;
+  gap: 11px;
+  box-sizing: border-box;
+  width: min(320px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  padding: 12px;
+  margin: 0 !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 5px !important;
+  background: #fff !important;
+  color: #111827 !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .14);
+  animation: admin-feature-toast-enter .18s ease-out both;
+}
+html body #root .admin-detail-feature-toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 22px;
+  color: #f59e0b !important;
+}
+html body #root .admin-detail-feature-toast-icon svg {
+  width: 22px;
+  height: 22px;
+  color: #f59e0b !important;
+}
+html body #root .admin-detail-feature-toast-copy {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+  line-height: 1.35;
+}
+html body #root .admin-detail-feature-toast-copy strong {
+  color: #111827 !important;
   font-size: 12px;
+  font-weight: 600;
+}
+html body #root .admin-detail-feature-toast-copy span {
+  color: #6b7280 !important;
+  font-size: 11px;
+}
+html body #root .admin-detail-feature-toast-close.ui-button {
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 5px !important;
+  background: transparent !important;
+  color: #64748b !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+html body #root .admin-detail-feature-toast-close.ui-button:hover {
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+}
+html body #root .admin-detail-feature-toast-close.ui-button:focus-visible {
+  outline: 2px solid #f59e0b;
+  outline-offset: 2px;
+}
+@keyframes admin-feature-toast-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .admin-detail-feature-toast { animation: none; }
 }
 .admin-detail-page > .admin-detail-lists { margin-top: 14px; }
 @media (max-width: 1050px) {
