@@ -1,5 +1,13 @@
 import { createHash } from "node:crypto";
 import { getRedisCacheClient } from "../lib/distributedRedis.js";
+
+// Cache instances register invalidators by namespace so an administrator's
+// feature change is reflected on every subsequent public browse request.
+const cacheInvalidators = new Map();
+export async function invalidatePublicJsonCaches(namespace = "public") {
+  const invalidators = cacheInvalidators.get(namespace);
+  if (invalidators) await Promise.all([...invalidators].map(clear => clear()));
+}
 // Bounded, per-process cache for explicitly public, non-personalized JSON GET routes.
 // Never use for bookings, stock, sales, authenticated responses, or writes.
 export function publicJsonCache({ ttlMs = 15_000, maxEntries = 100, namespace = "public" } = {}) {
@@ -73,8 +81,10 @@ export function publicJsonCache({ ttlMs = 15_000, maxEntries = 100, namespace = 
   middleware.clear = () => {
     cache.clear();
     const client = getRedisCacheClient();
-    if (client) void client.incr(`bookflow:cache:${namespace}:version`).catch(error =>
+    if (client) return client.incr(`bookflow:cache:${namespace}:version`).catch(error =>
       console.error("Redis cache invalidation failed:", error.message));
   };
+  if (!cacheInvalidators.has(namespace)) cacheInvalidators.set(namespace, new Set());
+  cacheInvalidators.get(namespace).add(middleware.clear);
   return middleware;
 }
