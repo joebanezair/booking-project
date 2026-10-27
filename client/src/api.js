@@ -105,6 +105,10 @@ export const api = {
 
   profile: {
     get: () => request("/profile"),
+    getDashboardPreferences: () => request("/profile/dashboard-preferences", { cache: "no-store" }),
+    saveDashboardPreferences: (kind, preferences) => request("/profile/dashboard-preferences", {
+      method: "PUT", body: JSON.stringify({ kind, preferences })
+    }),
     update: async body => request("/profile", { method: "PUT", body: JSON.stringify(await uploadedFields(body, ["profileImage", "coverImage"])) })
   },
   business: {
