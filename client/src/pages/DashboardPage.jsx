@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiBarChart2, FiBriefcase, FiCalendar, FiCheckSquare, FiChevronDown, FiChevronRight, FiDollarSign, FiGrid, FiList, FiMessageSquare, FiPackage, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSettings, FiStar, FiUser, FiUsers, FiX } from "react-icons/fi";
+import { FiBarChart2, FiBriefcase, FiCalendar, FiCheckSquare, FiChevronDown, FiChevronRight, FiDollarSign, FiGrid, FiList, FiMessageSquare, FiPackage, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSettings, FiStar, FiUser, FiUsers, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import BusinessSetupChecklist from "../components/BusinessSetupChecklist.jsx";
 import DashboardAnalytics from "../components/DashboardAnalytics.jsx";
@@ -603,7 +603,7 @@ export default function DashboardPage({ user, onLogout }) {
             </Link>
           ))}
         </section>
-      </section>
+      </section>}
       {!isAdmin && businessWidgetCount === 0 && <div className="business-dashboard-all-hidden">
         <FiSettings aria-hidden="true" />
         <strong>Your dashboard is customized</strong>
