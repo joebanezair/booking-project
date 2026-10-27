@@ -28,8 +28,9 @@ export async function exportAdminBusinessWorkbook({ businessName, range, load })
     ...s.limitations.map(note => ["Coverage limitation", note])
   ];
   const finance = s.totalsByCurrency.map(r => [
-    r.currency, r.services, r.pos, r.online, r.gross, r.knownPosCost,
-    scalar(r.posGrossProfit), scalar(r.overallGrossProfit), r.missingPosCostLines, r.transactions
+    r.currency, r.services, r.pos, r.online, r.gross, r.knownPosCost, r.knownOnlineCost,
+    scalar(r.posGrossProfit), scalar(r.onlineGrossProfit), scalar(r.overallGrossProfit),
+    r.missingPosCostLines, r.missingOnlineCostLines, r.transactions
   ]);
 
   const fetchAll = async (section, channel) => {
@@ -53,8 +54,9 @@ export async function exportAdminBusinessWorkbook({ businessName, range, load })
   const sheets = [
     sheet("Summary", ["Metric", "Value"], summary),
     sheet("Financials", ["Currency", "Services gross", "POS gross", "Completed online value",
-      "Gross total", "Known POS costs", "POS gross profit", "Combined gross profit (if known)",
-      "Missing cost lines", "Transactions"], finance),
+      "Gross total", "Known POS costs", "Known online costs", "POS gross profit",
+      "Online gross profit", "Combined gross profit (if known)",
+      "Missing POS cost lines", "Missing online cost lines", "Transactions"], finance),
     sheet("Products", ["ID", "Name", "SKU", "Price", "Initial unit cost", "Currency",
       "Stock", "Published", "Units sold", "POS units", "Online units", "Sales gross",
       "Recorded POS costs", "Gross profit if known"], products.map(x => [
@@ -79,7 +81,7 @@ export async function exportAdminBusinessWorkbook({ businessName, range, load })
     sheet("Online Orders", ["Order", "Date", "Order value", "Currency", "Amount paid",
       "Payment status", "Order status", "Items"], online.map(x => [
         x.reference, iso(x.date), x.amount, x.currency, x.amountPaid, x.paymentStatus, x.status,
-        (x.items || []).map(i => `${i.quantity} x ${i.name}`).join(" | ")
+        (x.items || []).map(i => `${i.quantity} x ${i.name}; historical unit cost: ${scalar(i.unitCost)}`).join(" | ")
       ])),
     sheet("Service Sales", ["Reference", "Date", "Service", "Gross sale", "Currency", "Status"],
       serviceSales.map(x => [x.reference, iso(x.date), x.serviceName, x.amount, x.currency, x.status])),
