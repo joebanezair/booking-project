@@ -149,6 +149,8 @@ export default function PublicProfilePage({ user }) {
   if (!data) return <main className="public-shell"><section className="public-card">Loading...</section></main>;
 
   const { profile, content, products = [], reviews = [] } = data;
+  // The API returns no products when the admin has deactivated POS.
+  const hasPublicProducts = Boolean(profile.posAvailable && products.length > 0);
   const isOwner = user && String(user.id) === String(profile.id);
   const friendship = profile.friendship || {};
   // Keep profile actions visible to visitors; actual friendship and messaging
@@ -178,7 +180,7 @@ export default function PublicProfilePage({ user }) {
   const noMatches = totalMatches === 0 && (Boolean(normalizedSearch) || minServiceRating !== "0" || catalogType !== "all");
   const showServices = !noMatches && catalogType !== "products" &&
     (catalogType === "services" || !filtering || visibleServices.length > 0);
-  const showProducts = !noMatches && catalogType !== "services" &&
+  const showProducts = hasPublicProducts && !noMatches && catalogType !== "services" &&
     (catalogType === "products" || !normalizedSearch || visibleProducts.length > 0);
 
   return <main className="public-page bookflow-storefront" id="storefront-top">
@@ -245,7 +247,7 @@ export default function PublicProfilePage({ user }) {
       <div className="storefront-container storefront-section-links">
         <a href="#storefront-top">Overview</a>
         <a href="#storefront-services" onClick={event=>{event.preventDefault();setCatalogType("services");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-services")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Services <span>{content.length}</span></a>
-        <a href="#storefront-products" onClick={event=>{event.preventDefault();setCatalogType("products");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-products")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Products <span>{products.length}</span></a>
+        {hasPublicProducts && <a href="#storefront-products" onClick={event=>{event.preventDefault();setCatalogType("products");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-products")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Products <span>{products.length}</span></a>}
         <a href="#storefront-reviews">Reviews <span>{reviews.length}</span></a>
       </div>
     </nav>
@@ -263,6 +265,7 @@ export default function PublicProfilePage({ user }) {
         onRatingChange={setMinServiceRating}
         matchingCount={totalMatches}
         totalCount={totalOfferings}
+        hasProducts={hasPublicProducts}
       />
       {noMatches && <div className="panel empty-state" role="status"><p className="muted">{catalogType === "services" ? "No services match these filters." : catalogType === "products" ? "No products match these filters." : "No products or services match these filters."}</p></div>}
     </section>
@@ -277,7 +280,7 @@ export default function PublicProfilePage({ user }) {
         <div className="content-grid public-services-grid">{visibleServices.map(item => <Link key={item._id} to={`/services/${item._id}`} className="content-card-link"><ContentCard item={item} /></Link>)}</div>}
     </section>
 
-    <section id="storefront-products" className="public-content-section public-profile-products storefront-offerings-section storefront-products storefront-container" hidden={!showProducts}>
+    {hasPublicProducts && <section id="storefront-products" className="public-content-section public-profile-products storefront-offerings-section storefront-products storefront-container" hidden={!showProducts}>
       <div className="section-heading storefront-section-heading">
         <div><p className="eyebrow">PRODUCT CATALOG</p><h2>Shop products</h2><p className="storefront-section-description muted">Discover products available to order from {profile.name}.</p></div>
         <span className="storefront-section-count">{visibleProducts.length} products</span>
@@ -286,7 +289,7 @@ export default function PublicProfilePage({ user }) {
         visibleProducts.length === 0 ? <div className="panel empty-state" role="status"><p className="muted">No products match your search.</p></div> :
         <div className="content-grid">{visibleProducts.map(product => {const images=(product.images?.length?product.images:(product.image?[product.image]:[]));return <Card as="article" className="panel public-product-card" key={product._id}><Button variant="plain" type="button" className="public-product-media" disabled={!images.length} aria-label={images.length>1?`View ${images.length} images for ${product.name}`:`View image for ${product.name}`} onClick={()=>{if(images.length){setProductGallery({...product,images});setGalleryIndex(0);}}}>{images.length?<><Image src={images[0]} alt={product.name}/>{images.length>1&&<span className="image-count-badge">1 / {images.length}</span>}</>:<span className="product-image-placeholder"><FiShoppingBag/></span>}</Button><div className="public-product-body"><h3>{product.name}</h3>{product.description && <p className="muted">{product.description}</p>}<strong>{product.currency} {Number(product.price || 0).toLocaleString()}</strong><small>{product.stock > 0 ? product.stock + " in stock" : "Out of stock"}</small></div><Button className="public-order-button" disabled={product.stock<1||paused} onClick={()=>{setOrderProduct(product);setOrderForm({...orderForm,quantity:1});}}><FiShoppingBag/>Order product</Button></Card>})}</div>}
 
-    </section>
+    </section>}
 
       <Dialog
         open={Boolean(orderSuccess)}
