@@ -149,7 +149,8 @@ export default function PublicProfilePage({ user }) {
   if (!data) return <main className="public-shell"><section className="public-card">Loading...</section></main>;
 
   const { profile, content, products = [], reviews = [] } = data;
-  // The API returns no products when the admin has deactivated POS.
+  // Published offerings are returned only when their admin-controlled feature is active.
+  const hasPublicServices = Boolean(profile.servicesAvailable && content.length > 0);
   const hasPublicProducts = Boolean(profile.posAvailable && products.length > 0);
   const isOwner = user && String(user.id) === String(profile.id);
   const friendship = profile.friendship || {};
@@ -178,7 +179,7 @@ export default function PublicProfilePage({ user }) {
     catalogType === "products" ? products.length : content.length + products.length;
   const filtering = Boolean(normalizedSearch || minServiceRating !== "0");
   const noMatches = totalMatches === 0 && (Boolean(normalizedSearch) || minServiceRating !== "0" || catalogType !== "all");
-  const showServices = !noMatches && catalogType !== "products" &&
+  const showServices = hasPublicServices && !noMatches && catalogType !== "products" &&
     (catalogType === "services" || !filtering || visibleServices.length > 0);
   const showProducts = hasPublicProducts && !noMatches && catalogType !== "services" &&
     (catalogType === "products" || !normalizedSearch || visibleProducts.length > 0);
@@ -246,13 +247,13 @@ export default function PublicProfilePage({ user }) {
     <nav className="storefront-section-nav" aria-label="Business profile sections">
       <div className="storefront-container storefront-section-links">
         <a href="#storefront-top">Overview</a>
-        <a href="#storefront-services" onClick={event=>{event.preventDefault();setCatalogType("services");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-services")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Services <span>{content.length}</span></a>
+        {hasPublicServices && <a href="#storefront-services" onClick={event=>{event.preventDefault();setCatalogType("services");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-services")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Services <span>{content.length}</span></a>}
         {hasPublicProducts && <a href="#storefront-products" onClick={event=>{event.preventDefault();setCatalogType("products");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-products")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Products <span>{products.length}</span></a>}
         <a href="#storefront-reviews">Reviews <span>{reviews.length}</span></a>
       </div>
     </nav>
 
-    <section className="public-content-section profile-catalog-filter-section storefront-filter-section storefront-container" aria-label="Search and filter offerings">
+    {(hasPublicServices || hasPublicProducts) && <section className="public-content-section profile-catalog-filter-section storefront-filter-section storefront-container" aria-label="Search and filter offerings">
       <ProfileCatalogSearch
         value={catalogSearch}
         onChange={setCatalogSearch}
@@ -266,11 +267,12 @@ export default function PublicProfilePage({ user }) {
         matchingCount={totalMatches}
         totalCount={totalOfferings}
         hasProducts={hasPublicProducts}
+        hasServices={hasPublicServices}
       />
       {noMatches && <div className="panel empty-state" role="status"><p className="muted">{catalogType === "services" ? "No services match these filters." : catalogType === "products" ? "No products match these filters." : "No products or services match these filters."}</p></div>}
-    </section>
+    </section>}
 
-    <section id="storefront-services" className="public-content-section storefront-offerings-section storefront-services storefront-container" hidden={!showServices}>
+    {hasPublicServices && <section id="storefront-services" className="public-content-section storefront-offerings-section storefront-services storefront-container" hidden={!showServices}>
       <div className="section-heading storefront-section-heading">
         <div><p className="eyebrow">PUBLIC SERVICES</p><h2>Explore our services</h2><p className="storefront-section-description muted">Browse services offered by {profile.name}.</p></div>
         <span className="storefront-section-count">{visibleServices.length} services</span>
@@ -278,7 +280,7 @@ export default function PublicProfilePage({ user }) {
       {content.length === 0 ? <div className="panel empty-state"><p className="muted">No public services yet.</p></div> :
         visibleServices.length === 0 ? <div className="panel empty-state" role="status"><p className="muted">No services match your search.</p></div> :
         <div className="content-grid public-services-grid">{visibleServices.map(item => <Link key={item._id} to={`/services/${item._id}`} className="content-card-link"><ContentCard item={item} /></Link>)}</div>}
-    </section>
+    </section>}
 
     {hasPublicProducts && <section id="storefront-products" className="public-content-section public-profile-products storefront-offerings-section storefront-products storefront-container" hidden={!showProducts}>
       <div className="section-heading storefront-section-heading">
