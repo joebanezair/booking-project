@@ -181,9 +181,9 @@ export default function BusinessDetailPage({ user, onLogout }) {
               ["services", "Services"], ["bookings", "Bookings"], ["transactions", "Transactions"],
               ["audit", "Audit Logs"]
             ].map(([key, label]) =>
-              <button type="button" key={key} aria-current={detailTab === key ? "page" : undefined}
+              <Button type="button" variant="ghost" size="sm" key={key} aria-current={detailTab === key ? "page" : undefined}
                 className={detailTab === key ? "is-active" : ""}
-                onClick={() => setDetailTab(key)}>{label}</button>
+                onClick={() => setDetailTab(key)}>{label}</Button>
             )}
           </nav>
 
