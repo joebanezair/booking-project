@@ -572,7 +572,7 @@ export default function DashboardPage({ user, onLogout }) {
               onClick={() => changeQuickAccessView("list")}>
               <FiList aria-hidden="true" /> List
             </Button>
-          </div>
+          </div>}
         </div>
         <section className={"dashboard-route-grid" + (isAdmin ? "" : ` dashboard-quick-grid dashboard-quick-grid--${quickAccessView}`)}>
           {sections.map(({ icon: Icon, ...section }) => isAdmin ? (
