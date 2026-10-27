@@ -371,17 +371,34 @@ router.get("/search", async (req, res) => {
       { $project: { provider: 0, business: 0 } }
     ];
 
-    const [userRows, serviceRows, productRows] = await Promise.all([
+    // Active administrator profiles are publicly discoverable, but the result
+    // is strictly projected to public-facing details (never email or privileges).
+    const adminsPipeline = [
+      { $match: { role: "admin", accountStatus: "active", username: { $exists: true, $ne: "" } } },
+      ...(regex ? [{ $match: { $or: [
+        { name: regex }, { username: regex }, { headline: regex }, { location: regex }
+      ] } }] : []),
+      { $sort: { name: 1, _id: 1 } },
+      { $skip: skip }, { $limit: limit + 1 },
+      { $project: {
+        name: 1, username: 1, headline: 1, location: 1,
+        profileImage: 1, profileImagePositionX: 1, profileImagePositionY: 1,
+        coverImage: 1
+      } }
+    ];
+    const [userRows, serviceRows, productRows, adminRows] = await Promise.all([
       User.aggregate(usersPipeline),
       Content.aggregate(discoveryPipeline("contents", {
         published: true, visibility: { $ne: "private" }, ...(category ? { category } : {})
       }, ["title", "description", "category"], true, false, true)),
-      Product.aggregate(discoveryPipeline("products", { published: true }, ["name", "description", "sku"], false, true))
+      Product.aggregate(discoveryPipeline("products", { published: true }, ["name", "description", "sku"], false, true)),
+      User.aggregate(adminsPipeline)
     ]);
     const hasMoreByType = {
       users: userRows.length > limit,
       services: serviceRows.length > limit,
-      products: productRows.length > limit
+      products: productRows.length > limit,
+      admins: adminRows.length > limit
     };
     const hasMore = Object.values(hasMoreByType).some(Boolean);
     // Aggregate verified reviews once for the page instead of N sequential
@@ -406,7 +423,7 @@ router.get("/search", async (req, res) => {
       ...(ratings.get(String(service._id)) || { averageRating: 0, ratingCount: 0 })
     })).filter(service => service.averageRating >= minRating);
     const products = productRows.slice(0, limit);
-    res.json({ users, services: mapped, products, page, hasMore, hasMoreByType });
+    res.json({ users, services: mapped, products, admins: adminRows.slice(0, limit), page, hasMore, hasMoreByType });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to search businesses and services." });
