@@ -3,9 +3,9 @@ import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  FiArrowLeft, FiBarChart2, FiCalendar, FiCheckCircle, FiClock,
+  FiAlertCircle, FiArrowLeft, FiBarChart2, FiCalendar, FiCheckCircle, FiClock,
   FiCreditCard, FiEye, FiInbox, FiLayers, FiPause, FiPlay, FiRefreshCw,
-  FiShoppingBag, FiSlash, FiStar, FiTrendingUp
+  FiShoppingBag, FiSlash, FiStar, FiTrendingUp, FiX
 } from "react-icons/fi";
 import { PiCoin } from "react-icons/pi";
 import AppLayout from "../components/AppLayout.jsx";
@@ -50,7 +50,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
   const [error, setError] = useState("");
   const [featureDays, setFeatureDays] = useState({ pos: 30, booking: 30 });
   const [featureSaving, setFeatureSaving] = useState("");
-  const [featureMessage, setFeatureMessage] = useState("");
+  const [featureToast, setFeatureToast] = useState(null);
 
   async function load() {
     setLoading(true);
@@ -76,6 +76,12 @@ export default function BusinessDetailPage({ user, onLogout }) {
     return () => { active = false; };
   }, [businessId]);
 
+  useEffect(() => {
+    if (!featureToast) return undefined;
+    const timeout = window.setTimeout(() => setFeatureToast(null), 5000);
+    return () => window.clearTimeout(timeout);
+  }, [featureToast]);
+
   async function setStatus(accountStatus) {
     if (busy) return;
     const action = accountStatus === "active" ? "reactivate" : accountStatus;
@@ -95,12 +101,12 @@ export default function BusinessDetailPage({ user, onLogout }) {
     if (featureSaving) return;
     if (!enabled && !window.confirm(`Deactivate ${feature === "pos" ? "POS" : "Bookings & Services"} access for this business? ${feature === "pos" ? "New POS checkouts" : "Service posting and new bookings"} will be blocked until reactivated.`)) return;
     setFeatureSaving(feature);
-    setFeatureMessage("");
+    setFeatureToast(null);
     setError("");
     try {
       const response = await api.admin.setBusinessFeature(businessId, feature, enabled, featureDays[feature]);
       setData(current => current ? { ...current, user: { ...current.user, featureAccess: response.featureAccess } } : current);
-      setFeatureMessage(`${feature === "pos" ? "POS" : "Booking"} access ${enabled ? "activated for " + featureDays[feature] + " days" : "deactivated"}.`);
+      setFeatureToast({ message: `${feature === "pos" ? "POS" : "Booking"} access ${enabled ? "activated for " + featureDays[feature] + " days" : "deactivated"}.`, enabled });
     } catch (e) {
       setError(e.message || "Could not update feature access.");
     } finally {
@@ -229,7 +235,6 @@ export default function BusinessDetailPage({ user, onLogout }) {
                 <p className="muted">Control access independently for each feature. Changes take effect immediately.</p>
               </div>
             </div>
-            {featureMessage && <p className="admin-detail-feature-feedback" role="status">{featureMessage}</p>}
             <div className="admin-detail-feature-grid">
               {[
                 { key: "pos", label: "Point of sale", Icon: FiCreditCard, description: "Controls Products, POS and Online Orders access." },
@@ -330,6 +335,20 @@ export default function BusinessDetailPage({ user, onLogout }) {
           </section>
 
         </>}
+      {featureToast && <div className="admin-detail-feature-toast" role="status" aria-live="polite">
+        <span className="admin-detail-feature-toast-icon" aria-hidden="true">
+          {featureToast.enabled ? <FiCheckCircle /> : <FiAlertCircle />}
+        </span>
+        <div className="admin-detail-feature-toast-copy">
+          <strong>{featureToast.message}</strong>
+          <span>Feature plan updated successfully.</span>
+        </div>
+        <Button type="button" variant="plain" size="icon-sm"
+          className="admin-detail-feature-toast-close" aria-label="Dismiss feature plan notification"
+          onClick={() => setFeatureToast(null)}>
+          <FiX aria-hidden="true" />
+        </Button>
+      </div>}
     </div>
   </AppLayout>;
 }
