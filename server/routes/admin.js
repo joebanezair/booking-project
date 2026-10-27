@@ -12,6 +12,7 @@ import { requireAdmin } from "../middleware/requireRole.js";
 import { notify } from "../lib/notifications.js";
 import { readPageSize } from "../lib/pagination.js";
 import { featureNames, featureDurations, featureSummary } from "../lib/featureAccess.js";
+import { invalidatePublicJsonCaches } from "../middleware/publicJsonCache.js";
 
 const router = Router();
 router.use(requireAuth, requireAdmin);
@@ -357,6 +358,9 @@ router.patch("/businesses/:id/features/:feature", async (req, res) => {
     ).select("featureAccess").lean();
     if (!account) return res.status(404).json({ message: "Business account not found." });
 
+    // Revoke cached public service listings immediately after any POS/booking
+    // change; Redis cache versioning handles multi-server deployments.
+    await invalidatePublicJsonCaches("public");
     const featureAccess = featureSummary(account);
     // Connected business dashboards update immediately without a page reload.
     req.app.get("io")?.to(`user:${req.params.id}`).emit("features:updated", featureAccess);
@@ -380,6 +384,7 @@ router.patch("/businesses/:id/status", async (req, res) => {
       { new: true, runValidators: true }
     ).select("name username email accountStatus");
     if (!user) return res.status(404).json({ message: "Business account not found." });
+    await invalidatePublicJsonCaches("public");
 
     const title = accountStatus === "active" ? "Business account reactivated" : accountStatus === "paused" ? "Business account paused" : "Business account disabled";
     const body = accountStatus === "active"
