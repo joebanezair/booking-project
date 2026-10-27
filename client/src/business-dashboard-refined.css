@@ -1092,47 +1092,80 @@ html body #root .dashboard-route-section--business .dashboard-section-heading .m
   font-size: 12px !important;
   line-height: 1.4;
 }
+/* One accessible on/off switch between Grid (left) and List (right). */
 html body #root .dashboard-route-section--business .dashboard-quick-view-toggle {
   display: inline-flex;
-  align-items: center;
-  gap: 2px;
   flex: 0 0 auto;
-  border: 1px solid #e5e7eb;
-  border-radius: 9px;
-  padding: 3px;
-  background: #fff;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
-html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .ui-button {
+html body #root .dashboard-route-section--business .dashboard-quick-view-label {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-width: 67px;
-  width: auto !important;
-  min-height: 29px !important;
-  height: 29px !important;
+  gap: 5px;
+  color: #7a8496;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  user-select: none;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-view-label.is-active {
+  color: #2563eb;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-view-label svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-switch.ui-button {
+  box-sizing: border-box;
+  display: inline-flex !important;
+  position: relative;
+  flex: 0 0 44px;
+  align-items: center;
+  width: 44px !important;
+  min-width: 44px !important;
+  height: 25px !important;
+  min-height: 25px !important;
   margin: 0 !important;
-  padding: 4px 9px !important;
-  border: 0 !important;
-  border-radius: 7px !important;
-  background: transparent !important;
+  padding: 3px !important;
+  border: 1px solid #ced5e2 !important;
+  border-radius: 999px !important;
+  background: #e9edf4 !important;
   box-shadow: none !important;
-  color: #667085 !important;
-  font-size: 11px;
-  font-weight: 400 !important;
-  cursor: pointer;
+  cursor: pointer !important;
+  transition: background-color .18s ease, border-color .18s ease;
 }
-html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .ui-button.is-active {
-  background: #f2f4f7 !important;
-  color: #344054 !important;
+html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-switch.ui-button[aria-checked="true"] {
+  border-color: #2563eb !important;
+  background: #2563eb !important;
 }
-html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .ui-button svg {
-  width: 13px;
-  height: 13px;
+html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-switch .dashboard-quick-view-knob {
+  display: block;
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50% !important;
+  background: #fff !important;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, .16);
+  transform: translateX(0);
+  transition: transform .18s ease;
 }
-html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .ui-button:focus-visible {
+html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-switch[aria-checked="true"] .dashboard-quick-view-knob {
+  transform: translateX(18px);
+}
+html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-switch.ui-button:focus-visible {
   outline: 2px solid #2563eb !important;
-  outline-offset: 2px;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-switch.ui-button,
+  html body #root .dashboard-route-section--business .dashboard-quick-view-toggle .dashboard-quick-view-knob {
+    transition: none !important;
+  }
 }
 html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
   display: grid !important;
