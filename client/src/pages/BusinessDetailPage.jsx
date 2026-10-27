@@ -152,6 +152,12 @@ export default function BusinessDetailPage({ user, onLogout }) {
             <div className="admin-detail-profile-controls">
               <span className={`status admin-detail-status ${userInfo.accountStatus}`}>{userInfo.accountStatus}</span>
               <div className="admin-detail-profile-actions">
+                {userInfo.username && <Button asChild variant="outline" size="sm" className="admin-detail-view-profile">
+                  <Link to={`/profile/${encodeURIComponent(userInfo.username)}`} target="_blank" rel="noopener noreferrer"
+                    aria-label={`View ${business.name} public business profile`}>
+                    <FiEye aria-hidden="true" /> View Business Profile
+                  </Link>
+                </Button>}
                 {userInfo.accountStatus !== "paused" && userInfo.accountStatus !== "disabled" &&
                   <Button type="button" variant="outline" size="sm" disabled={busy}
                     onClick={() => setStatus("paused")}><FiPause aria-hidden="true" /> Pause</Button>}
