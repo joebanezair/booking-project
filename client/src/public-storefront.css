@@ -576,6 +576,7 @@ html body #root .bookflow-storefront .storefront-reviews .verified-review-card s
 }
 /* Reviews and footer: compact, borderless empty state with no oversized placeholder card. */
 html body #root .bookflow-storefront .storefront-reviews {
+  margin-top: 10px !important;
   margin-bottom: 22px !important;
 }
 html body #root .bookflow-storefront .storefront-reviews .storefront-section-heading {
@@ -584,6 +585,7 @@ html body #root .bookflow-storefront .storefront-reviews .storefront-section-hea
 }
 html body #root .bookflow-storefront .storefront-reviews .storefront-section-heading h2 {
   font-size: clamp(19px, 2vw, 23px);
+  font-weight: 400 !important;
   margin-bottom: 5px;
 }
 html body #root .bookflow-storefront .storefront-reviews .storefront-section-count {
@@ -623,7 +625,7 @@ html body #root .bookflow-storefront .storefront-reviews-empty strong {
   display: block;
   margin: 0 0 4px;
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 400 !important;
 }
 html body #root .bookflow-storefront .storefront-reviews-empty p {
   margin: 0;
