@@ -207,6 +207,12 @@ export default function ProductsPage({user,onLogout}){
   },[section,posRange,posReportRevision]);
 
   function openPosPopup() {
+    // The cart button stays usable on tablet/mobile while viewing POS Charts.
+    // Inventory must be mounted underneath the checkout popup.
+    if(section==="charts"){
+      setSection("inventory");
+      window.location.hash="inventory";
+    }
     setPosPopupOpen(true);
   }
   function closePosPopup() {
