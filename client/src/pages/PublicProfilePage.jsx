@@ -151,7 +151,11 @@ export default function PublicProfilePage({ user }) {
   const { profile, content, products = [], reviews = [] } = data;
   const isOwner = user && String(user.id) === String(profile.id);
   const friendship = profile.friendship || {};
-  const canMessage = user && !isOwner && ["business", "admin"].includes(user.role) && (user.role === "admin" || friendship.isFriend);
+  // Keep profile actions visible to visitors; actual friendship and messaging
+  // permissions are still enforced by the API for signed-in accounts.
+  const canInteract = Boolean(user && !isOwner);
+  const canMessage = canInteract && ["business", "admin"].includes(user.role) &&
+    (user.role === "admin" || friendship.isFriend) && !friendship.blocked;
   const conversationPath = `/dashboard/messages/${profile.id}`;
   const paused = profile.accountStatus === "paused";
   const normalizedSearch = catalogSearch.trim().toLocaleLowerCase();
@@ -196,12 +200,18 @@ export default function PublicProfilePage({ user }) {
               <span className="storefront-handle">@{profile.username||resolvedUsername}</span>
             </div>
             <div className="storefront-owner-actions">
-              {user && !isOwner && <div className="public-profile-actions">
-                {friendship.incomingRequest ? <Button variant="plain" className="primary-button icon-link" disabled={friendBusy} onClick={() => friendAction("accept")}><FiUserPlus aria-hidden="true" />Accept Friend</Button> :
-                 friendship.isFriend ? <Button variant="plain" className="secondary icon-link" disabled={friendBusy} onClick={() => friendAction("unfriend")}><FiUserCheck aria-hidden="true" />Friends</Button> :
-                 <Button variant="plain" className="primary-button icon-link" disabled={friendBusy || friendship.requestSent || friendship.blocked} onClick={() => friendAction("add")}><FiUserPlus aria-hidden="true" />{friendship.requestSent ? "Request Sent" : "Add Friend"}</Button>}
-                {canMessage && <Button asChild variant="outline"><Link className="secondary button-link icon-link" to={conversationPath}><FiMessageSquare aria-hidden="true" />Message</Link></Button>}
+              {!isOwner && <div className="public-profile-actions">
+                {canInteract ? (
+                  friendship.incomingRequest ? <Button variant="plain" className="primary-button icon-link" disabled={friendBusy} onClick={() => friendAction("accept")}><FiUserPlus aria-hidden="true" />Accept Friend</Button> :
+                  friendship.isFriend ? <Button variant="plain" className="secondary icon-link" disabled={friendBusy} onClick={() => friendAction("unfriend")}><FiUserCheck aria-hidden="true" />Friends</Button> :
+                  <Button variant="plain" className="primary-button icon-link" disabled={friendBusy || friendship.requestSent || friendship.blocked} onClick={() => friendAction("add")}><FiUserPlus aria-hidden="true" />{friendship.requestSent ? "Request Sent" : "Add Friend"}</Button>
+                ) : <Button asChild variant="outline"><Link className="button-link icon-link" to="/login"><FiUserPlus aria-hidden="true" />Add Friend</Link></Button>}
+                {canMessage ? <Button asChild variant="outline"><Link className="secondary button-link icon-link" to={conversationPath}><FiMessageSquare aria-hidden="true" />Message</Link></Button> :
+                  canInteract ? <Button variant="outline" className="icon-link" disabled title={friendship.blocked ? "Messaging is blocked" : "Become friends to send messages"}><FiMessageSquare aria-hidden="true" />Message</Button> :
+                  <Button asChild variant="outline"><Link className="button-link icon-link" to="/login"><FiMessageSquare aria-hidden="true" />Message</Link></Button>}
               </div>}
+              {/* Booking is independent of social actions: it requires a posted,
+                  published, bookable service and admin-enabled booking access. */}
               {profile.bookingAvailable && <Button asChild variant="default"><Link className="public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
             </div>
           </div>
