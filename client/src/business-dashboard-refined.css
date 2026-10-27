@@ -1143,3 +1143,14 @@ html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .d
     transform: none;
   }
 }
+
+
+/* Admin Dashboard only: normal text weight across the heading, live metrics,
+   booking/order breakdown, quick-access links and Customize controls.
+   This leaves the business dashboard and global workspace navigation untouched. */
+html body #root .content-shell:has(.admin-dashboard-platform) > .topbar,
+html body #root .content-shell:has(.admin-dashboard-platform) > .topbar *,
+html body #root .content-shell:has(.admin-dashboard-platform) .dashboard-content-rail,
+html body #root .content-shell:has(.admin-dashboard-platform) .dashboard-content-rail * {
+  font-weight: 400 !important;
+}
