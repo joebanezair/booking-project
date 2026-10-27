@@ -336,6 +336,7 @@ export default function AppLayout({ children, user, onLogout }) {
           <div className="workspace-account-popover">
             <div className="workspace-account-identity"><strong>{profile?.name || user?.name}</strong><span>{user?.email}</span><span className={isOnline ? "workspace-account-connection" : "workspace-account-connection offline"}>{isOnline ? "Connected to network" : "Network offline"}</span></div>
             <Link to="/dashboard/profile" onClick={() => { profileMenuRef.current.open = false; }}><FiUser aria-hidden="true"/>My profile</Link>
+            {user?.role === "admin" && user?.username && <Link to={`/admin/${encodeURIComponent(user.username)}`} onClick={() => { profileMenuRef.current.open = false; }}><FiUsers aria-hidden="true" />Public admin profile</Link>}
             <Link to="/dashboard/settings" onClick={() => { profileMenuRef.current.open = false; }}><FiSettings aria-hidden="true"/>Settings</Link>
             <Button variant="ghost" type="button" onClick={() => { profileMenuRef.current.open = false; onLogout?.(); }}><FiLogOut aria-hidden="true"/>Sign out</Button>
           </div>
