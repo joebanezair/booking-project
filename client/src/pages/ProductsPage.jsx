@@ -17,8 +17,9 @@ const blank={name:"",sku:"",description:"",price:"",unitCost:"",currency:"PHP",s
 function readProductImages(files,current,done){const remaining=Math.max(0,8-(current||[]).length);const selected=Array.from(files||[]).filter(file=>file.type.startsWith("image/")).slice(0,remaining);if(!selected.length)return;Promise.all(selected.map(file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file);}))).then(images=>done([...(current||[]),...images]));}
 
 
-// POS sales are reported from saved checkout snapshots rather than today's
-// product costs. Missing historical costs must not imply zero spending.
+// POS revenue uses checkout records. For legacy lines without unit-cost snapshots,
+// the backend estimates cost from the current product only when the owner and
+// currency still match; estimates are identified rather than presented as facts.
 function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetry, products }) {
   const currencies = report?.currencies || [];
   const [selectedCurrency, setSelectedCurrency] = useState("PHP");
@@ -32,6 +33,9 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
   const positivePie = complete && earnings >= 0 && revenue > 0;
   const costAngle = positivePie ? Math.min(360, Math.max(0, cost / revenue * 360)) : 0;
   const unknownUnits = Number(current?.unknownCostUnits || 0);
+  const estimatedUnits = Number(current?.estimatedUnits || 0);
+  const unresolvedUnits = Number(current?.unresolvedCostUnits || 0);
+  const isEstimate = Boolean(current?.isEstimate);
 
   return <section className="panel pos-earnings-panel" id="pos-charts" aria-labelledby="pos-charts-heading">
     <div className="pos-earnings-heading">
@@ -58,8 +62,8 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
       </div> : <>
         <div className="pos-earnings-summary">
           <div><span>Total POS sales</span><strong>{money(revenue,currency)}</strong><small>Recorded checkout revenue</small></div>
-          <div><span>Product costs</span><strong>{complete ? money(cost,currency) : "—"}</strong><small>{complete ? "Cost of units sold" : "Some costs not recorded"}</small></div>
-          <div><span>Gross earnings</span><strong>{complete ? money(earnings,currency) : "—"}</strong><small>Sales minus product costs</small></div>
+          <div><span>Product costs</span><strong>{complete ? money(cost,currency) : "—"}</strong><small>{!complete ? "Unit cost missing for some sales" : isEstimate ? "Includes estimated historical costs" : "Cost of units sold"}</small></div>
+          <div><span>Gross earnings</span><strong>{complete ? money(earnings,currency) : "—"}</strong><small>{isEstimate ? "Estimate · sales minus unit costs" : "Sales minus product costs"}</small></div>
           <div><span>Units sold</span><strong>{Number(current?.unitsSold || 0).toLocaleString()}</strong><small>Completed POS quantities</small></div>
         </div>
         <div className="pos-earnings-bottom">
@@ -72,26 +76,29 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
               <div className="pos-earnings-donut" role="img"
                 aria-label={"Product costs " + money(cost,currency) + "; gross earnings " + money(earnings,currency)}
                 style={{"--cost-angle":String(costAngle)+"deg"}}>
-                <div className="pos-earnings-donut-center"><small>Gross earnings</small><strong>{money(earnings,currency)}</strong></div>
+                <div className="pos-earnings-donut-center"><small>{isEstimate ? "Est. earnings" : "Gross earnings"}</small><strong>{money(earnings,currency)}</strong></div>
               </div>
               <div className="pos-earnings-legend">
-                <div><i className="pos-earnings-dot is-cost" aria-hidden="true"/>Product costs <strong>{money(cost,currency)}</strong></div>
-                <div><i className="pos-earnings-dot is-profit" aria-hidden="true"/>Gross earnings <strong>{money(earnings,currency)}</strong></div>
+                <div><i className="pos-earnings-dot is-cost" aria-hidden="true"/>Product costs{isEstimate ? " (est.)" : ""} <strong>{money(cost,currency)}</strong></div>
+                <div><i className="pos-earnings-dot is-profit" aria-hidden="true"/>Gross earnings{isEstimate ? " (est.)" : ""} <strong>{money(earnings,currency)}</strong></div>
               </div>
             </> : <div className="pos-earnings-chart-empty">
               <FiBarChart2 aria-hidden="true"/>
               <p>{!revenue ? "No POS sales in this period." :
-                !complete ? "A pie chart needs unit costs recorded for every sold product." :
+                !complete ? "Set a unit cost for each product with missing historical costs to see estimated earnings." :
                 "Product costs exceed revenue. Gross earnings are negative."}</p>
             </div>}
-            {unknownUnits > 0 && <p className="pos-earnings-explanation">
-              {unknownUnits.toLocaleString()} unit(s) sold without a saved cost. Earnings remain unavailable for affected products and totals.
+            {estimatedUnits > 0 && <p className="pos-earnings-explanation" role="note">
+              <strong>Estimated:</strong> {estimatedUnits.toLocaleString()} earlier unit(s) had no saved cost. Their cost is calculated using each product's current unit cost; the original sale records are unchanged.
+            </p>}
+            {unresolvedUnits > 0 && <p className="pos-earnings-explanation" role="note">
+              {unresolvedUnits.toLocaleString()} unit(s) still have no usable cost. Add an initial cost to those products to display estimated totals.
             </p>}
           </div>
           <div className="pos-earnings-products">
             <div className="pos-earnings-subheading">
               <h3>Earnings per product</h3>
-              <p className="muted">Based on cost saved when each POS sale was made</p>
+              <p className="muted">Recorded unit costs and clearly marked estimates for earlier sales</p>
             </div>
             <div className="pos-earnings-table-wrap">
               <table className="pos-earnings-table">
@@ -103,12 +110,12 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
                     <td>{Number(item.unitsSold || 0).toLocaleString()}</td>
                     <td>{currentProduct?.unitCost == null ? "Not set" : money(currentProduct.unitCost,currency)}</td>
                     <td>{money(item.revenue,currency)}</td>
-                    <td>{typeof item.grossEarnings === "number" ? money(item.grossEarnings,currency) : "Not available"}</td>
+                    <td>{typeof item.grossEarnings === "number" ? <>{money(item.grossEarnings,currency)}{item.isEstimate && <small className="pos-earnings-estimated-label"> Estimated</small>}</> : "Not available"}</td>
                   </tr>;
                 }) : <tr><td colSpan="5" className="pos-earnings-table-empty">No POS sales recorded for this period.</td></tr>}</tbody>
               </table>
             </div>
-            <p className="pos-earnings-explanation">The unit cost shown is the product’s current optional cost. Historical earnings always use each checkout’s saved cost; earlier sales without a saved cost remain unknown. POS only, excluding online orders and other expenses.</p>
+            <p className="pos-earnings-explanation">Unit cost now is the optional cost saved on each product. Newer sales use the cost captured at checkout; older sales without a saved cost are estimated using today’s cost, if available. Estimates never overwrite previous transactions. Gross earnings exclude other operating expenses and online orders.</p>
           </div>
         </div>
       </>}
