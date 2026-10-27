@@ -73,7 +73,7 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
               <h3>Cost vs earnings</h3>
               <p className="muted">How completed POS revenue is distributed</p>
             </div>
-            {positivePie ? <>
+            {positivePie ? <div className="pos-earnings-chart-main">
               <div className="pos-earnings-donut" role="img"
                 aria-label={"Product costs " + money(cost,currency) + "; gross earnings " + money(earnings,currency)}>
                 <svg className="pos-earnings-donut-svg" viewBox="0 0 220 220" aria-hidden="true" focusable="false">
@@ -88,7 +88,7 @@ function PosEarningsPanel({ report, loading, error, range, onRangeChange, onRetr
                 <div><i className="pos-earnings-dot is-cost" aria-hidden="true"/>Product costs{isEstimate ? " (est.)" : ""} <strong>{money(cost,currency)}</strong></div>
                 <div><i className="pos-earnings-dot is-profit" aria-hidden="true"/>Gross earnings{isEstimate ? " (est.)" : ""} <strong>{money(earnings,currency)}</strong></div>
               </div>
-            </> : <div className="pos-earnings-chart-empty">
+            </div> : <div className="pos-earnings-chart-empty">
               <FiBarChart2 aria-hidden="true"/>
               <p>{!revenue ? "No POS sales in this period." :
                 !complete ? "Set a unit cost for each product with missing historical costs to see estimated earnings." :
