@@ -38,7 +38,7 @@ function currencyTotals(rows) {
     ...row,
     posGrossProfit: row.missingPosCostLines === 0 ? cents(row.pos - row.knownPosCost) : null,
     // Online order line items have no historical unit-cost snapshots in this schema.
-    overallGrossProfit: row.online === 0 && row.missingPosCostLines === 0
+    overallGrossProfit: row.services === 0 && row.online === 0 && row.missingPosCostLines === 0
       ? cents(row.gross - row.knownPosCost) : null
   })).sort((a, b) => a.currency.localeCompare(b.currency));
 }
@@ -172,17 +172,17 @@ router.get("/:id/transparency", async (req, res) => {
     } else if (section === "audit") {
       // Only evidence actually recorded by the application is shown here.
       const [stock, actions] = await Promise.all([
-        InventoryMovement.find({ businessOwner: owner, ...dateScope("createdAt", after) })
+        InventoryMovement.find({ businessOwner: owner, ...cursor, ...dateScope("createdAt", after) })
           .select("productName type quantity stockAfter reference note createdAt")
-          .sort({ createdAt: -1 }).limit(limit).lean(),
-        BusinessAuditEvent.find({ businessOwner: owner, ...dateScope("createdAt", after) })
-          .select("action actor detail createdAt").sort({ createdAt: -1 }).limit(limit).lean()
+          .sort({ _id: -1 }).limit(limit + 1).lean(),
+        BusinessAuditEvent.find({ businessOwner: owner, ...cursor, ...dateScope("createdAt", after) })
+          .select("action actor detail createdAt").sort({ _id: -1 }).limit(limit + 1).lean()
       ]);
-      // Composite cursor is intentionally not offered for two independent collections.
       rows = [...stock.map(s => ({ ...s, action: "inventory." + s.type, detail: s.productName, type: "inventory" })),
-        ...actions.map(a => ({ ...a, type: "admin" }))].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, limit);
+        ...actions.map(a => ({ ...a, type: "admin" }))]
+        .sort((a, b) => String(b._id).localeCompare(String(a._id)));
     }
-    const hasMore = section !== "audit" && rows.length > limit;
+    const hasMore = rows.length > limit;
     if (hasMore) rows = rows.slice(0, limit);
     res.set("Cache-Control", "no-store, private");
     res.json({ section, range, channel, summary, rows, hasMore,
