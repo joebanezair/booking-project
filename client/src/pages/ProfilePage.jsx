@@ -92,7 +92,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
             {publicPath && <Button asChild variant="outline"><Link  className="secondary button-link icon-link" to={publicPath} target="_blank"><FiExternalLink aria-hidden="true" />View public profile</Link></Button>}
           </div>
           {profile.bio && <p className="profile-overview-bio">{profile.bio}</p>}
-          {profile.website && <a className="profile-website-link" href={profile.website} target="_blank" rel="noreferrer">{profile.website}</a>}
+          {!isAdmin && profile.website && <a className="profile-website-link" href={profile.website} target="_blank" rel="noreferrer">{profile.website}</a>}
         </div>
         {!isAdmin && <nav className="profile-home-actions" aria-label="Manage your profile and business">
           <Link className="profile-business-link" to="/dashboard/profile/business">
