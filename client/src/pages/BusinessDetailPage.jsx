@@ -129,9 +129,9 @@ export default function BusinessDetailPage({ user, onLogout }) {
           <Button asChild variant="ghost" size="sm" className="admin-detail-back">
             <Link to="/dashboard/businesses"><FiArrowLeft aria-hidden="true" /> Business directory</Link>
           </Button>
-          <p className="eyebrow">Business insights</p>
-          <h1>{business?.name || "Business performance"}</h1>
-          <p className="muted">Account overview, completed sales, and business activity.</p>
+          <p className="eyebrow">Business account</p>
+          <h1>Business insights</h1>
+          <p className="muted">Sales, bookings, activity and account controls.</p>
         </div>
         <Button type="button" variant="outline" size="sm" disabled={loading}
           className={`admin-detail-refresh ${loading ? "is-loading" : ""}`} onClick={load}>
@@ -145,12 +145,14 @@ export default function BusinessDetailPage({ user, onLogout }) {
           <section className="admin-detail-profile" aria-label="Business account">
             <ProfileAvatar profile={{ name: business.name, profileImage: userInfo.profileImage || business.logo }} size="lg" />
             <div className="admin-detail-profile-text">
-              <h2>{business.name}</h2>
+              <div className="admin-detail-profile-identity-heading">
+                <h2>{business.name}</h2>
+                <span className={`status admin-detail-status ${userInfo.accountStatus}`}>{userInfo.accountStatus}</span>
+              </div>
               <p>{business.category || "General"} <span aria-hidden="true">·</span> {business.location || "Location not specified"}</p>
               <small>{userInfo.email}</small>
             </div>
             <div className="admin-detail-profile-controls">
-              <span className={`status admin-detail-status ${userInfo.accountStatus}`}>{userInfo.accountStatus}</span>
               <div className="admin-detail-profile-actions">
                 {userInfo.username && <Button asChild variant="outline" size="sm" className="admin-detail-view-profile">
                   <Link to={`/profile/${encodeURIComponent(userInfo.username)}`} target="_blank" rel="noopener noreferrer"
@@ -171,7 +173,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
             </div>
           </section>
 
-          <section className="admin-detail-section" aria-labelledby="admin-earnings-title">
+          <section className="admin-detail-section admin-detail-sales-section" aria-labelledby="admin-earnings-title">
             <div className="admin-detail-section-heading">
               <div>
                 <p className="eyebrow">FINANCIAL ACTIVITY</p>
@@ -185,7 +187,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
             </div>
 
             {currencies.length === 0 ?
-              <div className="admin-detail-sales-empty"><span className="admin-detail-empty-icon"><PiCoin aria-hidden="true" /></span><div><strong>No sales recorded yet</strong><p>Gross sales and channel breakdowns will appear here when transactions are recorded.</p></div></div> :
+              <div className="admin-detail-sales-empty" role="status"><span className="admin-detail-empty-icon"><PiCoin aria-hidden="true" /></span><div><strong>No sales recorded yet</strong><p>Gross sales and channel breakdowns will appear here after transactions are recorded.</p></div></div> :
               <div className="admin-detail-currency-grid">
                 {currencies.map(row => <Card as="article" key={row.currency} className="admin-detail-finance-card">
                   <div className="admin-detail-finance-head">
