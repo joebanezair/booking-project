@@ -27,6 +27,7 @@ import "./sales-analytics-layout.css";
 import "./order-experience.css";
 import "./sales-mobile-refresh.css";
 import "./public-storefront.css";
+import "./admin-public-profile.css";
 import "./online-orders-alignment.css";
 import "./online-orders-overview.css";
 import "./profile-edit-clean.css";
