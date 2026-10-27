@@ -3004,3 +3004,10 @@ html body .business-admin-toast-close svg { width: 15px; height: 15px; }
 @media (prefers-reduced-motion: reduce) {
   html body .business-admin-toast { animation: none; }
 }
+
+
+/* Business Management only: unbold all text without changing any other styling. */
+html body #root .business-admin-page,
+html body #root .business-admin-page * {
+  font-weight: 400 !important;
+}
