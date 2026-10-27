@@ -1,0 +1,121 @@
+/* Business Insights admin transparency: scoped, compact and responsive. */
+#root .admin-detail-page .admin-transparency-tabs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow-x: auto;
+  padding: 4px 0 12px;
+  border-bottom: 1px solid var(--detail-border, #e2e9f5);
+  scrollbar-width: thin;
+}
+#root .admin-detail-page .admin-transparency-tabs button {
+  white-space: nowrap;
+  cursor: pointer;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--detail-muted, #6b7280);
+  font: inherit;
+  font-size: 12px;
+  padding: 9px 12px;
+}
+#root .admin-detail-page .admin-transparency-tabs button:hover,
+#root .admin-detail-page .admin-transparency-tabs button.is-active {
+  color: var(--detail-ink, #18253c);
+  background: var(--detail-soft, #edf2ff);
+}
+#root .admin-detail-page .admin-transparency-tabs button:focus-visible {
+  outline: 2px solid var(--primary, #3863f0);
+  outline-offset: 2px;
+}
+#root .admin-detail-page .admin-transparency {
+  background: var(--detail-surface, #fff);
+  border: 1px solid var(--detail-border, #e2e9f5);
+  border-radius: 10px;
+  padding: clamp(14px, 2vw, 22px);
+  min-width: 0;
+}
+#root .admin-detail-page .admin-transparency-toolbar,
+#root .admin-detail-page .admin-transparency-actions,
+#root .admin-detail-page .admin-transparency-pagination,
+#root .admin-detail-page .admin-transparency-pagination > div {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+}
+#root .admin-detail-page .admin-transparency h2 { font-size: 19px; font-weight: 600; margin: 0; }
+#root .admin-detail-page .admin-transparency-toolbar p { margin: 5px 0 0; font-size: 12px; }
+#root .admin-detail-page .admin-transparency-filter {
+  display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--detail-muted, #64748b);
+}
+#root .admin-detail-page .admin-transparency-filter select {
+  appearance: auto; border: 1px solid var(--detail-border, #dae2ee);
+  background: var(--detail-surface, #fff); color: var(--detail-ink, #18253c);
+  border-radius: 8px; padding: 7px 10px; max-width: 170px;
+}
+#root .admin-detail-page .admin-transparency-cards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
+  gap: 12px; margin-top: 18px;
+}
+#root .admin-detail-page .admin-transparency-currency {
+  border: 1px solid var(--detail-border, #e2e9f5);
+  border-radius: 10px; padding: 16px; min-width: 0;
+}
+#root .admin-detail-page .admin-transparency-currency > strong {
+  display: block; font-size: 13px; margin-bottom: 10px;
+}
+#root .admin-detail-page .admin-transparency-currency dl { margin: 0; }
+#root .admin-detail-page .admin-transparency-currency dl > div {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 9px 0; border-bottom: 1px solid var(--detail-border, #e2e9f5);
+}
+#root .admin-detail-page .admin-transparency-currency dt,
+#root .admin-detail-page .admin-transparency-currency dd { font-size: 12px; }
+#root .admin-detail-page .admin-transparency-currency dt { color: var(--detail-muted, #64748b); }
+#root .admin-detail-page .admin-transparency-currency dd { margin: 0; font-variant-numeric: tabular-nums; text-align: right; }
+#root .admin-detail-page .admin-transparency-total dt,
+#root .admin-detail-page .admin-transparency-total dd { font-weight: 600; color: var(--detail-ink, #18253c); }
+#root .admin-detail-page .admin-transparency-keyfigures {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;
+  margin: 18px 0;
+}
+#root .admin-detail-page .admin-transparency-keyfigures > div {
+  border: 1px solid var(--detail-border, #e2e9f5);
+  border-radius: 10px; padding: 12px; display: grid; gap: 5px;
+}
+#root .admin-detail-page .admin-transparency-keyfigures span { font-size: 11px; color: var(--detail-muted, #64748b); }
+#root .admin-detail-page .admin-transparency-keyfigures strong { font-size: 20px; font-weight: 600; }
+#root .admin-detail-page .admin-transparency-table-wrap { width: 100%; overflow-x: auto; }
+#root .admin-detail-page .admin-transparency-table { width: 100%; min-width: 650px; border-collapse: collapse; }
+#root .admin-detail-page .admin-transparency-table th,
+#root .admin-detail-page .admin-transparency-table td {
+  padding: 11px 10px; font-size: 12px; text-align: left;
+  border-bottom: 1px solid var(--detail-border, #e2e9f5); vertical-align: top;
+}
+#root .admin-detail-page .admin-transparency-table th { color: var(--detail-muted, #64748b); font-weight: 500; white-space: nowrap; }
+#root .admin-detail-page .admin-transparency-table tbody tr:hover { background: var(--detail-soft, #f6f8ff); }
+#root .admin-detail-page .admin-transparency-no-data { text-align: center !important; padding: 40px !important; color: var(--detail-muted, #64748b); }
+#root .admin-detail-page .admin-transparency-history {
+  max-width: 340px; overflow-wrap: anywhere; max-height: 160px; overflow-y: auto;
+}
+#root .admin-detail-page .admin-transparency-history p { font-size: 11px; margin: 6px 0; }
+#root .admin-detail-page .admin-transparency-table summary { cursor: pointer; }
+#root .admin-detail-page .admin-transparency-pagination {
+  padding: 16px 0; font-size: 12px; color: var(--detail-muted, #64748b);
+}
+#root .admin-detail-page .admin-transparency-caveats {
+  border-top: 1px solid var(--detail-border, #e2e9f5);
+  margin-top: 16px; padding-top: 15px;
+}
+#root .admin-detail-page .admin-transparency-caveats strong { font-weight: 600; font-size: 12px; }
+#root .admin-detail-page .admin-transparency-caveats ul {
+  padding-left: 18px; color: var(--detail-muted, #64748b);
+  font-size: 11px; line-height: 1.7; margin: 6px 0 0;
+}
+#root .admin-detail-page .admin-transparency-note {
+  margin: 16px 0 0; display: flex; gap: 8px; align-items: baseline;
+  color: var(--detail-muted, #64748b); font-size: 12px;
+}
+@media (max-width: 700px) {
+  #root .admin-detail-page .admin-transparency-toolbar { align-items: flex-start; }
+  #root .admin-detail-page .admin-transparency-actions { width: 100%; justify-content: flex-start; }
+  #root .admin-detail-page .admin-transparency { padding: 12px; }
+}
