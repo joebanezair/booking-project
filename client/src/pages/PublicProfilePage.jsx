@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { FiAlertCircle, FiArrowRight, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiLock, FiMapPin, FiMessageSquare, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
@@ -275,7 +275,7 @@ export default function PublicProfilePage({ user }) {
     {hasPublicServices && <section id="storefront-services" className="public-content-section storefront-offerings-section storefront-services storefront-container" hidden={!showServices}>
       <div className="section-heading storefront-section-heading">
         <div><p className="eyebrow">PUBLIC SERVICES</p><h2>Explore our services</h2><p className="storefront-section-description muted">Browse services offered by {profile.name}.</p></div>
-        <span className="storefront-section-count">{visibleServices.length} services</span>
+        <span className="storefront-section-count"><FiBriefcase aria-hidden="true" />{visibleServices.length} services</span>
       </div>
       {content.length === 0 ? <div className="panel empty-state"><p className="muted">No public services yet.</p></div> :
         visibleServices.length === 0 ? <div className="panel empty-state" role="status"><p className="muted">No services match your search.</p></div> :
@@ -285,7 +285,7 @@ export default function PublicProfilePage({ user }) {
     {hasPublicProducts && <section id="storefront-products" className="public-content-section public-profile-products storefront-offerings-section storefront-products storefront-container" hidden={!showProducts}>
       <div className="section-heading storefront-section-heading">
         <div><p className="eyebrow">PRODUCT CATALOG</p><h2>Shop products</h2><p className="storefront-section-description muted">Discover products available to order from {profile.name}.</p></div>
-        <span className="storefront-section-count">{visibleProducts.length} products</span>
+        <span className="storefront-section-count"><FiPackage aria-hidden="true" />{visibleProducts.length} products</span>
       </div>
       {products.length === 0 ? <div className="panel empty-state"><p className="muted">No public products yet.</p></div> :
         visibleProducts.length === 0 ? <div className="panel empty-state" role="status"><p className="muted">No products match your search.</p></div> :
