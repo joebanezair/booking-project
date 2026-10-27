@@ -173,6 +173,7 @@ export const api = {
     updateProduct: async (id, body) => request(`/sales/products/${id}`, { method: "PUT", body: JSON.stringify(await uploadedFields(body, ["image", "images"])) }),
     removeProduct: id => request(`/sales/products/${id}`, { method: "DELETE" }),
     posSales: () => request("/sales/pos"),
+    posEarnings: (range = "all") => request(`/sales/pos/earnings?${new URLSearchParams({range})}`),
     checkout: body => request("/sales/pos", { method: "POST", body: JSON.stringify(body) }),
     orders: () => request("/sales/orders"),
     updateOrder: (id, body) => request(`/sales/orders/${encodeURIComponent(id)}`, {method:"PATCH",body:JSON.stringify(body)}),
