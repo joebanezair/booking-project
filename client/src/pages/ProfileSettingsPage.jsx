@@ -124,12 +124,12 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
   }
 
   return <AppLayout user={user} onLogout={onLogout}>
-    <div className="profile-edit-shell">
+    <div className={"profile-edit-shell" + (isAdmin ? " profile-edit-admin" : "")}>
       <header className="topbar profile-edit-topbar">
         <div>
           <p className="eyebrow">{isAdmin ? "ADMINISTRATION · PUBLIC PROFILE" : "PROFILE · EDIT PROFILE"}</p>
           <h1>{isAdmin ? "Edit admin profile" : "Edit Profile"}</h1>
-          <p className="muted">{isAdmin ? "Your name, username, bio, headline, location, website and photos are visible to anyone who opens your public admin profile. Your email and account permissions remain private." : "Manage your profile details, cover photo and avatar."}</p>
+          <p className="muted">{isAdmin ? "Manage the details and photos shown on your public administrator page. Your email and permissions stay private." : "Manage your profile details, cover photo and avatar."}</p>
         </div>
         <div className="profile-edit-header-actions">
           {publicAdminPath && <Button asChild variant="outline">
@@ -192,7 +192,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
               <FiUser aria-hidden="true" />
               <div>
                 <h2 id="profile-edit-details-heading">{isAdmin ? "Public administrator information" : "Profile information"}</h2>
-                <p>{isAdmin ? "These details appear on your public admin page. Your private email and admin controls are never included." : "Your public name, introduction and contact details."}</p>
+                <p>{isAdmin ? "Your public name, introduction and location. Account permissions remain private." : "Your public name, introduction and contact details."}</p>
               </div>
             </div>
             <div className="profile-edit-fields">
@@ -212,9 +212,9 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
               <Label>Location
                 <Input value={form.location || ""} onChange={e => setForm({ ...form, location: e.target.value })} placeholder="City or location" />
               </Label>
-              <Label className="profile-edit-wide-field">Website
+              {!isAdmin && <Label className="profile-edit-wide-field">Website
                 <Input type="url" placeholder="https://example.com" value={form.website || ""} onChange={e => setForm({ ...form, website: e.target.value })} />
-              </Label>
+              </Label>}
             </div>
           </section>
 
