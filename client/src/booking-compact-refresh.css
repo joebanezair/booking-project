@@ -1190,3 +1190,58 @@ html body #root #bookings .booking-list-panel .booking-card-footer.is-completed 
   min-height: 36px !important;
   border-radius: 10px !important;
 }
+
+/* Active booking queue: keep the empty state light and actionable.
+   Completed appointments remain available only in collapsible Booking history. */
+html body #root #bookings .booking-list-panel .booking-queue-empty {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 72px;
+  padding: 12px 3px;
+  color: var(--muted-foreground);
+}
+html body #root #bookings .booking-list-panel .booking-queue-empty > svg {
+  box-sizing: border-box;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  padding: 7px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--primary) 8%, var(--card));
+  color: var(--primary);
+}
+html body #root #bookings .booking-list-panel .booking-queue-empty > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+html body #root #bookings .booking-list-panel .booking-queue-empty p {
+  margin: 0 0 3px;
+  color: var(--foreground);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+html body #root #bookings .booking-list-panel .booking-queue-empty small {
+  display: block;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.4;
+}
+html body #root #bookings .booking-list-panel .booking-queue-empty .ui-button {
+  flex: 0 0 auto;
+  min-height: 31px;
+  width: auto;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 400;
+}
+@media (max-width: 560px) {
+  html body #root #bookings .booking-list-panel .booking-queue-empty {
+    flex-wrap: wrap;
+  }
+  html body #root #bookings .booking-list-panel .booking-queue-empty .ui-button {
+    margin-left: 43px;
+  }
+}
