@@ -482,348 +482,153 @@ html body #root .pos-checkout-backdrop { display: none; }
   }
 }
 
-/* POS Charts: same white surfaces and blue accents as current inventory. */
+/* POS Charts — clean financial workspace, no stacked / stretched card panels.
+   All cost figures, sale totals, notes, filters, and mobile table remain present. */
 html body #root .pos-earnings-panel.panel {
-  width: 100%;
   box-sizing: border-box;
-  margin: 0 0 24px;
-  padding: 20px !important;
+  width: 100%;
+  margin: 0 0 22px;
+  padding: 24px !important;
   border: 1px solid var(--border) !important;
-  border-radius: 10px !important;
+  border-radius: 12px !important;
   background: var(--card) !important;
   box-shadow: none !important;
 }
-html body #root .pos-earnings-heading,
-html body #root .pos-earnings-subheading {
-  min-width: 0;
-}
 html body #root .pos-earnings-heading {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-start;
   flex-wrap: wrap;
   gap: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 19px;
 }
-html body #root .pos-earnings-heading h2 {
-  margin: 0 0 5px;
-  font-size: 19px;
-  font-weight: 500;
-}
+html body #root .pos-earnings-heading > div:first-child { min-width: 0; }
 html body #root .pos-earnings-heading .eyebrow {
+  margin: 0 0 6px;
   color: var(--primary);
-}
-html body #root .pos-earnings-heading .muted,
-html body #root .pos-earnings-subheading .muted {
-  margin: 0;
-  font-size: 12px;
-}
-html body #root .pos-earnings-controls {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-html body #root .pos-earnings-controls select {
-  width: auto;
-  min-width: 112px;
-  min-height: 36px;
-  border-radius: 10px;
-  font-size: 12px;
-}
-html body #root .pos-earnings-summary {
-  display: grid;
-  grid-template-columns: repeat(4,minmax(0,1fr));
-  gap: 8px;
-  margin-bottom: 14px;
-}
-html body #root .pos-earnings-summary > div {
-  display: grid;
-  align-content: center;
-  gap: 7px;
-  min-width: 0;
-  padding: 14px 15px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--card);
-}
-html body #root .pos-earnings-summary span {
-  color: var(--muted-foreground);
-  font-size: 12px;
-}
-html body #root .pos-earnings-summary strong {
-  overflow-wrap: anywhere;
-  font-size: clamp(17px,2vw,25px);
-  line-height: 1.3;
-  color: var(--foreground);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-html body #root .pos-earnings-summary small {
-  color: var(--muted-foreground);
-  font-size: 11px;
-}
-html body #root .pos-earnings-bottom {
-  display: grid;
-  grid-template-columns: minmax(265px, .85fr) minmax(0, 1.55fr);
-  gap: 12px;
-  align-items: start;
-}
-html body #root .pos-earnings-pie-card,
-html body #root .pos-earnings-products {
-  min-width: 0;
-  height: 100%;
-  padding: 17px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--card);
-}
-html body #root .pos-earnings-subheading h3 {
-  margin: 0 0 5px;
-  font-size: 14px;
-  font-weight: 500;
-}
-html body #root .pos-earnings-donut {
-  --cost-angle: 0deg;
-  display: grid;
-  place-items: center;
-  width: min(100%, 215px);
-  aspect-ratio: 1;
-  margin: 22px auto 14px;
-  border-radius: 50%;
-  background: conic-gradient(#5267dc 0deg var(--cost-angle), #9ba8f5 var(--cost-angle) 360deg);
-}
-html body #root .pos-earnings-donut-center {
-  box-sizing: border-box;
-  display: grid;
-  place-content: center;
-  gap: 5px;
-  width: 68%;
-  aspect-ratio: 1;
-  padding: 10px;
-  border-radius: 50%;
-  background: var(--card);
-  text-align: center;
-}
-html body #root .pos-earnings-donut-center small {
-  color: var(--muted-foreground);
-  font-size: 11px;
-}
-html body #root .pos-earnings-donut-center strong {
-  overflow-wrap: anywhere;
-  font-size: 17px;
-  font-weight: 500;
-  color: var(--foreground);
-}
-html body #root .pos-earnings-legend {
-  display: grid;
-  gap: 9px;
-}
-html body #root .pos-earnings-legend > div {
-  display: grid;
-  grid-template-columns: 9px minmax(0,1fr) auto;
-  align-items: center;
-  gap: 8px;
-  color: var(--muted-foreground);
-  font-size: 12px;
-}
-html body #root .pos-earnings-legend strong {
-  color: var(--foreground);
-  font-size: 12px;
-  font-weight: 500;
-}
-html body #root .pos-earnings-dot {
-  display: block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-}
-html body #root .pos-earnings-dot.is-cost { background: #5267dc; }
-html body #root .pos-earnings-dot.is-profit { background: #9ba8f5; }
-html body #root .pos-earnings-chart-empty {
-  display: grid;
-  place-items: center;
-  justify-items: center;
-  gap: 10px;
-  min-height: 195px;
-  padding: 24px;
-  text-align: center;
-  color: var(--muted-foreground);
-  font-size: 12px;
-}
-html body #root .pos-earnings-chart-empty svg {
-  width: 29px;
-  height: 29px;
-  color: var(--primary);
-}
-html body #root .pos-earnings-explanation {
-  margin: 14px 0 0;
-  font-size: 11px;
-  color: var(--muted-foreground);
-  line-height: 1.6;
-}
-html body #root .pos-earnings-table-wrap {
-  overflow-x: auto;
-  margin-top: 14px;
-}
-html body #root .pos-earnings-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-html body #root .pos-earnings-table th,
-html body #root .pos-earnings-table td {
-  padding: 11px 9px;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-  white-space: nowrap;
-}
-html body #root .pos-earnings-table th {
-  font-weight: 500;
-  color: var(--muted-foreground);
-  background: var(--secondary);
-}
-html body #root .pos-earnings-table td {
-  font-weight: 400;
-  color: var(--foreground);
-}
-html body #root .pos-earnings-table-empty {
-  padding: 25px 10px !important;
-  text-align: center !important;
-  color: var(--muted-foreground) !important;
-}
-html body #root .pos-earnings-note {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  font-size: 12px;
-}
-@media (max-width: 1100px) {
-  html body #root .pos-earnings-bottom {
-    grid-template-columns: minmax(0,1fr);
-  }
-}
-@media (max-width: 770px) {
-  html body #root .pos-earnings-summary {
-    grid-template-columns: repeat(2,minmax(0,1fr));
-  }
-}
-@media (max-width: 560px) {
-  html body #root .pos-earnings-panel.panel {
-    padding: 14px !important;
-  }
-  html body #root .pos-earnings-summary > div {
-    padding: 12px;
-  }
-}
-
-/* Historical cost estimates are distinguishable from checkout-snapshot figures. */
-html body #root .pos-earnings-table .pos-earnings-estimated-label {
-  display: inline-flex;
-  align-items: center;
-  margin-left: 6px;
-  padding: 3px 6px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--primary) 9%, var(--card));
-  color: var(--primary);
-  font-size: 10px;
-  font-weight: 400;
-  white-space: nowrap;
-}
-html body #root .pos-earnings-explanation strong {
-  font-weight: 500;
-  color: var(--foreground);
-}
-
-/* POS Charts refinement: retain every stat, note, table row and control while
-   removing the nested-box appearance and making the donut a true circle. */
-html body #root .pos-earnings-panel.panel {
-  padding: 22px !important;
-  border-radius: 12px !important;
-}
-html body #root .pos-earnings-heading {
-  align-items: center;
-  margin-bottom: 20px;
-  gap: 14px;
-}
-html body #root .pos-earnings-heading .eyebrow {
-  margin: 0 0 7px;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: .08em;
 }
 html body #root .pos-earnings-heading h2 {
-  margin-bottom: 5px;
-  font-size: clamp(17px, 1.5vw, 21px);
+  margin: 0 0 5px;
+  font-size: clamp(19px, 1.7vw, 23px);
   font-weight: 400 !important;
+  letter-spacing: -.025em;
+  line-height: 1.25;
+}
+html body #root .pos-earnings-heading .muted,
+html body #root .pos-earnings-subheading .muted {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.5;
+}
+html body #root .pos-earnings-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
 }
 html body #root .pos-earnings-controls select {
-  padding: 8px 12px;
-  min-height: 36px;
+  width: auto;
+  min-width: 115px;
+  min-height: 35px;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
   border-radius: 9px !important;
   background: var(--card);
+  font-size: 12px;
+  font-weight: 400;
 }
+/* Four measures share a single subtle strip rather than four nested cards. */
 html body #root .pos-earnings-summary {
-  gap: 10px;
-  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin: 0 0 18px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--primary) 2%, var(--card));
 }
 html body #root .pos-earnings-summary > .pos-earnings-metric {
-  gap: 8px;
-  min-height: 118px;
-  padding: 15px 17px;
-  border: 1px solid var(--border) !important;
-  border-radius: 10px !important;
-  background: var(--card) !important;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 120px;
+  gap: 7px;
+  margin: 0;
+  padding: 17px 20px;
+  border: 0 !important;
+  border-right: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
   box-shadow: none !important;
+}
+html body #root .pos-earnings-summary > .pos-earnings-metric:last-child {
+  border-right: 0 !important;
 }
 html body #root .pos-earnings-metric-label {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
   min-width: 0;
+  gap: 8px;
 }
 html body #root .pos-earnings-metric-label span {
+  color: var(--muted-foreground);
   font-size: 12px;
   font-weight: 400 !important;
   line-height: 1.4;
 }
 html body #root .pos-earnings-metric-label svg {
-  display: block;
-  flex: 0 0 31px;
   box-sizing: border-box;
-  width: 31px;
-  height: 31px;
-  padding: 8px;
-  border-radius: 9px !important;
-  background: rgba(82, 103, 220, .10);
+  display: block;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  padding: 9px;
+  border-radius: 9px;
   color: #5267dc;
+  background: rgba(82, 103, 220, .1);
 }
 html body #root .pos-earnings-summary strong {
-  font-size: clamp(19px, 1.65vw, 25px);
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-size: clamp(20px, 1.85vw, 26px);
   font-weight: 500 !important;
-  line-height: 1.2;
-  letter-spacing: -.025em;
+  letter-spacing: -.035em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
 }
 html body #root .pos-earnings-summary small {
-  min-height: 15px;
+  color: var(--muted-foreground);
+  font-size: 10px;
   line-height: 1.45;
 }
+/* One seamless lower section: chart/legend left, full earnings ledger right. */
 html body #root .pos-earnings-bottom {
-  grid-template-columns: minmax(290px, .85fr) minmax(0, 1.6fr);
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: minmax(360px, 1.03fr) minmax(0, 1.58fr);
+  align-items: start;
   gap: 0;
+  min-width: 0;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 11px;
   background: var(--card);
   overflow: hidden;
 }
 html body #root .pos-earnings-bottom > .pos-earnings-pie-card,
 html body #root .pos-earnings-bottom > .pos-earnings-products {
   box-sizing: border-box;
-  height: auto !important;
   min-width: 0;
-  padding: 20px 22px !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 20px 23px !important;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
@@ -833,26 +638,35 @@ html body #root .pos-earnings-bottom > .pos-earnings-products {
   border-left: 1px solid var(--border) !important;
 }
 html body #root .pos-earnings-subheading {
-  margin-bottom: 14px;
+  min-width: 0;
+  margin-bottom: 11px;
 }
 html body #root .pos-earnings-subheading h3 {
-  margin: 0 0 5px;
+  margin: 0 0 4px;
+  color: var(--foreground);
   font-size: 14px;
   font-weight: 500 !important;
-  line-height: 1.4;
+  line-height: 1.35;
 }
-html body #root .pos-earnings-subheading .muted {
-  font-size: 11px;
-  line-height: 1.5;
+html body #root .pos-earnings-chart-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 23px;
+  min-width: 0;
+  padding: 2px 0 3px;
 }
 html body #root .pos-earnings-donut {
   display: grid !important;
   position: relative;
+  flex: 0 0 170px;
   place-items: center;
-  width: min(100%, 208px) !important;
-  height: auto !important;
-  aspect-ratio: 1 / 1 !important;
-  margin: 10px auto 15px !important;
+  box-sizing: border-box;
+  width: 170px !important;
+  height: 170px !important;
+  aspect-ratio: 1 / 1;
+  margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
   border-radius: 50% !important;
@@ -862,23 +676,22 @@ html body #root .pos-earnings-donut {
 html body #root .pos-earnings-donut > svg.pos-earnings-donut-svg {
   display: block;
   width: 100% !important;
-  height: auto !important;
-  max-width: 208px;
+  height: 100% !important;
   aspect-ratio: 1 / 1;
-  border-radius: 50%;
   overflow: visible;
 }
 html body #root .pos-earnings-donut .pos-earnings-donut-center {
-  display: grid !important;
   position: absolute !important;
-  inset: 22% !important;
+  display: grid !important;
   place-content: center;
-  align-items: center;
+  gap: 4px;
+  inset: 25% !important;
+  box-sizing: border-box;
   width: auto !important;
   height: auto !important;
   aspect-ratio: auto !important;
   margin: 0 !important;
-  padding: 8px !important;
+  padding: 2px !important;
   border: 0 !important;
   border-radius: 50% !important;
   background: var(--card) !important;
@@ -887,68 +700,120 @@ html body #root .pos-earnings-donut .pos-earnings-donut-center {
 }
 html body #root .pos-earnings-donut-center small {
   display: block;
-  font-size: 11px;
-  line-height: 1.4;
+  color: var(--muted-foreground);
+  font-size: 10px;
   font-weight: 400;
-}
-html body #root .pos-earnings-donut-center strong {
-  font-size: clamp(14px, 1.1vw, 17px);
-  font-weight: 500 !important;
   line-height: 1.3;
 }
+html body #root .pos-earnings-donut-center strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight: 500 !important;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+}
 html body #root .pos-earnings-legend {
-  gap: 7px;
-  width: 100%;
-  margin-top: 4px;
+  display: grid;
+  flex: 1 1 170px;
+  align-content: center;
+  gap: 0;
+  min-width: 155px;
+  max-width: 265px;
 }
 html body #root .pos-earnings-legend > div {
-  gap: 9px;
-  padding: 3px 0;
-  font-size: 12px;
-  line-height: 1.4;
+  display: grid;
+  grid-template-columns: 9px minmax(0,1fr);
+  gap: 6px 9px;
+  align-items: center;
+  padding: 10px 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.5;
 }
-html body #root .pos-earnings-dot {
-  border-radius: 50% !important;
+html body #root .pos-earnings-legend > div + div {
+  border-top: 1px solid var(--border);
 }
 html body #root .pos-earnings-legend strong {
+  grid-column: 2;
+  display: block;
+  color: var(--foreground);
+  font-size: 15px;
   font-weight: 500 !important;
   font-variant-numeric: tabular-nums;
 }
+html body #root .pos-earnings-dot {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50% !important;
+}
+html body #root .pos-earnings-dot.is-cost { background: #5267dc; }
+html body #root .pos-earnings-dot.is-profit { background: #a5b4fc; }
+html body #root .pos-earnings-explanation {
+  max-width: 100%;
+  margin: 12px 0 0;
+  padding: 9px 11px;
+  border: 0 !important;
+  border-radius: 8px;
+  color: var(--muted-foreground);
+  background: color-mix(in srgb, var(--primary) 4%, var(--card));
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+html body #root .pos-earnings-explanation strong {
+  color: var(--foreground);
+  font-weight: 500;
+}
 html body #root .pos-earnings-table-wrap {
-  margin-top: 12px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
+  min-width: 0;
+  margin: 12px 0 0;
+  padding: 0;
+  border: 0 !important;
+  border-radius: 0 !important;
   overflow-x: auto;
 }
 html body #root .pos-earnings-table {
-  min-width: 565px;
+  width: 100%;
+  min-width: 540px;
+  border-collapse: collapse;
+  color: var(--foreground);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
-html body #root .pos-earnings-table th,
-html body #root .pos-earnings-table td {
-  padding: 13px 12px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
 html body #root .pos-earnings-table thead th {
+  padding: 11px 11px;
+  border-bottom: 1px solid var(--border);
   background: color-mix(in srgb, var(--primary) 3%, var(--card)) !important;
   color: var(--muted-foreground);
   font-size: 10px;
   font-weight: 500 !important;
-  letter-spacing: .03em;
+  line-height: 1.35;
+  letter-spacing: .04em;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+html body #root .pos-earnings-table tbody td {
+  padding: 14px 11px;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+html body #root .pos-earnings-table th:first-child,
+html body #root .pos-earnings-table td:first-child {
+  text-align: left;
 }
 html body #root .pos-earnings-table th:not(:first-child),
 html body #root .pos-earnings-table td:not(:first-child) {
   text-align: right;
 }
-html body #root .pos-earnings-table td:first-child {
-  font-weight: 500 !important;
-}
-html body #root .pos-earnings-table tbody tr:last-child td {
-  border-bottom: 0;
-}
+html body #root .pos-earnings-table td:first-child { font-weight: 500; }
+html body #root .pos-earnings-table tbody tr:last-child td { border-bottom: 0; }
 html body #root .pos-earnings-table tbody tr:hover {
   background: color-mix(in srgb, var(--primary) 3%, var(--card));
 }
@@ -956,64 +821,99 @@ html body #root .pos-earnings-table .pos-earnings-loss {
   color: #c2410c !important;
 }
 html body #root .pos-earnings-table .pos-earnings-profit {
-  font-weight: 500 !important;
+  color: var(--foreground);
+  font-weight: 500;
 }
 html body #root .pos-earnings-table .pos-earnings-estimated-label {
-  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: rgba(82,103,220,.1);
+  color: #5267dc;
   font-size: 10px;
+  font-weight: 400;
+  white-space: nowrap;
 }
-html body #root .pos-earnings-explanation {
-  max-width: 100%;
-  margin-top: 15px;
-  padding-left: 10px;
-  border-left: 2px solid rgba(82, 103, 220, .30);
-  font-size: 11px;
-  line-height: 1.6;
+html body #root .pos-earnings-table-empty {
+  padding: 24px 8px !important;
+  text-align: center !important;
+  color: var(--muted-foreground) !important;
 }
 html body #root .pos-earnings-chart-empty {
-  min-height: 210px;
+  display: grid;
+  place-items: center;
+  justify-items: center;
+  min-height: 160px;
+  gap: 10px;
+  padding: 14px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  text-align: center;
 }
-@media (max-width: 1130px) {
-  html body #root .pos-earnings-bottom {
-    grid-template-columns: minmax(0, 1fr);
-  }
+html body #root .pos-earnings-chart-empty svg {
+  width: 27px;
+  height: 27px;
+  color: var(--primary);
+}
+html body #root .pos-earnings-note {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+}
+@media (max-width: 1150px) {
+  html body #root .pos-earnings-bottom { grid-template-columns: minmax(0,1fr); }
   html body #root .pos-earnings-bottom > .pos-earnings-products {
     border-left: 0 !important;
     border-top: 1px solid var(--border) !important;
   }
 }
-@media (max-width: 900px) {
+@media (max-width: 860px) {
   html body #root .pos-earnings-summary {
-    grid-template-columns: repeat(2,minmax(0,1fr));
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+  html body #root .pos-earnings-summary > .pos-earnings-metric:nth-child(2) {
+    border-right: 0 !important;
+  }
+  html body #root .pos-earnings-summary > .pos-earnings-metric:nth-child(-n+2) {
+    border-bottom: 1px solid var(--border) !important;
   }
 }
 @media (max-width: 560px) {
-  html body #root .pos-earnings-panel.panel {
-    padding: 14px !important;
-  }
-  html body #root .pos-earnings-heading {
-    align-items: stretch;
-    gap: 12px;
-  }
+  html body #root .pos-earnings-panel.panel { padding: 13px !important; }
+  html body #root .pos-earnings-heading { align-items: stretch; gap: 10px; }
   html body #root .pos-earnings-controls select {
     flex: 1 1 auto;
     min-width: 0;
   }
-  html body #root .pos-earnings-summary {
-    gap: 8px;
-  }
   html body #root .pos-earnings-summary > .pos-earnings-metric {
-    padding: 12px !important;
-    min-height: 112px;
+    min-height: 108px;
+    padding: 13px 12px;
+    gap: 6px;
   }
   html body #root .pos-earnings-metric-label svg {
+    flex-basis: 27px;
     width: 27px;
     height: 27px;
-    flex-basis: 27px;
     padding: 7px;
   }
+  html body #root .pos-earnings-summary strong { font-size: 19px; }
   html body #root .pos-earnings-bottom > .pos-earnings-pie-card,
   html body #root .pos-earnings-bottom > .pos-earnings-products {
-    padding: 16px 12px !important;
+    padding: 16px 13px !important;
+  }
+  html body #root .pos-earnings-chart-main {
+    gap: 5px 12px;
+  }
+  html body #root .pos-earnings-donut {
+    flex-basis: 155px;
+    width: 155px !important;
+    height: 155px !important;
+  }
+  html body #root .pos-earnings-legend {
+    flex-basis: 155px;
   }
 }
