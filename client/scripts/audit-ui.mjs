@@ -260,6 +260,27 @@ for (const marker of ["hasPublicProducts && <a", "hasPublicProducts && <section"
   if (!publicProfileSource.includes(marker))
     failures.push("Public storefront must hide product navigation when none are available: " + marker);
 }
+// When the admin switches off bookings, service content must disappear
+// from the public profile, direct detail pages, browse and search.
+for (const marker of [
+  'const bookingActive = featureStatus(user, "booking").active',
+  "servicesAvailable: bookingActive && items.length > 0",
+  'featureStatus(item.user, "booking").active',
+  '"provider.featureAccess.booking.enabled": { $ne: false }',
+  "requireActiveBooking = false",
+  'true, false, true))'
+]) {
+  if (!publicRoute.includes(marker))
+    failures.push("Disabled booking access must suppress public service content: " + marker);
+}
+for (const marker of ["hasPublicServices && <a", "hasPublicServices && <section", "hasServices={hasPublicServices}"]) {
+  if (!publicProfileSource.includes(marker))
+    failures.push("Public storefront must hide services when booking is disabled: " + marker);
+}
+const catalogFilterSource = readFileSync(join(root, "components/ProfileCatalogSearch.jsx"), "utf8");
+if (!catalogFilterSource.includes("hasServices && <option") ||
+    !catalogFilterSource.includes("hasServices && <Label"))
+  failures.push("Inactive booking services must be absent from public catalog filters.");
 if (!avatarSource.includes("profile-avatar-fallback") ||
     !avatarSource.includes("profile-avatar-initial") ||
     !storefrontStyles.includes(".profile-avatar-fallback > .profile-avatar-initial") ||
