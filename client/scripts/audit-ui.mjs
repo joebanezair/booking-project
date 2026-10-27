@@ -241,6 +241,15 @@ const avatarSource = readFileSync(join(root,"components/ProfileAvatar.jsx"),"utf
 const storefrontStyles = readFileSync(join(root,"public-storefront.css"),"utf8");
 if (!publicProfileSource.includes("profile.bookingAvailable && <Button asChild"))
   failures.push("Public profile booking action must be hidden when no bookable services are available.");
+for (const required of ["Add Friend", "Accept Friend", "Message", "Remove rating", "removeBusinessRating", "friendAction"]) {
+  if (!publicProfileSource.includes(required))
+    failures.push("Public profile social/rating action missing: " + required);
+}
+const publicRoute = readFileSync(resolve(root, "../server/routes/public.js"), "utf8");
+for (const marker of ['featureStatus(user, "booking").active', "items.some(item => item.allowBookings === true)", "bookingAvailable,"]) {
+  if (!publicRoute.includes(marker))
+    failures.push("Public profile booking availability must honor published services and admin feature access: " + marker);
+}
 if (!avatarSource.includes("profile-avatar-fallback") ||
     !avatarSource.includes("profile-avatar-initial") ||
     !storefrontStyles.includes(".profile-avatar-fallback > .profile-avatar-initial") ||
