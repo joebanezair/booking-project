@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBarChart2, FiBriefcase, FiCalendar, FiCheckSquare, FiChevronDown, FiChevronRight, FiDollarSign, FiGrid, FiList, FiMessageSquare, FiPackage, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSettings, FiStar, FiUser, FiUsers, FiX } from "react-icons/fi";
+import { FiBarChart2, FiBriefcase, FiCalendar, FiCheckSquare, FiChevronDown, FiChevronRight, FiDollarSign, FiMessageSquare, FiPackage, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSettings, FiStar, FiUser, FiUsers, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import BusinessSetupChecklist from "../components/BusinessSetupChecklist.jsx";
 import DashboardAnalytics from "../components/DashboardAnalytics.jsx";
@@ -145,21 +145,7 @@ export default function DashboardPage({ user, onLogout }) {
   const [draftBusinessWidgets, setDraftBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
   const [businessCustomizeOpen, setBusinessCustomizeOpen] = useState(false);
   const [expandedBusinessGroups, setExpandedBusinessGroups] = useState({ "Key metrics": true });
-  const quickAccessViewKey = `bookflow:quick-access-view:v1:${user._id || user.id || user.email}`;
-  const [quickAccessView, setQuickAccessView] = useState(() => {
-    try { return window.localStorage.getItem(quickAccessViewKey) === "list" ? "list" : "grid"; }
-    catch { return "grid"; }
-  });
   const [quickAccessCounts, setQuickAccessCounts] = useState(null);
-  useEffect(() => {
-    try { setQuickAccessView(window.localStorage.getItem(quickAccessViewKey) === "list" ? "list" : "grid"); }
-    catch { setQuickAccessView("grid"); }
-  }, [quickAccessViewKey]);
-  function changeQuickAccessView(view) {
-    setQuickAccessView(view);
-    try { window.localStorage.setItem(quickAccessViewKey, view); }
-    catch { /* View switching still works when browser storage is disabled. */ }
-  }
   useEffect(() => {
     if (isAdmin) return;
     let active = true;
@@ -559,23 +545,8 @@ export default function DashboardPage({ user, onLogout }) {
             <h2>{isAdmin ? "Administration" : "Manage your business"}</h2>
             <p className="muted">{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
           </div>
-          {!isAdmin && <div className="dashboard-quick-view-toggle" role="group" aria-label="Quick Access layout">
-            <span className={"dashboard-quick-view-slider" + (quickAccessView === "list" ? " is-list" : "")} aria-hidden="true" />
-            <Button type="button" variant="ghost" size="sm"
-              className={"dashboard-quick-view-button" + (quickAccessView === "grid" ? " is-active" : "")}
-              aria-pressed={quickAccessView === "grid"} title="Grid view"
-              onClick={() => changeQuickAccessView("grid")}>
-              <FiGrid aria-hidden="true" /> Grid
-            </Button>
-            <Button type="button" variant="ghost" size="sm"
-              className={"dashboard-quick-view-button" + (quickAccessView === "list" ? " is-active" : "")}
-              aria-pressed={quickAccessView === "list"} title="List view"
-              onClick={() => changeQuickAccessView("list")}>
-              <FiList aria-hidden="true" /> List
-            </Button>
-          </div>}
         </div>
-        <section className={"dashboard-route-grid" + (isAdmin ? "" : ` dashboard-quick-grid dashboard-quick-grid--${quickAccessView}`)}>
+        <section className={"dashboard-route-grid" + (isAdmin ? "" : " dashboard-quick-grid dashboard-quick-grid--grid")}>
           {sections.map(({ icon: Icon, ...section }) => isAdmin ? (
             <Card as={Link} to={section.to} className="dashboard-shadcn-card admin-tool-link" key={section.to}
               aria-label={section.action}>
