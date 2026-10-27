@@ -421,6 +421,11 @@ html body #root .bookflow-storefront .storefront-section-heading h2 {
   line-height: 1.25;
   font-weight: 700;
 }
+/* Match the normal-weight Customer reviews heading in Services and Products. */
+html body #root .bookflow-storefront .storefront-services .storefront-section-heading h2,
+html body #root .bookflow-storefront .storefront-products .storefront-section-heading h2 {
+  font-weight: 400 !important;
+}
 html body #root .bookflow-storefront .storefront-section-description {
   margin: 0 !important;
   font-size: 12px;
