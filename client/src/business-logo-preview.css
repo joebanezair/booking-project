@@ -504,3 +504,95 @@ html body .business-page-shell .business-profile-redesign {
     width: 100%;
   }
 }
+
+/* Business page: share the real public profile beside the existing back link. */
+html body #root .business-page-topbar .business-page-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+html body #root .business-page-topbar .business-page-header-actions > .ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: auto !important;
+  min-height: 38px !important;
+  padding: 8px 13px !important;
+  border-radius: 10px !important;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
+}
+html body #root .business-page-topbar .business-page-header-actions .business-page-share-button {
+  color: var(--primary) !important;
+}
+html body #root .business-page-topbar .business-page-header-actions svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+}
+html body #root .business-page-share-feedback {
+  box-sizing: border-box;
+  display: grid;
+  gap: 8px;
+  width: min(100%, 1100px);
+  margin: -8px auto 14px;
+  padding: 10px 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 400;
+}
+html body #root .business-page-share-feedback > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+html body #root .business-page-share-feedback > span svg {
+  width: 15px;
+  height: 15px;
+  color: var(--primary);
+}
+html body #root .business-page-share-fallback {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+html body #root .business-page-share-fallback input {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--input);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 12px;
+}
+html body #root .business-page-share-fallback a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  color: var(--primary);
+  font-size: 12px;
+  text-decoration: none;
+}
+html body #root .business-page-share-fallback a:hover { text-decoration: underline; }
+html body #root .business-page-share-fallback a svg { width: 14px; height: 14px; }
+@media (max-width: 700px) {
+  html body #root .business-page-topbar .business-page-header-actions {
+    justify-content: flex-start;
+  }
+  html body #root .business-page-share-fallback {
+    flex-wrap: wrap;
+  }
+}
