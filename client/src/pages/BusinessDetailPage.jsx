@@ -141,7 +141,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
 
       {error && <p className="error" role="alert">{error}</p>}
       {loading && !data ? <p className="admin-detail-loading" role="status">Loading business statistics...</p> :
-        !data ? !error && <p>No business data available.</p> : <div className="admin-detail-unified-card">
+        !data ? !error && <p>No business data available.</p> : <div className="admin-detail-major-cards">
           <section className="admin-detail-profile" aria-label="Business account">
             <ProfileAvatar profile={{ name: business.name, profileImage: userInfo.profileImage || business.logo }} size="lg" />
             <div className="admin-detail-profile-text">
