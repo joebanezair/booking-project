@@ -20,7 +20,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
   const photoDrag = useRef(null);
   const location = useLocation();
   const isAdmin = user?.role === "admin";
-  const publicAdminPath = isAdmin && form?.username ? `/admin/${encodeURIComponent(form.username)}` : "";
+  const publicAdminPath = isAdmin && user?.username ? `/admin/${encodeURIComponent(user.username)}` : "";
 
   function clampPosition(value) {
     return Math.min(100, Math.max(0, value));
