@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiGlobe, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
@@ -259,7 +259,7 @@ export default function PublicProfilePage({ user }) {
           {profile.bio && <p className="public-bio">{profile.bio}</p>}
           <div className="profile-meta storefront-meta">
             {profile.location && <span><FiMapPin aria-hidden="true"/>{profile.location}</span>}
-            {profile.website && <a href={profile.website} target="_blank" rel="noopener noreferrer">Website</a>}
+            {profile.website && <a href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true"/>Website</a>}
           </div>
         </div>
       </div>
