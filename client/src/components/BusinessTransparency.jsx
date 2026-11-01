@@ -181,7 +181,7 @@ export default function BusinessTransparency({ businessId, section, businessName
     { key: "stock", label: "Stock" }, { key: "sold", label: "Units sold" },
     { key: "gross", label: "Gross sales", render: r => formatAmount(r.gross, currencyFor(r)) },
     { key: "grossProfit", label: "Gross profit", render: r => r.profitComplete ? formatAmount(r.grossProfit, currencyFor(r)) : "Not available" },
-    { key: "published", label: "Status", render: r => r.published ? "Published" : "Draft" }
+    { key: "published", label: "Status", render: r => <span className={`admin-product-status ${r.published ? "is-published" : "is-draft"}`}>{r.published ? "Published" : "Draft"}</span> }
   ] : section === "services" ? [
     { key: "title", label: "Service" },
     { key: "price", label: "Listed price", render: r => formatAmount(r.price, currencyFor(r)) },
@@ -217,7 +217,7 @@ export default function BusinessTransparency({ businessId, section, businessName
     { key: "actor", label: "Actor", render: r => r.actor ? String(r.actor) : "System / transaction" }
   ] : [];
 
-  return <section className={`admin-transparency ${section === "financials" ? "admin-transparency-financials" : ""}`} aria-label="Business transparency">
+  return <section className={`admin-transparency ${section === "financials" ? "admin-transparency-financials" : section === "products" ? "admin-transparency-products" : ""}`} aria-label="Business transparency">
     <div className="admin-transparency-toolbar">
       <div className="admin-transparency-heading">
         {section === "financials" && <span className="admin-transparency-heading-icon" aria-hidden="true"><FiDatabase /></span>}
@@ -255,13 +255,22 @@ export default function BusinessTransparency({ businessId, section, businessName
         </div>
         <p className="admin-transparency-note"><FiInfo aria-hidden="true" /> Gross sale totals do not deduct processing fees, overhead, or unrecorded refunds. Revenue is not the same as profit or payout.</p>
       </> : <>
-        <div className="admin-transparency-keyfigures">
+        {section === "products" ? <dl className="admin-product-summary" aria-label="Product inventory summary">
+          <div className="admin-product-summary-item">
+            <dt>Total products</dt>
+            <dd>{summary.products.total ?? 0}<span>{summary.products.posted ?? 0} published</span></dd>
+          </div>
+          <div className="admin-product-summary-item">
+            <dt>Available stock</dt>
+            <dd>{summary.products.stockUnits ?? 0}<span>units in inventory</span></dd>
+          </div>
+        </dl> : <div className="admin-transparency-keyfigures">
           <div><span>Total posted products</span><strong>{summary.products.posted ?? 0}</strong></div>
           <div><span>Total products</span><strong>{summary.products.total ?? 0}</strong></div>
           <div><span>Available stock units</span><strong>{summary.products.stockUnits ?? 0}</strong></div>
           <div><span>Services</span><strong>{summary.services ?? 0}</strong></div>
           <div><span>Bookings in period</span><strong>{summary.bookings.total ?? 0}</strong></div>
-        </div>
+        </div>}
         <DataTable columns={columns} rows={rows} />
         <div className="admin-transparency-pagination">
           <span>{rows.length ? `Showing ${rows.length} records` : "No records"}{previous.length ? ` · Page ${previous.length + 1}` : ""}</span>
@@ -276,7 +285,10 @@ export default function BusinessTransparency({ businessId, section, businessName
           </div>
         </div>
       </>}
-      {section !== "financials" && <div className="admin-transparency-caveats">
+      {section === "products" ? <details className="admin-product-coverage">
+        <summary><FiInfo aria-hidden="true" /><span>Data coverage</span><FiChevronDown className="admin-product-coverage-chevron" aria-hidden="true" /></summary>
+        <ul>{summary.limitations.map(note => <li key={note}>{note}</li>)}</ul>
+      </details> : section !== "financials" && <div className="admin-transparency-caveats">
         <strong>Data coverage</strong>
         <ul>{summary.limitations.map(note => <li key={note}>{note}</li>)}</ul>
       </div>}
