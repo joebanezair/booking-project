@@ -1102,3 +1102,176 @@ html body #root .messages-page-refine .message-compose > .ui-input {
     transition: none;
   }
 }
+
+
+/* Shared business-style Messages: identical presentation for admin and business accounts. */
+/* The same Messages component is used for both roles. Style its one shared
+   presentation rather than maintaining a divergent administrator skin. */
+html:not([data-theme="dark"]) body:has(.messages-page-refine),
+html:not([data-theme="dark"]) body:has(.messages-page-refine) #root,
+html:not([data-theme="dark"]) body #root .page-shell:has(.messages-page-refine),
+html:not([data-theme="dark"]) body #root .page-shell > .content-shell:has(.messages-page-refine),
+html:not([data-theme="dark"]) body #root .messages-page-refine {
+  background: #ffffff !important;
+}
+html:not([data-theme="dark"]) body #root .page-shell:has(.messages-page-refine) {
+  --background: #ffffff;
+}
+/* Keep the simple business-account typography across both roles. */
+html body #root .messages-page-refine,
+html body #root .messages-page-refine * {
+  font-weight: 400 !important;
+}
+html body #root .messages-page-refine {
+  min-width: 0;
+  padding: 0;
+}
+html body #root .messages-page-refine .messages-topbar {
+  margin: 0 0 14px !important;
+  padding: 0 !important;
+}
+html body #root .messages-page-refine .messages-topbar h1 {
+  margin: 0 !important;
+  font-size: clamp(21px, 2vw, 25px);
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+/* One rounded white conversation surface; no duplicate internal cards. */
+html body #root .messages-page-refine .messages-clean {
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  background: var(--card) !important;
+}
+html body #root .messages-page-refine .messages-layout {
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+html body #root .messages-page-refine .messenger-sidebar {
+  background: var(--card) !important;
+  border-right: 1px solid var(--border) !important;
+}
+html body #root .messages-page-refine .message-sidebar-heading {
+  padding: 14px 14px 7px;
+}
+html body #root .messages-page-refine .message-thread-count {
+  height: 21px;
+  min-width: 21px;
+  border-radius: 7px !important;
+  padding: 0 6px;
+  background: var(--secondary);
+}
+html body #root .messages-page-refine .message-search {
+  padding: 8px 12px 11px;
+}
+html body #root .messages-page-refine .message-search .ui-search-field,
+html body #root .messages-page-refine .message-search .ui-search-input {
+  border-radius: 10px !important;
+}
+html body #root .messages-page-refine .messenger-sidebar .user-list {
+  padding: 7px;
+  gap: 2px;
+  background: transparent !important;
+}
+html body #root .messages-page-refine .user-row.ui-button {
+  min-height: 62px;
+  padding: 9px 11px;
+  border: 0 !important;
+  border-radius: 9px !important;
+  background: transparent;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+html body #root .messages-page-refine .user-row.ui-button:hover {
+  background: color-mix(in srgb, var(--primary) 5%, var(--card)) !important;
+}
+html body #root .messages-page-refine .user-row.ui-button.active {
+  background: color-mix(in srgb, var(--primary) 9%, var(--card)) !important;
+}
+html body #root .messages-page-refine .user-row.ui-button:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: -2px;
+}
+html body #root .messages-page-refine .user-row .avatar,
+html body #root .messages-page-refine .conversation-peer-avatar {
+  border-radius: 50% !important;
+  overflow: hidden;
+}
+html body #root .messages-page-refine .conversation {
+  background: var(--card) !important;
+}
+html body #root .messages-page-refine .conversation-header {
+  min-height: 64px;
+  padding: 11px 17px;
+}
+html body #root .messages-page-refine .conversation-actions > .ui-button {
+  min-height: 34px;
+  padding: 7px 11px;
+  border-radius: 9px !important;
+}
+html body #root .messages-page-refine .conversation-actions > .icon-action {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+}
+html body #root .messages-page-refine .message-list {
+  padding: 17px 19px;
+  background: var(--card) !important;
+}
+html body #root .messages-page-refine .message-bubble {
+  border-radius: 10px !important;
+}
+html body #root .messages-page-refine .message-thread-empty {
+  gap: 8px;
+}
+html body #root .messages-page-refine .message-thread-empty > span {
+  width: 42px;
+  height: 42px;
+  border-radius: 50% !important;
+}
+html body #root .messages-page-refine .message-compose {
+  gap: 8px;
+  padding: 10px 13px;
+  background: var(--card) !important;
+}
+html body #root .messages-page-refine .message-compose > .ui-input {
+  min-height: 41px;
+  border-radius: 10px !important;
+  font-size: 12px;
+}
+html body #root .messages-page-refine .message-compose > .ui-button {
+  min-height: 41px;
+  border-radius: 10px !important;
+}
+html body #root .messages-page-refine .message-compose > .attach-button {
+  width: 41px !important;
+  min-width: 41px !important;
+  height: 41px !important;
+}
+html body #root .messages-page-refine .message-compose > .message-send-button {
+  min-width: 80px;
+}
+html body #root .messages-page-refine .conversation-menu,
+html body #root .messages-page-refine .conversation-menu > .ui-button,
+html body #root .messages-page-refine .attachment-chip {
+  border-radius: 10px !important;
+}
+@media (max-width: 700px) {
+  html body #root .messages-page-refine .messenger-sidebar {
+    border-right: 0 !important;
+  }
+  html body #root .messages-page-refine .conversation-header {
+    padding: 10px 12px;
+  }
+  html body #root .messages-page-refine .message-list {
+    padding: 13px 12px;
+  }
+  html body #root .messages-page-refine .message-compose {
+    padding: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .messages-page-refine .user-row.ui-button {
+    transition: none;
+  }
+}
