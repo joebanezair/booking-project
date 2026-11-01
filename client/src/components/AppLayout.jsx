@@ -254,7 +254,7 @@ export default function AppLayout({ children, user, onLogout }) {
     };
   }, [mobileOpen, isMobile]);
 
-  return <main className="page-shell">
+  return <main className={"page-shell" + (user?.role === "business" ? " page-shell--business" : "")}>
     <header className="mobile-app-header">
       <Link to="/dashboard" className="sidebar-brand"><span className="brand-mark small"><FiCalendar aria-hidden="true" /></span><strong>BookFlow</strong></Link>
       <Button variant="plain" type="button" className="mobile-menu-button" aria-label="Open navigation" aria-controls="mobile-dashboard-drawer" aria-expanded={mobileOpen} onClick={toggleMobileNavigation}><FiMenu aria-hidden="true" /></Button>
