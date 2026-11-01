@@ -256,14 +256,11 @@ export default function BusinessTransparency({ businessId, section, businessName
         <p className="admin-transparency-note"><FiInfo aria-hidden="true" /> Gross sale totals do not deduct processing fees, overhead, or unrecorded refunds. Revenue is not the same as profit or payout.</p>
       </> : <>
         {section === "products" ? <dl className="admin-product-summary" aria-label="Product inventory summary">
-          <div className="admin-product-summary-item">
-            <dt>Total products</dt>
-            <dd>{summary.products.total ?? 0}<span>{summary.products.posted ?? 0} published</span></dd>
-          </div>
-          <div className="admin-product-summary-item">
-            <dt>Available stock</dt>
-            <dd>{summary.products.stockUnits ?? 0}<span>units in inventory</span></dd>
-          </div>
+          <div className="admin-product-summary-item"><dt>Total posted products</dt><dd>{summary.products.posted ?? 0}</dd></div>
+          <div className="admin-product-summary-item"><dt>Total products</dt><dd>{summary.products.total ?? 0}</dd></div>
+          <div className="admin-product-summary-item"><dt>Available stock units</dt><dd>{summary.products.stockUnits ?? 0}</dd></div>
+          <div className="admin-product-summary-item"><dt>Services</dt><dd>{summary.services ?? 0}</dd></div>
+          <div className="admin-product-summary-item"><dt>Bookings in period</dt><dd>{summary.bookings.total ?? 0}</dd></div>
         </dl> : <div className="admin-transparency-keyfigures">
           <div><span>Total posted products</span><strong>{summary.products.posted ?? 0}</strong></div>
           <div><span>Total products</span><strong>{summary.products.total ?? 0}</strong></div>
