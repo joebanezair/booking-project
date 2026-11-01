@@ -3118,3 +3118,183 @@ html body #root .business-admin-page .business-admin-action-popover > button.ui-
     transition: none !important;
   }
 }
+
+
+/* Admin dashboard Platform Statistics: borderless editorial layout. */
+/* Scope to the admin dashboard only; business directory and Settings stay untouched. */
+html body #root .dashboard-content-rail > .admin-dashboard-platform.business-admin-page .business-admin-activity {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 18px !important;
+  padding: 8px 0 16px !important;
+  border: 0 !important;
+  border-top: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+html body #root .admin-dashboard-platform .business-admin-activity-heading {
+  align-items: baseline;
+  gap: 8px 18px;
+  margin-bottom: 23px;
+}
+html body #root .admin-dashboard-platform .business-admin-activity-heading h2 {
+  margin: 0 0 5px;
+  font-size: clamp(18px, 1.6vw, 21px);
+  font-weight: 400 !important;
+  letter-spacing: -0.025em;
+}
+html body #root .admin-dashboard-platform .business-admin-activity-heading p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+html body #root .admin-dashboard-platform .business-admin-activity-updated {
+  color: var(--admin-premium-muted, var(--muted-foreground));
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+html body #root .admin-dashboard-platform .business-admin-platform-grid {
+  align-items: stretch;
+  gap: 20px 14px;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+html body #root .admin-dashboard-platform .business-admin-platform-metric,
+html body #root .admin-dashboard-platform .business-admin-platform-metric:first-child,
+html body #root .admin-dashboard-platform .business-admin-platform-metric:last-child,
+html body #root .admin-dashboard-platform .business-admin-platform-metric + .business-admin-platform-metric {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 75px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-rows: 34px auto auto;
+  gap: 3px 10px;
+  padding: 0 8px 0 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root .admin-dashboard-platform .business-admin-platform-icon {
+  box-sizing: border-box;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px;
+  min-height: 34px;
+  aspect-ratio: 1 / 1;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: color-mix(in srgb, var(--primary, #4b64ea) 9%, var(--card, #fff)) !important;
+  color: var(--primary, #4b64ea);
+  overflow: hidden;
+}
+html body #root .admin-dashboard-platform .business-admin-platform-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+  stroke-width: 1.8;
+}
+html body #root .admin-dashboard-platform .business-admin-platform-metric strong {
+  font-size: clamp(19px, 1.8vw, 23px);
+  font-weight: 400 !important;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+html body #root .admin-dashboard-platform .business-admin-platform-label {
+  font-size: 12px;
+  font-weight: 400 !important;
+  line-height: 1.35;
+}
+html body #root .admin-dashboard-platform .business-admin-platform-metric small {
+  padding-top: 1px;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+html body #root .admin-dashboard-platform .business-admin-breakdowns,
+html body #root .admin-dashboard-platform .business-admin-breakdowns--single {
+  gap: 24px !important;
+  margin-top: 25px;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+html body #root .admin-dashboard-platform .business-admin-breakdown-group,
+html body #root .admin-dashboard-platform .business-admin-breakdown-group + .business-admin-breakdown-group {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root .admin-dashboard-platform .business-admin-breakdown-group h3 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 400 !important;
+  line-height: 1.35;
+}
+html body #root .admin-dashboard-platform .business-admin-breakdown-grid {
+  column-gap: 18px;
+  row-gap: 7px;
+}
+html body #root .admin-dashboard-platform .business-admin-breakdown-metric {
+  min-height: 31px;
+  padding: 3px 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+html body #root .admin-dashboard-platform .business-admin-breakdown-metric strong {
+  font-weight: 400 !important;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 1180px) {
+  html body #root .admin-dashboard-platform .business-admin-platform-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 18px 12px;
+  }
+  html body #root .admin-dashboard-platform .business-admin-breakdowns {
+    gap: 22px !important;
+  }
+}
+@media (max-width: 780px) {
+  html body #root .admin-dashboard-platform .business-admin-breakdowns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  html body #root .admin-dashboard-platform .business-admin-activity-heading {
+    align-items: flex-start;
+    margin-bottom: 17px;
+  }
+  html body #root .admin-dashboard-platform .business-admin-activity-updated {
+    white-space: normal;
+  }
+  html body #root .admin-dashboard-platform .business-admin-platform-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    row-gap: 18px;
+  }
+  html body #root .admin-dashboard-platform .business-admin-platform-metric,
+  html body #root .admin-dashboard-platform .business-admin-platform-metric:first-child,
+  html body #root .admin-dashboard-platform .business-admin-platform-metric:last-child,
+  html body #root .admin-dashboard-platform .business-admin-platform-metric + .business-admin-platform-metric {
+    grid-template-columns: 30px minmax(0, 1fr);
+    grid-template-rows: 30px auto auto;
+    gap: 2px 8px;
+    padding: 0 4px 0 0 !important;
+  }
+  html body #root .admin-dashboard-platform .business-admin-platform-icon {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px;
+    min-height: 30px;
+  }
+  html body #root .admin-dashboard-platform .business-admin-breakdown-grid {
+    column-gap: 12px;
+  }
+}
