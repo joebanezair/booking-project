@@ -331,3 +331,23 @@ html body #root .page-shell > .content-shell > .sales-orders-loading {
   border-radius:10px;
   font-size:13px;
 }
+
+
+/* Sidebar palette: 30% darker than the previous navy rail. */
+/* Only the workspace sidebar and its navigation states change.
+   Logo, typography, icon colors, layout, and mobile drawer behavior remain intact. */
+html body #root .page-shell > aside.sidebar {
+  background-color: #0c1321 !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-footer {
+  background-color: #0c1321 !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button):hover:not(.active):not(.current-section) {
+  background-color: #141f31 !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active,
+html body #root .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active:hover,
+html body #root .page-shell > aside.sidebar .sidebar-nav button.sidebar-nav-toggle.current-section,
+html body #root .page-shell > aside.sidebar .sidebar-nav button.sidebar-nav-toggle.current-section:hover {
+  background-color: #182236 !important;
+}
