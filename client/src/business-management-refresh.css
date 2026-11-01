@@ -3031,3 +3031,90 @@ html:not([data-theme="dark"]) body #root .business-admin-page:not(.admin-dashboa
   background: #ffffff !important;
   box-shadow: none !important;
 }
+
+
+/* Business directory action menu — clean, compact navigation-style rows. */
+/* Scope only to the Actions popover; leave View/Actions triggers and dialogs untouched. */
+html body #root .business-admin-page .business-admin-action-popover {
+  box-sizing: border-box;
+  display: grid;
+  gap: 2px;
+  width: 238px;
+  max-width: calc(100vw - 28px);
+  padding: 6px;
+  border: 1px solid var(--admin-premium-line, var(--border, #dfe6f0)) !important;
+  border-radius: 12px !important;
+  background: var(--card, #fff) !important;
+  box-shadow: 0 12px 32px rgba(17, 31, 55, .12) !important;
+}
+html body #root .business-admin-page .business-admin-action-popover > button.ui-button {
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  width: 100% !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 6px 10px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--foreground, #243047) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.25;
+  text-align: left !important;
+  white-space: nowrap;
+  cursor: pointer;
+  transform: none !important;
+  transition: background-color .15s ease, color .15s ease;
+}
+html body #root .business-admin-page .business-admin-action-popover > button.ui-button > svg {
+  box-sizing: border-box;
+  display: block;
+  flex: 0 0 28px;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 6px;
+  border-radius: 50% !important;
+  color: var(--primary, #4b64ea);
+  background: color-mix(in srgb, var(--primary, #4b64ea) 9%, var(--card, #fff));
+  stroke-width: 1.8;
+}
+html body #root .business-admin-page .business-admin-action-popover > button.ui-button:not(.business-admin-danger):hover:not(:disabled) {
+  background: color-mix(in srgb, var(--primary, #4b64ea) 7%, var(--card, #fff)) !important;
+}
+html body #root .business-admin-page .business-admin-action-popover > button.ui-button:focus-visible {
+  outline: 2px solid var(--ring, var(--primary, #4b64ea)) !important;
+  outline-offset: -2px;
+}
+html body #root .business-admin-page .business-admin-action-popover > button.ui-button.business-admin-danger {
+  position: relative;
+  margin-top: 7px !important;
+  color: #dc3545 !important;
+}
+html body #root .business-admin-page .business-admin-action-popover > button.ui-button.business-admin-danger::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: -5px;
+  height: 1px;
+  background: var(--admin-premium-line, var(--border, #dfe6f0));
+}
+html body #root .business-admin-page .business-admin-action-popover > button.ui-button.business-admin-danger > svg {
+  color: #dc3545 !important;
+  background: color-mix(in srgb, #dc3545 9%, var(--card, #fff)) !important;
+}
+html body #root .business-admin-page .business-admin-action-popover > button.ui-button.business-admin-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, #dc3545 8%, var(--card, #fff)) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .business-admin-page .business-admin-action-popover > button.ui-button {
+    transition: none !important;
+  }
+}
