@@ -829,8 +829,8 @@ html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront
   height: 170px !important;
   min-height: 170px !important;
 }
-html body #root .bookflow-storefront .storefront-cover-empty,
-html body #root .bookflow-storefront .storefront-cover-placeholder {
+html:not([data-theme="dark"]) body #root .bookflow-storefront .storefront-cover-empty,
+html:not([data-theme="dark"]) body #root .bookflow-storefront .storefront-cover-placeholder {
   background: #eaf0f8 !important;
 }
 /* Existing profile pictures and real cover images are untouched. */
