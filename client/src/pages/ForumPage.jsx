@@ -20,6 +20,7 @@ import { Input } from "../components/ui/input.jsx";
 import { Textarea } from "../components/ui/textarea.jsx";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
+import EmojiReactions from "../components/EmojiReactions.jsx";
 import { getRealtimeSocket } from "../realtime.js";
 
 const DEFAULT_FORM = { title: "", body: "", category: "General" };
@@ -50,6 +51,7 @@ export default function ForumPage({ user }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isPublishing, setIsPublishing] = useState(false);
   const [sendingReplyId, setSendingReplyId] = useState(null);
+  const [reactingPostId, setReactingPostId] = useState(null);
 
   async function load() {
     try {
@@ -70,9 +72,24 @@ export default function ForumPage({ user }) {
     const refresh = () => load();
     socket.on("forum:post", refresh);
     socket.on("forum:reply", refresh);
+    const syncReactions = ({ postId, reactions = [] } = {}) => {
+      if (!postId) return;
+      // Broadcasts contain public counts only; retain each viewer's selection.
+      setPosts(current => current.map(post => {
+        if (post._id !== postId) return post;
+        const selected = new Set((post.reactions || []).filter(item => item.reacted).map(item => item.emoji));
+        return {
+          ...post,
+          reactions: reactions.filter(item => item.count > 0 || selected.has(item.emoji))
+            .map(item => ({ ...item, reacted: selected.has(item.emoji) }))
+        };
+      }));
+    };
+    socket.on("forum:reaction", syncReactions);
     return () => {
       socket.off("forum:post", refresh);
       socket.off("forum:reply", refresh);
+      socket.off("forum:reaction", syncReactions);
     };
   }, []);
 
@@ -129,6 +146,22 @@ export default function ForumPage({ user }) {
       setError(err.message || "Unable to send your reply.");
     } finally {
       setSendingReplyId(null);
+    }
+  }
+
+  async function toggleReaction(postId, emoji) {
+    if (!user || reactingPostId) return;
+    setReactingPostId(postId);
+    setError("");
+    try {
+      const result = await api.emojiReactions.toggle("forum_post", postId, emoji);
+      setPosts(current => current.map(post => post._id === postId
+        ? { ...post, reactions: result.reactions || [] }
+        : post));
+    } catch (err) {
+      setError(err.message || "Unable to update your reaction.");
+    } finally {
+      setReactingPostId(null);
     }
   }
 
@@ -280,12 +313,23 @@ export default function ForumPage({ user }) {
                     </div>
                     <h3>{post.title}</h3>
                     <p className="forum-post-body">{post.body}</p>
-                    <div className="forum-post-reply-heading">
-                      <FiMessageSquare aria-hidden="true" />
-                      {(post.replies || []).length} {(post.replies || []).length === 1 ? "reply" : "replies"}
+                    <div className="forum-post-actions">
+                      <EmojiReactions
+                        reactions={post.reactions || []}
+                        canReact={Boolean(user)}
+                        busy={reactingPostId !== null}
+                        label="discussion"
+                        triggerLabel="React"
+                        onToggle={emoji => toggleReaction(post._id, emoji)}
+                      />
+                      <span className="forum-post-reply-count">
+                        <FiMessageSquare aria-hidden="true" />
+                        {(post.replies || []).length} {(post.replies || []).length === 1 ? "reply" : "replies"}
+                      </span>
+                      {!user && <Link className="forum-reaction-signin" to="/login">Sign in to react</Link>}
                     </div>
                     {(post.replies || []).length > 0 && (
-                      <div className="forum-replies">
+                      <div className="forum-replies" aria-label="Discussion replies">
                         {post.replies.map(reply => (
                           <div className="forum-reply" key={reply._id}>
                             <Author profile={reply.user} />
