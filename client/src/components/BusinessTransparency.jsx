@@ -1,6 +1,8 @@
 import "../admin-transparency.css";
 import { useEffect, useState } from "react";
-import { FiChevronLeft, FiChevronRight, FiDownload, FiRefreshCw, FiInfo, FiDollarSign, FiShoppingCart, FiShoppingBag, FiCalendar, FiBarChart2, FiPieChart, FiLayers, FiTrendingUp, FiTag, FiFileText, FiBox, FiDatabase } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiDownload, FiRefreshCw, FiInfo, FiDollarSign, FiShoppingCart, FiUsers, FiCalendar, FiBarChart2, FiPieChart, FiLayers, FiTrendingUp, FiTag, FiFileText, FiBox, FiDatabase } from "react-icons/fi";
+import { FaSackDollar } from "react-icons/fa6";
+import { MdOutlineRoomService } from "react-icons/md";
 import { Button } from "./ui/button.jsx";
 import { api } from "../api.js";
 import { exportAdminBusinessWorkbook } from "../utils/exportAdminBusinessWorkbook.js";
@@ -46,37 +48,41 @@ function FinancialDetail({ icon: Icon, label, value, tone = "" }) {
   </div>;
 }
 
-function FinancialCurrencyPanel({ row, limitations }) {
+function FinancialCurrencyPanel({ row, limitations, showCurrencyLabel = false }) {
   // Each currency is displayed and charted separately. Never combine currencies without conversion.
   const currency = row.currency || "PHP";
   const amount = value => formatAmount(value, currency);
   const sales = [
-    { label: "Online orders", value: Math.max(0, Number(row.online) || 0), color: "online" },
-    { label: "POS sales", value: Math.max(0, Number(row.pos) || 0), color: "pos" },
-    { label: "Service sales", value: Math.max(0, Number(row.services) || 0), color: "services" }
+    { label: "Online orders", value: Math.max(0, Number(row.online) || 0), color: "online", paint: "#187bf3" },
+    { label: "POS sales", value: Math.max(0, Number(row.pos) || 0), color: "pos", paint: "#11a365" },
+    { label: "Service sales", value: Math.max(0, Number(row.services) || 0), color: "services", paint: "#9164ed" }
   ];
   const channelTotal = sales.reduce((sum, entry) => sum + entry.value, 0);
   const share = value => channelTotal ? (value / channelTotal) * 100 : 0;
-  const onlineEnd = share(sales[0].value);
-  const posEnd = onlineEnd + share(sales[1].value);
-  const ringBackground = channelTotal
-    ? `conic-gradient(#287cf5 0% ${onlineEnd}%, #21a16b ${onlineEnd}% ${posEnd}%, #9165e8 ${posEnd}% 100%)`
-    : "conic-gradient(#e4eaf3 0% 100%)";
+  // SVG strokes form a real circle, even when global border-radius overrides are present.
+  const circumference = 2 * Math.PI * 77;
+  let distance = 0;
+  const arcs = sales.map(item => {
+    const length = channelTotal ? (item.value / channelTotal) * circumference : 0;
+    const arc = { ...item, length, offset: -distance };
+    distance += length;
+    return arc;
+  });
   return <section className="financial-currency-panel" aria-label={`${currency} financial report`}>
-    <div className="financial-currency-label"><span>{currency}</span> Financial overview</div>
+    {showCurrencyLabel && <div className="financial-currency-label"><span>{currency}</span> Financial overview</div>}
     <div className="financial-kpi-grid">
-      <FinancialMetric icon={FiDollarSign} tone="blue" value={amount(row.gross)} label="Total gross sales" />
-      <FinancialMetric icon={FiShoppingCart} tone="green" value={amount(row.pos)} label="POS sales (gross)" />
-      <FinancialMetric icon={FiCalendar} tone="purple" value={amount(row.services)} label="Service sales (gross)" />
-      <FinancialMetric icon={FiShoppingBag} tone="orange" value={amount(row.online)} label="Completed online orders" />
+      <FinancialMetric icon={FaSackDollar} tone="blue" value={amount(row.gross)} label="Total Gross Sales" />
+      <FinancialMetric icon={FiShoppingCart} tone="green" value={amount(row.pos)} label="POS Sales (Gross)" />
+      <FinancialMetric icon={MdOutlineRoomService} tone="purple" value={amount(row.services)} label="Service Sales (Gross)" />
+      <FinancialMetric icon={FiBox} tone="orange" value={amount(row.online)} label="Completed Online Orders" />
     </div>
     <div className="financial-content-grid">
       <article className="financial-section financial-breakdown">
         <h3><FiBarChart2 aria-hidden="true" /> {currency} financial breakdown</h3>
         <dl>
-          <FinancialDetail icon={FiCalendar} label="Service sales (gross)" value={amount(row.services)} />
+          <FinancialDetail icon={FiUsers} label="Service sales (gross)" value={amount(row.services)} />
           <FinancialDetail icon={FiShoppingCart} label="POS sales (gross)" value={amount(row.pos)} />
-          <FinancialDetail icon={FiShoppingBag} label="Completed online orders (value)" value={amount(row.online)} />
+          <FinancialDetail icon={FiBox} label="Completed online orders (value)" value={amount(row.online)} />
           <FinancialDetail icon={FiDollarSign} label="Total gross operational sales" value={amount(row.gross)} tone="total" />
           <FinancialDetail icon={FiLayers} label="Recorded POS cost of goods sold" value={amount(row.knownPosCost)} />
           <FinancialDetail icon={FiLayers} label="Recorded online order costs" value={amount(row.knownOnlineCost)} />
@@ -92,10 +98,18 @@ function FinancialCurrencyPanel({ row, limitations }) {
         <article className="financial-section financial-sales-overview">
           <h3><FiPieChart aria-hidden="true" /> Sales overview</h3>
           <div className="financial-chart-layout">
-            <div className="financial-chart-ring" style={{ background: ringBackground }}
+            <div className="financial-chart-ring"
               role="img" aria-label={channelTotal ? "Sales breakdown by channel: " + sales.map(item => `${item.label} ${Math.round(share(item.value))}%`).join(", ") : "No channel sales in this period"}>
+              <svg className="financial-donut-svg" viewBox="0 0 200 200" aria-hidden="true">
+                <circle cx="100" cy="100" r="77" fill="none" stroke="#e8eef7" strokeWidth="21" />
+                {arcs.filter(arc => arc.length > 0).map(arc =>
+                  <circle key={arc.color} cx="100" cy="100" r="77" fill="none"
+                    stroke={arc.paint} strokeWidth="21"
+                    strokeDasharray={`${arc.length} ${circumference - arc.length}`}
+                    strokeDashoffset={arc.offset} transform="rotate(-90 100 100)" />)}
+              </svg>
               <div className="financial-chart-center">
-                <strong>{amount(row.gross)}</strong><span>Gross sales</span>
+                <strong>{amount(row.gross)}</strong><span>Gross Sales</span>
               </div>
             </div>
             <div className="financial-sales-legend">
@@ -231,7 +245,7 @@ export default function BusinessTransparency({ businessId, section, businessName
       {section === "financials" ? <>
         <div className="financial-currency-list">
           {currencies.length
-            ? currencies.map(row => <FinancialCurrencyPanel key={row.currency} row={row} limitations={summary.limitations} />)
+            ? currencies.map(row => <FinancialCurrencyPanel key={row.currency} row={row} limitations={summary.limitations} showCurrencyLabel={currencies.length > 1} />)
             : <p className="muted financial-empty">No recorded sales in this period.</p>}
         </div>
         <p className="admin-transparency-note"><FiInfo aria-hidden="true" /> Gross sale totals do not deduct processing fees, overhead, or unrecorded refunds. Revenue is not the same as profit or payout.</p>
