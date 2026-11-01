@@ -1,6 +1,6 @@
 import "../admin-transparency.css";
 import { useEffect, useState } from "react";
-import { FiChevronLeft, FiChevronRight, FiChevronDown, FiDownload, FiRefreshCw, FiInfo, FiDollarSign, FiShoppingCart, FiUsers, FiBox, FiBarChart2, FiPieChart, FiLayers, FiTrendingUp, FiTag, FiFileText, FiDatabase } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiChevronDown, FiDownload, FiRefreshCw, FiInfo, FiDollarSign, FiShoppingCart, FiUsers, FiBox, FiBarChart2, FiPieChart, FiLayers, FiTrendingUp, FiTag, FiFileText, FiDatabase, FiGrid, FiCalendar } from "react-icons/fi";
 import { Button } from "./ui/button.jsx";
 import { api } from "../api.js";
 import { exportAdminBusinessWorkbook } from "../utils/exportAdminBusinessWorkbook.js";
@@ -256,11 +256,26 @@ export default function BusinessTransparency({ businessId, section, businessName
         <p className="admin-transparency-note"><FiInfo aria-hidden="true" /> Gross sale totals do not deduct processing fees, overhead, or unrecorded refunds. Revenue is not the same as profit or payout.</p>
       </> : <>
         {section === "products" ? <dl className="admin-product-summary" aria-label="Product inventory summary">
-          <div className="admin-product-summary-item"><dt>Total posted products</dt><dd>{summary.products.posted ?? 0}</dd></div>
-          <div className="admin-product-summary-item"><dt>Total products</dt><dd>{summary.products.total ?? 0}</dd></div>
-          <div className="admin-product-summary-item"><dt>Available stock units</dt><dd>{summary.products.stockUnits ?? 0}</dd></div>
-          <div className="admin-product-summary-item"><dt>Services</dt><dd>{summary.services ?? 0}</dd></div>
-          <div className="admin-product-summary-item"><dt>Bookings in period</dt><dd>{summary.bookings.total ?? 0}</dd></div>
+          <div className="admin-product-summary-item">
+            <span className="admin-product-summary-icon" aria-hidden="true"><FiTag /></span>
+            <div className="admin-product-summary-content"><dt>Total posted products</dt><dd>{summary.products.posted ?? 0}</dd></div>
+          </div>
+          <div className="admin-product-summary-item">
+            <span className="admin-product-summary-icon" aria-hidden="true"><FiBox /></span>
+            <div className="admin-product-summary-content"><dt>Total products</dt><dd>{summary.products.total ?? 0}</dd></div>
+          </div>
+          <div className="admin-product-summary-item">
+            <span className="admin-product-summary-icon" aria-hidden="true"><FiLayers /></span>
+            <div className="admin-product-summary-content"><dt>Available stock units</dt><dd>{summary.products.stockUnits ?? 0}</dd></div>
+          </div>
+          <div className="admin-product-summary-item">
+            <span className="admin-product-summary-icon" aria-hidden="true"><FiGrid /></span>
+            <div className="admin-product-summary-content"><dt>Services</dt><dd>{summary.services ?? 0}</dd></div>
+          </div>
+          <div className="admin-product-summary-item">
+            <span className="admin-product-summary-icon" aria-hidden="true"><FiCalendar /></span>
+            <div className="admin-product-summary-content"><dt>Bookings in period</dt><dd>{summary.bookings.total ?? 0}</dd></div>
+          </div>
         </dl> : <div className="admin-transparency-keyfigures">
           <div><span>Total posted products</span><strong>{summary.products.posted ?? 0}</strong></div>
           <div><span>Total products</span><strong>{summary.products.total ?? 0}</strong></div>
