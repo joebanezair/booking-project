@@ -694,3 +694,30 @@ html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button > svg.
     min-height: 32px;
   }
 }
+
+
+/* Settings only: pure white page canvas in light mode. */
+/* Keep dark mode intact and do not affect the canvas of other dashboard routes. */
+html:not([data-theme="dark"]) body:has(#root .bookflow-settings-v2),
+html:not([data-theme="dark"]) body:has(#root .bookflow-settings-v2) #root,
+html:not([data-theme="dark"]) body #root .page-shell:has(.bookflow-settings-v2),
+html:not([data-theme="dark"]) body #root .page-shell > .content-shell:has(.bookflow-settings-v2) {
+  background: #ffffff !important;
+}
+html:not([data-theme="dark"]) body #root .bookflow-settings-v2,
+html:not([data-theme="dark"]) body #root .bookflow-settings-v2 .settings-v2-panel.panel {
+  background: #ffffff !important;
+}
+/* Theme options stay distinguishable by subtle outlines, not filled gray cards. */
+html:not([data-theme="dark"]) body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button {
+  background: #ffffff !important;
+  border-color: var(--border, #e2e8f0) !important;
+}
+html:not([data-theme="dark"]) body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button.active {
+  background: #ffffff !important;
+  border-color: var(--primary, #4b64ea) !important;
+}
+html:not([data-theme="dark"]) body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button:hover {
+  background: #ffffff !important;
+  border-color: var(--primary, #4b64ea) !important;
+}
