@@ -3011,3 +3011,23 @@ html body #root .business-admin-page,
 html body #root .business-admin-page * {
   font-weight: 400 !important;
 }
+
+
+/* Business Management white page canvas — isolated to the directory route. */
+/* DashboardPage also uses .business-admin-page for its statistics;
+   exclude .admin-dashboard-platform so this remains directory-only. */
+html:not([data-theme="dark"]) body:has(.business-admin-page:not(.admin-dashboard-platform)),
+html:not([data-theme="dark"]) body:has(.business-admin-page:not(.admin-dashboard-platform)) #root,
+html:not([data-theme="dark"]) body #root .page-shell:has(.business-admin-page:not(.admin-dashboard-platform)),
+html:not([data-theme="dark"]) body #root .page-shell > .content-shell:has(> .business-admin-page:not(.admin-dashboard-platform)),
+html:not([data-theme="dark"]) body #root .business-admin-page:not(.admin-dashboard-platform) {
+  background: #ffffff !important;
+}
+html:not([data-theme="dark"]) body #root .page-shell:has(.business-admin-page:not(.admin-dashboard-platform)) {
+  --background: #ffffff;
+}
+/* Keep each business card visually distinct using only its existing thin outline. */
+html:not([data-theme="dark"]) body #root .business-admin-page:not(.admin-dashboard-platform) .business-admin-row.ui-card {
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
