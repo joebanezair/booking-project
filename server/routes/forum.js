@@ -41,7 +41,7 @@ router.post("/", requireAuth, async (req, res) => {
   const post = await ForumPost.create({ user: req.user.id, title, body, category });
   await forumCache.clear();
   await post.populate("user", "name username profileImage");
-  req.app.get("io")?.emit("forum:post", { postId: String(post._id) });
+  req.app.get("io")?.emit("forum:post", post);
   res.status(201).json(post);
 });
 
