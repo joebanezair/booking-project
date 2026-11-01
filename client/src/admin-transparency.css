@@ -7,7 +7,7 @@
   overflow-y: hidden;
   padding: 1px 0 8px;
   margin-bottom: 8px;
-  border-bottom: 1px solid var(--detail-border, #e2e9f5);
+  border-bottom: 0;
   scrollbar-width: thin;
 }
 #root .admin-detail-page .admin-transparency-breadcrumb-list {
@@ -522,39 +522,39 @@ html body #root .admin-detail-page .admin-transparency-financials .financial-row
 }
 
 /* Products & inventory: compact reporting without nested cards. */
-html body #root .admin-detail-page .admin-transparency-products {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) {
   padding: 0 2px 10px;
   border: 0;
   border-radius: 0;
   box-shadow: none;
   background: transparent;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-toolbar {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-toolbar {
   gap: 10px 18px;
   margin-bottom: 13px;
 }
-html body #root .admin-detail-page .admin-transparency-products h2 {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) h2 {
   font-size: 18px;
   font-weight: 400;
   letter-spacing: -0.02em;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-toolbar p {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-toolbar p {
   margin-top: 3px;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-actions {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-actions {
   gap: 7px;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-actions .ui-button,
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-pagination .ui-button {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-actions .ui-button,
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-pagination .ui-button {
   border-radius: 7px;
   box-shadow: none;
   font-weight: 400;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-filter select {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-filter select {
   border-radius: 7px;
   min-height: 34px;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-summary {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: start;
@@ -563,20 +563,20 @@ html body #root .admin-detail-page .admin-transparency-products .admin-product-s
   padding: 1px 0 15px;
   border-bottom: 1px solid var(--detail-border, #e2e9f5);
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-item,
-html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-item + .admin-product-summary-item {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary-item,
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary-item + .admin-product-summary-item {
   min-width: 0;
   padding: 0;
   border: 0;
   background: transparent;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-summary dt {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary dt {
   font-size: 11px;
   font-weight: 400;
   line-height: 1.45;
   color: var(--detail-muted, #64748b);
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-summary dd {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary dd {
   display: block;
   margin: 4px 0 0;
   font-size: 22px;
@@ -585,40 +585,40 @@ html body #root .admin-detail-page .admin-transparency-products .admin-product-s
   font-variant-numeric: tabular-nums;
   color: var(--detail-ink, #18253c);
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table-wrap {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-table-wrap {
   scrollbar-width: thin;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-table {
   min-width: 850px;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table th {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-table th {
   background: var(--detail-soft, #f6f8fc);
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.01em;
   text-transform: none;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table td {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-table td {
   color: var(--detail-ink, #18253c);
   font-size: 12px;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table th,
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table td {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-table th,
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-table td {
   padding: 10px 11px;
   vertical-align: middle;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table th:nth-child(n+2):nth-child(-n+7),
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table td:nth-child(n+2):nth-child(-n+7) {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-table th:nth-child(n+2):nth-child(-n+7),
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-table td:nth-child(n+2):nth-child(-n+7) {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table th:first-child {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-table th:first-child {
   border-top-left-radius: 7px;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table th:last-child {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-table th:last-child {
   border-top-right-radius: 7px;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-status {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-status {
   display: inline-flex;
   gap: 6px;
   align-items: center;
@@ -626,25 +626,25 @@ html body #root .admin-detail-page .admin-transparency-products .admin-product-s
   font-size: 11px;
   font-weight: 400;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-status::before {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-status::before {
   content: "";
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: #9aa7b8;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-status.is-published::before {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-status.is-published::before {
   background: #1da774;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-transparency-pagination {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-transparency-pagination {
   padding: 12px 0;
   margin: 0;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-coverage {
   padding-top: 10px;
   border-top: 1px solid var(--detail-border, #e2e9f5);
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage summary {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-coverage summary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -654,25 +654,25 @@ html body #root .admin-detail-page .admin-transparency-products .admin-product-c
   font-size: 12px;
   font-weight: 400;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage summary::-webkit-details-marker {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-coverage summary::-webkit-details-marker {
   display: none;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage summary svg {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-coverage summary svg {
   flex: none;
   width: 14px;
   height: 14px;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage summary:focus-visible {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-coverage summary:focus-visible {
   outline: 2px solid var(--primary, #2678ed);
   outline-offset: 3px;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage-chevron {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-coverage-chevron {
   transition: transform 0.18s ease;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage[open] .admin-product-coverage-chevron {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-coverage[open] .admin-product-coverage-chevron {
   transform: rotate(180deg);
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage ul {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-coverage ul {
   margin: 8px 0 0;
   padding-left: 20px;
   font-size: 11px;
@@ -680,28 +680,28 @@ html body #root .admin-detail-page .admin-transparency-products .admin-product-c
   color: var(--detail-muted, #64748b);
 }
 @media (max-width: 1000px) {
-  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary {
+  html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 @media (max-width: 650px) {
-  html body #root .admin-detail-page .admin-transparency-products { padding-inline: 0; }
-  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary {
+  html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) { padding-inline: 0; }
+  html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary dd { font-size: 20px; }
+  html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary dd { font-size: 20px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage-chevron { transition: none; }
+  html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-coverage-chevron { transition: none; }
 }
 
 /* Circular icons for the five Products & Inventory statistics. */
-html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-item {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary-item {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-icon {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary-icon {
   width: 34px;
   height: 34px;
   min-width: 34px;
@@ -716,25 +716,35 @@ html body #root .admin-detail-page .admin-transparency-products .admin-product-s
   background: #eaf3ff;
   color: #2678ed;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-icon svg {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary-icon svg {
   width: 16px;
   height: 16px;
   stroke-width: 1.8;
 }
-html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-content {
+html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary-content {
   min-width: 0;
 }
 @media (max-width: 650px) {
-  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-item { gap: 8px; }
-  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-icon {
+  html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary-item { gap: 8px; }
+  html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary-icon {
     width: 30px;
     height: 30px;
     min-width: 30px;
     min-height: 30px;
     flex-basis: 30px;
   }
-  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-icon svg {
+  html body #root .admin-detail-page :is(.admin-transparency-products, .admin-transparency-services) .admin-product-summary-icon svg {
     width: 15px;
     height: 15px;
   }
+}
+
+/* Services table: prices are numeric; status, booking state and dates remain left-aligned. */
+html body #root .admin-detail-page .admin-transparency-services .admin-transparency-table th:nth-child(n+3),
+html body #root .admin-detail-page .admin-transparency-services .admin-transparency-table td:nth-child(n+3) {
+  text-align: left;
+  font-variant-numeric: normal;
+}
+html body #root .admin-detail-page .admin-transparency-services .admin-transparency-table {
+  min-width: 650px;
 }
