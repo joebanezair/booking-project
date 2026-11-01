@@ -1352,3 +1352,16 @@ html body #root .content-shell:has(> .topbar .business-dashboard-header-actions)
 html body #root .content-shell:has(> .topbar .business-dashboard-header-actions) .dashboard-content-rail * {
   font-weight: 400 !important;
 }
+
+
+/* Admin Dashboard white background: light theme only. */
+html:not([data-theme="dark"]) body:has(.admin-dashboard-platform),
+html:not([data-theme="dark"]) body:has(.admin-dashboard-platform) #root,
+html:not([data-theme="dark"]) body #root .page-shell:has(.admin-dashboard-platform),
+html:not([data-theme="dark"]) body #root .page-shell > .content-shell:has(.admin-dashboard-platform),
+html:not([data-theme="dark"]) body #root .content-shell:has(.admin-dashboard-platform) .dashboard-content-rail {
+  background: #ffffff !important;
+}
+html:not([data-theme="dark"]) body #root .page-shell:has(.admin-dashboard-platform) {
+  --background: #ffffff;
+}
