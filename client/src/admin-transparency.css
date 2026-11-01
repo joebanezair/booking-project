@@ -694,3 +694,40 @@ html body #root .admin-detail-page .admin-transparency-products .admin-product-c
 @media (prefers-reduced-motion: reduce) {
   html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage-chevron { transition: none; }
 }
+
+/* Circular icons for the five Products & Inventory statistics. */
+html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #eaf3ff;
+  color: #2678ed;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.8;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-content {
+  min-width: 0;
+}
+@media (max-width: 650px) {
+  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-item { gap: 8px; }
+  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-icon {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+  }
+  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+}
