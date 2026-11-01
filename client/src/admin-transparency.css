@@ -705,9 +705,14 @@ html body #root .admin-detail-page .admin-transparency-products .admin-product-s
   width: 34px;
   height: 34px;
   min-width: 34px;
+  min-height: 34px;
+  flex: 0 0 34px;
+  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
   display: inline-grid;
   place-items: center;
-  border-radius: 999px;
+  overflow: hidden;
+  border-radius: 50% !important;
   background: #eaf3ff;
   color: #2678ed;
 }
@@ -725,6 +730,8 @@ html body #root .admin-detail-page .admin-transparency-products .admin-product-s
     width: 30px;
     height: 30px;
     min-width: 30px;
+    min-height: 30px;
+    flex-basis: 30px;
   }
   html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-icon svg {
     width: 15px;
