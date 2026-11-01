@@ -242,7 +242,8 @@ html body #root .page-shell > aside.sidebar .sidebar-footer-avatar > :is(.profil
     padding-inline: 0 !important;
   }
   html body #root .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active {
-    background: #223456 !important;
+    /* 30% darker than the previous #223456 active highlight. */
+    background: #18243c !important;
     color: #f8faff !important;
     box-shadow: none !important;
   }
@@ -321,4 +322,21 @@ html body #root .page-shell > aside.sidebar .sidebar-footer-avatar > :is(.profil
     outline: 2px solid var(--ring, #7186f4);
     outline-offset: 2px;
   }
+}
+
+
+/* Match the collapsed sidebar rail to the 30%-darker navy palette. */
+html body #root .page-shell > aside.sidebar {
+  background: #0c1321 !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-footer {
+  background: #0c1321 !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active,
+html body #root .page-shell > aside.sidebar .sidebar-nav a.sidebar-nav-link.active:hover,
+html body #root .page-shell > aside.sidebar .sidebar-nav button.sidebar-nav-toggle.current-section {
+  background: #18243c !important;
+}
+html body #root .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button):hover:not(.active):not(.current-section) {
+  background: #141f31 !important;
 }
