@@ -1514,3 +1514,16 @@ html body #root .admin-detail-page,
 html body #root .admin-detail-page * {
   font-weight: 400 !important;
 }
+
+
+/* Business Insights: pure white light-mode page canvas (scoped to this route). */
+html:not([data-theme="dark"]) body:has(.admin-detail-page),
+html:not([data-theme="dark"]) body:has(.admin-detail-page) #root,
+html:not([data-theme="dark"]) body #root .page-shell:has(.admin-detail-page),
+html:not([data-theme="dark"]) body #root .page-shell > .content-shell:has(.admin-detail-page),
+html:not([data-theme="dark"]) body #root .admin-detail-page {
+  background: #ffffff !important;
+}
+html:not([data-theme="dark"]) body #root .page-shell:has(.admin-detail-page) {
+  --background: #ffffff;
+}
