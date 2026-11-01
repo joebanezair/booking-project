@@ -462,3 +462,194 @@ html body #root .bookflow-settings-v2 .settings-v2-signout.ui-button:hover {
   html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button { transition: none !important; }
   html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button { transition: none !important; }
 }
+
+
+/* Settings refinement — compact, borderless appearance controls. */
+/* Scope strictly to Settings; theme and sign-out handlers remain in SettingsPage.jsx. */
+html body #root .bookflow-settings-v2 {
+  width: min(100%, 960px);
+  max-width: 960px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-header {
+  margin-bottom: 20px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-header .eyebrow {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .07em;
+}
+html body #root .bookflow-settings-v2 .settings-v2-header h1 {
+  font-size: clamp(25px, 2.7vw, 30px);
+  font-weight: 400;
+  letter-spacing: -.025em;
+}
+html body #root .bookflow-settings-v2 .settings-v2-header .muted {
+  font-size: 12px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-panel.panel {
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-section-title {
+  align-items: center;
+  gap: 11px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-heading-icon {
+  box-sizing: border-box;
+  flex: 0 0 36px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  min-height: 36px;
+  border-radius: 50% !important;
+  background: color-mix(in srgb, var(--primary) 9%, var(--card));
+  color: var(--primary);
+}
+html body #root .bookflow-settings-v2 .settings-v2-heading-icon svg {
+  width: 17px;
+  height: 17px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-section-title h2 {
+  margin-bottom: 3px;
+  font-size: 16px;
+  font-weight: 400;
+}
+html body #root .bookflow-settings-v2 .settings-v2-section-title p {
+  font-size: 12px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button,
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button.active {
+  box-sizing: border-box;
+  display: grid !important;
+  grid-template-columns: 36px minmax(0, 1fr) 17px;
+  grid-template-rows: auto auto;
+  align-content: center;
+  align-items: center;
+  justify-content: start;
+  column-gap: 11px;
+  row-gap: 3px;
+  min-height: 76px !important;
+  height: auto !important;
+  padding: 12px 14px !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  background: var(--secondary) !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button.active {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border)) !important;
+  background: color-mix(in srgb, var(--primary) 7%, var(--card)) !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button:hover:not(.active) {
+  border-color: var(--border) !important;
+  background: color-mix(in srgb, var(--primary) 4%, var(--secondary)) !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-icon {
+  box-sizing: border-box;
+  grid-column: 1;
+  grid-row: 1 / 3;
+  width: 36px !important;
+  height: 36px !important;
+  padding: 8px;
+  margin: 0;
+  border-radius: 50% !important;
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+  color: var(--primary);
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-check {
+  position: static;
+  grid-column: 3;
+  grid-row: 1 / 3;
+  align-self: center;
+  justify-self: center;
+  width: 17px !important;
+  height: 17px !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button strong {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button small {
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+html body #root .bookflow-settings-v2 .settings-v2-autosave {
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 400;
+}
+html body #root .bookflow-settings-v2 .settings-v2-divider {
+  margin: 23px 0 18px;
+  background: var(--border);
+}
+html body #root .bookflow-settings-v2 .settings-v2-account {
+  gap: 16px;
+}
+html body #root .bookflow-settings-v2 .settings-v2-signout.ui-button {
+  min-height: 36px !important;
+  padding: 7px 12px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  font-size: 12px;
+  font-weight: 400 !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-signout.ui-button:hover {
+  border-color: color-mix(in srgb, var(--primary) 35%, var(--border)) !important;
+  background: var(--secondary) !important;
+  color: var(--foreground) !important;
+}
+@media (max-width: 600px) {
+  html body #root .bookflow-settings-v2 .settings-v2-panel.panel {
+    padding: 0 !important;
+  }
+  html body #root .bookflow-settings-v2 .settings-v2-theme-grid {
+    gap: 9px;
+    margin-top: 14px;
+  }
+  html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button,
+  html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button.active {
+    grid-template-columns: 32px minmax(0, 1fr) 16px;
+    gap: 2px 8px;
+    min-height: 70px !important;
+    padding: 9px 10px !important;
+  }
+  html body #root .bookflow-settings-v2 .settings-v2-theme-icon {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 7px;
+  }
+  html body #root .bookflow-settings-v2 .settings-v2-account {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 480px) {
+  html body #root .bookflow-settings-v2 .settings-v2-theme-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button {
+    transition: none !important;
+  }
+}
