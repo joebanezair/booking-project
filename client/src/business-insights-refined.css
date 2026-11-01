@@ -1527,3 +1527,221 @@ html:not([data-theme="dark"]) body #root .admin-detail-page {
 html:not([data-theme="dark"]) body #root .page-shell:has(.admin-detail-page) {
   --background: #ffffff;
 }
+
+
+/* Overview polish: borderless sales, statistics, and recent activity; Feature Plan untouched. */
+/* Only these three overview sections change. The account/profile and Feature Plan are excluded. */
+html body #root .admin-detail-page .admin-detail-major-cards > .admin-detail-section:is(.admin-detail-sales-section, .admin-detail-statistics-section, .admin-detail-recent),
+html body #root .admin-detail-page .admin-detail-major-cards > .admin-detail-section + .admin-detail-section:is(.admin-detail-sales-section, .admin-detail-statistics-section, .admin-detail-recent) {
+  margin: 0 !important;
+  padding: 8px 2px 12px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root .admin-detail-page .admin-detail-major-cards > :is(.admin-detail-sales-section, .admin-detail-statistics-section, .admin-detail-recent) .admin-detail-section-heading {
+  margin-bottom: 11px;
+}
+html body #root .admin-detail-page .admin-detail-major-cards > :is(.admin-detail-sales-section, .admin-detail-statistics-section, .admin-detail-recent) .admin-detail-section-heading h2 {
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+html body #root .admin-detail-page .admin-detail-major-cards > :is(.admin-detail-sales-section, .admin-detail-recent) .admin-detail-section-heading .eyebrow {
+  margin: 0 0 5px;
+  font-weight: 400;
+}
+html body #root .admin-detail-page .admin-detail-major-cards > :is(.admin-detail-sales-section, .admin-detail-recent) .admin-detail-section-heading .muted {
+  margin-top: 4px;
+}
+
+/* Recorded sales: use the available width instead of leaving half the report empty. */
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-currency-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+html body #root .admin-detail-page .admin-detail-major-cards .admin-detail-sales-section .admin-detail-finance-card.ui-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-areas:
+    "head channels"
+    "label channels"
+    "value channels"
+    "minis channels";
+  gap: 0 28px;
+  align-items: start;
+  min-width: 0;
+  padding: 12px 0 15px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--detail-border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-head {
+  grid-area: head;
+  justify-content: flex-start;
+  gap: 10px;
+  margin: 0 0 7px;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-icon,
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-sales-empty .admin-detail-empty-icon {
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  flex: 0 0 34px;
+  aspect-ratio: 1;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50% !important;
+  overflow: hidden;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-icon svg {
+  width: 17px;
+  height: 17px;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-currency {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-label {
+  grid-area: label;
+  font-size: 11px;
+  font-weight: 400;
+  margin: 0 0 5px;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-value {
+  grid-area: value;
+  margin: 0;
+  font-size: clamp(24px, 2.4vw, 30px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-minis {
+  grid-area: minis;
+  margin-top: 13px;
+  padding: 12px 0 0;
+  gap: 12px;
+  border-top: 1px solid var(--detail-border);
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-minis strong {
+  font-size: 13px;
+  font-weight: 400;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-channels {
+  grid-area: channels;
+  align-self: stretch;
+  min-width: 0;
+  border-top: 0;
+  border-left: 1px solid var(--detail-border);
+  padding: 6px 0 0 28px;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-channels h3 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 400;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-channels > div {
+  padding: 10px 0;
+}
+html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-channels strong {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* Business statistics: five unboxed metrics with consistently circular icons. */
+html body #root .admin-detail-page .admin-detail-statistics-section .admin-detail-metrics {
+  gap: 12px;
+  padding: 1px 0;
+  background: transparent !important;
+  border: 0 !important;
+}
+html body #root .admin-detail-page .admin-detail-statistics-section .admin-detail-metric {
+  min-height: 0;
+  padding: 3px 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  gap: 10px;
+}
+html body #root .admin-detail-page .admin-detail-statistics-section .admin-detail-metric-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  flex: 0 0 34px;
+  aspect-ratio: 1;
+  border-radius: 50% !important;
+  overflow: hidden;
+}
+html body #root .admin-detail-page .admin-detail-statistics-section .admin-detail-metric strong {
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.15;
+}
+html body #root .admin-detail-page .admin-detail-statistics-section .admin-detail-metric small {
+  font-weight: 400;
+}
+html body #root .admin-detail-page .admin-detail-statistics-section .admin-detail-booking-breakdown {
+  margin-top: 14px;
+  padding-top: 13px;
+}
+html body #root .admin-detail-page .admin-detail-statistics-section .admin-detail-booking-breakdown h3 {
+  font-size: 12px;
+  font-weight: 400;
+}
+html body #root .admin-detail-page .admin-detail-statistics-section .admin-detail-booking-statuses strong {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+/* Recent activity: two clean lists with tighter rows and plain-weight headings. */
+html body #root .admin-detail-page .admin-detail-major-cards .admin-detail-recent .admin-detail-list-heading {
+  padding-bottom: 9px;
+}
+html body #root .admin-detail-page .admin-detail-major-cards .admin-detail-recent .admin-detail-list-heading h3 {
+  font-size: 13px;
+  font-weight: 400;
+}
+html body #root .admin-detail-page .admin-detail-major-cards .admin-detail-recent .admin-detail-row {
+  padding: 10px 2px;
+}
+html body #root .admin-detail-page .admin-detail-major-cards .admin-detail-recent .admin-detail-row strong,
+html body #root .admin-detail-page .admin-detail-major-cards .admin-detail-recent .admin-detail-list-empty strong {
+  font-size: 12px;
+  font-weight: 400;
+}
+html body #root .admin-detail-page .admin-detail-major-cards .admin-detail-recent .admin-detail-row .ui-button {
+  font-size: 11px;
+  font-weight: 400;
+  cursor: pointer;
+}
+html body #root .admin-detail-page .admin-detail-major-cards .admin-detail-recent .admin-detail-list-empty .admin-detail-empty-icon {
+  border-radius: 50% !important;
+}
+@media (max-width: 850px) {
+  html body #root .admin-detail-page .admin-detail-major-cards .admin-detail-sales-section .admin-detail-finance-card.ui-card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "head" "label" "value" "minis" "channels";
+  }
+  html body #root .admin-detail-page .admin-detail-sales-section .admin-detail-finance-channels {
+    margin-top: 14px;
+    padding: 12px 0 0;
+    border-top: 1px solid var(--detail-border);
+    border-left: 0;
+  }
+}
+@media (max-width: 650px) {
+  html body #root .admin-detail-page .admin-detail-major-cards > .admin-detail-section:is(.admin-detail-sales-section, .admin-detail-statistics-section, .admin-detail-recent) {
+    padding-inline: 0 !important;
+  }
+  html body #root .admin-detail-page .admin-detail-statistics-section .admin-detail-metric-icon {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    flex-basis: 30px;
+  }
+}
