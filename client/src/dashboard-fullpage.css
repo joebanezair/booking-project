@@ -1181,3 +1181,145 @@ html body #root .dashboard-route-section--admin .admin-tool-link.ui-card:focus-v
     transition: none !important;
   }
 }
+
+
+/* Admin Quick Access — compact borderless shortcuts with circular icons. */
+/* Preserve all four clickable navigation links; remove individual card chrome. */
+html body #root .dashboard-route-section.dashboard-route-section--admin {
+  gap: 0 !important;
+  margin-top: 10px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+html body #root .dashboard-route-section--admin .dashboard-section-heading {
+  margin: 0 0 12px !important;
+}
+html body #root .dashboard-route-section--admin .dashboard-section-heading .eyebrow {
+  margin: 0 0 4px !important;
+  font-size: 10px;
+  font-weight: 400;
+}
+html body #root .dashboard-route-section--admin .dashboard-section-heading h2 {
+  margin: 0 0 3px !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.02em;
+}
+html body #root .dashboard-route-section--admin .dashboard-section-heading .muted {
+  margin: 0 !important;
+  font-size: 11px;
+  line-height: 1.45;
+}
+html body #root .dashboard-route-section--admin .dashboard-route-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  align-items: stretch;
+  gap: 12px !important;
+  width: 100%;
+  padding: 0 !important;
+}
+html body #root .dashboard-route-section--admin .admin-tool-link.ui-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: 100%;
+  min-width: 0;
+  min-height: 62px !important;
+  margin: 0 !important;
+  padding: 7px 6px !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--foreground) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transform: none !important;
+  transition: background-color .15s ease !important;
+}
+html body #root .dashboard-route-section--admin .admin-tool-link.ui-card:hover {
+  border: 0 !important;
+  background: color-mix(in srgb, var(--primary) 5%, transparent) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+html body #root .dashboard-route-section--admin .admin-tool-link.ui-card:focus-visible {
+  outline: 2px solid var(--ring, var(--primary)) !important;
+  outline-offset: 2px;
+}
+html body #root .dashboard-route-section--admin .admin-tool-link .dashboard-shadcn-card-header {
+  display: grid !important;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0 !important;
+}
+html body #root .dashboard-route-section--admin .admin-tool-link .dashboard-shadcn-card-header .route-card-icon {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  flex: 0 0 36px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  min-height: 36px;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  border: 0 !important;
+  border-radius: 50% !important;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--primary) 9%, var(--card)) !important;
+  color: var(--primary) !important;
+}
+html body #root .dashboard-route-section--admin .admin-tool-link .route-card-icon svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.8;
+}
+html body #root .dashboard-route-section--admin .admin-tool-link .ui-card-title {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 400 !important;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+html body #root .dashboard-route-section--admin .admin-tool-link .ui-card-description {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+@media (max-width: 1130px) {
+  html body #root .dashboard-route-section--admin .dashboard-route-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 640px) {
+  html body #root .dashboard-route-section--admin .dashboard-route-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 5px !important;
+  }
+  html body #root .dashboard-route-section--admin .admin-tool-link.ui-card {
+    min-height: 56px !important;
+    padding: 7px 4px !important;
+  }
+  html body #root .dashboard-route-section--admin .admin-tool-link .dashboard-shadcn-card-header {
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 9px;
+  }
+  html body #root .dashboard-route-section--admin .admin-tool-link .dashboard-shadcn-card-header .route-card-icon {
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    min-height: 32px;
+    flex-basis: 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .dashboard-route-section--admin .admin-tool-link.ui-card {
+    transition: none !important;
+  }
+}
