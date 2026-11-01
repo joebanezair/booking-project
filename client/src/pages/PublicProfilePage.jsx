@@ -210,8 +210,8 @@ export default function PublicProfilePage({ user }) {
         {profile.coverImage ? <Image className="ui-profile-cover-image" src={profile.coverImage} alt={profile.name+" cover photo"} decoding="async"/> : <div className="storefront-cover-placeholder" aria-hidden="true"/>}
       </div>
       <div className="public-profile-info storefront-profile-info storefront-container">
-        <ProfileAvatar profile={profile} size="xl" />
-        <div className="public-profile-copy">
+        <div className="storefront-profile-heading">
+          <ProfileAvatar profile={profile} size="xl" />
           <div className="profile-title-row storefront-title-row">
             <div className="storefront-name-block">
               <h1>{profile.name}</h1>
@@ -234,6 +234,8 @@ export default function PublicProfilePage({ user }) {
               {profile.bookingAvailable && <Button asChild variant="default"><Link className="public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
             </div>
           </div>
+        </div>
+        <div className="public-profile-copy">
           {paused && <div className="paused-public-banner" role="status" title="This business is not accepting new bookings right now."><FiAlertCircle aria-hidden="true" /><span>Bookings temporarily unavailable</span><span className="visually-hidden"> — this business is not accepting new bookings right now.</span></div>}
           <div className="profile-reputation-panel">
             <div className="profile-reputation-row">
