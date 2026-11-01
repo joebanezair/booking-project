@@ -4,7 +4,7 @@ export const ALLOWED_EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "🙏"]
 
 const emojiReactionSchema = new mongoose.Schema(
   {
-    targetType: { type: String, enum: ["message", "comment"], required: true, index: true },
+    targetType: { type: String, enum: ["message", "comment", "forum_post"], required: true, index: true },
     target: { type: mongoose.Schema.Types.ObjectId, required: true, index: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
     emoji: { type: String, enum: ALLOWED_EMOJIS, required: true }
