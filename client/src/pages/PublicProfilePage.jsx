@@ -6,6 +6,7 @@ import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { LuBuilding2 } from "react-icons/lu";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
 import ProfileAvatar from "../components/ProfileAvatar.jsx";
@@ -215,6 +216,7 @@ export default function PublicProfilePage({ user }) {
             <div className="storefront-name-block">
               <h1>{profile.name}</h1>
               <span className="storefront-handle">@{profile.username||resolvedUsername}</span>
+              {profile.headline && <p className="profile-headline"><LuBuilding2 aria-hidden="true" /><span>{profile.headline}</span></p>}
             </div>
             <div className="storefront-owner-actions">
               {!isOwner && <div className="public-profile-actions">
@@ -233,11 +235,13 @@ export default function PublicProfilePage({ user }) {
             </div>
           </div>
           {paused && <div className="paused-public-banner" role="status" title="This business is not accepting new bookings right now."><FiAlertCircle aria-hidden="true" /><span>Bookings temporarily unavailable</span><span className="visually-hidden"> — this business is not accepting new bookings right now.</span></div>}
-          {profile.headline && <p className="profile-headline">{profile.headline}</p>}
           <div className="profile-reputation-panel">
             <div className="profile-reputation-row">
-              <div className="profile-reputation-copy"><span className="profile-reputation-title">Business rating</span><span className="profile-reputation-subtitle">Ratings from visitors</span></div>
-              <RatingSummary {...profile.businessRatingSummary} />
+              <span className="storefront-reputation-icon storefront-reputation-icon--rating" aria-hidden="true"><FiStar /></span>
+              <div className="storefront-reputation-details">
+                <RatingSummary {...profile.businessRatingSummary} />
+                <div className="profile-reputation-copy"><span className="profile-reputation-title">Business rating</span><span className="profile-reputation-subtitle">Ratings from visitors</span></div>
+              </div>
             </div>
             {(user && !isOwner || ratingMessage) && <div className="business-rating-card">
               {user && !isOwner && <div className="profile-rating-control"><span className="profile-rating-label">Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}</div></div>}
@@ -245,8 +249,11 @@ export default function PublicProfilePage({ user }) {
             </div>}
             {!user && <small className="muted">Sign in to rate this business.</small>}
             <div className="profile-reputation-row profile-reputation-reviews">
-              <div className="profile-reputation-copy"><span className="profile-reputation-title">Verified booking reviews</span><span className="profile-reputation-subtitle">Reviews from completed bookings</span></div>
-              <RatingSummary {...profile.ratingSummary} />
+              <span className="storefront-reputation-icon storefront-reputation-icon--verified" aria-hidden="true"><FiCheckCircle /></span>
+              <div className="storefront-reputation-details">
+                <RatingSummary {...profile.ratingSummary} />
+                <div className="profile-reputation-copy"><span className="profile-reputation-title">Verified booking reviews</span><span className="profile-reputation-subtitle">Reviews from completed bookings</span></div>
+              </div>
             </div>
           </div>
           {profile.bio && <p className="public-bio">{profile.bio}</p>}
