@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import {
   FiAlertCircle, FiArrowLeft, FiBarChart2, FiCalendar, FiCheckCircle, FiClock,
   FiCreditCard, FiEye, FiInbox, FiLayers, FiPause, FiPlay, FiRefreshCw,
-  FiShoppingBag, FiSlash, FiStar, FiTrendingUp, FiX
+  FiShoppingBag, FiSlash, FiStar, FiTrendingUp, FiChevronRight, FiX
 } from "react-icons/fi";
 import { PiCoin } from "react-icons/pi";
 import AppLayout from "../components/AppLayout.jsx";
@@ -175,16 +175,21 @@ export default function BusinessDetailPage({ user, onLogout }) {
             </div>
           </section>
 
-          <nav className="admin-transparency-tabs" aria-label="Business insights sections">
-            {[
-              ["overview", "Overview"], ["financials", "Financials"], ["products", "Products & Inventory"],
-              ["services", "Services"], ["bookings", "Bookings"], ["transactions", "Transactions"],
-              ["audit", "Audit Logs"]
-            ].map(([key, label]) =>
-              <Button type="button" variant="ghost" size="sm" key={key} aria-current={detailTab === key ? "page" : undefined}
-                className={detailTab === key ? "is-active" : ""}
-                onClick={() => setDetailTab(key)}>{label}</Button>
-            )}
+          <nav className="admin-transparency-breadcrumbs" aria-label="Business insights sections">
+            <ol className="admin-transparency-breadcrumb-list">
+              {[
+                ["overview", "Overview"], ["financials", "Financials"], ["products", "Products & Inventory"],
+                ["services", "Services"], ["bookings", "Bookings"], ["transactions", "Transactions"],
+                ["audit", "Audit Logs"]
+              ].map(([key, label], index) =>
+                <li key={key} className="admin-transparency-breadcrumb-item">
+                  {index > 0 && <FiChevronRight className="admin-transparency-breadcrumb-separator" aria-hidden="true" />}
+                  <Button type="button" variant="ghost" size="sm" aria-current={detailTab === key ? "page" : undefined}
+                    className={`admin-transparency-breadcrumb-link${detailTab === key ? " is-active" : ""}`}
+                    onClick={() => setDetailTab(key)}>{label}</Button>
+                </li>
+              )}
+            </ol>
           </nav>
 
           {detailTab === "overview" ? <>
