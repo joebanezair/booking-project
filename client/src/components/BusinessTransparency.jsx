@@ -1,6 +1,6 @@
 import "../admin-transparency.css";
 import { useEffect, useState } from "react";
-import { FiChevronLeft, FiChevronRight, FiDownload, FiRefreshCw, FiInfo } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiDownload, FiRefreshCw, FiInfo, FiDollarSign, FiShoppingCart, FiShoppingBag, FiCalendar, FiBarChart2, FiPieChart, FiLayers, FiTrendingUp, FiTag, FiFileText, FiBox, FiDatabase } from "react-icons/fi";
 import { Button } from "./ui/button.jsx";
 import { api } from "../api.js";
 import { exportAdminBusinessWorkbook } from "../utils/exportAdminBusinessWorkbook.js";
@@ -26,6 +26,95 @@ function DataTable({ columns, rows }) {
       </tr>) : <tr><td colSpan={columns.length} className="admin-transparency-no-data">No records for this selection.</td></tr>}</tbody>
     </table>
   </div>;
+}
+
+
+function FinancialMetric({ icon: Icon, label, value, tone }) {
+  return <article className="financial-kpi">
+    <span className={`financial-kpi-icon financial-tone-${tone}`} aria-hidden="true"><Icon /></span>
+    <div className="financial-kpi-copy">
+      <strong className="financial-kpi-value">{value}</strong>
+      <span>{label}</span>
+    </div>
+  </article>;
+}
+
+function FinancialDetail({ icon: Icon, label, value, tone = "" }) {
+  return <div className={`financial-data-row ${tone ? `financial-row-${tone}` : ""}`}>
+    <dt><Icon aria-hidden="true" /><span>{label}</span></dt>
+    <dd>{value}</dd>
+  </div>;
+}
+
+function FinancialCurrencyPanel({ row, limitations }) {
+  // Each currency is displayed and charted separately. Never combine currencies without conversion.
+  const currency = row.currency || "PHP";
+  const amount = value => formatAmount(value, currency);
+  const sales = [
+    { label: "Online orders", value: Math.max(0, Number(row.online) || 0), color: "online" },
+    { label: "POS sales", value: Math.max(0, Number(row.pos) || 0), color: "pos" },
+    { label: "Service sales", value: Math.max(0, Number(row.services) || 0), color: "services" }
+  ];
+  const channelTotal = sales.reduce((sum, entry) => sum + entry.value, 0);
+  const share = value => channelTotal ? (value / channelTotal) * 100 : 0;
+  const onlineEnd = share(sales[0].value);
+  const posEnd = onlineEnd + share(sales[1].value);
+  const ringBackground = channelTotal
+    ? `conic-gradient(#287cf5 0% ${onlineEnd}%, #21a16b ${onlineEnd}% ${posEnd}%, #9165e8 ${posEnd}% 100%)`
+    : "conic-gradient(#e4eaf3 0% 100%)";
+  return <section className="financial-currency-panel" aria-label={`${currency} financial report`}>
+    <div className="financial-currency-label"><span>{currency}</span> Financial overview</div>
+    <div className="financial-kpi-grid">
+      <FinancialMetric icon={FiDollarSign} tone="blue" value={amount(row.gross)} label="Total gross sales" />
+      <FinancialMetric icon={FiShoppingCart} tone="green" value={amount(row.pos)} label="POS sales (gross)" />
+      <FinancialMetric icon={FiCalendar} tone="purple" value={amount(row.services)} label="Service sales (gross)" />
+      <FinancialMetric icon={FiShoppingBag} tone="orange" value={amount(row.online)} label="Completed online orders" />
+    </div>
+    <div className="financial-content-grid">
+      <article className="financial-section financial-breakdown">
+        <h3><FiBarChart2 aria-hidden="true" /> {currency} financial breakdown</h3>
+        <dl>
+          <FinancialDetail icon={FiCalendar} label="Service sales (gross)" value={amount(row.services)} />
+          <FinancialDetail icon={FiShoppingCart} label="POS sales (gross)" value={amount(row.pos)} />
+          <FinancialDetail icon={FiShoppingBag} label="Completed online orders (value)" value={amount(row.online)} />
+          <FinancialDetail icon={FiDollarSign} label="Total gross operational sales" value={amount(row.gross)} tone="total" />
+          <FinancialDetail icon={FiLayers} label="Recorded POS cost of goods sold" value={amount(row.knownPosCost)} />
+          <FinancialDetail icon={FiLayers} label="Recorded online order costs" value={amount(row.knownOnlineCost)} />
+          <FinancialDetail icon={FiTrendingUp} label="POS gross profit" value={amount(row.posGrossProfit)} tone={row.posGrossProfit == null ? "" : "profit"} />
+          <FinancialDetail icon={FiTrendingUp} label="Online order gross profit" value={amount(row.onlineGrossProfit)} />
+          <FinancialDetail icon={FiTrendingUp} label="Combined gross profit (if complete)" value={amount(row.overallGrossProfit)} />
+          <FinancialDetail icon={FiTag} label="Uncosted POS item lines" value={row.missingPosCostLines ?? 0} />
+          <FinancialDetail icon={FiTag} label="Uncosted online item lines" value={row.missingOnlineCostLines ?? 0} />
+          <FinancialDetail icon={FiFileText} label="Recorded sales transactions" value={row.transactions ?? 0} />
+        </dl>
+      </article>
+      <div className="financial-side-stack">
+        <article className="financial-section financial-sales-overview">
+          <h3><FiPieChart aria-hidden="true" /> Sales overview</h3>
+          <div className="financial-chart-layout">
+            <div className="financial-chart-ring" style={{ background: ringBackground }}
+              role="img" aria-label={channelTotal ? "Sales breakdown by channel: " + sales.map(item => `${item.label} ${Math.round(share(item.value))}%`).join(", ") : "No channel sales in this period"}>
+              <div className="financial-chart-center">
+                <strong>{amount(row.gross)}</strong><span>Gross sales</span>
+              </div>
+            </div>
+            <div className="financial-sales-legend">
+              {sales.map(item => <div key={item.color} className="financial-legend-row">
+                <span className={`financial-legend-dot financial-dot-${item.color}`} aria-hidden="true" />
+                <span className="financial-legend-title">{item.label}</span>
+                <span className="financial-legend-value">{amount(item.value)}</span>
+                <span className="financial-legend-share">{Math.round(share(item.value))}%</span>
+              </div>)}
+            </div>
+          </div>
+        </article>
+        <article className="financial-section financial-data-coverage">
+          <h3><FiInfo aria-hidden="true" /> Data coverage</h3>
+          <ul>{(limitations || []).map(note => <li key={note}>{note}</li>)}</ul>
+        </article>
+      </div>
+    </div>
+  </section>;
 }
 
 export default function BusinessTransparency({ businessId, section, businessName = "Business" }) {
@@ -109,13 +198,14 @@ export default function BusinessTransparency({ businessId, section, businessName
     { key: "actor", label: "Actor", render: r => r.actor ? String(r.actor) : "System / transaction" }
   ] : [];
 
-  return <section className="admin-transparency" aria-label="Business transparency">
+  return <section className={`admin-transparency ${section === "financials" ? "admin-transparency-financials" : ""}`} aria-label="Business transparency">
     <div className="admin-transparency-toolbar">
-      <div>
-        <h2>{section === "audit" ? "Recorded activity & audit logs" : section === "financials" ? "Financial transparency" :
+      <div className="admin-transparency-heading">
+        {section === "financials" && <span className="admin-transparency-heading-icon"><FiDatabase aria-hidden="true" /></span>}
+        <div><h2>{section === "audit" ? "Recorded activity & audit logs" : section === "financials" ? "Financial transparency" :
           section === "transactions" ? "Transaction ledger" : section === "products" ? "Products & inventory" :
           section === "bookings" ? "Bookings & history" : "Services"}</h2>
-        <p className="muted">Admin-only business records. All currencies remain separate.</p>
+        <p className="muted">Admin-only business records. All currencies remain separate.</p></div>
       </div>
       <div className="admin-transparency-actions">
         <label className="admin-transparency-filter">Period
@@ -139,26 +229,12 @@ export default function BusinessTransparency({ businessId, section, businessName
     {busy && <p className="muted" role="status">Loading {section}…</p>}
     {!busy && summary && <>
       {section === "financials" ? <>
-        <div className="admin-transparency-cards">
-          {currencies.length ? currencies.map(row => <article key={row.currency} className="admin-transparency-currency">
-            <strong>{row.currency} financial breakdown</strong>
-            <dl>
-              <div><dt>Service sales (gross)</dt><dd>{formatAmount(row.services, row.currency)}</dd></div>
-              <div><dt>POS sales (gross)</dt><dd>{formatAmount(row.pos, row.currency)}</dd></div>
-              <div><dt>Completed online orders (value)</dt><dd>{formatAmount(row.online, row.currency)}</dd></div>
-              <div className="admin-transparency-total"><dt>Total gross operational sales</dt><dd>{formatAmount(row.gross, row.currency)}</dd></div>
-              <div><dt>Recorded POS cost of goods sold</dt><dd>{formatAmount(row.knownPosCost, row.currency)}</dd></div>
-              <div><dt>Recorded online order costs</dt><dd>{formatAmount(row.knownOnlineCost, row.currency)}</dd></div>
-              <div><dt>POS gross profit</dt><dd>{formatAmount(row.posGrossProfit, row.currency)}</dd></div>
-              <div><dt>Online order gross profit</dt><dd>{formatAmount(row.onlineGrossProfit, row.currency)}</dd></div>
-              <div><dt>Combined gross profit (if complete)</dt><dd>{formatAmount(row.overallGrossProfit, row.currency)}</dd></div>
-              <div><dt>Uncosted POS item lines</dt><dd>{row.missingPosCostLines}</dd></div>
-              <div><dt>Uncosted online item lines</dt><dd>{row.missingOnlineCostLines}</dd></div>
-              <div><dt>Recorded sales transactions</dt><dd>{row.transactions}</dd></div>
-            </dl>
-          </article>) : <p className="muted">No recorded sales in this period.</p>}
+        <div className="financial-currency-list">
+          {currencies.length
+            ? currencies.map(row => <FinancialCurrencyPanel key={row.currency} row={row} limitations={summary.limitations} />)
+            : <p className="muted financial-empty">No recorded sales in this period.</p>}
         </div>
-        <p className="admin-transparency-note"><FiInfo /> Gross sale totals do not deduct processing fees, overhead, or unrecorded refunds. Revenue is not the same as profit or payout.</p>
+        <p className="admin-transparency-note"><FiInfo aria-hidden="true" /> Gross sale totals do not deduct processing fees, overhead, or unrecorded refunds. Revenue is not the same as profit or payout.</p>
       </> : <>
         <div className="admin-transparency-keyfigures">
           <div><span>Total posted products</span><strong>{summary.products.posted ?? 0}</strong></div>
@@ -181,10 +257,10 @@ export default function BusinessTransparency({ businessId, section, businessName
           </div>
         </div>
       </>}
-      <div className="admin-transparency-caveats">
+      {section !== "financials" && <div className="admin-transparency-caveats">
         <strong>Data coverage</strong>
         <ul>{summary.limitations.map(note => <li key={note}>{note}</li>)}</ul>
-      </div>
+      </div>}
     </>}
   </section>;
 }
