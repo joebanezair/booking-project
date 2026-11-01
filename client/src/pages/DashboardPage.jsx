@@ -10,6 +10,7 @@ import { hasBusinessFeature } from "../featureAccess.js";
 import { Button } from "../components/ui/button.jsx";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.jsx";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
+import { adminMetricsKey, defaultVisibleMetrics, metricGroups, normalizeVisibleMetrics, readVisibleMetrics } from "../utils/adminMetricPreferences.js";
 
 const businessSections = [
   { title: "Services", text: "Create and manage your services.", to: "/dashboard/services", action: "Manage services", icon: FiBriefcase, widgetKey: "quickServices", feature: "booking", countKey: "services" },
@@ -65,21 +66,6 @@ function formatRevenue(amount, currency = "PHP") {
 }
 
 
-const metricGroups = [
-  { title: "Main statistics", metrics: [
-    ["revenue","Total platform revenue"],["products","Total products"],
-    ["services","Total services"],["bookings","Total bookings"],
-    ["reviews","Verified reviews"],["rating","Average rating"]
-  ] },
-  { title: "Booking status", metrics: [
-    ["pending","Pending"],["confirmed","Confirmed"],["inProgress","In progress"],
-    ["completed","Completed"],["cancelled","Cancelled"],["noShow","No-show"]
-  ] },
-  { title: "Sales and orders", metrics: [
-    ["serviceSales","Service sales recorded"],["posSales","POS sales recorded"],
-    ["onlineOrders","Online orders"],["completedOrders","Orders completed"]
-  ] }
-];
 const businessWidgetGroups = [
   { title: "Getting started", widgets: [["setupChecklist", "Business setup checklist"]] },
   { title: "Key metrics", widgets: [
@@ -111,17 +97,6 @@ function readBusinessWidgets(key) {
   return defaults;
 }
 
-const defaultVisibleMetrics = () => Object.fromEntries(metricGroups.flatMap(g => g.metrics.map(([key]) => [key, true])));
-function readVisibleMetrics(key) {
-  const value = defaultVisibleMetrics();
-  try {
-    const stored = JSON.parse(window.localStorage.getItem(key) || "null");
-    if (!stored || typeof stored !== "object" || Array.isArray(stored)) return value;
-    for (const metric of Object.keys(value)) if (typeof stored[metric] === "boolean") value[metric] = stored[metric];
-  } catch { /* Session-only preference if browser storage is unavailable. */ }
-  return value;
-}
-
 export default function DashboardPage({ user, onLogout }) {
   const isAdmin = user.role === "admin";
   const [overview, setOverview] = useState(null);
@@ -134,12 +109,8 @@ export default function DashboardPage({ user, onLogout }) {
   const [setupLoaded, setSetupLoaded] = useState(false);
   const [overviewError, setOverviewError] = useState("");
   const [setupExpanded, setSetupExpanded] = useState(false);
-  const visibilityKey = `bookflow:admin-metrics:v1:${user._id || user.id || user.email}`;
+  const visibilityKey = adminMetricsKey(user);
   const [visibleMetrics, setVisibleMetrics] = useState(() => readVisibleMetrics(visibilityKey));
-  const [draftMetrics, setDraftMetrics] = useState(() => readVisibleMetrics(visibilityKey));
-  const [customizeOpen, setCustomizeOpen] = useState(false);
-  // One expanded group at a time prevents metrics from being clipped by a nested scroll area.
-  const [expandedMetricGroup, setExpandedMetricGroup] = useState("Main statistics");
   const businessWidgetKey = `bookflow:business-dashboard:v1:${user._id || user.id || user.email}`;
   const [visibleBusinessWidgets, setVisibleBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
   const [draftBusinessWidgets, setDraftBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
@@ -173,9 +144,7 @@ export default function DashboardPage({ user, onLogout }) {
     setVisibleBusinessWidgets(localBusiness);
     setDraftBusinessWidgets(localBusiness);
     setVisibleMetrics(localMetrics);
-    setDraftMetrics(localMetrics);
     setBusinessCustomizeOpen(false);
-    setCustomizeOpen(false);
     setDashboardPreferencesError("");
     setDashboardPreferencesLoading(true);
 
@@ -189,8 +158,7 @@ export default function DashboardPage({ user, onLogout }) {
             [key, typeof remote[kind][key] === "boolean" ? remote[kind][key] : defaults[key]]
           ));
           if (isAdmin) {
-            setVisibleMetrics(stored);
-            setDraftMetrics(stored);
+            setVisibleMetrics(normalizeVisibleMetrics(stored));
           } else {
             setVisibleBusinessWidgets(stored);
             setDraftBusinessWidgets(stored);
@@ -236,30 +204,6 @@ export default function DashboardPage({ user, onLogout }) {
       setDashboardPreferencesSaving(false);
     }
   }
-  async function saveMetrics() {
-    if (dashboardPreferencesLoading || dashboardPreferencesSaving) return;
-    setDashboardPreferencesSaving(true);
-    setDashboardPreferencesError("");
-    try {
-      const { preferences } = await api.profile.saveDashboardPreferences("adminMetrics", draftMetrics);
-      setVisibleMetrics({ ...preferences });
-      setDraftMetrics({ ...preferences });
-      try { window.localStorage.setItem(visibilityKey, JSON.stringify(preferences)); }
-      catch { /* Saved to the account even if browser storage is unavailable. */ }
-      setCustomizeOpen(false);
-    } catch (error) {
-      setDashboardPreferencesError(error.message || "Unable to save dashboard preferences.");
-    } finally {
-      setDashboardPreferencesSaving(false);
-    }
-  }
-  function openMetricsDialog() {
-    setDraftMetrics({ ...visibleMetrics });
-    setExpandedMetricGroup("Main statistics");
-    setDashboardPreferencesError("");
-    setCustomizeOpen(true);
-  }
-
   useEffect(() => {
     if (isAdmin) {
       api.admin.overview().then(setOverview).catch(error => setOverviewError(error.message));
@@ -315,30 +259,6 @@ export default function DashboardPage({ user, onLogout }) {
   const mainVisible = metricGroups[0].metrics.some(([key]) => visibleMetrics[key]);
   const bookingsVisible = metricGroups[1].metrics.some(([key]) => visibleMetrics[key]);
   const salesVisible = metricGroups[2].metrics.some(([key]) => visibleMetrics[key]);
-  // The modal displays the same database-backed values as the administrator dashboard.
-  // A hidden statistic still shows its current value here; visibility is presentation-only.
-  const countText = value => typeof value === "number" && Number.isFinite(value)
-    ? value.toLocaleString("en-PH") : "—";
-  const metricValues = {
-    revenue: revenueRows?.length > 1 ? revenueBreakdown : revenueDisplay,
-    products: countText(overview?.products?.total),
-    services: countText(overview?.services?.total),
-    bookings: countText(overview?.bookings?.total),
-    reviews: countText(overview?.reviews?.verified),
-    rating: typeof overview?.reviews?.averageRating === "number"
-      ? `${overview.reviews.averageRating.toFixed(1)} / 5` : "—",
-    pending: countText(overview?.bookings?.pending),
-    confirmed: countText(overview?.bookings?.confirmed),
-    inProgress: countText(overview?.bookings?.inProgress),
-    completed: countText(overview?.bookings?.completed),
-    cancelled: countText(overview?.bookings?.cancelled),
-    noShow: countText(overview?.bookings?.noShow),
-    serviceSales: countText(overview?.sales?.recorded),
-    posSales: countText(overview?.sales?.posRecorded),
-    onlineOrders: countText(overview?.sales?.onlineOrders),
-    completedOrders: countText(overview?.sales?.completedOnlineOrders)
-  };
-
   const businessSummary = businessSales?.summary;
   const liveBusinessValues = {
     setupChecklist: setupLoaded ? (setupComplete ? "Complete" : `${onboarding.filter(item => item.done).length}/${onboarding.length} done`) : "Loading…",
@@ -391,10 +311,6 @@ export default function DashboardPage({ user, onLogout }) {
             <span aria-live="polite" className="business-admin-activity-updated">
               {overview?.generatedAt ? `Updated ${new Date(overview.generatedAt).toLocaleString()}` : !overviewError ? "Loading live totals…" : "Statistics unavailable"}
             </span>
-            <Button type="button" size="sm" variant="outline" className="admin-stats-customize-button"
-              onClick={openMetricsDialog} aria-haspopup="dialog">
-              <FiSettings aria-hidden="true" /> Customize
-            </Button>
           </div>
         </div>
         {mainVisible && <div className="business-admin-platform-grid">
@@ -443,87 +359,9 @@ export default function DashboardPage({ user, onLogout }) {
           </div>}
         </div>}
         {!mainVisible && !bookingsVisible && !salesVisible &&
-          <p className="admin-stats-empty">No statistics selected. Click Customize to choose what appears here.</p>}
+          <p className="admin-stats-empty">No statistics selected. Choose which statistics to show in <Link to="/dashboard/settings">Settings</Link>.</p>}
       </section>
       </div>}
-
-      {isAdmin && <Dialog open={customizeOpen} onOpenChange={setCustomizeOpen} className="admin-stats-dialog"
-        title="Customize platform statistics">
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Customize statistics</DialogTitle>
-            <DialogDescription>Select which statistics appear on your Dashboard. Unchecking hides a number; it never deletes data.</DialogDescription>
-          </DialogHeader>
-          <div className="admin-stats-checklist">
-            {metricGroups.map(group => {
-              const groupId = `admin-stats-${group.title.toLowerCase().replaceAll(" ", "-")}`;
-              const expanded = expandedMetricGroup === group.title;
-              const checkedCount = group.metrics.filter(([key]) => draftMetrics[key] !== false).length;
-              return <section key={group.title} className="admin-stats-table-section" aria-label={group.title}>
-                <button type="button" className="admin-stats-group-trigger"
-                  aria-expanded={expanded} aria-controls={groupId}
-                  onClick={() => setExpandedMetricGroup(current => current === group.title ? null : group.title)}>
-                  <span className="admin-stats-group-heading">{group.title}</span>
-                  <span className="admin-stats-group-count">{checkedCount}/{group.metrics.length} shown</span>
-                  <FiChevronDown aria-hidden="true" className={expanded ? "is-expanded" : ""} />
-                </button>
-                <div id={groupId} className="admin-stats-table-wrap" hidden={!expanded}>
-                  <table className="admin-stats-table">
-                    <thead className="admin-stats-sr-only">
-                      <tr>
-                        <th scope="col">Show statistic</th>
-                        <th scope="col">Current value</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {group.metrics.map(([key, label]) => <tr key={key}>
-                        <th scope="row" className="admin-stats-row-name">
-                          <label htmlFor={`admin-stat-show-${key}`} className="admin-stats-metric-option">
-                            <input type="checkbox" id={`admin-stat-show-${key}`}
-                              aria-label={`Show ${label}`}
-                              checked={draftMetrics[key] !== false}
-                              disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
-                              onChange={event => setDraftMetrics(current => ({ ...current, [key]: event.target.checked }))} />
-                            <span>{label}</span>
-                          </label>
-                        </th>
-                        <td className="admin-stats-metric-value" title={String(metricValues[key] ?? "—")}>
-                          {metricValues[key] ?? "—"}
-                        </td>
-                      </tr>)}
-                    </tbody>
-                  </table>
-                </div>
-              </section>;
-            })}
-          </div>
-          {dashboardPreferencesError && <p role="alert">{dashboardPreferencesError}</p>}
-          <DialogFooter className="admin-stats-checklist-footer">
-            <div className="admin-stats-checklist-helpers">
-              <Button type="button" variant="ghost" size="sm"
-                disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
-                onClick={() => setDraftMetrics(defaultVisibleMetrics())}>
-                <FiCheckSquare aria-hidden="true" /> Select all
-              </Button>
-              <Button type="button" variant="ghost" size="sm"
-                disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
-                onClick={() => setDraftMetrics({ ...visibleMetrics })}>
-                <FiRotateCcw aria-hidden="true" /> Reset changes
-              </Button>
-            </div>
-            <div className="admin-stats-checklist-actions">
-              <Button type="button" variant="outline" size="sm"
-                disabled={dashboardPreferencesSaving}
-                onClick={() => setCustomizeOpen(false)}>
-                <FiX aria-hidden="true" /> Cancel
-              </Button>
-              <Button type="button" size="sm" disabled={dashboardPreferencesLoading || dashboardPreferencesSaving} onClick={saveMetrics}>
-                <FiSave aria-hidden="true" /> Save changes
-              </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>}
 
       {!isAdmin && <Dialog open={businessCustomizeOpen} onOpenChange={setBusinessCustomizeOpen}
         className="business-dashboard-dialog" title="Customize business dashboard">
