@@ -217,7 +217,7 @@ export default function BusinessTransparency({ businessId, section, businessName
     { key: "actor", label: "Actor", render: r => r.actor ? String(r.actor) : "System / transaction" }
   ] : [];
 
-  return <section className={`admin-transparency ${section === "financials" ? "admin-transparency-financials" : section === "products" ? "admin-transparency-products" : ""}`} aria-label="Business transparency">
+  return <section className={`admin-transparency ${section === "financials" ? "admin-transparency-financials" : section === "products" ? "admin-transparency-products" : section === "services" ? "admin-transparency-services" : ""}`} aria-label="Business transparency">
     <div className="admin-transparency-toolbar">
       <div className="admin-transparency-heading">
         {section === "financials" && <span className="admin-transparency-heading-icon" aria-hidden="true"><FiDatabase /></span>}
@@ -255,7 +255,7 @@ export default function BusinessTransparency({ businessId, section, businessName
         </div>
         <p className="admin-transparency-note"><FiInfo aria-hidden="true" /> Gross sale totals do not deduct processing fees, overhead, or unrecorded refunds. Revenue is not the same as profit or payout.</p>
       </> : <>
-        {section === "products" ? <dl className="admin-product-summary" aria-label="Product inventory summary">
+        {(section === "products" || section === "services") ? <dl className="admin-product-summary" aria-label="Business catalog summary">
           <div className="admin-product-summary-item">
             <span className="admin-product-summary-icon" aria-hidden="true"><FiTag /></span>
             <div className="admin-product-summary-content"><dt>Total posted products</dt><dd>{summary.products.posted ?? 0}</dd></div>
@@ -297,7 +297,7 @@ export default function BusinessTransparency({ businessId, section, businessName
           </div>
         </div>
       </>}
-      {section === "products" ? <details className="admin-product-coverage">
+      {(section === "products" || section === "services") ? <details className="admin-product-coverage">
         <summary><FiInfo aria-hidden="true" /><span>Data coverage</span><FiChevronDown className="admin-product-coverage-chevron" aria-hidden="true" /></summary>
         <ul>{summary.limitations.map(note => <li key={note}>{note}</li>)}</ul>
       </details> : section !== "financials" && <div className="admin-transparency-caveats">
