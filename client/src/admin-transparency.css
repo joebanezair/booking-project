@@ -520,3 +520,183 @@ html body #root .admin-detail-page .admin-transparency-financials .financial-row
     width: 13px; height: 13px; flex-basis: 13px;
   }
 }
+
+/* Products & inventory: compact reporting without nested cards. */
+html body #root .admin-detail-page .admin-transparency-products {
+  padding: 0 2px 10px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-toolbar {
+  gap: 10px 18px;
+  margin-bottom: 13px;
+}
+html body #root .admin-detail-page .admin-transparency-products h2 {
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-toolbar p {
+  margin-top: 3px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-actions {
+  gap: 7px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-actions .ui-button,
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-pagination .ui-button {
+  border-radius: 7px;
+  box-shadow: none;
+  font-weight: 400;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-filter select {
+  border-radius: 7px;
+  min-height: 34px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-summary {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px 0;
+  padding: 0 0 14px;
+  margin: 0 0 8px;
+  border-bottom: 1px solid var(--detail-border, #e2e9f5);
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-item {
+  min-width: 170px;
+  padding-right: 26px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-item + .admin-product-summary-item {
+  border-left: 1px solid var(--detail-border, #e2e9f5);
+  padding-left: 26px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-summary dt {
+  font-size: 12px;
+  color: var(--detail-muted, #64748b);
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-summary dd {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 3px 0 0;
+  font-size: 23px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--detail-ink, #18253c);
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-summary dd span {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--detail-muted, #64748b);
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table-wrap {
+  scrollbar-width: thin;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table {
+  min-width: 850px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table th {
+  background: var(--detail-soft, #f6f8fc);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table td {
+  color: var(--detail-ink, #18253c);
+  font-size: 12px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table th,
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table td {
+  padding: 10px 11px;
+  vertical-align: middle;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table th:nth-child(n+2):nth-child(-n+7),
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table td:nth-child(n+2):nth-child(-n+7) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table th:first-child {
+  border-top-left-radius: 7px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-table th:last-child {
+  border-top-right-radius: 7px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-status {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 400;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9aa7b8;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-status.is-published::before {
+  background: #1da774;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-transparency-pagination {
+  padding: 12px 0;
+  margin: 0;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage {
+  padding-top: 10px;
+  border-top: 1px solid var(--detail-border, #e2e9f5);
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--detail-muted, #64748b);
+  font-size: 12px;
+  font-weight: 400;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage summary::-webkit-details-marker {
+  display: none;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage summary svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage summary:focus-visible {
+  outline: 2px solid var(--primary, #2678ed);
+  outline-offset: 3px;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage-chevron {
+  transition: transform 0.18s ease;
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage[open] .admin-product-coverage-chevron {
+  transform: rotate(180deg);
+}
+html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--detail-muted, #64748b);
+}
+@media (max-width: 650px) {
+  html body #root .admin-detail-page .admin-transparency-products { padding-inline: 0; }
+  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-item {
+    min-width: 135px;
+    padding-right: 15px;
+  }
+  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary-item + .admin-product-summary-item { padding-left: 15px; }
+  html body #root .admin-detail-page .admin-transparency-products .admin-product-summary dd {
+    font-size: 20px;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .admin-detail-page .admin-transparency-products .admin-product-coverage-chevron { transition: none; }
+}
