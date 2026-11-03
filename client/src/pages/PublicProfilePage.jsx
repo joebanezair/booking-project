@@ -247,6 +247,7 @@ export default function PublicProfilePage({ user }) {
               <h1>{profile.name}</h1>
               <span className="storefront-handle">@{profile.username||resolvedUsername}</span>
               {profile.headline && <p className="profile-headline"><LuBuilding2 aria-hidden="true" /><span>{profile.headline}</span></p>}
+              {profile.location && <span className="storefront-location"><FiMapPin aria-hidden="true" />{profile.location}</span>}
             </div>
             <div className="storefront-owner-actions">
               {isOwner ? <div className="public-profile-owner-actions">
@@ -294,7 +295,7 @@ export default function PublicProfilePage({ user }) {
           </div>
           {profile.bio && <p className="public-bio">{profile.bio}</p>}
           <div className="profile-meta storefront-meta">
-            {profile.location && <span><FiMapPin aria-hidden="true"/>{profile.location}</span>}
+            
             {profile.website && <a href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true"/>Website</a>}
           </div>
         </div>
