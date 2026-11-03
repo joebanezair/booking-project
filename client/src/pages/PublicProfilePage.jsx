@@ -280,11 +280,6 @@ export default function PublicProfilePage({ user }) {
                 <div className="profile-reputation-copy"><span className="profile-reputation-title">Business rating</span><span className="profile-reputation-subtitle">Ratings from visitors</span></div>
               </div>
             </div>
-            {(user && !isOwner || ratingMessage) && <div className="business-rating-card">
-              {user && !isOwner && <div className="profile-rating-control"><span className="profile-rating-label">Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}</div></div>}
-              {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
-            </div>}
-            {!user && <small className="muted">Sign in to rate this business.</small>}
             <div className="profile-reputation-row profile-reputation-reviews">
               <span className="storefront-reputation-icon storefront-reputation-icon--verified" aria-hidden="true"><FiCheckCircle /></span>
               <div className="storefront-reputation-details">
@@ -322,6 +317,11 @@ export default function PublicProfilePage({ user }) {
     </nav>
 
     <section id="storefront-about" className="storefront-about-section storefront-container" aria-label={`About ${profile.name}`}>
+      {(user && !isOwner || ratingMessage) && <div className="business-rating-card storefront-about-rating">
+        {user && !isOwner && <div className="profile-rating-control"><span className="profile-rating-label">Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}</div></div>}
+        {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
+      </div>}
+      {!user && <small className="muted storefront-about-signin">Sign in to rate this business.</small>}
       {profile.bio && <p className="public-bio">{profile.bio}</p>}
       {profile.website && <a className="storefront-about-website" href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true"/>Website</a>}
     </section>
