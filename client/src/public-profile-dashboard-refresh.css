@@ -481,3 +481,89 @@ html body #root .bookflow-storefront .storefront-section-booking-link:hover {
     transition: none !important;
   }
 }
+
+
+/* The public profile heading has a nested avatar + title row. */
+html body #root .bookflow-storefront .storefront-profile-heading {
+  display: grid !important;
+  grid-template-columns: 116px minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 18px !important;
+  width: 100%;
+  min-width: 0;
+}
+
+html body #root .bookflow-storefront .storefront-profile-heading > .profile-avatar {
+  width: 116px !important;
+  height: 116px !important;
+  min-width: 116px !important;
+  min-height: 116px !important;
+  max-width: 116px !important;
+  max-height: 116px !important;
+  margin: -48px 0 0 !important;
+}
+
+html body #root .bookflow-storefront .public-profile-owner-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+html body #root .bookflow-storefront .storefront-share-feedback {
+  margin: 0 auto 14px !important;
+  padding: 9px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #f3f7ff;
+  color: #2453a6;
+  font-size: 12px;
+}
+
+html body #root .bookflow-storefront .storefront-section-links > a:first-child {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+@media (max-width: 760px) {
+  html body #root .bookflow-storefront .storefront-profile-heading {
+    grid-template-columns: 96px minmax(0, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  html body #root .bookflow-storefront .storefront-profile-heading > .profile-avatar {
+    width: 96px !important;
+    height: 96px !important;
+    min-width: 96px !important;
+    min-height: 96px !important;
+    max-width: 96px !important;
+    max-height: 96px !important;
+    margin-top: -42px !important;
+  }
+
+  html body #root .bookflow-storefront .public-profile-owner-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 430px) {
+  html body #root .bookflow-storefront .storefront-profile-heading {
+    grid-template-columns: 76px minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  html body #root .bookflow-storefront .storefront-profile-heading > .profile-avatar {
+    width: 76px !important;
+    height: 76px !important;
+    min-width: 76px !important;
+    min-height: 76px !important;
+    max-width: 76px !important;
+    max-height: 76px !important;
+    margin-top: -34px !important;
+  }
+
+  html body #root .bookflow-storefront .storefront-name-block h1 {
+    font-size: 20px !important;
+  }
+}
