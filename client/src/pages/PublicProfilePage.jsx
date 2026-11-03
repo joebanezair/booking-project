@@ -266,7 +266,7 @@ export default function PublicProfilePage({ user }) {
               </div>}
               {/* Booking is independent of social actions: it requires a posted,
                   published, bookable service and admin-enabled booking access. */}
-              {!isOwner && profile.bookingAvailable && <Button asChild variant="default"><Link className="public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
+              {profile.bookingAvailable && <Button asChild variant="default"><Link className="public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
             </div>
           </div>
         </div>
