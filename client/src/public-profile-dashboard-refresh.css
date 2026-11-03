@@ -3,39 +3,39 @@
  * Visual refresh only: public values are used for summary metrics; private
  * earnings and booking totals are deliberately not inferred or fabricated.
  */
-html body #root .bookflow-storefront {
+html body #root .bookflow-storefront.public-business-profile {
   background: #fff !important;
   color: #17233a;
 }
 
-html body #root .bookflow-storefront .storefront-container,
-html body #root .bookflow-storefront .public-content-section.storefront-container {
+html body #root .bookflow-storefront.public-business-profile .storefront-container,
+html body #root .bookflow-storefront.public-business-profile .public-content-section.storefront-container {
   width: min(100% - 40px, 1240px) !important;
   max-width: 1240px !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
 
-html body #root .bookflow-storefront .public-profile-hero.storefront-hero {
+html body #root .bookflow-storefront.public-business-profile .public-profile-hero.storefront-hero {
   background: #fff !important;
 }
 
-html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
+html body #root .bookflow-storefront.public-business-profile .storefront-hero > .public-cover.storefront-cover {
   height: clamp(180px, 18vw, 250px) !important;
   min-height: clamp(180px, 18vw, 250px) !important;
   background: #eaf1fc;
 }
 
-html body #root .bookflow-storefront .storefront-cover-brand {
+html body #root .bookflow-storefront.public-business-profile .storefront-cover-brand {
   top: 18px;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info {
   gap: 18px !important;
   padding-bottom: 23px !important;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info > .profile-avatar {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info > .profile-avatar {
   flex-basis: 116px !important;
   width: 116px !important;
   height: 116px !important;
@@ -43,20 +43,20 @@ html body #root .bookflow-storefront .storefront-profile-info > .profile-avatar 
   margin-top: -48px !important;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .public-profile-copy {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .public-profile-copy {
   margin-top: 13px !important;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .storefront-title-row {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .storefront-title-row {
   align-items: center !important;
   gap: 18px 24px !important;
 }
 
-html body #root .bookflow-storefront .storefront-name-block {
+html body #root .bookflow-storefront.public-business-profile .storefront-name-block {
   gap: 5px;
 }
 
-html body #root .bookflow-storefront .storefront-name-block h1 {
+html body #root .bookflow-storefront.public-business-profile .storefront-name-block h1 {
   color: #14213a !important;
   font-size: clamp(23px, 2.2vw, 30px) !important;
   font-weight: 700 !important;
@@ -64,19 +64,19 @@ html body #root .bookflow-storefront .storefront-name-block h1 {
   line-height: 1.2 !important;
 }
 
-html body #root .bookflow-storefront .storefront-handle {
+html body #root .bookflow-storefront.public-business-profile .storefront-handle {
   color: #64748b !important;
   font-size: 12px !important;
   font-weight: 500;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .profile-headline {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-headline {
   margin: 4px 0 0 !important;
   color: #64748b !important;
   font-size: 12px !important;
 }
 
-html body #root .bookflow-storefront .storefront-owner-actions {
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -85,16 +85,16 @@ html body #root .bookflow-storefront .storefront-owner-actions {
   margin-left: auto;
 }
 
-html body #root .bookflow-storefront .storefront-owner-actions .public-profile-actions {
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 9px;
 }
 
-html body #root .bookflow-storefront .storefront-owner-actions .ui-button,
-html body #root .bookflow-storefront .storefront-owner-actions .button-link,
-html body #root .bookflow-storefront .storefront-owner-actions .public-book-session-button {
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .ui-button,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .button-link,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
@@ -112,33 +112,33 @@ html body #root .bookflow-storefront .storefront-owner-actions .public-book-sess
   white-space: nowrap;
 }
 
-html body #root .bookflow-storefront .storefront-owner-actions .ui-button:hover,
-html body #root .bookflow-storefront .storefront-owner-actions .button-link:hover {
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .ui-button:hover,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .button-link:hover {
   border-color: #b8c9e5 !important;
   background: #f0f5ff !important;
   color: #1d4ed8 !important;
 }
 
-html body #root .bookflow-storefront .storefront-owner-actions .ui-button.primary-button,
-html body #root .bookflow-storefront .storefront-owner-actions .public-book-session-button {
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .ui-button.primary-button,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button {
   border-color: #2864e8 !important;
   background: #2864e8 !important;
   color: #fff !important;
 }
 
-html body #root .bookflow-storefront .storefront-owner-actions .ui-button.primary-button:hover,
-html body #root .bookflow-storefront .storefront-owner-actions .public-book-session-button:hover {
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .ui-button.primary-button:hover,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button:hover {
   background: #1f55cb !important;
   color: #fff !important;
 }
 
-html body #root .bookflow-storefront .storefront-owner-actions svg {
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions svg {
   width: 15px;
   height: 15px;
   flex: 0 0 15px;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-panel {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: stretch !important;
@@ -150,14 +150,14 @@ html body #root .bookflow-storefront .storefront-profile-info .profile-reputatio
   border-top: 1px solid #e5eaf2;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-row {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-row {
   min-width: 0;
   align-items: center !important;
   gap: 10px !important;
   padding: 5px 0;
 }
 
-html body #root .bookflow-storefront .storefront-reputation-icon {
+html body #root .bookflow-storefront.public-business-profile .storefront-reputation-icon {
   display: grid;
   place-items: center;
   flex: 0 0 32px;
@@ -168,32 +168,32 @@ html body #root .bookflow-storefront .storefront-reputation-icon {
   color: #2864e8;
 }
 
-html body #root .bookflow-storefront .storefront-reputation-icon--rating {
+html body #root .bookflow-storefront.public-business-profile .storefront-reputation-icon--rating {
   color: #ee9a16;
   background: #fff7e8;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-copy {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-copy {
   gap: 2px;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-title {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-title {
   color: #26364f;
   font-size: 11px;
   font-weight: 650;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-subtitle {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-subtitle {
   color: #8996aa;
   font-size: 10px;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-row .rating-summary {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-row .rating-summary {
   gap: 5px;
   font-size: 12px;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .business-rating-card {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .business-rating-card {
   grid-column: 1 / -1;
   width: 100%;
   max-width: none;
@@ -203,7 +203,7 @@ html body #root .bookflow-storefront .storefront-profile-info .business-rating-c
   background: transparent !important;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .profile-rating-control {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-rating-control {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -211,22 +211,22 @@ html body #root .bookflow-storefront .storefront-profile-info .profile-rating-co
   gap: 8px 14px;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .profile-rating-label {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-rating-label {
   margin: 0 !important;
   color: #334155;
   font-size: 11px !important;
   font-weight: 650;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .profile-rating-actions {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-rating-actions {
   gap: 9px !important;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .rating-input {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .rating-input {
   gap: 5px !important;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .rating-input button {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .rating-input button {
   width: 32px !important;
   height: 32px !important;
   min-width: 32px !important;
@@ -238,17 +238,17 @@ html body #root .bookflow-storefront .storefront-profile-info .rating-input butt
   box-shadow: none !important;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .remove-business-rating {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .remove-business-rating {
   border-radius: 9px !important;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .storefront-meta {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .storefront-meta {
   margin-top: 10px !important;
   color: #718096 !important;
   font-size: 11px !important;
 }
 
-html body #root .bookflow-storefront .storefront-profile-info .public-bio {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .public-bio {
   max-width: 800px;
   margin: 12px 0 0 !important;
   color: #52627a !important;
@@ -257,7 +257,7 @@ html body #root .bookflow-storefront .storefront-profile-info .public-bio {
 }
 
 /* Compact public facts row inspired by the selected profile overview draft. */
-html body #root .bookflow-storefront .storefront-metrics {
+html body #root .bookflow-storefront.public-business-profile .storefront-metrics {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
@@ -265,7 +265,7 @@ html body #root .bookflow-storefront .storefront-metrics {
   margin: 0 auto 23px;
 }
 
-html body #root .bookflow-storefront .storefront-metric {
+html body #root .bookflow-storefront.public-business-profile .storefront-metric {
   display: flex;
   align-items: center;
   gap: 11px;
@@ -278,7 +278,7 @@ html body #root .bookflow-storefront .storefront-metric {
   box-shadow: 0 2px 8px rgba(20, 38, 72, .025);
 }
 
-html body #root .bookflow-storefront .storefront-metric-icon {
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-icon {
   display: grid;
   place-items: center;
   flex: 0 0 38px;
@@ -289,18 +289,18 @@ html body #root .bookflow-storefront .storefront-metric-icon {
   color: #2864e8;
 }
 
-html body #root .bookflow-storefront .storefront-metric-icon svg {
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-icon svg {
   width: 18px;
   height: 18px;
 }
 
-html body #root .bookflow-storefront .storefront-metric-copy {
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-copy {
   display: grid;
   gap: 3px;
   min-width: 0;
 }
 
-html body #root .bookflow-storefront .storefront-metric-copy strong {
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-copy strong {
   color: #16243d;
   font-size: 17px;
   font-weight: 700;
@@ -308,7 +308,7 @@ html body #root .bookflow-storefront .storefront-metric-copy strong {
   font-variant-numeric: tabular-nums;
 }
 
-html body #root .bookflow-storefront .storefront-metric-copy span {
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-copy span {
   overflow: hidden;
   color: #718096;
   font-size: 10px;
@@ -317,13 +317,13 @@ html body #root .bookflow-storefront .storefront-metric-copy span {
   white-space: nowrap;
 }
 
-html body #root .bookflow-storefront .storefront-section-nav {
+html body #root .bookflow-storefront.public-business-profile .storefront-section-nav {
   border-top: 1px solid #e8edf4 !important;
   border-bottom: 1px solid #e8edf4 !important;
   background: #fff !important;
 }
 
-html body #root .bookflow-storefront .storefront-section-links {
+html body #root .bookflow-storefront.public-business-profile .storefront-section-links {
   display: flex;
   align-items: center;
   gap: 28px;
@@ -332,7 +332,7 @@ html body #root .bookflow-storefront .storefront-section-links {
   scrollbar-width: thin;
 }
 
-html body #root .bookflow-storefront .storefront-section-links > a {
+html body #root .bookflow-storefront.public-business-profile .storefront-section-links > a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -345,19 +345,19 @@ html body #root .bookflow-storefront .storefront-section-links > a {
   text-decoration: none;
 }
 
-html body #root .bookflow-storefront .storefront-section-links > a:hover,
-html body #root .bookflow-storefront .storefront-section-links > a:focus-visible {
+html body #root .bookflow-storefront.public-business-profile .storefront-section-links > a:hover,
+html body #root .bookflow-storefront.public-business-profile .storefront-section-links > a:focus-visible {
   color: #2563eb;
   border-bottom-color: #2563eb;
 }
 
-html body #root .bookflow-storefront .storefront-section-links > a > span {
+html body #root .bookflow-storefront.public-business-profile .storefront-section-links > a > span {
   color: #8796ac;
   font-size: 10px;
   font-weight: 600;
 }
 
-html body #root .bookflow-storefront .storefront-section-booking-link {
+html body #root .bookflow-storefront.public-business-profile .storefront-section-booking-link {
   margin-left: auto;
   min-height: 34px !important;
   padding: 0 13px !important;
@@ -368,29 +368,29 @@ html body #root .bookflow-storefront .storefront-section-booking-link {
   font-size: 11px !important;
 }
 
-html body #root .bookflow-storefront .storefront-section-booking-link:hover {
+html body #root .bookflow-storefront.public-business-profile .storefront-section-booking-link:hover {
   background: #e8efff !important;
 }
 
 @media (max-width: 1050px) {
-  html body #root .bookflow-storefront .storefront-metrics {
+  html body #root .bookflow-storefront.public-business-profile .storefront-metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 760px) {
-  html body #root .bookflow-storefront .storefront-container,
-  html body #root .bookflow-storefront .public-content-section.storefront-container {
+  html body #root .bookflow-storefront.public-business-profile .storefront-container,
+  html body #root .bookflow-storefront.public-business-profile .public-content-section.storefront-container {
     width: min(100% - 30px, 1240px) !important;
   }
 
-  html body #root .bookflow-storefront .storefront-profile-info {
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info {
     flex-direction: column !important;
     gap: 0 !important;
     padding-bottom: 18px !important;
   }
 
-  html body #root .bookflow-storefront .storefront-profile-info > .profile-avatar {
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info > .profile-avatar {
     align-self: flex-start;
     margin-top: -42px !important;
     flex-basis: 96px !important;
@@ -399,92 +399,92 @@ html body #root .bookflow-storefront .storefront-section-booking-link:hover {
     min-width: 96px !important;
   }
 
-  html body #root .bookflow-storefront .storefront-profile-info .public-profile-copy {
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .public-profile-copy {
     width: 100% !important;
     margin-top: 12px !important;
   }
 
-  html body #root .bookflow-storefront .storefront-profile-info .storefront-title-row {
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .storefront-title-row {
     align-items: flex-start !important;
     flex-direction: column;
   }
 
-  html body #root .bookflow-storefront .storefront-owner-actions,
-  html body #root .bookflow-storefront .storefront-owner-actions .public-profile-actions {
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions,
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-actions {
     justify-content: flex-start;
     width: 100%;
   }
 
-  html body #root .bookflow-storefront .storefront-metrics {
+  html body #root .bookflow-storefront.public-business-profile .storefront-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 9px;
     margin-bottom: 18px;
   }
 
-  html body #root .bookflow-storefront .storefront-metric {
+  html body #root .bookflow-storefront.public-business-profile .storefront-metric {
     min-height: 67px;
     padding: 10px;
     gap: 8px;
   }
 
-  html body #root .bookflow-storefront .storefront-metric-icon {
+  html body #root .bookflow-storefront.public-business-profile .storefront-metric-icon {
     flex-basis: 33px;
     width: 33px;
     height: 33px;
   }
 
-  html body #root .bookflow-storefront .storefront-metric-copy strong {
+  html body #root .bookflow-storefront.public-business-profile .storefront-metric-copy strong {
     font-size: 15px;
   }
 
-  html body #root .bookflow-storefront .storefront-section-links {
+  html body #root .bookflow-storefront.public-business-profile .storefront-section-links {
     gap: 20px;
     min-height: 49px;
   }
 
-  html body #root .bookflow-storefront .storefront-section-links > a {
+  html body #root .bookflow-storefront.public-business-profile .storefront-section-links > a {
     min-height: 49px;
   }
 
-  html body #root .bookflow-storefront .storefront-section-booking-link {
+  html body #root .bookflow-storefront.public-business-profile .storefront-section-booking-link {
     margin-left: 0;
   }
 
-  html body #root .bookflow-storefront .storefront-profile-info .profile-reputation-panel {
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel {
     grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (max-width: 430px) {
-  html body #root .bookflow-storefront .storefront-metrics {
+  html body #root .bookflow-storefront.public-business-profile .storefront-metrics {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  html body #root .bookflow-storefront .storefront-metric {
+  html body #root .bookflow-storefront.public-business-profile .storefront-metric {
     min-height: 60px;
   }
 
-  html body #root .bookflow-storefront .storefront-owner-actions .ui-button,
-  html body #root .bookflow-storefront .storefront-owner-actions .button-link,
-  html body #root .bookflow-storefront .storefront-owner-actions .public-book-session-button {
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .ui-button,
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .button-link,
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button {
     flex: 1 1 auto;
   }
 
-  html body #root .bookflow-storefront .storefront-profile-info .profile-rating-control {
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-rating-control {
     align-items: flex-start;
     flex-direction: column;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html body #root .bookflow-storefront .storefront-section-links > a {
+  html body #root .bookflow-storefront.public-business-profile .storefront-section-links > a {
     transition: none !important;
   }
 }
 
 
 /* The public profile heading has a nested avatar + title row. */
-html body #root .bookflow-storefront .storefront-profile-heading {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading {
   display: grid !important;
   grid-template-columns: 116px minmax(0, 1fr) !important;
   align-items: start !important;
@@ -493,7 +493,7 @@ html body #root .bookflow-storefront .storefront-profile-heading {
   min-width: 0;
 }
 
-html body #root .bookflow-storefront .storefront-profile-heading > .profile-avatar {
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading > .profile-avatar {
   width: 116px !important;
   height: 116px !important;
   min-width: 116px !important;
@@ -503,7 +503,7 @@ html body #root .bookflow-storefront .storefront-profile-heading > .profile-avat
   margin: -48px 0 0 !important;
 }
 
-html body #root .bookflow-storefront .public-profile-owner-actions {
+html body #root .bookflow-storefront.public-business-profile .public-profile-owner-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -511,7 +511,7 @@ html body #root .bookflow-storefront .public-profile-owner-actions {
   gap: 9px;
 }
 
-html body #root .bookflow-storefront .storefront-share-feedback {
+html body #root .bookflow-storefront.public-business-profile .storefront-share-feedback {
   margin: 0 auto 14px !important;
   padding: 9px 12px;
   border: 1px solid #dbeafe;
@@ -521,18 +521,18 @@ html body #root .bookflow-storefront .storefront-share-feedback {
   font-size: 12px;
 }
 
-html body #root .bookflow-storefront .storefront-section-links > a:first-child {
+html body #root .bookflow-storefront.public-business-profile .storefront-section-links > a:first-child {
   color: #2563eb;
   border-bottom-color: #2563eb;
 }
 
 @media (max-width: 760px) {
-  html body #root .bookflow-storefront .storefront-profile-heading {
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading {
     grid-template-columns: 96px minmax(0, 1fr) !important;
     gap: 14px !important;
   }
 
-  html body #root .bookflow-storefront .storefront-profile-heading > .profile-avatar {
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading > .profile-avatar {
     width: 96px !important;
     height: 96px !important;
     min-width: 96px !important;
@@ -542,18 +542,18 @@ html body #root .bookflow-storefront .storefront-section-links > a:first-child {
     margin-top: -42px !important;
   }
 
-  html body #root .bookflow-storefront .public-profile-owner-actions {
+  html body #root .bookflow-storefront.public-business-profile .public-profile-owner-actions {
     justify-content: flex-start;
   }
 }
 
 @media (max-width: 430px) {
-  html body #root .bookflow-storefront .storefront-profile-heading {
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading {
     grid-template-columns: 76px minmax(0, 1fr) !important;
     gap: 12px !important;
   }
 
-  html body #root .bookflow-storefront .storefront-profile-heading > .profile-avatar {
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading > .profile-avatar {
     width: 76px !important;
     height: 76px !important;
     min-width: 76px !important;
@@ -563,13 +563,13 @@ html body #root .bookflow-storefront .storefront-section-links > a:first-child {
     margin-top: -34px !important;
   }
 
-  html body #root .bookflow-storefront .storefront-name-block h1 {
+  html body #root .bookflow-storefront.public-business-profile .storefront-name-block h1 {
     font-size: 20px !important;
   }
 }
 
 
-html body #root .bookflow-storefront .storefront-location {
+html body #root .bookflow-storefront.public-business-profile .storefront-location {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -579,7 +579,7 @@ html body #root .bookflow-storefront .storefront-location {
   line-height: 1.35;
 }
 
-html body #root .bookflow-storefront .storefront-location svg {
+html body #root .bookflow-storefront.public-business-profile .storefront-location svg {
   width: 13px;
   height: 13px;
   color: #64748b;
