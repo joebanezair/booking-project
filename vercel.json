@@ -1,0 +1,18 @@
+{
+  "rewrites": [
+    { "source": "/search", "destination": "/index.html" },
+    { "source": "/forum", "destination": "/index.html" },
+    { "source": "/login", "destination": "/index.html" },
+    { "source": "/register", "destination": "/index.html" },
+    { "source": "/register/admin/:inviteKey", "destination": "/index.html" },
+    { "source": "/dashboard", "destination": "/index.html" },
+    { "source": "/dashboard/:path*", "destination": "/index.html" },
+    { "source": "/profile/:username", "destination": "/index.html" },
+    { "source": "/admin/:username", "destination": "/index.html" },
+    { "source": "/content/:contentId", "destination": "/index.html" },
+    { "source": "/services/:contentId", "destination": "/index.html" },
+    { "source": "/b/:userId", "destination": "/index.html" },
+    { "source": "/review/:token", "destination": "/index.html" },
+    { "source": "/order-status/:orderId", "destination": "/index.html" }
+  ]
+}
