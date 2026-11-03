@@ -294,7 +294,6 @@ export default function PublicProfilePage({ user }) {
             </div>
           </div>
         </div>
-        </div>
       </div>
     </section>
     {shareFeedback && <p className="storefront-share-feedback storefront-container" role="status">{shareFeedback}</p>}
