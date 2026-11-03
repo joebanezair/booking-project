@@ -184,6 +184,7 @@ export default function PublicProfilePage({ user }) {
   if (!data) return <main className="public-shell"><section className="public-card">Loading...</section></main>;
 
   const { profile, content, products = [], reviews = [] } = data;
+  const verifiedRating = profile.ratingSummary || {};
   // Published offerings are returned only when their admin-controlled feature is active.
   const hasPublicServices = Boolean(profile.servicesAvailable && content.length > 0);
   const hasPublicProducts = Boolean(profile.posAvailable && products.length > 0);
