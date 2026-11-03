@@ -585,3 +585,444 @@ html body #root .bookflow-storefront.public-business-profile .storefront-locatio
   color: #64748b;
   flex: 0 0 13px;
 }
+
+
+/* Final alignment pass — match the approved wide profile overview composition. */
+html body #root .bookflow-storefront.public-business-profile .storefront-container,
+html body #root .bookflow-storefront.public-business-profile .public-content-section.storefront-container {
+  width: min(calc(100% - 80px), 1520px) !important;
+  max-width: 1520px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-hero > .public-cover.storefront-cover {
+  height: 270px !important;
+  min-height: 270px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading {
+  grid-template-columns: 150px minmax(0, 1fr) !important;
+  gap: 22px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading > .profile-avatar {
+  width: 150px !important;
+  height: 150px !important;
+  min-width: 150px !important;
+  min-height: 150px !important;
+  max-width: 150px !important;
+  max-height: 150px !important;
+  margin-top: -62px !important;
+  border-width: 5px !important;
+  box-shadow: 0 6px 18px rgba(18, 38, 70, .14) !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading .storefront-title-row {
+  align-items: center !important;
+  gap: 16px 26px !important;
+  margin-top: 25px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-name-block {
+  gap: 7px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-name-block h1 {
+  color: #14213a !important;
+  font-size: clamp(28px, 2.4vw, 36px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -.04em !important;
+  line-height: 1.16 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-handle {
+  font-size: 13px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-headline,
+html body #root .bookflow-storefront.public-business-profile .storefront-location {
+  font-size: 13px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-actions,
+html body #root .bookflow-storefront.public-business-profile .public-profile-owner-actions {
+  gap: 10px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .ui-button,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .button-link,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button {
+  min-height: 46px !important;
+  padding: 11px 18px !important;
+  border-radius: 11px !important;
+  font-size: 13px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .public-profile-copy {
+  width: 100% !important;
+  margin: 8px 0 0 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  align-items: start !important;
+  justify-content: stretch !important;
+  gap: 13px 54px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 14px 0 0 !important;
+  border-top: 1px solid #e4eaf3;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 0;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-reviews {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel > .business-rating-card,
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel > small {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-reputation-icon {
+  flex: 0 0 38px !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 11px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-reputation-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-row .rating-summary {
+  flex-wrap: wrap;
+  gap: 7px !important;
+  font-size: 14px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-row .rating-summary strong {
+  color: #17233a !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-row .rating-summary .stars {
+  font-size: 17px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-copy {
+  gap: 3px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-title {
+  color: #26364f;
+  font-size: 12px !important;
+  font-weight: 650;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-subtitle {
+  color: #8290a5;
+  font-size: 11px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .business-rating-card {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 5px 0 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-rating-control {
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px 16px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-rating-label {
+  font-size: 12px !important;
+  white-space: nowrap;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-rating-actions {
+  justify-content: flex-start !important;
+  gap: 10px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-metrics {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: min(calc(100% - 80px), 1520px) !important;
+  max-width: 1520px !important;
+  margin: 22px auto 26px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-metric {
+  min-height: 94px !important;
+  padding: 17px 18px !important;
+  gap: 14px !important;
+  border: 1px solid #e6ecf5 !important;
+  border-radius: 15px !important;
+  box-shadow: 0 3px 12px rgba(20, 38, 72, .035) !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-icon {
+  flex-basis: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 14px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-icon svg {
+  width: 21px !important;
+  height: 21px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-copy {
+  gap: 4px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-copy strong {
+  color: #15233d !important;
+  font-size: 22px !important;
+  font-weight: 750 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-copy > span {
+  color: #52627a !important;
+  font-size: 12px !important;
+  font-weight: 600;
+  white-space: normal !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-metric-copy small {
+  color: #8996aa;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-section-nav {
+  width: min(calc(100% - 80px), 1520px) !important;
+  max-width: 1520px !important;
+  margin: 0 auto !important;
+  border-top: 1px solid #e6ecf4 !important;
+  border-bottom: 1px solid #e6ecf4 !important;
+  background: #fff !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-section-links {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 66px !important;
+  gap: 38px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-section-links > a {
+  min-height: 66px !important;
+  color: #334155 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-section-links > a:first-child {
+  color: #2563eb !important;
+  border-bottom-color: #2563eb !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-section-booking-link {
+  margin-left: 0 !important;
+  min-height: 66px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #334155 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-section-booking-link:hover {
+  color: #2563eb !important;
+  background: transparent !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-about-section {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin: 18px auto 4px !important;
+  color: #52627a;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-about-section .public-bio {
+  flex: 1 1 420px;
+  max-width: 900px;
+  margin: 0 !important;
+  color: #52627a !important;
+  font-size: 13px !important;
+  line-height: 1.65;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-about-website {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  html body #root .bookflow-storefront.public-business-profile .storefront-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel {
+    gap: 13px 24px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html body #root .bookflow-storefront.public-business-profile .storefront-container,
+  html body #root .bookflow-storefront.public-business-profile .public-content-section.storefront-container,
+  html body #root .bookflow-storefront.public-business-profile .storefront-section-nav {
+    width: min(calc(100% - 30px), 1520px) !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading {
+    grid-template-columns: 104px minmax(0, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading > .profile-avatar {
+    width: 104px !important;
+    height: 104px !important;
+    min-width: 104px !important;
+    min-height: 104px !important;
+    max-width: 104px !important;
+    max-height: 104px !important;
+    margin-top: -46px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading .storefront-title-row {
+    margin-top: 12px !important;
+    flex-wrap: wrap;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 12px 16px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-reviews {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .business-rating-card,
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel > small {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    margin-top: 18px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-metric {
+    min-height: 76px !important;
+    padding: 12px !important;
+    gap: 9px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-metric-icon {
+    flex-basis: 38px !important;
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-section-links {
+    min-height: 54px !important;
+    gap: 22px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-section-links > a,
+  html body #root .bookflow-storefront.public-business-profile .storefront-section-booking-link {
+    min-height: 54px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  html body #root .bookflow-storefront.public-business-profile .storefront-hero > .public-cover.storefront-cover {
+    height: 175px !important;
+    min-height: 175px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading > .profile-avatar {
+    width: 88px !important;
+    height: 88px !important;
+    min-width: 88px !important;
+    min-height: 88px !important;
+    max-width: 88px !important;
+    max-height: 88px !important;
+    margin-top: -42px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-heading .storefront-title-row {
+    margin-top: 0 !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-name-block h1 {
+    font-size: 24px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions,
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-actions,
+  html body #root .bookflow-storefront.public-business-profile .public-profile-owner-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-reviews {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .business-rating-card,
+  html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel > small {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-metrics {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-section-nav {
+    overflow: hidden;
+  }
+}
