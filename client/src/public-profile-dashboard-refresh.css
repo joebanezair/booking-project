@@ -205,10 +205,10 @@ html body #root .bookflow-storefront.public-business-profile .storefront-profile
 
 html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel {
   display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  grid-template-columns: max-content max-content max-content !important;
   align-items: start !important;
-  justify-content: stretch !important;
-  gap: 12px 24px !important;
+  justify-content: start !important;
+  gap: 12px 5px !important;
   width: 100% !important;
   max-width: none !important;
   margin: 0 !important;
