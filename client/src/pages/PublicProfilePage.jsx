@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiEdit3, FiEye, FiGlobe, FiLayers, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShare2, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiEdit3, FiEye, FiGlobe, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShare2, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
@@ -218,16 +218,7 @@ export default function PublicProfilePage({ user }) {
     (catalogType === "services" || !filtering || visibleServices.length > 0);
   const showProducts = hasPublicProducts && !noMatches && catalogType !== "services" &&
     (catalogType === "products" || !normalizedSearch || visibleProducts.length > 0);
-  const publicRating = profile.businessRatingSummary || {};
-  const verifiedRating = profile.ratingSummary || {};
   const publicProfilePath = `/profile/${encodeURIComponent(profile.username || resolvedUsername)}`;
-  const publicMetrics = [
-    { label: "Total offerings", value: products.length + content.length, detail: "Published listings", icon: FiLayers },
-    { label: "Products", value: products.length, detail: "Available products", icon: FiPackage },
-    { label: "Services", value: content.length, detail: "Published services", icon: FiBriefcase },
-    { label: "Visitor rating", value: Number(publicRating.ratingCount || 0) > 0 ? Number(publicRating.averageRating || 0).toFixed(1) : "—", detail: `${publicRating.ratingCount || 0} visitor ratings`, icon: FiStar },
-    { label: "Verified reviews", value: verifiedRating.ratingCount || 0, detail: "Completed bookings", icon: FiCheckCircle }
-  ];
 
   return <main className="public-page bookflow-storefront public-business-profile" id="storefront-top">
     {error && <p className="error" role="alert">{error}</p>}
@@ -270,7 +261,7 @@ export default function PublicProfilePage({ user }) {
             </div>
           </div>
         </div>
-        <div className="public-profile-copy">
+        <div className="public-profile-copy" id="storefront-about">
           {paused && <div className="paused-public-banner" role="status" title="This business is not accepting new bookings right now."><FiAlertCircle aria-hidden="true" /><span>Bookings temporarily unavailable</span><span className="visually-hidden"> — this business is not accepting new bookings right now.</span></div>}
           <div className="profile-reputation-panel">
             <div className="profile-reputation-row">
@@ -287,44 +278,18 @@ export default function PublicProfilePage({ user }) {
                 <div className="profile-reputation-copy"><span className="profile-reputation-title">Verified booking reviews</span><span className="profile-reputation-subtitle">Reviews from completed bookings</span></div>
               </div>
             </div>
+            {(user && !isOwner || ratingMessage) && <div className="business-rating-card">
+              {user && !isOwner && <div className="profile-rating-control"><span className="profile-rating-label">Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}</div></div>}
+              {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
+            </div>}
+            {!user && <small className="muted">Sign in to rate this business.</small>}
           </div>
+          {profile.bio && <p className="public-bio">{profile.bio}</p>}
+          {profile.website && <div className="profile-meta storefront-meta"><a href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true"/>Website</a></div>}
         </div>
       </div>
     </section>
     {shareFeedback && <p className="storefront-share-feedback storefront-container" role="status">{shareFeedback}</p>}
-
-    <section className="storefront-metrics" aria-label="Public business statistics">
-      {publicMetrics.map(({ label, value, detail, icon: Icon }) => (
-        <article className="storefront-metric" key={label}>
-          <span className="storefront-metric-icon" aria-hidden="true"><Icon /></span>
-          <span className="storefront-metric-copy">
-            <strong>{value}</strong>
-            <span>{label}</span>
-            <small>{detail}</small>
-          </span>
-        </article>
-      ))}
-    </section>
-
-    <nav className="storefront-section-nav" aria-label="Business profile sections">
-      <div className="storefront-container storefront-section-links">
-        <a href="#storefront-about">About</a>
-        {hasPublicServices && <a href="#storefront-services" onClick={event=>{event.preventDefault();setCatalogType("services");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-services")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Services <span>{content.length}</span></a>}
-        {hasPublicProducts && <a href="#storefront-products" onClick={event=>{event.preventDefault();setCatalogType("products");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-products")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Products <span>{products.length}</span></a>}
-        <a href="#storefront-reviews">Reviews <span>{verifiedRating.ratingCount || 0}</span></a>
-        {profile.bookingAvailable && <Link className="storefront-section-booking-link" to={`/b/${profile.id}`}>Bookings</Link>}
-      </div>
-    </nav>
-
-    <section id="storefront-about" className="storefront-about-section storefront-container" aria-label={`About ${profile.name}`}>
-      {(user && !isOwner || ratingMessage) && <div className="business-rating-card storefront-about-rating">
-        {user && !isOwner && <div className="profile-rating-control"><span className="profile-rating-label">Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}</div></div>}
-        {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
-      </div>}
-      {!user && <small className="muted storefront-about-signin">Sign in to rate this business.</small>}
-      {profile.bio && <p className="public-bio">{profile.bio}</p>}
-      {profile.website && <a className="storefront-about-website" href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true"/>Website</a>}
-    </section>
 
     {(hasPublicServices || hasPublicProducts) && <section className="public-content-section profile-catalog-filter-section storefront-filter-section storefront-container" aria-label="Search and filter offerings">
       <ProfileCatalogSearch
