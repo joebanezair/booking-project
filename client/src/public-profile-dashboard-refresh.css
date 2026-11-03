@@ -1026,3 +1026,69 @@ html body #root .bookflow-storefront.public-business-profile .storefront-about-w
     overflow: hidden;
   }
 }
+
+
+/* Visitor rating stays available below the overview tabs, not between
+   the profile summary and the five-card metrics row. */
+html body #root .bookflow-storefront.public-business-profile .storefront-about-rating {
+  display: flex;
+  align-items: center;
+  flex: 1 1 100%;
+  width: 100%;
+  max-width: none;
+  margin: 0 !important;
+  padding: 0 0 13px !important;
+  border: 0;
+  border-bottom: 1px solid #e8edf4;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-about-rating .profile-rating-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 9px 18px;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-about-rating .profile-rating-label {
+  color: #34445d;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-about-rating .profile-rating-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-about-rating .rating-input {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-about-rating .rating-input button {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  border: 1px solid #dce4f0 !important;
+  border-radius: 9px !important;
+  background: #fff !important;
+  color: #f0a126;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-about-rating .remove-business-rating {
+  min-height: 34px !important;
+  border-radius: 9px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-about-signin {
+  flex: 1 1 100%;
+  color: #77869b;
+  font-size: 12px;
+}
