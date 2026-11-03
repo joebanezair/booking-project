@@ -229,7 +229,7 @@ export default function PublicProfilePage({ user }) {
     { label: "Verified reviews", value: verifiedRating.ratingCount || 0, detail: "Completed bookings", icon: FiCheckCircle }
   ];
 
-  return <main className="public-page bookflow-storefront" id="storefront-top">
+  return <main className="public-page bookflow-storefront public-business-profile" id="storefront-top">
     {error && <p className="error" role="alert">{error}</p>}
 
     <section className={`public-profile-hero storefront-hero ${profile.coverImage ? "has-cover" : ""}`} aria-label={profile.name+" business profile"}>
