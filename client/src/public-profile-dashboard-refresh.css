@@ -567,3 +567,21 @@ html body #root .bookflow-storefront .storefront-section-links > a:first-child {
     font-size: 20px !important;
   }
 }
+
+
+html body #root .bookflow-storefront .storefront-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+html body #root .bookflow-storefront .storefront-location svg {
+  width: 13px;
+  height: 13px;
+  color: #64748b;
+  flex: 0 0 13px;
+}
