@@ -42,6 +42,7 @@ import "./notifications-typography.css";
 import "./sidebar-typography.css";
 import "./public-admin-profile.css";
 import "./workspace-account-menu.css";
+import "./admin-sidebar-palette.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
