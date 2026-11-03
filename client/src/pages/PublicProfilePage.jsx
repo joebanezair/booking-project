@@ -427,7 +427,7 @@ export default function PublicProfilePage({ user }) {
     <section id="storefront-reviews" className="public-content-section verified-reviews-section storefront-reviews storefront-container">
       <div className="section-heading storefront-section-heading">
         <div><h2>Customer reviews</h2><p className="storefront-section-description muted">Verified feedback from completed bookings.</p></div>
-        <span className="storefront-section-count"><FiStar aria-hidden="true"/> {reviews.length} {reviews.length === 1 ? "review" : "reviews"}</span>
+        <span className="storefront-section-count"><FiStar aria-hidden="true"/> {verifiedRating.ratingCount || 0} {(verifiedRating.ratingCount || 0) === 1 ? "review" : "reviews"}</span>
       </div>
       {reviews.length === 0 ? <div className="storefront-reviews-empty" role="status"><span className="storefront-reviews-empty-icon"><FiStar aria-hidden="true" /></span><div><strong>No verified reviews yet</strong><p>Reviews from completed bookings will appear here.</p></div></div> :
         <div className="verified-review-list">{reviews.map(review => <Card as="article" className="panel verified-review-card" key={review._id}><RatingSummary averageRating={review.rating} ratingCount={1} />{review.comment && <p>{review.comment}</p>}<small>Verified booking · {new Date(review.submittedAt).toLocaleDateString()}</small></Card>)}</div>}
