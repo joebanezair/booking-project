@@ -205,7 +205,7 @@ html body #root .bookflow-storefront.public-business-profile .storefront-profile
 
 html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel {
   display: grid !important;
-  grid-template-columns: max-content max-content !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   align-items: start !important;
   justify-content: start !important;
   gap: 12px 30px !important;
@@ -311,16 +311,21 @@ html body #root .bookflow-storefront.public-business-profile .storefront-profile
 }
 
 html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-rating-control {
-  display: grid !important;
-  justify-items: start !important;
-  gap: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: wrap;
+  gap: 12px !important;
   margin: 0 !important;
 }
 
 html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-rating-label {
+  margin: 0 !important;
   color: #293954 !important;
   font-size: 11px !important;
   font-weight: 500 !important;
+  line-height: 1.3 !important;
+  white-space: nowrap;
 }
 
 html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-rating-actions {
@@ -451,7 +456,7 @@ html body #root .bookflow-storefront.public-business-profile .storefront-footer-
   }
 
   html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .profile-reputation-panel {
-    grid-template-columns: max-content max-content !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 12px 20px !important;
   }
 }
