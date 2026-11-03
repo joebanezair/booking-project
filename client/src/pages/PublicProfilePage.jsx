@@ -270,7 +270,7 @@ export default function PublicProfilePage({ user }) {
             </div>
           </div>
         </div>
-        <div className="public-profile-copy" id="storefront-about">
+        <div className="public-profile-copy">
           {paused && <div className="paused-public-banner" role="status" title="This business is not accepting new bookings right now."><FiAlertCircle aria-hidden="true" /><span>Bookings temporarily unavailable</span><span className="visually-hidden"> — this business is not accepting new bookings right now.</span></div>}
           <div className="profile-reputation-panel">
             <div className="profile-reputation-row">
@@ -293,11 +293,7 @@ export default function PublicProfilePage({ user }) {
               </div>
             </div>
           </div>
-          {profile.bio && <p className="public-bio">{profile.bio}</p>}
-          <div className="profile-meta storefront-meta">
-            
-            {profile.website && <a href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true"/>Website</a>}
-          </div>
+        </div>
         </div>
       </div>
     </section>
@@ -309,7 +305,8 @@ export default function PublicProfilePage({ user }) {
           <span className="storefront-metric-icon" aria-hidden="true"><Icon /></span>
           <span className="storefront-metric-copy">
             <strong>{value}</strong>
-            <span>{label} · {detail}</span>
+            <span>{label}</span>
+            <small>{detail}</small>
           </span>
         </article>
       ))}
@@ -324,6 +321,11 @@ export default function PublicProfilePage({ user }) {
         {profile.bookingAvailable && <Link className="storefront-section-booking-link" to={`/b/${profile.id}`}>Bookings</Link>}
       </div>
     </nav>
+
+    <section id="storefront-about" className="storefront-about-section storefront-container" aria-label={`About ${profile.name}`}>
+      {profile.bio && <p className="public-bio">{profile.bio}</p>}
+      {profile.website && <a className="storefront-about-website" href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true"/>Website</a>}
+    </section>
 
     {(hasPublicServices || hasPublicProducts) && <section className="public-content-section profile-catalog-filter-section storefront-filter-section storefront-container" aria-label="Search and filter offerings">
       <ProfileCatalogSearch
