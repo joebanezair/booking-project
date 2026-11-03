@@ -1,0 +1,54 @@
+/* Administrator sidebar palette: 40% darker navy with balanced, readable contrast.
+   Scoped to admin accounts only; business and personal navigation are untouched. */
+html body #root .page-shell.page-shell--admin > aside.sidebar,
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-footer {
+  background-color: #0a101b !important;
+}
+
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-nav
+  :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button) {
+  color: #aebbd2 !important;
+}
+
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-section-label {
+  color: #879bbd !important;
+}
+
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-nav
+  :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button):hover:not(.active):not(.current-section),
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-nav
+  :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button):focus-visible {
+  color: #edf3ff !important;
+  background-color: #142035 !important;
+}
+
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-nav
+  a.sidebar-nav-link.active,
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-nav
+  a.sidebar-nav-link.active:hover,
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-nav
+  button.sidebar-nav-toggle.current-section,
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-nav
+  button.sidebar-nav-toggle.current-section:hover {
+  color: #f4f7ff !important;
+  background-color: #1b2a43 !important;
+}
+
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-nav
+  a.sidebar-nav-link.active > svg,
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-nav
+  button.sidebar-nav-toggle.current-section > svg:first-child {
+  color: #b6c7ff !important;
+}
+
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-footer-account strong {
+  color: #e6edfa !important;
+}
+
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-email {
+  color: #9aabc8 !important;
+}
+
+html body #root .page-shell.page-shell--admin > aside.sidebar .sidebar-footer {
+  border-top-color: rgba(157, 178, 215, .12) !important;
+}
