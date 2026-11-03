@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiGlobe, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiEdit3, FiEye, FiGlobe, FiLayers, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShare2, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
@@ -23,6 +23,7 @@ export default function PublicProfilePage({ user }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [ratingMessage, setRatingMessage] = useState("");
+  const [shareFeedback, setShareFeedback] = useState("");
   const [friendBusy, setFriendBusy] = useState(false);
   const [orderProduct,setOrderProduct]=useState(null);
   const [orderForm,setOrderForm]=useState({quantity:1,customerName:"",customerEmail:"",customerPhone:"",deliveryLocation:"",notes:""});
@@ -81,6 +82,25 @@ export default function PublicProfilePage({ user }) {
       const refreshed = await api.publicProfile(resolvedUsername);
       setData(refreshed); setRatingMessage("Business rating removed."); setError("");
     } catch (e) { setError(e.message); }
+  }
+
+  async function sharePublicProfile() {
+    const url = window.location.href;
+    setShareFeedback("");
+    try {
+      if (typeof navigator.share === "function") {
+        await navigator.share({
+          title: profile.name,
+          text: `View ${profile.name} on BookFlow.`,
+          url
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        setShareFeedback("Profile link copied.");
+      }
+    } catch (e) {
+      if (e?.name !== "AbortError") setShareFeedback("Unable to share automatically. Copy the profile link from your browser.");
+    }
   }
 
   async function submitProductOrder(event) {
@@ -198,6 +218,16 @@ export default function PublicProfilePage({ user }) {
     (catalogType === "services" || !filtering || visibleServices.length > 0);
   const showProducts = hasPublicProducts && !noMatches && catalogType !== "services" &&
     (catalogType === "products" || !normalizedSearch || visibleProducts.length > 0);
+  const publicRating = profile.businessRatingSummary || {};
+  const verifiedRating = profile.ratingSummary || {};
+  const publicProfilePath = `/profile/${encodeURIComponent(profile.username || resolvedUsername)}`;
+  const publicMetrics = [
+    { label: "Total offerings", value: products.length + content.length, detail: "Published listings", icon: FiLayers },
+    { label: "Products", value: products.length, detail: "Available products", icon: FiPackage },
+    { label: "Services", value: content.length, detail: "Published services", icon: FiBriefcase },
+    { label: "Visitor rating", value: Number(publicRating.ratingCount || 0) > 0 ? Number(publicRating.averageRating || 0).toFixed(1) : "—", detail: `${publicRating.ratingCount || 0} visitor ratings`, icon: FiStar },
+    { label: "Verified reviews", value: verifiedRating.ratingCount || 0, detail: "Completed bookings", icon: FiCheckCircle }
+  ];
 
   return <main className="public-page bookflow-storefront" id="storefront-top">
     {error && <p className="error" role="alert">{error}</p>}
@@ -219,7 +249,11 @@ export default function PublicProfilePage({ user }) {
               {profile.headline && <p className="profile-headline"><LuBuilding2 aria-hidden="true" /><span>{profile.headline}</span></p>}
             </div>
             <div className="storefront-owner-actions">
-              {!isOwner && <div className="public-profile-actions">
+              {isOwner ? <div className="public-profile-owner-actions">
+                <Button type="button" variant="outline" className="owner-profile-action" onClick={sharePublicProfile}><FiShare2 aria-hidden="true" />Share</Button>
+                <Button asChild variant="outline" className="owner-profile-action"><Link to={publicProfilePath} target="_blank" rel="noopener noreferrer"><FiEye aria-hidden="true" />View Profile</Link></Button>
+                <Button asChild variant="default" className="owner-profile-action owner-profile-action-primary"><Link to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit Profile</Link></Button>
+              </div> : <div className="public-profile-actions">
                 {canInteract ? (
                   friendship.incomingRequest ? <Button variant="plain" className="primary-button icon-link" disabled={friendBusy} onClick={() => friendAction("accept")}><FiUserPlus aria-hidden="true" />Accept Friend</Button> :
                   friendship.isFriend ? <Button variant="plain" className="secondary icon-link" disabled={friendBusy} onClick={() => friendAction("unfriend")}><FiUserCheck aria-hidden="true" />Friends</Button> :
@@ -231,11 +265,11 @@ export default function PublicProfilePage({ user }) {
               </div>}
               {/* Booking is independent of social actions: it requires a posted,
                   published, bookable service and admin-enabled booking access. */}
-              {profile.bookingAvailable && <Button asChild variant="default"><Link className="public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
+              {!isOwner && profile.bookingAvailable && <Button asChild variant="default"><Link className="public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
             </div>
           </div>
         </div>
-        <div className="public-profile-copy">
+        <div className="public-profile-copy" id="storefront-about">
           {paused && <div className="paused-public-banner" role="status" title="This business is not accepting new bookings right now."><FiAlertCircle aria-hidden="true" /><span>Bookings temporarily unavailable</span><span className="visually-hidden"> — this business is not accepting new bookings right now.</span></div>}
           <div className="profile-reputation-panel">
             <div className="profile-reputation-row">
@@ -266,13 +300,27 @@ export default function PublicProfilePage({ user }) {
         </div>
       </div>
     </section>
+    {shareFeedback && <p className="storefront-share-feedback storefront-container" role="status">{shareFeedback}</p>}
+
+    <section className="storefront-metrics" aria-label="Public business statistics">
+      {publicMetrics.map(({ label, value, detail, icon: Icon }) => (
+        <article className="storefront-metric" key={label}>
+          <span className="storefront-metric-icon" aria-hidden="true"><Icon /></span>
+          <span className="storefront-metric-copy">
+            <strong>{value}</strong>
+            <span>{label} · {detail}</span>
+          </span>
+        </article>
+      ))}
+    </section>
 
     <nav className="storefront-section-nav" aria-label="Business profile sections">
       <div className="storefront-container storefront-section-links">
-        <a href="#storefront-top">Overview</a>
+        <a href="#storefront-about">About</a>
         {hasPublicServices && <a href="#storefront-services" onClick={event=>{event.preventDefault();setCatalogType("services");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-services")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Services <span>{content.length}</span></a>}
         {hasPublicProducts && <a href="#storefront-products" onClick={event=>{event.preventDefault();setCatalogType("products");setCatalogSearch("");setMinServiceRating("0");requestAnimationFrame(()=>document.getElementById("storefront-products")?.scrollIntoView({behavior:"smooth",block:"start"}));}}>Products <span>{products.length}</span></a>}
-        <a href="#storefront-reviews">Reviews <span>{reviews.length}</span></a>
+        <a href="#storefront-reviews">Reviews <span>{verifiedRating.ratingCount || 0}</span></a>
+        {profile.bookingAvailable && <Link className="storefront-section-booking-link" to={`/b/${profile.id}`}>Bookings</Link>}
       </div>
     </nav>
 
