@@ -43,6 +43,7 @@ import "./sidebar-typography.css";
 import "./public-admin-profile.css";
 import "./workspace-account-menu.css";
 import "./admin-sidebar-palette.css";
+import "./public-profile-dashboard-refresh.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
