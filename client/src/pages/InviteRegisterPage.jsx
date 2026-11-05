@@ -36,7 +36,7 @@ export default function InviteRegisterPage({ user, onAuthenticated }) {
     setSubmitting(true);
     setError("");
     try {
-      const data = await api.inviteAdmin(inviteKey, { ...form, termsVersionId: termsPage.versionId });
+      const data = await api.inviteAdmin(inviteKey, { ...form, termsVersionId: termsPage.versionId, termsAccepted: true });
       localStorage.setItem("booking_token", data.token);
       localStorage.setItem("booking_user", JSON.stringify(data.user));
       onAuthenticated(data.user);
