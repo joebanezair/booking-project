@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FiArrowLeft, FiArrowUpRight, FiCalendar, FiClock,
-  FiCreditCard, FiMapPin, FiPackage, FiRefreshCw, FiSearch,
+  FiCreditCard, FiInfo, FiMapPin, FiPackage, FiRefreshCw, FiSearch,
   FiShoppingBag, FiTruck
 } from "react-icons/fi";
 import { Button } from "../components/ui/button.jsx";
@@ -140,12 +140,24 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
             aria-label={isPurchases ? "Search purchases" : "Search bookings"}
           />
         </div>
-        <label className="customer-history-status-filter">
-          <span>Status</span>
-          <select value={status} onChange={event => setStatus(event.target.value)}>
+        <div className="customer-history-status-filter">
+          <button
+            type="button"
+            className="customer-history-status-help"
+            aria-label={isPurchases ? "About purchase status filters" : "About booking status filters"}
+            title={isPurchases ? "Filter purchases by order status." : "Filter bookings by appointment status."}
+            data-tooltip={isPurchases ? "Filter purchases by order status." : "Filter bookings by appointment status."}
+          >
+            <FiInfo aria-hidden="true"/>
+          </button>
+          <select
+            aria-label={isPurchases ? "Filter purchases by status" : "Filter bookings by status"}
+            value={status}
+            onChange={event => setStatus(event.target.value)}
+          >
             {statuses.map(([value, label]) => <option value={value} key={value}>{label}</option>)}
           </select>
-        </label>
+        </div>
         <Button type="button" variant="outline" onClick={() => { setSearch(""); setStatus("all"); }} disabled={loading && !items.length}>
           <FiRefreshCw/> Reset
         </Button>
