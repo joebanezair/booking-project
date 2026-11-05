@@ -44,6 +44,7 @@ import "./workspace-account-menu.css";
 import "./admin-sidebar-palette.css";
 import "./public-profile-dashboard-refresh.css";
 import "./auth-enhancements.css";
+import "./platform-content.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
