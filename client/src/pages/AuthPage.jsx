@@ -13,6 +13,19 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [termsPage, setTermsPage] = useState(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsError, setTermsError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    api.platformContent.public("terms").then(page => {
+      if (active) { setTermsPage(page); setTermsError(""); }
+    }).catch(error => {
+      if (active) setTermsError(error.message || "Unable to load the current Terms & Conditions.");
+    });
+    return () => { active = false; };
+  }, []);
 
   useEffect(() => {
     setMode(initialMode);
@@ -25,8 +38,15 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
     if (submitting) return;
     setSubmitting(true);
     setError("");
+    if (mode === "register" && (!termsPage?.versionId || !termsAccepted)) {
+      setError("Please load and accept the current Terms & Conditions before creating your account.");
+      setSubmitting(false);
+      return;
+    }
     try {
-      const data = mode === "register" ? await api.register(form) : await api.login(form);
+      const data = mode === "register"
+        ? await api.register({ ...form, termsVersionId: termsPage.versionId })
+        : await api.login(form);
       localStorage.setItem("booking_token", data.token);
       localStorage.setItem("booking_user", JSON.stringify(data.user));
       onAuthenticated(data.user);
@@ -43,6 +63,7 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
     setMode(next);
     setError("");
     setShowPassword(false);
+    setTermsAccepted(false);
     navigate(next === "register" ? "/register" : "/login", { replace: true, state: location.state });
   }
 
@@ -77,8 +98,19 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
             <Button type="button" variant="ghost" size="icon" className="auth-password-toggle" aria-label={showPassword ? "Hide password" : "Show password"} title={showPassword ? "Hide password" : "Show password"} aria-controls="auth-password" aria-pressed={showPassword} disabled={submitting} onClick={() => setShowPassword(v => !v)}>{showPassword ? <FiEyeOff aria-hidden="true" /> : <FiEye aria-hidden="true" />}</Button>
           </div>
         </div>
+        {isRegister && <div className="auth-terms-consent">
+          <label className="auth-terms-check">
+            <input type="checkbox" checked={termsAccepted} onChange={event => setTermsAccepted(event.target.checked)} disabled={submitting || !termsPage?.versionId} required />
+            <span>I have read and agree to the <Link to="/terms" target="_blank" rel="noreferrer">Terms & Conditions</Link>.</span>
+          </label>
+          <p className="auth-terms-note">
+            <Link to="/faqs" target="_blank" rel="noreferrer">Frequently Asked Questions</Link>
+            {termsPage?.version ? ` · Terms version ${termsPage.version}` : ""}
+          </p>
+          {termsError && <p className="auth-terms-error" role="alert">{termsError}</p>}
+        </div>}
         {error && <p className="error" role="alert">{error}</p>}
-        <Button type="submit" size="lg" className="auth-submit" disabled={submitting}>
+        <Button type="submit" size="lg" className="auth-submit" disabled={submitting || (isRegister && (!termsPage?.versionId || !termsAccepted))}>
           {submitting ? (isRegister ? "Creating account…" : "Signing in…") : (isRegister ? "Create business account" : "Sign in")}
           {!submitting && <FiArrowRight aria-hidden="true" />}
         </Button>
