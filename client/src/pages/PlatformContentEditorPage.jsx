@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FiArrowDown, FiArrowLeft, FiArrowUp, FiCheck, FiClock, FiCopy, FiEye,
-  FiFileText, FiGripVertical, FiHelpCircle, FiImage, FiInfo, FiLink,
+  FiFileText, FiMove, FiHelpCircle, FiImage, FiInfo, FiLink,
   FiList, FiMinus, FiPlus, FiQuote, FiRefreshCw, FiSave, FiSend,
-  FiTable, FiTrash2, FiType
+  FiGrid, FiTrash2, FiType
 } from "react-icons/fi";
 import { Button } from "../components/ui/button.jsx";
 import AppLayout from "../components/AppLayout.jsx";
@@ -22,7 +22,7 @@ const LIBRARY = [
   { type: "divider", label: "Divider", icon: FiMinus, terms: true, faqs: true },
   { type: "image", label: "Image", icon: FiImage, terms: true, faqs: true },
   { type: "link", label: "Link / button", icon: FiLink, terms: true, faqs: true },
-  { type: "table", label: "Table", icon: FiTable, terms: true, faqs: false },
+  { type: "table", label: "Table", icon: FiGrid, terms: true, faqs: false },
   { type: "accordion", label: "Accordion", icon: FiHelpCircle, terms: true, faqs: true },
   { type: "faqGroup", label: "FAQ group", icon: FiHelpCircle, terms: false, faqs: true }
 ];
@@ -297,7 +297,7 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
                 onDragEnd={() => setDraggedId("")}
               >
                 <div className="platform-editor-block-toolbar">
-                  <span className="platform-editor-block-label"><FiGripVertical/>{index + 1}. {LIBRARY.find(item => item.type === block.type)?.label || block.type}</span>
+                  <span className="platform-editor-block-label"><FiMove/>{index + 1}. {LIBRARY.find(item => item.type === block.type)?.label || block.type}</span>
                   <div className="platform-editor-block-actions">
                     <button type="button" title="Move up" aria-label="Move up" disabled={index === 0} onClick={() => moveBlock(block.id, -1)}><FiArrowUp/></button>
                     <button type="button" title="Move down" aria-label="Move down" disabled={index === draft.components.length - 1} onClick={() => moveBlock(block.id, 1)}><FiArrowDown/></button>
@@ -328,7 +328,7 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
           </section>
         </div>
         {isFaq && <p className="platform-editor-footnote">Add multiple FAQ groups and as many question-and-answer entries as each group needs.</p>}
-        {!isFaq && <p className="platform-editor-footnote">Newly published Terms receive a new version number. Each new registration records the exact version accepted.</p>}
+        {!isFaq && <p className="platform-editor-footnote">Newly published Terms receive a new version number. Each new registration records the exact version accepted. Review the starter wording and obtain appropriate legal review before relying on it as your final policy.</p>}
       </>}
     </div>
   </AppLayout>;
