@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBarChart2, FiBriefcase, FiCalendar, FiCheckSquare, FiChevronDown, FiChevronRight, FiDollarSign, FiMessageSquare, FiPackage, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSettings, FiStar, FiUser, FiUsers, FiX } from "react-icons/fi";
+import { FiBarChart2, FiBriefcase, FiCalendar, FiCheckSquare, FiChevronDown, FiChevronRight, FiDollarSign, FiInfo, FiMessageSquare, FiPackage, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSettings, FiStar, FiUser, FiUsers, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import BusinessSetupChecklist from "../components/BusinessSetupChecklist.jsx";
 import DashboardAnalytics from "../components/DashboardAnalytics.jsx";
@@ -299,6 +299,24 @@ export default function DashboardPage({ user, onLogout }) {
 
     <div className="dashboard-content-rail">
       {overviewError && <p className="error">{overviewError}</p>}
+
+      {!isAdmin && user.accountStatus === "active" &&
+        (!hasBusinessFeature(user, "booking") || !hasBusinessFeature(user, "pos")) && <section className="business-feature-access-banner" role="status">
+          <span className="business-feature-access-icon"><FiInfo aria-hidden="true"/></span>
+          <div className="business-feature-access-copy">
+            <strong>Feature activation required</strong>
+            <p>
+              {[
+                !hasBusinessFeature(user, "booking") ? "Bookings" : "",
+                !hasBusinessFeature(user, "pos") ? "POS" : ""
+              ].filter(Boolean).join(" and ")} {(!hasBusinessFeature(user, "booking") && !hasBusinessFeature(user, "pos")) ? "are" : "is"} not enabled on your account yet.
+              Contact a BookFlow administrator to request activation.
+            </p>
+          </div>
+          <Button asChild size="sm" variant="outline">
+            <Link to="/dashboard/messages">Contact administrator</Link>
+          </Button>
+        </section>}
 
       {isAdmin && <div className="business-admin-page admin-dashboard-platform">
       <section className="business-admin-activity" aria-labelledby="platform-activity-title" aria-busy={!overview && !overviewError}>
