@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  FiArrowLeft, FiArrowUpRight, FiCalendar, FiCheckCircle, FiClock,
+  FiArrowLeft, FiArrowUpRight, FiCalendar, FiClock,
   FiCreditCard, FiMapPin, FiPackage, FiRefreshCw, FiSearch,
   FiShoppingBag, FiTruck
 } from "react-icons/fi";
