@@ -6,6 +6,7 @@ import User from "../models/User.js";
 import Business from "../models/Business.js";
 import requireAuth from "../middleware/auth.js";
 import { featureSummary } from "../lib/featureAccess.js";
+import { getOrCreatePlatformPage, versionIdFor } from "../lib/platformContent.js";
 
 const router = Router();
 
@@ -48,9 +49,15 @@ function validInviteKey(actual, expected) {
 }
 
 async function createAccount(req, res, role) {
-  const { name, email, password } = req.body;
+  const { name, email, password, termsVersionId } = req.body || {};
   if (!name || !email || !password) return res.status(400).json({ message: "Name, email and password are required." });
   if (password.length < 8) return res.status(400).json({ message: "Password must be at least 8 characters." });
+
+  const termsPage = await getOrCreatePlatformPage("terms");
+  const currentTermsVersionId = versionIdFor("terms", termsPage.publishedVersion);
+  if (termsVersionId !== currentTermsVersionId) {
+    return res.status(400).json({ message: "Please review and accept the current Terms & Conditions before creating your account." });
+  }
 
   const normalizedEmail = email.trim().toLowerCase();
   if (await User.findOne({ email: normalizedEmail })) return res.status(409).json({ message: "An account with that email already exists." });
@@ -61,7 +68,12 @@ async function createAccount(req, res, role) {
     email: normalizedEmail,
     passwordHash: await bcrypt.hash(password, 12),
     role,
-    accountStatus: "active"
+    accountStatus: "active",
+    termsAcceptance: {
+      versionId: currentTermsVersionId,
+      version: termsPage.publishedVersion,
+      acceptedAt: new Date()
+    }
   });
 
   try {
