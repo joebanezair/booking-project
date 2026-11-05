@@ -895,3 +895,20 @@ html body #root .profile-overview-clean .booking-qr-actions > .ui-button {
   .customer-history-booking-detail { grid-template-columns: minmax(0, 1fr); }
 }
 
+.customer-history-checkout-note {
+  margin: 0 0 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--muted-bg);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.55;
+}
+.customer-history-checkout-note a {
+  color: var(--primary);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
