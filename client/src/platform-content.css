@@ -684,3 +684,42 @@
   .platform-editor-block { padding: 11px; }
   .platform-image-uploader { padding: 11px; border-radius: 14px; }
 }
+
+/* Sign-up Terms card: clean white surface with softer rounded icon treatments. */
+.auth-terms-status {
+  border-color: #e6eaf2;
+  border-radius: 18px;
+  background: #fff;
+}
+.auth-terms-status.accepted {
+  border-color: color-mix(in srgb, #29966a 34%, #e6eaf2);
+  background: #fff;
+}
+.auth-terms-status-icon {
+  border-radius: 12px;
+  background: #f1f4fa;
+}
+.auth-terms-status.accepted .auth-terms-status-icon {
+  background: #edf8f2;
+}
+.auth-terms-dialog-eyebrow svg {
+  box-sizing: content-box;
+  width: 14px;
+  height: 14px;
+  padding: 6px;
+  border-radius: 11px;
+  background: #f0f3fb;
+  color: #526bdc;
+}
+.auth-terms-dialog-footer .ui-button svg {
+  box-sizing: content-box;
+  width: 14px;
+  height: 14px;
+  padding: 4px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .14);
+}
+.auth-card .auth-password-field .auth-password-toggle {
+  border-radius: 11px !important;
+}
+
