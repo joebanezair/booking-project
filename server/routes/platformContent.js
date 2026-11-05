@@ -42,7 +42,7 @@ function normalizeComponents(input, slug) {
       block.items = Array.isArray(raw.items) ? raw.items.slice(0, 100).map(item => text(item, 1000)) : [];
     } else if (type === "image") {
       block.url = safeUrl(raw.url);
-      if (!/^https?:\\/\\//i.test(block.url)) throw new Error("Image components need a valid HTTP or HTTPS image URL.");
+      if (!(block.url.startsWith("https://") || block.url.startsWith("http://"))) throw new Error("Image components need a valid HTTP or HTTPS image URL.");
       block.alt = text(raw.alt, 300);
       if (!block.url) throw new Error("Image components need a valid HTTP or HTTPS image URL.");
     } else if (type === "link") {
