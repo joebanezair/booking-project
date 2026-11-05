@@ -7,6 +7,7 @@ import {
 } from "react-icons/fi";
 import { Button } from "../components/ui/button.jsx";
 import { Input } from "../components/ui/input.jsx";
+import { Image } from "../components/ui/image.jsx";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
 
@@ -177,7 +178,7 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
             <div className="customer-history-lines">
               {(order.items || []).map((item, index) => <div className="customer-history-product" key={`${order.id}-${index}`}>
                 {item.image
-                  ? <img src={item.image} alt="" loading="lazy"/>
+                  ? <Image src={item.image} alt={item.name || "Purchased product"} loading="lazy"/>
                   : <span className="customer-history-product-placeholder"><FiPackage/></span>}
                 <div className="customer-history-product-copy">
                   <strong>{item.name}</strong>
