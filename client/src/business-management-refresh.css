@@ -847,8 +847,7 @@ html body .business-admin-list--grid .business-admin-row.ui-card:hover {
 }
 .business-admin-page .business-admin-list:not(.business-admin-list--grid) .business-admin-identity-text > strong {
   font-size: 14px;
-  line-height: 1.3;
-  font-weight: 650;
+  line-height: 1.3;  font-weight: 650;
   letter-spacing: -.01em;
   color: var(--admin-ink, #18243c);
 }
@@ -1697,8 +1696,7 @@ html body .business-admin-page .business-admin-list--grid .business-admin-row.ui
   border: 1px solid var(--business-polish-border);
   border-radius: 10px;
   background: var(--business-polish-card);
-  box-shadow: 0 6px 22px rgba(24,40,72,.035);
-}
+  box-shadow: 0 6px 22px rgba(24,40,72,.035);}
 .business-admin-page .business-admin-activity-heading {
   margin-bottom: 18px;
   align-items: end;
@@ -2547,8 +2545,7 @@ html body #root .admin-dashboard-platform .admin-stats-customize-button.ui-butto
 html body #root .admin-dashboard-platform .admin-stats-customize-button.ui-button svg {
   width: 14px; height: 14px;
 }
-html body #root .admin-dashboard-platform .admin-stats-customize-button.ui-button:hover {
-  background: var(--secondary, #f2f5fa) !important;
+html body #root .admin-dashboard-platform .admin-stats-customize-button.ui-button:hover {  background: var(--secondary, #f2f5fa) !important;
 }
 html body #root .admin-dashboard-platform .business-admin-platform-grid {
   grid-template-columns: repeat(auto-fit, minmax(min(168px, 100%), 1fr)) !important;
@@ -3297,4 +3294,19 @@ html body #root .admin-dashboard-platform .business-admin-breakdown-metric stron
   html body #root .admin-dashboard-platform .business-admin-breakdown-grid {
     column-gap: 12px;
   }
+}
+
+/* Business Management business cards: replace the perimeter outline with one straight bottom divider. */
+html body #root .business-admin-page:not(.admin-dashboard-platform) .business-admin-list .business-admin-row.ui-card {
+  border: 0 !important;
+  border-bottom: 1px solid var(--border, #e3e9f2) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: var(--card, #fff) !important;
+}
+html body #root .business-admin-page:not(.admin-dashboard-platform) .business-admin-list .business-admin-row.ui-card:hover {
+  border: 0 !important;
+  border-bottom: 1px solid var(--border, #dce4ef) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
