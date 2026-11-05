@@ -221,7 +221,7 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
     if (block.type === "faqGroup") return <div className="platform-faq-question-list">
       <Field label="FAQ group title" value={block.title} onChange={value => updateBlock(block.id, { title: value })}/>
       {(block.questions || []).map((item, index) => <div className="platform-faq-question-editor" key={item.id}>
-        <div className="platform-faq-question-heading"><span>Question {index + 1}</span><button type="button" className="platform-icon-button danger" aria-label="Remove question" onClick={() => updateBlock(block.id, { questions: block.questions.filter(q => q.id !== item.id) })}><FiTrash2/></button></div>
+        <div className="platform-faq-question-heading"><span>Question {index + 1}</span><Button variant="plain" type="button" className="platform-icon-button danger" aria-label="Remove question" onClick={() => updateBlock(block.id, { questions: block.questions.filter(q => q.id !== item.id) })}><FiTrash2/></Button></div>
         <Field label="Question" value={item.question} onChange={value => updateQuestion(block.id, item.id, { question: value })}/>
         <Field label="Answer" value={item.answer} multiline rows={3} onChange={value => updateQuestion(block.id, item.id, { answer: value })}/>
       </div>)}
@@ -248,8 +248,8 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
       </header>
 
       <div className="platform-editor-page-tabs">
-        <button type="button" className={slug === "terms" ? "active" : ""} onClick={() => switchPage("terms")}><FiFileText/> Terms & Conditions</button>
-        <button type="button" className={slug === "faqs" ? "active" : ""} onClick={() => switchPage("faqs")}><FiHelpCircle/> FAQs</button>
+        <Button variant="plain" type="button" className={slug === "terms" ? "active" : ""} onClick={() => switchPage("terms")}><FiFileText/> Terms & Conditions</Button>
+        <Button variant="plain" type="button" className={slug === "faqs" ? "active" : ""} onClick={() => switchPage("faqs")}><FiHelpCircle/> FAQs</Button>
       </div>
 
       {error && <p className="error" role="alert">{error}</p>}
@@ -268,7 +268,7 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
             <div className="platform-component-grid">
               {library.map(item => {
                 const Icon = item.icon;
-                return <button type="button" key={item.type} onClick={() => addBlock(item.type)}><Icon/><span>{item.label}</span><FiPlus className="platform-add-icon"/></button>;
+                return <Button variant="plain" type="button" key={item.type} onClick={() => addBlock(item.type)}><Icon/><span>{item.label}</span><FiPlus className="platform-add-icon"/></Button>;
               })}
             </div>
             <div className="platform-editor-side-note">
@@ -279,9 +279,9 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
 
           <section className="platform-editor-main">
             <div className="platform-editor-main-tabs">
-              <button type="button" className={activeTab === "edit" ? "active" : ""} onClick={() => setActiveTab("edit")}>Edit content</button>
-              <button type="button" className={activeTab === "preview" ? "active" : ""} onClick={() => setActiveTab("preview")}><FiEye/> Preview</button>
-              <button type="button" className={activeTab === "history" ? "active" : ""} onClick={() => setActiveTab("history")}><FiClock/> History</button>
+              <Button variant="plain" type="button" className={activeTab === "edit" ? "active" : ""} onClick={() => setActiveTab("edit")}>Edit content</Button>
+              <Button variant="plain" type="button" className={activeTab === "preview" ? "active" : ""} onClick={() => setActiveTab("preview")}><FiEye/> Preview</Button>
+              <Button variant="plain" type="button" className={activeTab === "history" ? "active" : ""} onClick={() => setActiveTab("history")}><FiClock/> History</Button>
             </div>
 
             {activeTab === "edit" && <div className="platform-editor-canvas">
@@ -299,13 +299,13 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
                 <div className="platform-editor-block-toolbar">
                   <span className="platform-editor-block-label"><FiMove/>{index + 1}. {LIBRARY.find(item => item.type === block.type)?.label || block.type}</span>
                   <div className="platform-editor-block-actions">
-                    <button type="button" title="Move up" aria-label="Move up" disabled={index === 0} onClick={() => moveBlock(block.id, -1)}><FiArrowUp/></button>
-                    <button type="button" title="Move down" aria-label="Move down" disabled={index === draft.components.length - 1} onClick={() => moveBlock(block.id, 1)}><FiArrowDown/></button>
-                    <button type="button" title="Duplicate" aria-label="Duplicate component" onClick={() => {
+                    <Button variant="plain" type="button" title="Move up" aria-label="Move up" disabled={index === 0} onClick={() => moveBlock(block.id, -1)}><FiArrowUp/></Button>
+                    <Button variant="plain" type="button" title="Move down" aria-label="Move down" disabled={index === draft.components.length - 1} onClick={() => moveBlock(block.id, 1)}><FiArrowDown/></Button>
+                    <Button variant="plain" type="button" title="Duplicate" aria-label="Duplicate component" onClick={() => {
                       const copy = { ...block, id: makeId(), ...(block.questions ? { questions: block.questions.map(q => ({ ...q, id: makeId() })) } : {}) };
                       const next = [...draft.components]; next.splice(index + 1, 0, copy); updateDraft({ components: next });
-                    }}><FiCopy/></button>
-                    <button type="button" title="Delete" aria-label="Delete component" className="danger" onClick={() => updateDraft({ components: draft.components.filter(item => item.id !== block.id) })}><FiTrash2/></button>
+                    }}><FiCopy/></Button>
+                    <Button variant="plain" type="button" title="Delete" aria-label="Delete component" className="danger" onClick={() => updateDraft({ components: draft.components.filter(item => item.id !== block.id) })}><FiTrash2/></Button>
                   </div>
                 </div>
                 <div className="platform-editor-block-fields">{renderBlockFields(block)}</div>
