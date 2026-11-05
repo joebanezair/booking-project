@@ -279,7 +279,17 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
             <div className="customer-history-card-top">
               <div className="customer-history-reference">
                 <span className="customer-history-icon"><FiPackage/></span>
-                <div><strong>{order.orderNumber}</strong><small>Ordered {dateTime(order.createdAt)}</small></div>
+                <div>
+                  <Link
+                    className="customer-history-order-number"
+                    to={`/dashboard/profile/purchases/${encodeURIComponent(order.id)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Open order progress in a new tab"
+                    aria-label={`View order progress for ${order.orderNumber}`}
+                  >{order.orderNumber}</Link>
+                  <small>Ordered {dateTime(order.createdAt)}</small>
+                </div>
               </div>
               <span className={statusClass(order.status)}>{labelStatus(order.status)}</span>
             </div>

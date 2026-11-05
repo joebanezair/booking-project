@@ -997,3 +997,236 @@
     flex: 1 1 0;
   }
 }
+
+
+/* Authenticated buyer order progress page */
+#root .customer-order-progress-page * ,
+#root .customer-order-progress-page *::before,
+#root .customer-order-progress-page *::after {
+  border-radius: 10px !important;
+}
+#root .customer-order-progress-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+#root .customer-order-progress-topbar > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  border: 1px solid var(--history-border);
+  background: var(--history-surface);
+  color: var(--history-text);
+  font-size: 11px;
+  box-shadow: none;
+}
+#root .customer-order-progress-heading { margin: 0 0 16px; }
+#root .customer-order-progress-heading h1 {
+  margin: 0 0 5px;
+  font-size: clamp(25px, 3vw, 33px);
+  font-weight: 500 !important;
+  letter-spacing: -.035em;
+}
+#root .customer-order-progress-reference {
+  margin: 0 0 4px;
+  color: var(--history-text);
+  font-size: 12px;
+  font-weight: 500 !important;
+}
+#root .customer-order-progress-heading > p:last-child {
+  color: var(--history-muted);
+  font-size: 12px;
+}
+#root .customer-order-progress-panel {
+  margin-bottom: 10px;
+  padding: 16px;
+  border: 1px solid var(--history-border);
+  border-radius: 10px !important;
+  background: var(--history-surface);
+  box-shadow: 0 1px 3px rgba(18, 28, 45, .035);
+}
+#root .customer-order-progress-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--history-border);
+}
+#root .customer-order-progress-panel-head > div { display: grid; gap: 4px; }
+#root .customer-order-progress-panel-head small {
+  color: var(--history-muted);
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+#root .customer-order-progress-panel-head strong {
+  color: var(--history-text);
+  font-size: 16px;
+  font-weight: 500 !important;
+}
+#root .customer-order-timeline {
+  display: grid;
+  gap: 0;
+  margin: 15px 0 10px;
+  padding: 0;
+  list-style: none;
+}
+#root .customer-order-timeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 11px;
+  min-height: 52px;
+}
+#root .customer-order-timeline li:not(:last-child)::after {
+  position: absolute;
+  top: 26px;
+  bottom: -1px;
+  left: 13px;
+  width: 1px;
+  background: var(--history-border);
+  content: "";
+}
+#root .customer-order-timeline-marker {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border: 1px solid var(--history-border);
+  border-radius: 10px !important;
+  background: var(--history-surface);
+  color: var(--history-muted);
+  font-size: 10px;
+}
+#root .customer-order-timeline .is-done .customer-order-timeline-marker,
+#root .customer-order-timeline .is-current .customer-order-timeline-marker {
+  border-color: color-mix(in srgb, var(--primary, #6477dc) 25%, var(--history-border));
+  background: color-mix(in srgb, var(--primary, #6477dc) 10%, var(--history-surface));
+  color: var(--primary, #6477dc);
+}
+#root .customer-order-timeline-label { display: grid; align-content: start; gap: 3px; padding-top: 3px; }
+#root .customer-order-timeline-label strong {
+  color: var(--history-text);
+  font-size: 11px;
+  font-weight: 400 !important;
+}
+#root .customer-order-timeline .is-upcoming .customer-order-timeline-label strong { color: var(--history-muted); }
+#root .customer-order-timeline-label small,
+#root .customer-order-progress-updated {
+  color: var(--history-muted);
+  font-size: 10px;
+}
+#root .customer-order-progress-updated {
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--history-border);
+}
+#root .customer-order-cancelled {
+  margin: 14px 0 0;
+  color: #a45d55;
+  font-size: 12px;
+}
+#root .customer-order-progress-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+#root .customer-order-progress-grid .customer-order-progress-panel { min-width: 0; }
+#root .customer-order-progress-panel h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  color: var(--history-text);
+  font-size: 13px;
+  font-weight: 500 !important;
+}
+#root .customer-order-progress-panel h2 svg { color: var(--history-muted); }
+#root .customer-order-progress-facts {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+}
+#root .customer-order-progress-facts > div { display: grid; gap: 3px; }
+#root .customer-order-progress-facts dt {
+  color: var(--history-muted);
+  font-size: 9px;
+}
+#root .customer-order-progress-facts dd {
+  margin: 0;
+  color: var(--history-text);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+#root .customer-order-progress-facts a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--primary, #6477dc);
+}
+#root .customer-order-progress-empty {
+  margin: 12px 0 0;
+  font-size: 11px;
+}
+#root .customer-order-progress-product-list { display: grid; }
+#root .customer-order-progress-product {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+}
+#root .customer-order-progress-product + .customer-order-progress-product {
+  border-top: 1px solid var(--history-border);
+}
+#root .customer-order-progress-product > img,
+#root .customer-order-progress-product-placeholder {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  background: var(--history-soft);
+}
+#root .customer-order-progress-product > div { display: grid; gap: 3px; min-width: 0; }
+#root .customer-order-progress-product > div strong {
+  color: var(--history-text);
+  font-size: 11px;
+  font-weight: 500 !important;
+}
+#root .customer-order-progress-product small {
+  color: var(--history-muted);
+  font-size: 9px;
+}
+#root .customer-order-progress-product > strong {
+  color: var(--history-text);
+  font-size: 11px;
+  font-weight: 500 !important;
+  white-space: nowrap;
+}
+#root .customer-order-progress-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--history-border);
+  color: var(--history-text);
+  font-size: 12px;
+}
+#root .customer-order-progress-total strong { font-weight: 550 !important; }
+[data-theme="dark"] #root .customer-order-progress-panel {
+  background: var(--history-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+}
+@media (max-width: 680px) {
+  #root .customer-order-progress-grid { grid-template-columns: 1fr; }
+  #root .customer-order-progress-panel { padding: 13px; }
+  #root .customer-order-progress-topbar { align-items: flex-start; }
+  #root .customer-order-progress-topbar > button { flex: 0 0 auto; }
+}
+@media (max-width: 420px) {
+  #root .customer-order-progress-topbar { flex-direction: column; }
+}

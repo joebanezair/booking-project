@@ -141,6 +141,7 @@ export const api = {
       method: "PATCH",
       body: JSON.stringify(body)
     }),
+    purchaseProgress: id => request(`/customer-history/purchases/${encodeURIComponent(id)}/progress`, { cache: "no-store" }),
     updateBooking: (id, body) => request(`/customer-history/bookings/${encodeURIComponent(id)}`, {
       method: "PATCH",
       body: JSON.stringify(body)

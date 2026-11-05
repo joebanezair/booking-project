@@ -148,6 +148,63 @@ router.get("/purchases", async (req, res) => {
   }
 });
 
+
+router.get("/purchases/:id/progress", async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+    const order = await ProductOrder.findOne({
+      _id: req.params.id,
+      customerUser: req.user.id
+    })
+      .select("orderNumber items total currency status paymentStatus paymentMethod amountPaid paidAt courierName trackingNumber trackingUrl completedAt deliveryLocation createdAt updatedAt businessOwner")
+      .populate("businessOwner", "name username")
+      .lean();
+
+    if (!order) return res.status(404).json({ message: "Order not found." });
+
+    const business = await Business.findOne({ owner: order.businessOwner?._id || order.businessOwner })
+      .select("name")
+      .lean();
+
+    return res.json({
+      id: order._id,
+      orderNumber: order.orderNumber,
+      status: order.status,
+      paymentStatus: order.paymentStatus,
+      paymentMethod: order.paymentMethod,
+      amountPaid: order.amountPaid,
+      paidAt: order.paidAt,
+      courierName: order.courierName || "",
+      trackingNumber: order.trackingNumber || "",
+      trackingUrl: order.trackingUrl || "",
+      deliveryLocation: order.deliveryLocation || "",
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+      completedAt: order.completedAt,
+      items: (order.items || []).map(item => ({
+        name: item.name || "Product",
+        sku: item.sku || "",
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        lineTotal: item.lineTotal,
+        image: item.image || item.images?.[0] || ""
+      })),
+      total: order.total,
+      currency: order.currency || "PHP",
+      seller: {
+        name: business?.name || order.businessOwner?.name || "BookFlow business",
+        username: order.businessOwner?.username || ""
+      }
+    });
+  } catch (error) {
+    console.error("Customer order progress lookup failed", error);
+    return res.status(500).json({ message: "Unable to load order progress." });
+  }
+});
+
 router.patch("/purchases/:id", async (req, res) => {
   res.set("Cache-Control", "no-store");
   try {
