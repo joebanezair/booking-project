@@ -1230,3 +1230,169 @@
 @media (max-width: 420px) {
   #root .customer-order-progress-topbar { flex-direction: column; }
 }
+
+
+/* Product details from buyer's order progress */
+#root .customer-order-progress-product-open {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+#root .customer-order-progress-product-open:hover .customer-order-progress-product-copy strong {
+  color: var(--primary, #6477dc);
+}
+#root .customer-order-progress-product-thumb {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
+  border-radius: 10px !important;
+}
+#root .customer-order-progress-product-thumb > img,
+#root .customer-order-progress-product-thumb .customer-order-progress-product-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px !important;
+}
+#root .customer-order-progress-product-copy {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 3px;
+  min-width: 0;
+}
+#root .customer-order-progress-product-copy strong {
+  color: var(--history-text);
+  font-size: 11px;
+  font-weight: 500 !important;
+}
+#root .customer-order-progress-product-copy small {
+  color: var(--history-muted);
+  font-size: 9px;
+}
+#root .customer-order-progress-product-link {
+  color: var(--primary, #6477dc);
+  font-size: 9px;
+}
+#root .customer-order-product-dialog {
+  width: min(660px, calc(100vw - 28px));
+  max-width: 660px;
+  max-height: min(88vh, 850px);
+  padding: 0;
+  border: 1px solid var(--history-border);
+  border-radius: 10px !important;
+  background: var(--history-surface);
+  color: var(--history-text);
+}
+#root .customer-order-product-dialog::backdrop { background: rgba(12, 18, 30, .52); }
+#root .customer-order-product-dialog-content {
+  display: grid;
+  gap: 15px;
+  padding: 20px;
+  border-radius: 10px !important;
+}
+#root .customer-order-product-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+#root .customer-order-product-dialog-header .eyebrow {
+  margin: 0 0 5px;
+  color: var(--history-muted);
+  font-size: 9px;
+  letter-spacing: .1em;
+}
+#root .customer-order-product-dialog-header button { border-radius: 10px !important; }
+#root .customer-order-product-gallery { display: grid; gap: 10px; }
+#root .customer-order-product-photo {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 220px;
+  max-height: 390px;
+  overflow: hidden;
+  border-radius: 10px !important;
+  background: var(--history-soft);
+}
+#root .customer-order-product-photo > img {
+  display: block;
+  width: 100%;
+  max-height: 390px;
+  object-fit: contain;
+}
+#root .customer-order-product-photo-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--history-muted);
+  font-size: 10px;
+}
+#root .customer-order-product-photo-controls button {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px !important;
+}
+#root .customer-order-product-thumbnails {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding: 1px;
+}
+#root .customer-order-product-thumbnails button {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--history-border);
+  border-radius: 10px !important;
+  background: var(--history-surface);
+}
+#root .customer-order-product-thumbnails button[aria-pressed="true"] {
+  border-color: var(--primary, #6477dc);
+}
+#root .customer-order-product-thumbnails img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#root .customer-order-product-description h3 {
+  margin: 0 0 5px;
+  color: var(--history-text);
+  font-size: 11px;
+  font-weight: 500 !important;
+}
+#root .customer-order-product-description p {
+  margin: 0;
+  color: var(--history-muted);
+  font-size: 11px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+#root .customer-order-product-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--history-border);
+}
+#root .customer-order-product-facts > div { display: grid; gap: 3px; }
+#root .customer-order-product-facts dt { color: var(--history-muted); font-size: 9px; }
+#root .customer-order-product-facts dd { margin: 0; color: var(--history-text); font-size: 11px; }
+@media (max-width: 520px) {
+  #root .customer-order-product-dialog-content { padding: 14px; }
+  #root .customer-order-product-photo { min-height: 180px; }
+}

@@ -6,7 +6,7 @@ import Business from "../models/Business.js";
 import Content from "../models/Content.js";
 import { bookingMutationGuard } from "../middleware/bookingMutationGuard.js";
 import { calculateBookingEndsAt, validateBookingWindow } from "../lib/scheduling.js";
-import { ProductOrder } from "../models/Sale.js";
+import { Product, ProductOrder } from "../models/Sale.js";
 import { decodeBookingCursor, encodeBookingCursor, readPageSize } from "../lib/pagination.js";
 
 const router = Router();
@@ -169,6 +169,17 @@ router.get("/purchases/:id/progress", async (req, res) => {
       .select("name")
       .lean();
 
+    const productIds = [...new Set((order.items || [])
+      .map(item => String(item.product || ""))
+      .filter(id => mongoose.isValidObjectId(id)))];
+    const products = productIds.length
+      ? await Product.find({
+          _id: { $in: productIds },
+          user: order.businessOwner?._id || order.businessOwner
+        }).select("_id description images image sku").lean()
+      : [];
+    const productMap = new Map(products.map(product => [String(product._id), product]));
+
     return res.json({
       id: order._id,
       orderNumber: order.orderNumber,
@@ -184,14 +195,26 @@ router.get("/purchases/:id/progress", async (req, res) => {
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
       completedAt: order.completedAt,
-      items: (order.items || []).map(item => ({
-        name: item.name || "Product",
-        sku: item.sku || "",
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        lineTotal: item.lineTotal,
-        image: item.image || item.images?.[0] || ""
-      })),
+      items: (order.items || []).map(item => {
+        const product = productMap.get(String(item.product || ""));
+        const snapshotImages = [...(Array.isArray(item.images) ? item.images : []), item.image]
+          .filter((image, index, all) => image && all.indexOf(image) === index);
+        const images = product?.images?.length
+          ? product.images
+          : product?.image
+            ? [product.image]
+            : snapshotImages;
+        return {
+          name: item.name || "Product",
+          sku: product?.sku || item.sku || "",
+          description: product?.description || "",
+          images,
+          image: images[0] || "",
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          lineTotal: item.lineTotal
+        };
+      }),
       total: order.total,
       currency: order.currency || "PHP",
       seller: {

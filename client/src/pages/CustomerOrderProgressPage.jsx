@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  FiArrowLeft, FiCheck, FiCreditCard, FiExternalLink, FiMapPin,
-  FiPackage, FiRefreshCw, FiTruck
+  FiArrowLeft, FiCheck, FiChevronLeft, FiChevronRight, FiCreditCard, FiExternalLink, FiMapPin,
+  FiPackage, FiRefreshCw, FiTruck, FiX
 } from "react-icons/fi";
 import { Button } from "../components/ui/button.jsx";
+import {
+  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle
+} from "../components/ui/dialog.jsx";
 import { Image } from "../components/ui/image.jsx";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
@@ -54,6 +57,8 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const loadOrder = useCallback(async (initial = false) => {
     if (initial) setLoading(true);
@@ -78,6 +83,11 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
 
   const currentIndex = phases.findIndex(([key]) => key === order?.status);
   const cancelled = order?.status === "cancelled";
+  const selectedItem = selectedItemIndex === null ? null : order?.items?.[selectedItemIndex];
+  const selectedImages = selectedItem?.images?.length
+    ? selectedItem.images
+    : selectedItem?.image ? [selectedItem.image] : [];
+  const shownImageIndex = Math.min(activeImageIndex, Math.max(0, selectedImages.length - 1));
 
   return <AppLayout user={user} onLogout={onLogout}>
     <div className="customer-history-page customer-order-progress-page">
@@ -158,15 +168,87 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
           <h2><FiPackage aria-hidden="true"/> Ordered products</h2>
           <div className="customer-order-progress-product-list">
             {(order.items || []).map((item, index) => <div className="customer-order-progress-product" key={index}>
-              {item.image
-                ? <Image src={item.image} alt={item.name} loading="lazy"/>
-                : <span className="customer-order-progress-product-placeholder"><FiPackage aria-hidden="true"/></span>}
-              <div><strong>{item.name}</strong><small>Qty {item.quantity} · {money(item.unitPrice, order.currency)} each</small></div>
+              <button
+                type="button"
+                className="customer-order-progress-product-open"
+                aria-label={`View product details and images for ${item.name}`}
+                onClick={() => { setSelectedItemIndex(index); setActiveImageIndex(0); }}
+              >
+                <span className="customer-order-progress-product-thumb">
+                  {item.image
+                    ? <Image src={item.image} alt="" loading="lazy"/>
+                    : <span className="customer-order-progress-product-placeholder"><FiPackage aria-hidden="true"/></span>}
+                </span>
+                <span className="customer-order-progress-product-copy">
+                  <strong>{item.name}</strong>
+                  <small>Qty {item.quantity} · {money(item.unitPrice, order.currency)} each</small>
+                  <span className="customer-order-progress-product-link">View product details</span>
+                </span>
+              </button>
               <strong>{money(item.lineTotal, order.currency)}</strong>
             </div>)}
           </div>
           <div className="customer-order-progress-total"><span>Order total</span><strong>{money(order.total, order.currency)}</strong></div>
         </section>
+        <Dialog
+          title="Product details"
+          open={Boolean(selectedItem)}
+          onOpenChange={open => { if (!open) setSelectedItemIndex(null); }}
+          className="customer-order-product-dialog"
+        >
+          <DialogContent className="customer-order-product-dialog-content">
+            <DialogHeader className="customer-order-product-dialog-header">
+              <div>
+                <p className="eyebrow">ORDERED PRODUCT</p>
+                <DialogTitle>{selectedItem?.name || "Product details"}</DialogTitle>
+                <DialogDescription>Product information and images for the item in this order.</DialogDescription>
+              </div>
+              <Button type="button" variant="ghost" size="icon" aria-label="Close product details"
+                onClick={() => setSelectedItemIndex(null)}><FiX aria-hidden="true"/></Button>
+            </DialogHeader>
+            {selectedItem && <>
+              <div className="customer-order-product-gallery">
+                <div className="customer-order-product-photo">
+                  {selectedImages.length
+                    ? <Image src={selectedImages[shownImageIndex]} alt={`${selectedItem.name} — image ${shownImageIndex + 1}`}/>
+                    : <span className="customer-order-progress-product-placeholder"><FiPackage aria-hidden="true"/>No product images available</span>}
+                </div>
+                {selectedImages.length > 1 && <>
+                  <div className="customer-order-product-photo-controls">
+                    <Button type="button" variant="outline" size="icon" aria-label="Previous image"
+                      onClick={() => setActiveImageIndex(index => (index + selectedImages.length - 1) % selectedImages.length)}>
+                      <FiChevronLeft aria-hidden="true"/>
+                    </Button>
+                    <span aria-live="polite">{shownImageIndex + 1} / {selectedImages.length}</span>
+                    <Button type="button" variant="outline" size="icon" aria-label="Next image"
+                      onClick={() => setActiveImageIndex(index => (index + 1) % selectedImages.length)}>
+                      <FiChevronRight aria-hidden="true"/>
+                    </Button>
+                  </div>
+                  <div className="customer-order-product-thumbnails" aria-label="Product image gallery">
+                    {selectedImages.map((src, index) => <button
+                      key={index}
+                      type="button"
+                      aria-label={`View image ${index + 1} of ${selectedItem.name}`}
+                      aria-pressed={index === shownImageIndex}
+                      onClick={() => setActiveImageIndex(index)}
+                    ><Image src={src} alt="" loading="lazy"/></button>)}
+                  </div>
+                </>}
+              </div>
+              <section className="customer-order-product-description">
+                <h3>Description</h3>
+                <p>{selectedItem.description || "No product description is available."}</p>
+              </section>
+              <dl className="customer-order-product-facts">
+                {selectedItem.sku && <div><dt>SKU</dt><dd>{selectedItem.sku}</dd></div>}
+                <div><dt>Ordered quantity</dt><dd>{selectedItem.quantity}</dd></div>
+                <div><dt>Unit price at order</dt><dd>{money(selectedItem.unitPrice, order.currency)}</dd></div>
+                <div><dt>Subtotal</dt><dd>{money(selectedItem.lineTotal, order.currency)}</dd></div>
+              </dl>
+            </>}
+          </DialogContent>
+        </Dialog>
       </>}
 
       <p className="customer-history-footnote">Order progress refreshes automatically every 30 seconds. You can also use Refresh status to check for the latest update.</p>
