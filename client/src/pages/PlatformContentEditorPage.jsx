@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FiArrowDown, FiArrowLeft, FiArrowUp, FiCheck, FiClock, FiCopy, FiEye,
-  FiFileText, FiMove, FiHelpCircle, FiImage, FiInfo, FiLink,
+  FiFileText, FiMove, FiHelpCircle, FiImage, FiInfo, FiLink, FiEyeOff,
   FiList, FiMinus, FiPlus, FiRefreshCw, FiSave, FiSend,
   FiGrid, FiTrash2, FiType
 } from "react-icons/fi";
@@ -288,7 +288,7 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
               <Field label="Public page title" value={draft.title} onChange={value => updateDraft({ title: value })}/>
               <div className="platform-editor-canvas-hint">Page components · Drag to reorder or use the arrow controls</div>
               {draft.components.map((block, index) => <section
-                className={"platform-editor-block" + (draggedId === block.id ? " dragging" : "")}
+                className={"platform-editor-block" + (draggedId === block.id ? " dragging" : "") + (block.hidden ? " is-hidden" : "")}
                 key={block.id}
                 draggable
                 onDragStart={event => { setDraggedId(block.id); event.dataTransfer.effectAllowed = "move"; event.dataTransfer.setData("text/plain", block.id); }}
@@ -297,10 +297,11 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
                 onDragEnd={() => setDraggedId("")}
               >
                 <div className="platform-editor-block-toolbar">
-                  <span className="platform-editor-block-label"><FiMove/>{index + 1}. {LIBRARY.find(item => item.type === block.type)?.label || block.type}</span>
+                  <span className="platform-editor-block-label"><FiMove/>{index + 1}. {LIBRARY.find(item => item.type === block.type)?.label || block.type}{block.hidden && <small className="platform-editor-hidden-label">Hidden from public</small>}</span>
                   <div className="platform-editor-block-actions">
                     <Button variant="plain" type="button" title="Move up" aria-label="Move up" disabled={index === 0} onClick={() => moveBlock(block.id, -1)}><FiArrowUp/></Button>
                     <Button variant="plain" type="button" title="Move down" aria-label="Move down" disabled={index === draft.components.length - 1} onClick={() => moveBlock(block.id, 1)}><FiArrowDown/></Button>
+                    <Button variant="plain" type="button" title={block.hidden ? "Show on public page" : "Hide from public page"} aria-label={block.hidden ? "Show component" : "Hide component"} onClick={() => updateBlock(block.id, { hidden: !block.hidden })}>{block.hidden ? <FiEye/> : <FiEyeOff/>}</Button>
                     <Button variant="plain" type="button" title="Duplicate" aria-label="Duplicate component" onClick={() => {
                       const copy = { ...block, id: makeId(), ...(block.questions ? { questions: block.questions.map(q => ({ ...q, id: makeId() })) } : {}) };
                       const next = [...draft.components]; next.splice(index + 1, 0, copy); updateDraft({ components: next });
