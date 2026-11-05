@@ -137,13 +137,13 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
         <Link to="/dashboard/profile/purchases" className="profile-customer-activity-link">
           <span className="profile-customer-activity-icon"><FiShoppingBag/></span>
           <span className="profile-customer-activity-copy"><strong>Purchase History</strong><small>Orders placed with other BookFlow businesses.</small></span>
-          <span className="profile-customer-activity-count" aria-label={`${activityCounts.purchases ?? 0} purchases`}>{activityCounts.purchases ?? "—"}</span>
+          <span className="profile-customer-activity-count" aria-label={activityCounts.purchases == null ? "Purchase total unavailable" : `${activityCounts.purchases} purchases`}>{activityCounts.purchases ?? "—"}</span>
           <FiArrowUpRight/>
         </Link>
         <Link to="/dashboard/profile/booking-history" className="profile-customer-activity-link">
           <span className="profile-customer-activity-icon"><FiCalendar/></span>
           <span className="profile-customer-activity-copy"><strong>Booking History</strong><small>Appointments and services booked with other businesses.</small></span>
-          <span className="profile-customer-activity-count" aria-label={`${activityCounts.bookings ?? 0} bookings`}>{activityCounts.bookings ?? "—"}</span>
+          <span className="profile-customer-activity-count" aria-label={activityCounts.bookings == null ? "Booking total unavailable" : `${activityCounts.bookings} bookings`}>{activityCounts.bookings ?? "—"}</span>
           <FiArrowUpRight/>
         </Link>
       </Card>}
