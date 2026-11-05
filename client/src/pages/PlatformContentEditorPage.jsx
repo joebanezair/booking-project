@@ -60,7 +60,7 @@ function Field({ label, value, onChange, multiline = false, placeholder = "", ro
 }
 
 export default function PlatformContentEditorPage({ user, onLogout }) {
-  const [slug, setSlug] = useState("terms");
+  const [slug, setSlug] = useState(() => new URLSearchParams(window.location.search).get("tab") === "faqs" ? "faqs" : "terms");
   const [record, setRecord] = useState(null);
   const [draft, setDraft] = useState({ title: "", components: [] });
   const [activeTab, setActiveTab] = useState("edit");
@@ -123,8 +123,8 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
     updateDraft({ components: items });
   }
 
-  function dropBlock(targetId) {
-    const fromIndex = draft.components.findIndex(item => item.id === draggedId);
+  function dropBlock(targetId, movingId = draggedId) {
+    const fromIndex = draft.components.findIndex(item => item.id === movingId);
     const toIndex = draft.components.findIndex(item => item.id === targetId);
     if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return;
     const items = [...draft.components];
@@ -293,7 +293,7 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
                 draggable
                 onDragStart={event => { setDraggedId(block.id); event.dataTransfer.effectAllowed = "move"; event.dataTransfer.setData("text/plain", block.id); }}
                 onDragOver={event => event.preventDefault()}
-                onDrop={event => { event.preventDefault(); const moving = event.dataTransfer.getData("text/plain") || draggedId; setDraggedId(moving); dropBlock(block.id); }}
+                onDrop={event => { event.preventDefault(); const moving = event.dataTransfer.getData("text/plain") || draggedId; dropBlock(block.id, moving); setDraggedId(""); }}
                 onDragEnd={() => setDraggedId("")}
               >
                 <div className="platform-editor-block-toolbar">
