@@ -124,7 +124,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
         </Link>
         <Link to="/dashboard/profile/content?tab=faqs" className="platform-content-profile-link">
           <span className="platform-content-profile-icon"><FiHelpCircle/></span>
-          <span><strong>Frequently Asked Questions</strong><small>Create unlimited FAQ groups and question-and-answer entries.</small></span>
+          <span><strong>Frequently Asked Questions</strong><small>Create multiple FAQ groups and question-and-answer entries.</small></span>
           <FiArrowUpRight/>
         </Link>
       </Card>}
