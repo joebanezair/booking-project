@@ -223,7 +223,7 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
           {loadingMore ? "Loading…" : "Load more"}
         </Button>
       </div>}
-      <p className="customer-history-footnote">Only activity linked to your signed-in account appears here. Guest purchases and bookings made before sign-in remain available through their original order or booking references.</p>
+      <p className="customer-history-footnote">Only activity linked to your signed-in account appears here. Guest checkouts and bookings, including activity created before this feature was added, are not automatically linked to your profile.</p>
     </div>
   </AppLayout>;
 }
