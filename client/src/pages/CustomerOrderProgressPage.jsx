@@ -91,11 +91,11 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
 
   return <AppLayout user={user} onLogout={onLogout}>
     <div className="customer-history-page customer-order-progress-page">
-      <div className="customer-order-progress-topbar">
-        <Link className="customer-history-back" to="/dashboard/profile/purchases">
+      <div className="customer-order-progress-topbar customer-order-progress-actions">
+        <Link className="customer-history-back customer-order-progress-back" to="/dashboard/profile/purchases">
           <FiArrowLeft aria-hidden="true"/> Back to Purchase History
         </Link>
-        <Button type="button" variant="outline" onClick={() => loadOrder(false)} disabled={refreshing || loading}>
+        <Button className="customer-order-refresh-button" type="button" variant="outline" onClick={() => loadOrder(false)} disabled={refreshing || loading}>
           <FiRefreshCw aria-hidden="true"/>{refreshing ? "Refreshing…" : "Refresh status"}
         </Button>
       </div>
@@ -111,13 +111,13 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
       {error && <p className="error customer-history-error" role="alert">{error}</p>}
 
       {order && <>
-        <section className="customer-order-progress-panel">
+        <section className="customer-order-progress-panel customer-order-status-panel">
           <div className="customer-order-progress-panel-head">
             <div>
               <small>ORDER STATUS</small>
               <strong>{statusNames[order.status] || order.status}</strong>
             </div>
-            <span className="customer-history-status">{statusNames[order.status] || order.status}</span>
+            <span className={`customer-history-status customer-order-status-badge status-${order.status}`}>{statusNames[order.status] || order.status}</span>
           </div>
           {cancelled
             ? <p className="customer-order-cancelled">This order was cancelled. Contact the seller if you need more information.</p>
@@ -136,15 +136,15 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
                   </li>;
                 })}
               </ol>}
-          <p className="customer-order-progress-updated">Last order update: {dateTime(order.updatedAt || order.createdAt)}</p>
+          <p className="customer-order-progress-updated"><FiRefreshCw aria-hidden="true"/><span>Last updated {dateTime(order.updatedAt || order.createdAt)}</span></p>
         </section>
 
         <div className="customer-order-progress-grid">
-          <section className="customer-order-progress-panel">
-            <h2><FiTruck aria-hidden="true"/> Delivery details</h2>
+          <section className="customer-order-progress-panel customer-order-info-section customer-order-delivery-section">
+            <h2><span className="customer-order-section-icon"><FiTruck aria-hidden="true"/></span><span>Delivery details</span></h2>
             <dl className="customer-order-progress-facts">
               <div><dt>Seller</dt><dd>{order.seller?.name || "BookFlow business"}</dd></div>
-              <div><dt>Delivery address</dt><dd>{order.deliveryLocation || "Not provided"}</dd></div>
+              <div><dt><FiMapPin aria-hidden="true"/> Delivery address</dt><dd>{order.deliveryLocation || "Not provided"}</dd></div>
               {order.courierName && <div><dt>Courier</dt><dd>{order.courierName}</dd></div>}
               {order.trackingNumber && <div><dt>Tracking number</dt><dd>{order.trackingNumber}</dd></div>}
               {order.trackingUrl && <div><dt>Courier link</dt><dd><a href={order.trackingUrl} target="_blank" rel="noreferrer">Track shipment <FiExternalLink aria-hidden="true"/></a></dd></div>}
@@ -153,10 +153,10 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
               <p className="muted customer-order-progress-empty">The seller has not added courier information yet.</p>}
           </section>
 
-          <section className="customer-order-progress-panel">
-            <h2><FiCreditCard aria-hidden="true"/> Payment</h2>
+          <section className="customer-order-progress-panel customer-order-info-section customer-order-payment-section">
+            <h2><span className="customer-order-section-icon"><FiCreditCard aria-hidden="true"/></span><span>Payment</span></h2>
             <dl className="customer-order-progress-facts">
-              <div><dt>Payment status</dt><dd>{String(order.paymentStatus || "unpaid").replaceAll("_", " ")}</dd></div>
+              <div><dt>Payment status</dt><dd><span className={`customer-order-payment-state payment-${String(order.paymentStatus || "unpaid").toLowerCase().replaceAll("_", "-")}`}>{String(order.paymentStatus || "unpaid").replaceAll("_", " ")}</span></dd></div>
               <div><dt>Payment method</dt><dd>{String(order.paymentMethod || "—").replaceAll("_", " ")}</dd></div>
               <div><dt>Amount paid</dt><dd>{money(order.amountPaid, order.currency)}</dd></div>
               {order.paidAt && <div><dt>Paid on</dt><dd>{dateTime(order.paidAt)}</dd></div>}
@@ -164,7 +164,7 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
           </section>
         </div>
 
-        <section className="customer-order-progress-panel customer-order-progress-items">
+        <section className="customer-order-progress-panel customer-order-progress-items customer-order-products-section">
           <h2><FiPackage aria-hidden="true"/> Ordered products</h2>
           <div className="customer-order-progress-product-list">
             {(order.items || []).map((item, index) => <div className="customer-order-progress-product" key={item.productId || item._id || index}>
@@ -257,7 +257,7 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
         </Dialog>
       </>}
 
-      <p className="customer-history-footnote">Order progress refreshes automatically every 30 seconds. You can also use Refresh status to check for the latest update.</p>
+      <p className="customer-history-footnote customer-order-progress-footnote">Order progress refreshes automatically every 30 seconds. Use Refresh status to check for the latest update.</p>
     </div>
   </AppLayout>;
 }
