@@ -1,7 +1,7 @@
 import { Label } from "../components/ui/label.jsx";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FiArrowRight } from "react-icons/fi";
+import { FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
 import { api } from "../api.js";
 import { Button } from "../components/ui/button.jsx";
 import { Input } from "../components/ui/input.jsx";
@@ -75,7 +75,7 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
           <Label htmlFor="auth-password">Password</Label>
           <div className="auth-password-field">
             <Input id="auth-password" name="password" type={showPassword ? "text" : "password"} autoComplete={isRegister ? "new-password" : "current-password"} minLength="8" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} disabled={submitting} required />
-            <Button type="button" variant="ghost" className="auth-password-toggle" aria-label={showPassword ? "Hide password" : "Show password"} aria-controls="auth-password" aria-pressed={showPassword} disabled={submitting} onClick={() => setShowPassword(v => !v)}>{showPassword ? "Hide" : "Show"}</Button>
+            <Button type="button" variant="ghost" size="icon" className="auth-password-toggle" aria-label={showPassword ? "Hide password" : "Show password"} title={showPassword ? "Hide password" : "Show password"} aria-controls="auth-password" aria-pressed={showPassword} disabled={submitting} onClick={() => setShowPassword(v => !v)}>{showPassword ? <FiEyeOff aria-hidden="true" /> : <FiEye aria-hidden="true" />}</Button>
           </div>
         </div>
         {error && <p className="error" role="alert">{error}</p>}
