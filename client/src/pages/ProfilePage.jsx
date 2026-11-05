@@ -14,11 +14,29 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [activityCounts, setActivityCounts] = useState({ purchases: null, bookings: null });
   const navigate = useNavigate();
 
   useEffect(() => {
     api.profile.get().then(setProfile).catch(e => setError(e.message));
   }, []);
+
+  useEffect(() => {
+    if (user?.role !== "business") return undefined;
+    let active = true;
+    Promise.all([
+      api.customerHistory.purchases({ limit: 1 }),
+      api.customerHistory.bookings({ limit: 1 })
+    ]).then(([purchases, bookings]) => {
+      if (active) setActivityCounts({
+        purchases: Number(purchases.totalCount || 0),
+        bookings: Number(bookings.totalCount || 0)
+      });
+    }).catch(() => {
+      if (active) setActivityCounts({ purchases: 0, bookings: 0 });
+    });
+    return () => { active = false; };
+  }, [user?.id, user?._id, user?.role]);
 
   async function persist(next, successMessage) {
     setSaving(true);
@@ -118,12 +136,14 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
         </div>
         <Link to="/dashboard/profile/purchases" className="profile-customer-activity-link">
           <span className="profile-customer-activity-icon"><FiShoppingBag/></span>
-          <span><strong>Purchase History</strong><small>Orders placed with other BookFlow businesses.</small></span>
+          <span className="profile-customer-activity-copy"><strong>Purchase History</strong><small>Orders placed with other BookFlow businesses.</small></span>
+          <span className="profile-customer-activity-count" aria-label={`${activityCounts.purchases ?? 0} purchases`}>{activityCounts.purchases ?? "—"}</span>
           <FiArrowUpRight/>
         </Link>
         <Link to="/dashboard/profile/booking-history" className="profile-customer-activity-link">
           <span className="profile-customer-activity-icon"><FiCalendar/></span>
-          <span><strong>Booking History</strong><small>Appointments and services booked with other businesses.</small></span>
+          <span className="profile-customer-activity-copy"><strong>Booking History</strong><small>Appointments and services booked with other businesses.</small></span>
+          <span className="profile-customer-activity-count" aria-label={`${activityCounts.bookings ?? 0} bookings`}>{activityCounts.bookings ?? "—"}</span>
           <FiArrowUpRight/>
         </Link>
       </Card>}
