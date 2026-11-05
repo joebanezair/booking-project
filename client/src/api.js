@@ -3,7 +3,7 @@ const API_URL = import.meta.env.VITE_API_URL || "/api";
 async function request(path, options = {}) {
   const token = localStorage.getItem("booking_token");
   // Never reuse browser/proxy cached inventory, sales or order information.
-  const sensitive = /^\/(?:sales(?:\/|$)|public\/(?:profile|admin)\/|public\/products\/|public\/orders(?:\/|$))/.test(path);
+  const sensitive = /^\/(?:sales(?:\/|$)|customer-history(?:\/|$)|public\/(?:profile|admin)\/|public\/products\/|public\/orders(?:\/|$))/.test(path);
   const response = await fetch(`${API_URL}${path}`, {
     ...(sensitive ? { cache: "no-store" } : {}),
     ...options,
