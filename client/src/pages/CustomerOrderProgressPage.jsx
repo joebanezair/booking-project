@@ -37,7 +37,7 @@ function money(value, currency = "PHP") {
       style: "currency", currency, maximumFractionDigits: 2
     }).format(Number(value || 0));
   } catch {
-    return \`\${currency} \${Number(value || 0).toLocaleString()}\`;
+    return currency + " " + Number(value || 0).toLocaleString();
   }
 }
 
