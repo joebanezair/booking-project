@@ -1,7 +1,7 @@
 import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiArrowUpRight, FiBriefcase, FiEdit3, FiExternalLink, FiFileText, FiHelpCircle, FiMapPin } from "react-icons/fi";
+import { FiArrowUpRight, FiBriefcase, FiCalendar, FiEdit3, FiExternalLink, FiFileText, FiHelpCircle, FiMapPin, FiShoppingBag } from "react-icons/fi";
 import { Card } from "../components/ui/card.jsx";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileMediaHeader from "../components/ProfileMediaHeader.jsx";
@@ -107,6 +107,26 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
 
         {!isAdmin && <BookingQrCard bookingUrl={window.location.origin + "/b/" + (user.id || user._id)} businessName={profile.name} />}
       </Card>
+
+      {!isAdmin && <Card as="section" className="profile-customer-activity-panel">
+        <div className="profile-customer-activity-heading">
+          <div>
+            <p className="eyebrow">YOUR ACCOUNT</p>
+            <h2>My Activity</h2>
+            <p className="muted">Keep track of products you buy and services you book across BookFlow.</p>
+          </div>
+        </div>
+        <Link to="/dashboard/profile/purchases" className="profile-customer-activity-link">
+          <span className="profile-customer-activity-icon"><FiShoppingBag/></span>
+          <span><strong>Purchase History</strong><small>Orders placed with other BookFlow businesses.</small></span>
+          <FiArrowUpRight/>
+        </Link>
+        <Link to="/dashboard/profile/booking-history" className="profile-customer-activity-link">
+          <span className="profile-customer-activity-icon"><FiCalendar/></span>
+          <span><strong>Booking History</strong><small>Appointments and services booked with other businesses.</small></span>
+          <FiArrowUpRight/>
+        </Link>
+      </Card>}
 
       {isAdmin && <Card as="section" className="platform-content-profile-panel">
         <div className="platform-content-profile-heading">
