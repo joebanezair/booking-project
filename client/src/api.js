@@ -108,7 +108,24 @@ export const api = {
     admin: slug => request(`/platform-content/admin/${encodeURIComponent(slug)}`, { cache: "no-store" }),
     saveDraft: (slug, body) => request(`/platform-content/admin/${encodeURIComponent(slug)}/draft`, { method: "PUT", body: JSON.stringify(body) }),
     publish: (slug, body) => request(`/platform-content/admin/${encodeURIComponent(slug)}/publish`, { method: "POST", body: JSON.stringify(body) }),
-    restore: (slug, revisionId) => request(`/platform-content/admin/${encodeURIComponent(slug)}/restore/${encodeURIComponent(revisionId)}`, { method: "POST" })
+    restore: (slug, revisionId) => request(`/platform-content/admin/${encodeURIComponent(slug)}/restore/${encodeURIComponent(revisionId)}`, { method: "POST" }),
+    uploadImage: async file => {
+      if (!file || !/^image\/(jpeg|png|webp|gif)$/i.test(file.type || "")) {
+        throw new Error("Choose a JPG, PNG, WebP or GIF image.");
+      }
+      if (file.size > 2 * 1024 * 1024) throw new Error("Image must be 2 MB or smaller.");
+      if (!await binaryUploadsAvailable()) {
+        throw new Error("MongoDB media storage is not available. Configure MEDIA_MONGO_URI before uploading images.");
+      }
+      let bytes = new Uint8Array(await file.arrayBuffer());
+      let mime = file.type.toLowerCase();
+      ({ bytes, mime } = await optimizeImageForUpload(bytes, mime));
+      return request("/platform-content/admin/upload-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/octet-stream", "X-File-Mime": mime },
+        body: bytes
+      });
+    }
   },
 
   profile: {
