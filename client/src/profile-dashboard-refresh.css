@@ -922,7 +922,7 @@ html body #root .profile-overview-clean .booking-qr-actions > .ui-button {
 }
 
 /* My Activity: regular-weight copy, right-aligned totals, and 10px spacing from profile card. */
-#root .profile-overview-clean > .profile-home-panel {
+html body #root .profile-overview-clean .profile-home-panel {
   margin-bottom: -8px !important;
 }
 #root .profile-overview-clean .profile-customer-activity-heading h2,
