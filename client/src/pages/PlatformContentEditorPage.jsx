@@ -7,6 +7,7 @@ import {
   FiGrid, FiTrash2, FiType
 } from "react-icons/fi";
 import { Button } from "../components/ui/button.jsx";
+import { Image } from "../components/ui/image.jsx";
 import AppLayout from "../components/AppLayout.jsx";
 import PlatformContentRenderer from "../components/PlatformContentRenderer.jsx";
 import { api } from "../api.js";
@@ -70,6 +71,8 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [draggedId, setDraggedId] = useState("");
+  const [uploadingImageId, setUploadingImageId] = useState("");
+  const [imageUploadError, setImageUploadError] = useState("");
 
   const isFaq = slug === "faqs";
   const library = useMemo(() => LIBRARY.filter(item => item[isFaq ? "faqs" : "terms"]), [isFaq]);
@@ -202,10 +205,50 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
       return <Field label={block.type === "callout" ? "Notice text" : block.type === "quote" ? "Quote" : "Content"} value={block.text} multiline rows={4} onChange={value => updateBlock(block.id, { text: value })}/>;
     if (["bulletList", "numberedList"].includes(block.type))
       return <Field label="One item per line" value={(block.items || []).join("\n")} multiline rows={5} onChange={value => updateBlock(block.id, { items: value.split("\n").slice(0, 100) })}/>;
-    if (block.type === "image") return <>
-      <Field label="Image URL (HTTPS)" value={block.url} onChange={value => updateBlock(block.id, { url: value })} placeholder="https://example.com/image.jpg"/>
+    if (block.type === "image") return <div className="platform-image-uploader">
+      {block.url
+        ? <div className="platform-image-upload-preview-wrap">
+            <Image src={block.url} alt={block.alt || "Terms page image preview"} loading="lazy" className="platform-image-upload-preview"/>
+            <span>Image stored in BookFlow media storage</span>
+          </div>
+        : <div className="platform-image-upload-empty">
+            <FiImage/>
+            <strong>Upload an image</strong>
+            <span>JPG, PNG, WebP or GIF · Maximum 2 MB</span>
+          </div>}
+      <input
+        className="platform-image-file-input"
+        id={`platform-image-${block.id}`}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        disabled={uploadingImageId === block.id}
+        onChange={async event => {
+          const file = event.target.files?.[0];
+          event.target.value = "";
+          if (!file) return;
+          setUploadingImageId(block.id);
+          setImageUploadError("");
+          try {
+            const uploaded = await api.platformContent.uploadImage(file);
+            updateBlock(block.id, { url: uploaded.url });
+          } catch (uploadError) {
+            setImageUploadError(uploadError.message || "Unable to upload image.");
+          } finally {
+            setUploadingImageId("");
+          }
+        }}
+      />
+      <div className="platform-image-upload-actions">
+        <Button type="button" size="sm" variant="outline" disabled={uploadingImageId === block.id}
+          onClick={() => document.getElementById(`platform-image-${block.id}`)?.click()}>
+          <FiImage/>{uploadingImageId === block.id ? "Uploading to MongoDB…" : block.url ? "Replace image" : "Choose image"}
+        </Button>
+        {block.url && <Button type="button" size="sm" variant="plain" disabled={uploadingImageId === block.id}
+          onClick={() => updateBlock(block.id, { url: "" })}>Remove</Button>}
+      </div>
+      {imageUploadError && <p className="platform-image-upload-error" role="alert">{imageUploadError}</p>}
       <Field label="Alternative text" value={block.alt} onChange={value => updateBlock(block.id, { alt: value })}/>
-    </>;
+    </div>;
     if (block.type === "link") return <>
       <Field label="Link text" value={block.label} onChange={value => updateBlock(block.id, { label: value })}/>
       <Field label="Destination URL" value={block.url} onChange={value => updateBlock(block.id, { url: value })} placeholder="https://example.com"/>
