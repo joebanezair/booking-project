@@ -723,3 +723,42 @@
   border-radius: 11px !important;
 }
 
+
+
+/* Rounded profile shortcuts and form controls for Terms & Conditions / FAQs. */
+.platform-content-profile-panel .platform-content-profile-icon {
+  border-radius: 15px !important;
+  background: #f1f4fa;
+  overflow: hidden;
+}
+.platform-content-profile-panel .platform-content-profile-icon svg {
+  border-radius: 6px;
+}
+.platform-content-profile-link {
+  border-radius: 14px;
+}
+.platform-editor-page .platform-editor-field input,
+.platform-editor-page .platform-editor-field textarea,
+.platform-editor-page .platform-editor-field select {
+  border-radius: 14px;
+}
+.platform-editor-page .platform-faq-question-editor {
+  border-radius: 16px;
+}
+.platform-editor-page .platform-editor-block {
+  border-radius: 16px;
+}
+.platform-editor-page .platform-image-uploader {
+  border-radius: 16px;
+}
+.platform-editor-page .platform-image-upload-empty,
+.platform-editor-page .platform-image-upload-preview-wrap,
+.platform-editor-page .platform-image-upload-preview {
+  border-radius: 14px;
+}
+.platform-editor-page .platform-image-upload-actions .ui-button,
+.platform-editor-page .platform-faq-question-list > .ui-button,
+.platform-editor-page .platform-editor-block-actions .ui-button,
+.platform-editor-page .platform-icon-button {
+  border-radius: 12px !important;
+}
