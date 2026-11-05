@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   FiArrowDown, FiArrowLeft, FiArrowUp, FiCheck, FiClock, FiCopy, FiEye,
   FiFileText, FiMove, FiHelpCircle, FiImage, FiInfo, FiLink,
-  FiList, FiMinus, FiPlus, FiQuote, FiRefreshCw, FiSave, FiSend,
+  FiList, FiMinus, FiPlus, FiRefreshCw, FiSave, FiSend,
   FiGrid, FiTrash2, FiType
 } from "react-icons/fi";
 import { Button } from "../components/ui/button.jsx";
@@ -18,7 +18,7 @@ const LIBRARY = [
   { type: "bulletList", label: "Bullet list", icon: FiList, terms: true, faqs: true },
   { type: "numberedList", label: "Numbered list", icon: FiList, terms: true, faqs: true },
   { type: "callout", label: "Callout / notice", icon: FiInfo, terms: true, faqs: true },
-  { type: "quote", label: "Quote", icon: FiQuote, terms: true, faqs: true },
+  { type: "quote", label: "Quote", icon: FiFileText, terms: true, faqs: true },
   { type: "divider", label: "Divider", icon: FiMinus, terms: true, faqs: true },
   { type: "image", label: "Image", icon: FiImage, terms: true, faqs: true },
   { type: "link", label: "Link / button", icon: FiLink, terms: true, faqs: true },
