@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema(
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ["business", "admin"], default: "business", index: true },
     accountStatus: { type: String, enum: ["active", "paused", "disabled"], default: "active", index: true },
+    termsAcceptance: {
+      versionId: { type: String, trim: true, maxlength: 80, default: "" },
+      version: { type: Number, min: 1, default: null },
+      acceptedAt: { type: Date, default: null }
+    },
     // Admin-managed, time-limited feature access. Older accounts remain enabled unless explicitly changed.
     featureAccess: {
       pos: {
