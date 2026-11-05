@@ -10,7 +10,7 @@ function TextLines({ value }) {
 export default function PlatformContentRenderer({ title, components = [] }) {
   return <article className="platform-public-content">
     <h1>{title}</h1>
-    {components.map((block, index) => {
+    {components.filter(block => !block.hidden).map((block, index) => {
       const key = block.id || `${block.type}-${index}`;
       switch (block.type) {
         case "heading": {
