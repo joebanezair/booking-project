@@ -33,7 +33,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
         bookings: Number(bookings.totalCount || 0)
       });
     }).catch(() => {
-      if (active) setActivityCounts({ purchases: 0, bookings: 0 });
+      if (active) setActivityCounts({ purchases: null, bookings: null });
     });
     return () => { active = false; };
   }, [user?.id, user?._id, user?.role]);
