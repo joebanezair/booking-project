@@ -328,3 +328,17 @@
   .platform-public-header nav { width: 100%; }
   .platform-public-header nav a { flex: 1; justify-content: center; }
 }
+
+
+.platform-editor-block.is-hidden { opacity: .62; }
+.platform-editor-hidden-label {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: var(--muted-bg);
+  color: var(--muted-foreground);
+  font-size: 9px;
+  font-weight: 400;
+}
