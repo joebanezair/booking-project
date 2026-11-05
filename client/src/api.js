@@ -128,6 +128,16 @@ export const api = {
     }
   },
 
+  customerHistory: {
+    purchases: (params = {}) => {
+      const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== "" && value != null));
+      return request(`/customer-history/purchases${query.toString() ? "?" + query : ""}`, { cache: "no-store" });
+    },
+    bookings: (params = {}) => {
+      const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== "" && value != null));
+      return request(`/customer-history/bookings${query.toString() ? "?" + query : ""}`, { cache: "no-store" });
+    }
+  },
   profile: {
     get: () => request("/profile"),
     getDashboardPreferences: () => request("/profile/dashboard-preferences", { cache: "no-store" }),
