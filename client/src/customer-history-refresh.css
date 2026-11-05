@@ -140,62 +140,7 @@
   flex: 0 0 auto;
   align-items: center;
   gap: 8px;
-}
-.customer-history-page .customer-history-status-help {
-  position: relative;
-  display: grid;
-  flex: 0 0 34px;
-  place-items: center;
-  width: 34px;
-  height: 38px;
-  padding: 0;
-  border: 1px solid var(--history-border);
-  border-radius: 11px;
-  background: var(--history-page-bg);
-  color: var(--history-muted);
-  cursor: help;
-  box-shadow: none;
-  transform: none;
-}
-.customer-history-page .customer-history-status-help:hover {
-  transform: none;
-  filter: none;
-  color: var(--primary, #6477dc);
-  background: var(--history-soft);
-}
-.customer-history-page .customer-history-status-help svg { width: 15px; height: 15px; }
-.customer-history-page .customer-history-status-help::after {
-  position: absolute;
-  z-index: 20;
-  right: 0;
-  bottom: calc(100% + 9px);
-  width: max-content;
-  max-width: min(250px, 70vw);
-  padding: 8px 10px;
-  border: 1px solid var(--history-border);
-  border-radius: 9px;
-  background: var(--history-text);
-  color: var(--history-surface);
-  content: attr(data-tooltip);
-  font-size: 11px;
-  line-height: 1.4;
-  text-align: left;
-  white-space: normal;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(3px);
-  transition: opacity .14s ease, transform .14s ease;
-}
-.customer-history-page .customer-history-status-help:hover::after,
-.customer-history-page .customer-history-status-help:focus-visible::after {
-  opacity: 1;
-  transform: translateY(0);
-}
-.customer-history-page .customer-history-status-help:focus-visible {
-  outline: 2px solid var(--primary, #6477dc);
-  outline-offset: 2px;
-}
-.customer-history-page .customer-history-status-filter select {
+}.customer-history-page .customer-history-status-filter select {
   width: auto;
   min-width: 145px;
   min-height: 40px;
@@ -502,9 +447,7 @@
   .customer-history-page .customer-history-toolbar { flex-wrap: wrap; }
   .customer-history-page .customer-history-search { flex-basis: 100%; }
   .customer-history-page .customer-history-status-filter { flex: 1 1 auto; }
-  .customer-history-page .customer-history-status-filter select { width: 100%; min-width: 0; }
-  .customer-history-page .customer-history-status-help { flex: 0 0 38px; }
-  .customer-history-page .customer-history-toolbar > .ui-button,
+  .customer-history-page .customer-history-status-filter select { width: 100%; min-width: 0; }.customer-history-page .customer-history-toolbar > .ui-button,
   .customer-history-page .customer-history-toolbar > button { flex: 1 0 auto; }
   .customer-history-page .customer-history-empty { min-height: 260px; padding: 35px 19px; }
 }
@@ -986,11 +929,7 @@
   border-bottom: 1px solid var(--history-border);
   border-radius: 0 !important;
   background: transparent;
-}
-#root .customer-history-page .customer-history-status-help::after {
-  border-radius: 10px !important;
-}
-#root .customer-history-page *,
+}#root .customer-history-page *,
 #root .customer-history-page *::before,
 #root .customer-history-page *::after {
   border-radius: 10px !important;

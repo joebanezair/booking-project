@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FiArrowLeft, FiArrowUpRight, FiCalendar, FiClock,
-  FiCreditCard, FiEdit2, FiEye, FiInfo, FiMapPin, FiPackage, FiRefreshCw, FiSearch,
+  FiCreditCard, FiEdit2, FiEye, FiMapPin, FiPackage, FiRefreshCw, FiSearch,
   FiShoppingBag, FiTruck
 } from "react-icons/fi";
 import { Button } from "../components/ui/button.jsx";
@@ -189,15 +189,6 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
           />
         </div>
         <div className="customer-history-status-filter">
-          <button
-            type="button"
-            className="customer-history-status-help"
-            aria-label={isPurchases ? "About purchase status filters" : "About booking status filters"}
-            title={isPurchases ? "Filter purchases by order status." : "Filter bookings by appointment status."}
-            data-tooltip={isPurchases ? "Filter purchases by order status." : "Filter bookings by appointment status."}
-          >
-            <FiInfo aria-hidden="true"/>
-          </button>
           <select
             aria-label={isPurchases ? "Filter purchases by status" : "Filter bookings by status"}
             value={status}
