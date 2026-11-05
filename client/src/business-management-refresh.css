@@ -3308,3 +3308,17 @@ html body #root .business-admin-page:not(.admin-dashboard-platform) .business-ad
   box-shadow: none !important;
   background: transparent !important;
 }
+
+/* Business Management list-view column labels: subtle divider under each heading. */
+.business-admin-page .business-admin-columns {
+  padding-bottom: 8px;
+}
+.business-admin-page .business-admin-columns > span {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 30px;
+  padding: 0 0 8px;
+  border-bottom: 1px solid var(--border, #e3e8f0);
+}
+
