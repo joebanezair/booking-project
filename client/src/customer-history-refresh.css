@@ -304,7 +304,6 @@
   border: 1px solid var(--history-border);
   border-radius: 18px !important;
   background: var(--history-surface);
-  overflow: hidden;
   background-clip: padding-box;
   box-shadow: none;
 }
