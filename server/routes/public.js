@@ -646,8 +646,8 @@ router.post("/book/:userId", optionalAuth, bookingMutationGuard(req => req.param
 });
 
 router.post("/products/:userId/order", async (req, res) => {
-  await new Promise(resolve => optionalAuth(req, res, resolve));
   res.set("Cache-Control", "no-store");
+  await new Promise(resolve => optionalAuth(req, res, resolve));
   try {
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Business not found." });
     const owner = await User.findOne({ _id:req.params.userId, role:"business", accountStatus:"active" }).select("_id featureAccess");
