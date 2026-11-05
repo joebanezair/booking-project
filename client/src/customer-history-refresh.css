@@ -946,3 +946,30 @@
     flex: 1 1 0;
   }
 }
+
+
+/* Remove borders from inner purchase information surfaces only.
+   Keep the outer order card, product images, text and all actions intact. */
+#root .customer-history-page .customer-history-lines,
+#root .customer-history-page .customer-history-lines > .customer-history-product,
+#root .customer-history-page .customer-history-product + .customer-history-product,
+#root .customer-history-page .customer-history-product > img,
+#root .customer-history-page .customer-history-product-placeholder,
+#root .customer-history-page .customer-history-card-bottom,
+#root .customer-history-page .customer-history-order-details,
+#root .customer-history-page .customer-history-order-details > div,
+#root .customer-history-page .customer-history-booking-detail,
+#root .customer-history-page .customer-history-booking-detail > div {
+  border: 0 !important;
+  outline: 0;
+  box-shadow: none !important;
+}
+#root .customer-history-page .customer-history-lines > .customer-history-product,
+#root .customer-history-page .customer-history-order-details > div,
+#root .customer-history-page .customer-history-booking-detail > div {
+  background: transparent !important;
+}
+#root .customer-history-page .customer-history-product > img,
+#root .customer-history-page .customer-history-product-placeholder {
+  border-radius: 10px !important;
+}
