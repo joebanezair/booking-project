@@ -18,3 +18,15 @@ test("feature expiry is enforced at exact boundary", () => {
 test("a feature does not expire if expiration is omitted", () => {
   assert.equal(featureStatus({ featureAccess: { pos: { enabled: true, expiresAt: null } } }, "pos").active, true);
 });
+
+test("new business accounts have POS and Bookings locked until administrator activation", () => {
+  const newBusiness = {
+    role: "business",
+    featureAccess: {
+      pos: { enabled: false, expiresAt: null },
+      booking: { enabled: false, expiresAt: null }
+    }
+  };
+  assert.equal(featureStatus(newBusiness, "pos").active, false);
+  assert.equal(featureStatus(newBusiness, "booking").active, false);
+});
