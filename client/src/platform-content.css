@@ -468,8 +468,18 @@
 .auth-terms-status-copy strong { color: var(--foreground); font-size: 11px; font-weight: 500; }
 .auth-terms-status-copy small { color: var(--muted-foreground); font-size: 10px; line-height: 1.45; }
 .auth-terms-status .ui-button { min-height: 32px; padding: 6px 9px; border-radius: 7px !important; font-size: 11px; }
-.auth-terms-faq-link { margin: -6px 0 0; text-align: right; font-size: 10px; }
-.auth-terms-faq-link a { color: var(--muted-foreground); text-decoration: underline; text-underline-offset: 2px; }
+.auth-terms-faq-link {
+  margin: -3px 0 2px 40px;
+  text-align: left;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.auth-terms-faq-link a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.auth-terms-faq-link a:hover { color: var(--foreground); }
 
 .business-feature-access-banner {
   display: flex;
