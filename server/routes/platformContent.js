@@ -31,7 +31,7 @@ function normalizeComponents(input, slug) {
     const type = text(raw.type, 40);
     if (!allowedTypes.has(type)) throw new Error(`Component ${index + 1} has an unsupported type.`);
     if (slug === "terms" && type === "faqGroup") throw new Error("FAQ groups can only be added to the FAQ page.");
-    const block = { id: text(raw.id, 100).trim() || randomUUID(), type };
+    const block = { id: text(raw.id, 100).trim() || randomUUID(), type, hidden: raw.hidden === true };
 
     if (type === "heading") {
       block.text = text(raw.text, 300);
