@@ -62,12 +62,15 @@ router.get("/purchases", async (req, res) => {
       ] }];
     }
 
-    const rows = await ProductOrder.find(filter)
-      .select("orderNumber items total currency status paymentStatus paymentMethod amountPaid paidAt courierName trackingNumber trackingUrl completedAt createdAt businessOwner deliveryLocation")
-      .populate("businessOwner", "name username")
-      .sort({ createdAt: -1, _id: -1 })
-      .limit(limit + 1)
-      .lean();
+    const [rows, totalCount] = await Promise.all([
+      ProductOrder.find(filter)
+        .select("orderNumber items total currency status paymentStatus paymentMethod amountPaid paidAt courierName trackingNumber trackingUrl completedAt createdAt businessOwner deliveryLocation")
+        .populate("businessOwner", "name username")
+        .sort({ createdAt: -1, _id: -1 })
+        .limit(limit + 1)
+        .lean(),
+      ProductOrder.countDocuments({ customerUser: req.user.id })
+    ]);
 
     const hasMore = rows.length > limit;
     const items = rows.slice(0, limit);
@@ -78,6 +81,7 @@ router.get("/purchases", async (req, res) => {
     const businessNames = new Map(businesses.map(item => [String(item.owner), item.name]));
 
     return res.json({
+      totalCount,
       items: items.map(order => ({
         id: order._id,
         orderNumber: order.orderNumber,
@@ -142,14 +146,17 @@ router.get("/bookings", async (req, res) => {
       ] }];
     }
 
-    const rows = await Booking.find(filter)
-      .select("bookingReference user business content service servicePrice currency serviceDurationMinutes bookingDate bookingEndsAt completedAt status locationLabel createdAt history")
-      .populate("user", "name username")
-      .populate("business", "name")
-      .populate("content", "title")
-      .sort({ bookingDate: -1, _id: -1 })
-      .limit(limit + 1)
-      .lean();
+    const [rows, totalCount] = await Promise.all([
+      Booking.find(filter)
+        .select("bookingReference user business content service servicePrice currency serviceDurationMinutes bookingDate bookingEndsAt completedAt status locationLabel createdAt history")
+        .populate("user", "name username")
+        .populate("business", "name")
+        .populate("content", "title")
+        .sort({ bookingDate: -1, _id: -1 })
+        .limit(limit + 1)
+        .lean(),
+      Booking.countDocuments({ customerUser: req.user.id })
+    ]);
 
     const hasMore = rows.length > limit;
     const items = rows.slice(0, limit).map(booking => ({
@@ -173,6 +180,7 @@ router.get("/bookings", async (req, res) => {
     }));
 
     return res.json({
+      totalCount,
       items,
       hasMore,
       nextCursor: hasMore ? encodeBookingCursor(rows[limit - 1]) : null
