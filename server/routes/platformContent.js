@@ -1,7 +1,9 @@
 import { Router } from "express";
+import express from "express";
 import { randomUUID } from "node:crypto";
 import requireAuth from "../middleware/auth.js";
 import { getOrCreatePlatformPage, publicPlatformPage, versionIdFor } from "../lib/platformContent.js";
+import { mediaBucket, publicMediaInput, saveBuffer } from "../lib/mediaStore.js";
 
 const router = Router();
 const allowedTypes = new Set([
@@ -41,10 +43,16 @@ function normalizeComponents(input, slug) {
     } else if (["bulletList", "numberedList"].includes(type)) {
       block.items = Array.isArray(raw.items) ? raw.items.slice(0, 100).map(item => text(item, 1000)) : [];
     } else if (type === "image") {
-      block.url = safeUrl(raw.url);
-      if (!(block.url.startsWith("https://") || block.url.startsWith("http://"))) throw new Error("Image components need a valid HTTP or HTTPS image URL.");
+      const suppliedUrl = text(raw.url, 2000).trim();
+      const externalUrl = safeUrl(suppliedUrl);
+      if (publicMediaInput(suppliedUrl)) {
+        block.url = suppliedUrl;
+      } else if (externalUrl.startsWith("https://")) {
+        block.url = externalUrl;
+      } else {
+        throw new Error("Image components must use a BookFlow MongoDB upload or a valid HTTPS image URL.");
+      }
       block.alt = text(raw.alt, 300);
-      if (!block.url) throw new Error("Image components need a valid HTTP or HTTPS image URL.");
     } else if (type === "link") {
       block.url = safeUrl(raw.url);
       block.label = text(raw.label, 160);
@@ -75,6 +83,31 @@ function requireAdmin(req, res, next) {
 }
 
 router.use("/admin", requireAuth, requireAdmin);
+
+// Store Terms/FAQ images in the configured MongoDB GridFS media bucket.
+// Only administrators can upload images for public platform pages.
+router.post("/admin/upload-image",
+  express.raw({ type: "application/octet-stream", limit: "2mb" }),
+  async (req, res) => {
+    try {
+      if (!mediaBucket()) {
+        return res.status(503).json({ message: "MongoDB media storage is not configured. Configure MEDIA_MONGO_URI to upload page images." });
+      }
+      const mimeType = String(req.headers["x-file-mime"] || "").toLowerCase();
+      const url = await saveBuffer(req.body, {
+        mimeType,
+        visibility: "public",
+        name: `platform-content-${Date.now()}`,
+        ownerId: req.user.id
+      });
+      res.set("Cache-Control", "no-store");
+      return res.status(201).json({ url });
+    } catch (error) {
+      console.error("Platform content image upload failed", error);
+      return res.status(error.status || 500).json({ message: error.message || "Unable to upload this image." });
+    }
+  }
+);
 
 router.get("/admin/:slug", async (req, res) => {
   try {
