@@ -103,6 +103,14 @@ export const api = {
   login: body => request("/auth/login", { method: "POST", body: JSON.stringify(body) }),
   me: () => request("/auth/me"),
 
+  platformContent: {
+    public: slug => request(`/platform-content/${encodeURIComponent(slug)}`, { cache: "no-store" }),
+    admin: slug => request(`/platform-content/admin/${encodeURIComponent(slug)}`, { cache: "no-store" }),
+    saveDraft: (slug, body) => request(`/platform-content/admin/${encodeURIComponent(slug)}/draft`, { method: "PUT", body: JSON.stringify(body) }),
+    publish: (slug, body) => request(`/platform-content/admin/${encodeURIComponent(slug)}/publish`, { method: "POST", body: JSON.stringify(body) }),
+    restore: (slug, revisionId) => request(`/platform-content/admin/${encodeURIComponent(slug)}/restore/${encodeURIComponent(revisionId)}`, { method: "POST" })
+  },
+
   profile: {
     get: () => request("/profile"),
     getDashboardPreferences: () => request("/profile/dashboard-preferences", { cache: "no-store" }),
