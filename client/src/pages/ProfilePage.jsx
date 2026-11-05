@@ -1,7 +1,7 @@
 import { Button } from "../components/ui/button.jsx";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiArrowUpRight, FiBriefcase, FiEdit3, FiExternalLink, FiMapPin } from "react-icons/fi";
+import { FiArrowUpRight, FiBriefcase, FiEdit3, FiExternalLink, FiFileText, FiHelpCircle, FiMapPin } from "react-icons/fi";
 import { Card } from "../components/ui/card.jsx";
 import AppLayout from "../components/AppLayout.jsx";
 import ProfileMediaHeader from "../components/ProfileMediaHeader.jsx";
@@ -108,6 +108,26 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
         {!isAdmin && <BookingQrCard bookingUrl={window.location.origin + "/b/" + (user.id || user._id)} businessName={profile.name} />}
       </Card>
 
+      {isAdmin && <Card as="section" className="platform-content-profile-panel">
+        <div className="platform-content-profile-heading">
+          <div>
+            <p className="eyebrow">ADMIN TOOLS</p>
+            <h2>Platform content</h2>
+            <p className="muted">Manage the public information shown to visitors and new accounts.</p>
+          </div>
+          <span className="platform-content-profile-badge">Administrator only</span>
+        </div>
+        <Link to="/dashboard/profile/content" className="platform-content-profile-link">
+          <span className="platform-content-profile-icon"><FiFileText/></span>
+          <span><strong>Terms & Conditions</strong><small>Edit content blocks, preview and publish versioned terms.</small></span>
+          <FiArrowUpRight/>
+        </Link>
+        <Link to="/dashboard/profile/content?tab=faqs" className="platform-content-profile-link">
+          <span className="platform-content-profile-icon"><FiHelpCircle/></span>
+          <span><strong>Frequently Asked Questions</strong><small>Create unlimited FAQ groups and question-and-answer entries.</small></span>
+          <FiArrowUpRight/>
+        </Link>
+      </Card>}
       {error && <p className="error profile-feedback">{error}</p>}
       {message && <p className="success profile-feedback">{message}</p>}
     </>}
