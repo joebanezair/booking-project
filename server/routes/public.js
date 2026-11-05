@@ -672,7 +672,7 @@ router.post("/products/:userId/order", optionalAuth, async (req, res) => {
       if(!p)return res.status(404).json({message:"A selected product is unavailable in this business inventory."});
       if(p.stock<quantity)return res.status(409).json({message:p.name+" has insufficient stock. Available: "+p.stock+"; ordered: "+quantity+"."});
       const lineTotal=Number(p.price||0)*quantity;
-      items.push({product:p._id,name:p.name,sku:p.sku,quantity,unitPrice:p.price,lineTotal});
+      items.push({product:p._id,name:p.name,sku:p.sku,quantity,unitPrice:p.price,lineTotal,image:p.image||p.images?.[0]||"",images:(p.images||[]).slice(0,8)});
       total+=lineTotal;currency=p.currency||currency;
     }
     const orderNumber="BFO-"+new Date().getFullYear()+"-"+Date.now();
