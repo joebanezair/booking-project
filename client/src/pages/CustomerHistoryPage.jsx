@@ -41,6 +41,14 @@ function dateTime(value) {
   }).format(date);
 }
 
+function dateTimeLocalInput(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
 function statusClass(value) {
   const status = String(value || "").toLowerCase();
   if (["completed", "paid", "ready", "confirmed"].includes(status)) return "customer-history-status positive";
@@ -68,6 +76,11 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
   const [editForm, setEditForm] = useState(null);
   const [editSaving, setEditSaving] = useState(false);
   const [editError, setEditError] = useState("");
+  const [viewingBookingId, setViewingBookingId] = useState("");
+  const [editingBookingId, setEditingBookingId] = useState("");
+  const [bookingEditForm, setBookingEditForm] = useState(null);
+  const [bookingEditSaving, setBookingEditSaving] = useState(false);
+  const [bookingEditError, setBookingEditError] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -155,6 +168,56 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
 
   function canEditOrder(order) {
     return ["pending", "confirmed"].includes(String(order.status || "").toLowerCase());
+  }
+
+  function canEditBooking(booking) {
+    return ["pending", "confirmed"].includes(String(booking.status || "").toLowerCase());
+  }
+
+  function beginEditBooking(booking) {
+    setViewingBookingId(String(booking.id));
+    setEditingBookingId(String(booking.id));
+    setBookingEditForm({
+      guestName: booking.guestName || "",
+      guestEmail: booking.guestEmail || "",
+      guestPhone: booking.guestPhone || "",
+      bookingDate: dateTimeLocalInput(booking.bookingDate),
+      locationLabel: booking.locationLabel || "",
+      notes: booking.notes || ""
+    });
+    setBookingEditError("");
+  }
+
+  function cancelEditBooking() {
+    setEditingBookingId("");
+    setBookingEditForm(null);
+    setBookingEditError("");
+  }
+
+  async function saveBookingDetails(event) {
+    event.preventDefault();
+    if (!editingBookingId || !bookingEditForm || bookingEditSaving) return;
+    const selectedDate = new Date(bookingEditForm.bookingDate);
+    if (Number.isNaN(selectedDate.getTime())) {
+      setBookingEditError("Choose a valid booking date and time.");
+      return;
+    }
+    setBookingEditSaving(true);
+    setBookingEditError("");
+    try {
+      const saved = await api.customerHistory.updateBooking(editingBookingId, {
+        ...bookingEditForm,
+        bookingDate: selectedDate.toISOString()
+      });
+      setItems(current => current.map(booking => String(booking.id) === editingBookingId
+        ? { ...booking, ...saved }
+        : booking));
+      cancelEditBooking();
+    } catch (saveError) {
+      setBookingEditError(saveError.message || "Unable to update your booking.");
+    } finally {
+      setBookingEditSaving(false);
+    }
   }
 
   const title = isPurchases ? "Purchase History" : "Booking History";
@@ -339,6 +402,75 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
               {booking.locationLabel && <div><small>Location</small><strong><FiMapPin/> {booking.locationLabel}</strong></div>}
               <div><small>Price</small><strong>{money(booking.servicePrice, booking.currency)}</strong></div>
             </div>
+            <div className="customer-history-order-actions">
+              <Button
+                type="button"
+                variant="outline"
+                className="customer-history-view-toggle"
+                onClick={() => setViewingBookingId(current => current === String(booking.id) ? "" : String(booking.id))}
+                aria-expanded={viewingBookingId === String(booking.id)}
+              >
+                <FiEye aria-hidden="true"/>
+                {viewingBookingId === String(booking.id) ? "Hide details" : "View booking"}
+              </Button>
+              {canEditBooking(booking) && <Button
+                type="button"
+                variant="outline"
+                className="customer-history-edit-toggle"
+                onClick={() => editingBookingId === String(booking.id) ? cancelEditBooking() : beginEditBooking(booking)}
+                aria-expanded={editingBookingId === String(booking.id)}
+              >
+                <FiEdit2 aria-hidden="true"/>Edit booking
+              </Button>}
+            </div>
+            {viewingBookingId === String(booking.id) && <section className="customer-history-order-details" aria-label={`Details for ${booking.bookingReference || "booking"}`}>
+              <div><small>Customer</small><span>{booking.guestName || "—"}</span></div>
+              <div><small>Email</small><span>{booking.guestEmail || "—"}</span></div>
+              <div><small>Phone</small><span>{booking.guestPhone || "—"}</span></div>
+              {booking.notes && <div className="customer-history-order-note"><small>Notes</small><span>{booking.notes}</span></div>}
+            </section>}
+            {editingBookingId === String(booking.id) && bookingEditForm && <form className="customer-history-edit-form" onSubmit={saveBookingDetails}>
+              <div className="customer-history-edit-heading">
+                <div>
+                  <span>BOOKING DETAILS</span>
+                  <p>Update your contact information, location, notes or preferred appointment time.</p>
+                </div>
+              </div>
+              <div className="customer-history-edit-fields">
+                <Label>Full name
+                  <Input value={bookingEditForm.guestName} required maxLength="100" autoComplete="name"
+                    onChange={event => setBookingEditForm(current => ({ ...current, guestName: event.target.value }))}/>
+                </Label>
+                <Label>Email address
+                  <Input type="email" value={bookingEditForm.guestEmail} required maxLength="150" autoComplete="email"
+                    onChange={event => setBookingEditForm(current => ({ ...current, guestEmail: event.target.value }))}/>
+                </Label>
+                <Label>Phone number
+                  <Input value={bookingEditForm.guestPhone} required maxLength="30" autoComplete="tel"
+                    onChange={event => setBookingEditForm(current => ({ ...current, guestPhone: event.target.value }))}/>
+                </Label>
+                <Label>Appointment date & time
+                  <Input type="datetime-local" value={bookingEditForm.bookingDate} required
+                    onChange={event => setBookingEditForm(current => ({ ...current, bookingDate: event.target.value }))}/>
+                </Label>
+                <Label className="customer-history-edit-wide">Location
+                  <Input value={bookingEditForm.locationLabel} maxLength="200" autoComplete="street-address"
+                    onChange={event => setBookingEditForm(current => ({ ...current, locationLabel: event.target.value }))}/>
+                </Label>
+                <Label className="customer-history-edit-wide">Notes for the business
+                  <Textarea rows="2" maxLength="500" value={bookingEditForm.notes}
+                    onChange={event => setBookingEditForm(current => ({ ...current, notes: event.target.value }))}/>
+                </Label>
+              </div>
+              {bookingEditError && <p className="error customer-history-edit-error" role="alert">{bookingEditError}</p>}
+              <div className="customer-history-edit-actions">
+                <Button type="button" variant="outline" onClick={cancelEditBooking} disabled={bookingEditSaving}>Cancel</Button>
+                <Button type="submit" disabled={bookingEditSaving || !bookingEditForm.guestName.trim() || !bookingEditForm.guestEmail.trim() || !bookingEditForm.guestPhone.trim()}>
+                  {bookingEditSaving ? "Saving…" : "Save booking"}
+                </Button>
+              </div>
+              <p className="customer-history-edit-note">Bookings can be edited while pending or confirmed. New appointment times are checked against the provider’s availability.</p>
+            </form>}
           </article>)}
         </div>}
 

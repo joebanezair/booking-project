@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import requireAuth from "../middleware/auth.js";
 import Booking from "../models/Booking.js";
 import Business from "../models/Business.js";
+import Content from "../models/Content.js";
+import { bookingMutationGuard } from "../middleware/bookingMutationGuard.js";
+import { calculateBookingEndsAt, validateBookingWindow } from "../lib/scheduling.js";
 import { ProductOrder } from "../models/Sale.js";
 import { decodeBookingCursor, encodeBookingCursor, readPageSize } from "../lib/pagination.js";
 
@@ -11,6 +14,27 @@ router.use(requireAuth, (req, res, next) => {
   if (req.user?.role !== "business") return res.status(403).json({ message: "Customer history is available to regular business accounts." });
   next();
 });
+
+async function resolveCustomerBookingOwner(req, res, next) {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(404).json({ message: "Booking not found." });
+  }
+  try {
+    const booking = await Booking.findOne({
+      _id: req.params.id,
+      customerUser: req.user.id
+    }).select("user").lean();
+    if (!booking) return res.status(404).json({ message: "Booking not found." });
+    req.customerBookingOwner = booking.user;
+    return next();
+  } catch (error) {
+    console.error("Customer booking ownership check failed", error);
+    return res.status(500).json({ message: "Unable to update this booking." });
+  }
+}
+
+const customerBookingMutationGuard = bookingMutationGuard(req => req.customerBookingOwner);
+
 
 const purchaseStatuses = new Set(["pending", "confirmed", "processing", "ready", "out_for_delivery", "completed", "cancelled"]);
 const bookingStatuses = new Set(["pending", "confirmed", "in_progress", "completed", "cancelled", "no_show"]);
@@ -192,6 +216,146 @@ router.patch("/purchases/:id", async (req, res) => {
   }
 });
 
+
+router.patch("/bookings/:id", resolveCustomerBookingOwner, customerBookingMutationGuard, async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  try {
+    const booking = await Booking.findOne({
+      _id: req.params.id,
+      customerUser: req.user.id
+    });
+    if (!booking) return res.status(404).json({ message: "Booking not found." });
+
+    if (!["pending", "confirmed"].includes(booking.status)) {
+      return res.status(409).json({
+        message: "This booking can only be edited while it is pending or confirmed."
+      });
+    }
+
+    const guestName = String(req.body.guestName || "").trim();
+    const guestEmail = String(req.body.guestEmail || "").trim().toLowerCase();
+    const guestPhone = String(req.body.guestPhone || "").trim();
+    const locationLabel = String(req.body.locationLabel || "").trim();
+    const notes = String(req.body.notes || "").trim();
+    const bookingDate = new Date(req.body.bookingDate);
+
+    if (!guestName || guestName.length > 100) {
+      return res.status(400).json({ message: "Enter your name (100 characters or fewer)." });
+    }
+    if (!guestEmail || guestEmail.length > 150 || !/^\S+@\S+\.\S+$/.test(guestEmail)) {
+      return res.status(400).json({ message: "Enter a valid email address." });
+    }
+    if (!/^[0-9+().\-\s]{7,30}$/.test(guestPhone)) {
+      return res.status(400).json({ message: "Enter a valid phone number." });
+    }
+    if (locationLabel.length > 200) {
+      return res.status(400).json({ message: "Location must be 200 characters or fewer." });
+    }
+    if (notes.length > 500) {
+      return res.status(400).json({ message: "Notes must be 500 characters or fewer." });
+    }
+    if (Number.isNaN(bookingDate.getTime())) {
+      return res.status(400).json({ message: "Choose a valid booking date and time." });
+    }
+
+    const oldDate = new Date(booking.bookingDate);
+    const dateChanged = oldDate.getTime() !== bookingDate.getTime();
+    if (dateChanged) {
+      const business = await Business.findOne({ owner: booking.user });
+      if (!business) return res.status(404).json({ message: "The service provider is no longer available." });
+
+      const service = booking.content
+        ? await Content.findOne({ _id: booking.content, user: booking.user })
+            .select("durationMinutes bufferMinutes capacity")
+            .lean()
+        : null;
+      const schedule = service || {
+        durationMinutes: booking.serviceDurationMinutes || 60,
+        bufferMinutes: booking.bufferMinutes || 0,
+        capacity: 1
+      };
+      const scheduleError = await validateBookingWindow({
+        business,
+        service: schedule,
+        ownerId: booking.user,
+        start: bookingDate,
+        excludeBookingId: booking._id
+      });
+      if (scheduleError) return res.status(409).json({ message: scheduleError });
+      booking.bookingDate = bookingDate;
+      booking.bookingEndsAt = calculateBookingEndsAt(bookingDate, schedule);
+      booking.history.push({
+        action: "rescheduled",
+        status: booking.status,
+        fromDate: oldDate,
+        toDate: bookingDate,
+        note: "Customer rescheduled their booking."
+      });
+    }
+
+    const locationChanged = locationLabel !== String(booking.locationLabel || "");
+    const detailsChanged =
+      guestName !== booking.guestName ||
+      guestEmail !== booking.guestEmail ||
+      guestPhone !== booking.guestPhone ||
+      locationChanged ||
+      notes !== booking.notes;
+
+    if (!dateChanged && !detailsChanged) {
+      return res.json({
+        id: booking._id,
+        bookingReference: booking.bookingReference,
+        status: booking.status,
+        guestName: booking.guestName,
+        guestEmail: booking.guestEmail,
+        guestPhone: booking.guestPhone,
+        bookingDate: booking.bookingDate,
+        bookingEndsAt: booking.bookingEndsAt,
+        locationLabel: booking.locationLabel,
+        notes: booking.notes || ""
+      });
+    }
+
+    booking.guestName = guestName;
+    booking.guestEmail = guestEmail;
+    booking.guestPhone = guestPhone;
+    booking.locationLabel = locationLabel;
+    booking.notes = notes;
+    if (locationChanged) {
+      booking.locationLatitude = null;
+      booking.locationLongitude = null;
+      booking.locationAccuracy = null;
+    }
+    if (detailsChanged) {
+      booking.history.push({
+        action: "customer_updated",
+        status: booking.status,
+        note: "Customer updated their booking details."
+      });
+    }
+
+    await booking.save();
+    req.app.get("io")?.to("user:" + String(booking.user)).emit("booking:updated", booking);
+
+    return res.json({
+      id: booking._id,
+      bookingReference: booking.bookingReference,
+      status: booking.status,
+      guestName: booking.guestName,
+      guestEmail: booking.guestEmail,
+      guestPhone: booking.guestPhone,
+      bookingDate: booking.bookingDate,
+      bookingEndsAt: booking.bookingEndsAt,
+      locationLabel: booking.locationLabel,
+      notes: booking.notes || ""
+    });
+  } catch (error) {
+    console.error("Customer booking update failed", error);
+    return res.status(error.name === "ValidationError" || error.name === "CastError" ? 400 : 500)
+      .json({ message: "Unable to update your booking." });
+  }
+});
+
 router.get("/bookings", async (req, res) => {
   res.set("Cache-Control", "no-store");
   try {
@@ -220,7 +384,7 @@ router.get("/bookings", async (req, res) => {
 
     const [rows, totalCount] = await Promise.all([
       Booking.find(filter)
-        .select("bookingReference user business content service servicePrice currency serviceDurationMinutes bookingDate bookingEndsAt completedAt status locationLabel createdAt history")
+        .select("bookingReference user business content service servicePrice currency serviceDurationMinutes bufferMinutes bookingDate bookingEndsAt completedAt status locationLabel guestName guestEmail guestPhone notes createdAt history")
         .populate("user", "name username")
         .populate("business", "name")
         .populate("content", "title")
@@ -243,6 +407,10 @@ router.get("/bookings", async (req, res) => {
       completedAt: booking.completedAt,
       status: booking.status,
       locationLabel: booking.locationLabel,
+      guestName: booking.guestName || "",
+      guestEmail: booking.guestEmail || "",
+      guestPhone: booking.guestPhone || "",
+      notes: booking.notes || "",
       createdAt: booking.createdAt,
       provider: {
         id: booking.user?._id || null,

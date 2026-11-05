@@ -140,6 +140,10 @@ export const api = {
     updatePurchase: (id, body) => request(`/customer-history/purchases/${encodeURIComponent(id)}`, {
       method: "PATCH",
       body: JSON.stringify(body)
+    }),
+    updateBooking: (id, body) => request(`/customer-history/bookings/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      body: JSON.stringify(body)
     })
   },
   profile: {

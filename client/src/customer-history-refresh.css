@@ -979,3 +979,21 @@
 #root .customer-history-page .customer-history-card-top {
   border-radius: 0 !important;
 }
+
+
+/* Customer booking history editor */
+#root .customer-history-page .customer-history-booking-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-top: 2px;
+}
+#root .customer-history-page .customer-history-booking-actions > * {
+  border-radius: 10px !important;
+}
+@media (max-width: 640px) {
+  #root .customer-history-page .customer-history-booking-actions > * {
+    flex: 1 1 0;
+  }
+}
