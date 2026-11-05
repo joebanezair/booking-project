@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AuthPage from "./pages/AuthPage.jsx";
+import PlatformContentEditorPage from "./pages/PlatformContentEditorPage.jsx";
+import PublicPlatformContentPage from "./pages/PublicPlatformContentPage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import ContentManagementPage from "./pages/ContentManagementPage.jsx";
 import CreateContentPage from "./pages/CreateContentPage.jsx";
@@ -136,6 +138,8 @@ export default function App() {
     <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage onAuthenticated={setUser} initialMode="login" />} />
     <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage onAuthenticated={setUser} initialMode="register" />} />
     <Route path="/register/admin/:inviteKey" element={<InviteRegisterPage user={user} onAuthenticated={setUser} />} />
+    <Route path="/terms" element={<PublicPlatformContentPage slug="terms" />} />
+    <Route path="/faqs" element={<PublicPlatformContentPage slug="faqs" />} />
 
     <Route path="/dashboard" element={protectedPage(DashboardPage)} />
     <Route path="/dashboard/services" element={servicesPage(ContentManagementPage)} />
@@ -154,6 +158,7 @@ export default function App() {
     <Route path="/dashboard/messages/:userId" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/profile" element={protectedPage(ProfilePage)} />
     <Route path="/dashboard/profile/edit" element={protectedPage(ProfileSettingsPage)} />
+    <Route path="/dashboard/profile/content" element={adminPage(PlatformContentEditorPage)} />
     <Route path="/dashboard/profile/business" element={businessPage(BusinessPage)} />
     <Route path="/dashboard/notifications" element={protectedPage(NotificationsPage)} />
     <Route path="/dashboard/settings" element={protectedPage(SettingsPage)} />
