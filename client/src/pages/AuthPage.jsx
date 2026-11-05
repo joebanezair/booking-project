@@ -1,4 +1,3 @@
-import { Label } from "../components/ui/label.jsx";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
@@ -65,16 +64,16 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
       </div>
 
       <form className="auth-fields" onSubmit={submit} aria-busy={submitting}>
-        {isRegister && <Label htmlFor="auth-name">Business or account name
-          <Input id="auth-name" name="name" autoComplete="organization" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} disabled={submitting} required />
-        </Label>}
-        <Label htmlFor="auth-email">Email
-          <Input id="auth-email" name="email" type="email" autoComplete="email" inputMode="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} disabled={submitting} required />
-        </Label>
+        {isRegister && <div className="auth-field">
+          <Input id="auth-name" name="name" autoComplete="organization" placeholder="Business or account name" aria-label="Business or account name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} disabled={submitting} required />
+        </div>}
         <div className="auth-field">
-          <Label htmlFor="auth-password">Password</Label>
+          <Input id="auth-email" name="email" type="email" autoComplete="email" inputMode="email" placeholder="Email" aria-label="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} disabled={submitting} required />
+        </div>
+        <div className="auth-field">
+          
           <div className="auth-password-field">
-            <Input id="auth-password" name="password" type={showPassword ? "text" : "password"} autoComplete={isRegister ? "new-password" : "current-password"} minLength="8" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} disabled={submitting} required />
+            <Input id="auth-password" name="password" type={showPassword ? "text" : "password"} autoComplete={isRegister ? "new-password" : "current-password"} minLength="8" placeholder="Password" aria-label="Password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} disabled={submitting} required />
             <Button type="button" variant="ghost" size="icon" className="auth-password-toggle" aria-label={showPassword ? "Hide password" : "Show password"} title={showPassword ? "Hide password" : "Show password"} aria-controls="auth-password" aria-pressed={showPassword} disabled={submitting} onClick={() => setShowPassword(v => !v)}>{showPassword ? <FiEyeOff aria-hidden="true" /> : <FiEye aria-hidden="true" />}</Button>
           </div>
         </div>
