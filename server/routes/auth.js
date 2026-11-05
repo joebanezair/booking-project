@@ -49,13 +49,13 @@ function validInviteKey(actual, expected) {
 }
 
 async function createAccount(req, res, role) {
-  const { name, email, password, termsVersionId } = req.body || {};
+  const { name, email, password, termsVersionId, termsAccepted } = req.body || {};
   if (!name || !email || !password) return res.status(400).json({ message: "Name, email and password are required." });
   if (password.length < 8) return res.status(400).json({ message: "Password must be at least 8 characters." });
 
   const termsPage = await getOrCreatePlatformPage("terms");
   const currentTermsVersionId = versionIdFor("terms", termsPage.publishedVersion);
-  if (termsVersionId !== currentTermsVersionId) {
+  if (termsAccepted !== true || termsVersionId !== currentTermsVersionId) {
     return res.status(400).json({ message: "Please review and accept the current Terms & Conditions before creating your account." });
   }
 
