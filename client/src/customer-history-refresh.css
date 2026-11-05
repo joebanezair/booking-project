@@ -293,14 +293,19 @@
 .customer-history-page .customer-history-discover:hover {
   background: color-mix(in srgb, var(--primary, #6477dc) 12%, var(--history-surface));
 }
-.customer-history-page .customer-history-list { display: grid; gap: 12px; }
+.customer-history-page .customer-history-list {
+  display: grid;
+  gap: 5px !important;
+}
 .customer-history-page .customer-history-card {
   display: grid;
   gap: 14px;
   padding: 17px;
   border: 1px solid var(--history-border);
-  border-radius: 17px;
+  border-radius: 18px !important;
   background: var(--history-surface);
+  overflow: hidden;
+  background-clip: padding-box;
   box-shadow: none;
 }
 .customer-history-page .customer-history-card-top,
