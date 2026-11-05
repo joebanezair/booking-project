@@ -120,6 +120,7 @@ export default function PublicBookingPage({user}){
         <Label>Notes<Textarea rows="4" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></Label>
         {error&&<p className="error">{error}</p>}
         {message&&<div className="success"><strong>{message}</strong>{reference&&<span className="booking-reference-success">Reference: {reference}</span>}</div>}
+        {user?.role === "business" ? <p className="customer-history-checkout-note">This booking will be saved to your Booking History.</p> : <p className="customer-history-checkout-note">Sign in with your BookFlow business account to save this booking to your Booking History. <Link to="/login">Sign in</Link></p>}
         <Button variant="plain" className="primary-button" disabled={!form.bookingDate}>Request booking</Button>
       </form>
     </>}
