@@ -51,6 +51,7 @@ export const PosSale = mongoose.models.PosSale || mongoose.model("PosSale", posS
 
 const productOrderSchema = new mongoose.Schema({
   businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
+  customerUser:{type:mongoose.Schema.Types.ObjectId,ref:"User",default:null,index:true},
   orderNumber:{type:String,required:true,unique:true,index:true},
   items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number,unitCost:{type:Number,min:0,default:null},lineCost:{type:Number,min:0,default:null}}],
   total:{type:Number,min:0,required:true}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
@@ -68,6 +69,7 @@ const productOrderSchema = new mongoose.Schema({
 
 // Completed product order totals are aggregated per business, not loaded into memory.
 productOrderSchema.index({ businessOwner: 1, status: 1, completedAt: -1 });
+productOrderSchema.index({ customerUser: 1, createdAt: -1, _id: -1 });
 export const ProductOrder = mongoose.models.ProductOrder || mongoose.model("ProductOrder", productOrderSchema);
 
 export default mongoose.model("Sale", saleSchema);
