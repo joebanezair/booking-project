@@ -645,7 +645,8 @@ router.post("/book/:userId", optionalAuth, bookingMutationGuard(req => req.param
   }
 });
 
-router.post("/products/:userId/order", optionalAuth, async (req, res) => {
+router.post("/products/:userId/order", async (req, res) => {
+  await new Promise(resolve => optionalAuth(req, res, resolve));
   res.set("Cache-Control", "no-store");
   try {
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Business not found." });
