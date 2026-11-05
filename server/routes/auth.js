@@ -73,7 +73,13 @@ async function createAccount(req, res, role) {
       versionId: currentTermsVersionId,
       version: termsPage.publishedVersion,
       acceptedAt: new Date()
-    }
+    },
+    ...(role === "business" ? {
+      featureAccess: {
+        pos: { enabled: false, expiresAt: null },
+        booking: { enabled: false, expiresAt: null }
+      }
+    } : {})
   });
 
   try {
