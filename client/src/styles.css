@@ -7751,3 +7751,101 @@ td,th{
     grid-template-columns: minmax(90px, .7fr) minmax(0, 1.3fr);
   }
 }
+
+
+/* Ordered products: borderless, uncluttered row and total */
+.customer-order-progress-page .customer-order-progress-items {
+  border: 0 !important;
+  padding: 24px 0 8px !important;
+}
+.customer-order-progress-page .customer-order-progress-items > h2 {
+  margin-bottom: 14px !important;
+}
+.customer-order-progress-page .customer-order-progress-product-list {
+  display: grid;
+  gap: 10px;
+  border: 0 !important;
+}
+.customer-order-progress-page .customer-order-progress-product {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 4px 0;
+  border: 0 !important;
+  background: transparent;
+}
+.customer-order-progress-page .customer-order-progress-product-open {
+  width: 100%;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 13px;
+  border: 0 !important;
+  outline-offset: 3px;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.customer-order-progress-page .customer-order-progress-product-thumb {
+  width: 54px;
+  height: 54px;
+  border: 0 !important;
+  border-radius: 10px !important;
+}
+.customer-order-progress-page .customer-order-progress-product-copy {
+  justify-items: start;
+  gap: 3px;
+}
+.customer-order-progress-page .customer-order-progress-product-copy strong {
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 650;
+}
+.customer-order-progress-page .customer-order-progress-product-copy small {
+  font-size: 11px;
+  line-height: 1.45;
+}
+.customer-order-progress-page .customer-order-progress-product-link {
+  margin-top: 1px;
+  color: var(--primary, #5267d7);
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: 550;
+}
+.customer-order-progress-page .customer-order-progress-product > strong {
+  padding-left: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.customer-order-progress-page .customer-order-progress-total {
+  justify-content: flex-end;
+  gap: 24px;
+  margin-top: 16px;
+  padding: 12px 0 0;
+  border: 0 !important;
+  background: transparent;
+}
+.customer-order-progress-page .customer-order-progress-total span {
+  font-size: 12px;
+  font-weight: 500;
+}
+.customer-order-progress-page .customer-order-progress-total strong {
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 480px) {
+  .customer-order-progress-page .customer-order-progress-product {
+    gap: 10px;
+  }
+  .customer-order-progress-page .customer-order-progress-product-open {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 10px;
+  }
+  .customer-order-progress-page .customer-order-progress-product-thumb {
+    width: 48px;
+    height: 48px;
+  }
+  .customer-order-progress-page .customer-order-progress-total {
+    gap: 16px;
+  }
+}
