@@ -312,3 +312,38 @@ html[data-theme="dark"] body .auth-card .auth-browse { color: #aab7ce; }
   .auth-card .auth-fields .ui-input,
   .auth-card .auth-submit { transition: none; }
 }
+
+
+/* Compact icon-only password visibility control. */
+.auth-card .auth-password-field .auth-password-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #64738e !important;
+}
+.auth-card .auth-password-field .auth-password-toggle svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+.auth-card .auth-password-field .auth-password-toggle:hover:not(:disabled) {
+  background: #eef2fb !important;
+  color: #405fcf !important;
+}
+html[data-theme="dark"] body .auth-card .auth-password-field .auth-password-toggle {
+  color: #aab8d0 !important;
+}
+html[data-theme="dark"] body .auth-card .auth-password-field .auth-password-toggle:hover:not(:disabled) {
+  background: #26354d !important;
+  color: #dce5f6 !important;
+}
