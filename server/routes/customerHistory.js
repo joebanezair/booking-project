@@ -83,6 +83,7 @@ router.get("/purchases", async (req, res) => {
         orderNumber: order.orderNumber,
         items: (order.items || []).map(item => ({
           name: item.name,
+          image: item.image || item.images?.[0] || "",
           quantity: item.quantity,
           unitPrice: item.unitPrice,
           lineTotal: item.lineTotal
