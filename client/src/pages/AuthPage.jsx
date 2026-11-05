@@ -45,7 +45,7 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
     }
     try {
       const data = mode === "register"
-        ? await api.register({ ...form, termsVersionId: termsPage.versionId })
+        ? await api.register({ ...form, termsVersionId: termsPage.versionId, termsAccepted: true })
         : await api.login(form);
       localStorage.setItem("booking_token", data.token);
       localStorage.setItem("booking_user", JSON.stringify(data.user));
