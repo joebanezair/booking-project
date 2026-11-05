@@ -912,3 +912,12 @@ html body #root .profile-overview-clean .booking-qr-actions > .ui-button {
   text-underline-offset: 2px;
 }
 
+/* My Activity shortcuts: softer rounded icon tiles. */
+.profile-customer-activity-panel .profile-customer-activity-icon {
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+.profile-customer-activity-panel .profile-customer-activity-icon svg {
+  border-radius: 6px;
+}
+
