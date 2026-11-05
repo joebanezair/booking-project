@@ -178,6 +178,7 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
             {termsAccepted ? "Review" : "Open"}
           </Button>
         </div>}
+      {isRegister && <p className="auth-terms-faq-link"><Link to="/faqs" target="_blank" rel="noreferrer">Questions? Visit our FAQs</Link></p>}
         {isRegister && termsError && <p className="auth-terms-error" role="alert">{termsError}</p>}
         {error && <p className="error" role="alert">{error}</p>}
         <Button type="submit" size="lg" className="auth-submit" disabled={submitting || (isRegister && (!termsPage?.versionId || !termsAccepted))}>
@@ -186,7 +187,6 @@ export default function AuthPage({ onAuthenticated, initialMode = "login" }) {
         </Button>
       </form>
 
-      {isRegister && <p className="auth-terms-faq-link"><Link to="/faqs" target="_blank" rel="noreferrer">Questions? Visit our FAQs</Link></p>}
 
       <div className="auth-footer">
         <span>{isRegister ? "Already have an account?" : "Don't have a business account?"}</span>
