@@ -524,7 +524,7 @@ router.get("/book/:userId/slots", async (req, res) => {
   }
 });
 
-router.post("/book/:userId", bookingMutationGuard(req => req.params.userId), async (req, res) => {
+router.post("/book/:userId", optionalAuth, bookingMutationGuard(req => req.params.userId), async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Booking page not found." });
 
@@ -601,6 +601,7 @@ router.post("/book/:userId", bookingMutationGuard(req => req.params.userId), asy
     const bookingStart = new Date(bookingDate);
     const booking = await Booking.create({
       user: owner._id,
+      customerUser: req.user?.role === "business" ? req.user.id : null,
       business: business._id,
       content: selectedContent?._id || null,
       bookingReference,
@@ -644,7 +645,7 @@ router.post("/book/:userId", bookingMutationGuard(req => req.params.userId), asy
   }
 });
 
-router.post("/products/:userId/order", async (req, res) => {
+router.post("/products/:userId/order", optionalAuth, async (req, res) => {
   res.set("Cache-Control", "no-store");
   try {
     if (!mongoose.isValidObjectId(req.params.userId)) return res.status(404).json({ message: "Business not found." });
@@ -675,7 +676,7 @@ router.post("/products/:userId/order", async (req, res) => {
       total+=lineTotal;currency=p.currency||currency;
     }
     const orderNumber="BFO-"+new Date().getFullYear()+"-"+Date.now();
-    const order=await ProductOrder.create({businessOwner:owner._id,orderNumber,items,total,currency,customerName,customerEmail,customerPhone,deliveryLocation,notes:String(req.body.notes||"").trim()});
+    const order=await ProductOrder.create({businessOwner:owner._id,customerUser:req.user?.role === "business" ? req.user.id : null,orderNumber,items,total,currency,customerName,customerEmail,customerPhone,deliveryLocation,notes:String(req.body.notes||"").trim()});
     await notify(req,owner._id,{type:"booking",title:"New product order",body:customerName+" placed product order "+orderNumber+".",link:"/dashboard/online-orders"});
     res.status(201).json({id:order._id,orderNumber,trackingToken:orderTrackingToken(order),message:"Product order sent successfully."});
   } catch(error){console.error(error);res.status(500).json({message:"Unable to place product order."});}
