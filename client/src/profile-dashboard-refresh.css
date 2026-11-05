@@ -957,3 +957,9 @@ html body #root .profile-overview-clean .profile-home-panel {
   font-variant-numeric: tabular-nums;
 }
 
+/* My Activity totals: rounded fill with no outline. */
+html body #root .profile-overview-clean .profile-customer-activity-count {
+  border: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
