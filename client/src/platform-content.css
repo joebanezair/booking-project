@@ -795,3 +795,37 @@
   border-radius: 12px;
 }
 
+/* Round the two surfaces shown in the latest screenshots. */
+html body #root .platform-editor-page .platform-editor-block {
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+html body #root .platform-editor-page .platform-image-uploader {
+  border-radius: 18px !important;
+  overflow: hidden;
+}
+html body #root .platform-editor-page .platform-image-upload-empty,
+html body #root .platform-editor-page .platform-image-upload-preview-wrap {
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+html body #root .platform-editor-page .platform-image-upload-preview,
+html body #root .platform-editor-page .platform-image-upload-preview img,
+html body #root .platform-editor-page .platform-image-upload-preview-wrap img {
+  border-radius: 14px !important;
+}
+html body #root .platform-editor-page .platform-image-upload-actions .ui-button {
+  border-radius: 12px !important;
+}
+
+html body #root .business-feature-access-banner {
+  border-radius: 18px !important;
+  overflow: hidden;
+}
+html body #root .business-feature-access-icon {
+  border-radius: 12px !important;
+}
+html body #root .business-feature-access-banner .ui-button {
+  border-radius: 12px !important;
+}
+
