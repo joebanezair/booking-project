@@ -762,3 +762,36 @@
 .platform-editor-page .platform-icon-button {
   border-radius: 12px !important;
 }
+
+/* Page builder screenshot refinement: round the outer panels, component cards and form fields. */
+.platform-editor-page .platform-editor-workspace > .platform-component-library {
+  border-radius: 18px !important;
+  overflow: hidden;
+}
+.platform-editor-page .platform-editor-workspace > .platform-editor-main {
+  border-radius: 18px !important;
+  overflow: hidden;
+}
+.platform-editor-page .platform-editor-main-tabs {
+  border-radius: 18px 18px 0 0;
+}
+.platform-editor-page .platform-editor-block {
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+.platform-editor-page .platform-editor-canvas > .platform-editor-field input,
+.platform-editor-page .platform-editor-block-fields .platform-editor-field input,
+.platform-editor-page .platform-editor-block-fields .platform-editor-field textarea,
+.platform-editor-page .platform-editor-block-fields .platform-editor-field select {
+  border-radius: 12px !important;
+}
+.platform-editor-page .platform-editor-block-fields textarea {
+  min-height: 84px;
+}
+.platform-editor-page .platform-component-grid button {
+  border-radius: 11px;
+}
+.platform-editor-page .platform-editor-side-note {
+  border-radius: 12px;
+}
+
