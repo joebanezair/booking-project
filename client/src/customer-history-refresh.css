@@ -715,7 +715,7 @@
 
 
 /* Purchase history refinements: one clear order surface, no stacked mini-cards. */
-#root .customer-history-page .customer-history-toolbar { margin-bottom: 6px !important; }
+#root .customer-history-page .customer-history-toolbar { margin-bottom: 12px !important; }
 #root .customer-history-page .customer-history-list { gap: 5px !important; }
 #root .customer-history-page .customer-history-card {
   border-radius: 10px !important;
