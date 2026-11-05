@@ -24,6 +24,7 @@ const historySchema = new mongoose.Schema(
 const bookingSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    customerUser: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null, index: true },
     business: { type: mongoose.Schema.Types.ObjectId, ref: "Business", default: null, index: true },
     content: { type: mongoose.Schema.Types.ObjectId, ref: "Content", default: null, index: true },
     bookingReference: { type: String, trim: true, uppercase: true, index: true, sparse: true },
@@ -58,6 +59,7 @@ const bookingSchema = new mongoose.Schema(
 );
 
 bookingSchema.index({ user: 1, bookingDate: 1 });
+bookingSchema.index({ customerUser: 1, bookingDate: -1, _id: -1 });
 bookingSchema.index({ user: 1, status: 1, bookingDate: 1 });
 bookingSchema.index({ user: 1, status: 1, bookingDate: 1, bookingEndsAt: 1 });
 bookingSchema.index({ user: 1, status: 1, completedAt: -1 });
