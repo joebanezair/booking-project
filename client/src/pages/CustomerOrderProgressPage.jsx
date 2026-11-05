@@ -167,25 +167,31 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
         <section className="customer-order-progress-panel customer-order-progress-items">
           <h2><FiPackage aria-hidden="true"/> Ordered products</h2>
           <div className="customer-order-progress-product-list">
-            {(order.items || []).map((item, index) => <div className="customer-order-progress-product" key={index}>
-              <button
-                type="button"
-                className="customer-order-progress-product-open"
-                aria-label={`View product details and images for ${item.name}`}
-                onClick={() => { setSelectedItemIndex(index); setActiveImageIndex(0); }}
-              >
+            {(order.items || []).map((item, index) => <div className="customer-order-progress-product" key={item.productId || item._id || index}>
+              <div className="customer-order-progress-product-main">
                 <span className="customer-order-progress-product-thumb">
                   {item.image
-                    ? <Image src={item.image} alt="" loading="lazy"/>
+                    ? <Image src={item.image} alt={item.name || "Ordered product"} loading="lazy"/>
                     : <span className="customer-order-progress-product-placeholder"><FiPackage aria-hidden="true"/></span>}
                 </span>
-                <span className="customer-order-progress-product-copy">
-                  <strong>{item.name}</strong>
-                  <small>Qty {item.quantity} · {money(item.unitPrice, order.currency)} each</small>
-                  <span className="customer-order-progress-product-link">View product details</span>
-                </span>
-              </button>
-              <strong>{money(item.lineTotal, order.currency)}</strong>
+                <div className="customer-order-progress-product-copy">
+                  <strong className="customer-order-progress-product-name">{item.name || "Product"}</strong>
+                  <span className="customer-order-progress-product-meta">
+                    <span>Qty {item.quantity}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{money(item.unitPrice, order.currency)} each</span>
+                  </span>
+                  <button
+                    type="button"
+                    className="customer-order-progress-product-details"
+                    aria-label={`View product details for ${item.name || "product"}`}
+                    onClick={() => { setSelectedItemIndex(index); setActiveImageIndex(0); }}
+                  >
+                    View product details
+                  </button>
+                </div>
+              </div>
+              <strong className="customer-order-progress-product-line-total">{money(item.lineTotal, order.currency)}</strong>
             </div>)}
           </div>
           <div className="customer-order-progress-total"><span>Order total</span><strong>{money(order.total, order.currency)}</strong></div>
