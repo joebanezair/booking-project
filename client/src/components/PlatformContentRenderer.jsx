@@ -1,4 +1,5 @@
 import React from "react";
+import { Image } from "./ui/image.jsx";
 
 function TextLines({ value }) {
   return <div className="platform-content-text">{String(value || "").split(/\n{2,}/).map((part, index) =>
@@ -31,7 +32,7 @@ export default function PlatformContentRenderer({ title, components = [] }) {
           return <hr className="platform-content-divider" key={key}/>;
         case "image":
           return <figure className="platform-content-image" key={key}>
-            <img src={block.url} alt={block.alt || ""} loading="lazy"/>
+            <Image src={block.url} alt={block.alt || ""} loading="lazy"/>
             {block.alt && <figcaption>{block.alt}</figcaption>}
           </figure>;
         case "link":
