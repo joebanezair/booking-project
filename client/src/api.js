@@ -136,7 +136,11 @@ export const api = {
     bookings: (params = {}) => {
       const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== "" && value != null));
       return request(`/customer-history/bookings${query.toString() ? "?" + query : ""}`, { cache: "no-store" });
-    }
+    },
+    updatePurchase: (id, body) => request(`/customer-history/purchases/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      body: JSON.stringify(body)
+    })
   },
   profile: {
     get: () => request("/profile"),

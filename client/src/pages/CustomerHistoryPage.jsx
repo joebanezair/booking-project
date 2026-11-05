@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FiArrowLeft, FiArrowUpRight, FiCalendar, FiClock,
-  FiCreditCard, FiInfo, FiMapPin, FiPackage, FiRefreshCw, FiSearch,
+  FiCreditCard, FiEdit2, FiEye, FiInfo, FiMapPin, FiPackage, FiRefreshCw, FiSearch,
   FiShoppingBag, FiTruck
 } from "react-icons/fi";
 import { Button } from "../components/ui/button.jsx";
 import { Input } from "../components/ui/input.jsx";
+import { Label } from "../components/ui/label.jsx";
+import { Textarea } from "../components/ui/textarea.jsx";
 import { Image } from "../components/ui/image.jsx";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
@@ -61,6 +63,11 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
+  const [viewingOrderId, setViewingOrderId] = useState("");
+  const [editingOrderId, setEditingOrderId] = useState("");
+  const [editForm, setEditForm] = useState(null);
+  const [editSaving, setEditSaving] = useState(false);
+  const [editError, setEditError] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -107,6 +114,47 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
     } finally {
       setLoadingMore(false);
     }
+  }
+
+  function beginEditOrder(order) {
+    setViewingOrderId(String(order.id));
+    setEditingOrderId(String(order.id));
+    setEditForm({
+      customerName: order.customerName || "",
+      customerPhone: order.customerPhone || "",
+      customerEmail: order.customerEmail || "",
+      deliveryLocation: order.deliveryLocation || "",
+      notes: order.notes || ""
+    });
+    setEditError("");
+  }
+
+  function cancelEditOrder() {
+    setEditingOrderId("");
+    setEditForm(null);
+    setEditError("");
+  }
+
+  async function saveOrderDetails(event) {
+    event.preventDefault();
+    if (!editingOrderId || !editForm || editSaving) return;
+    setEditSaving(true);
+    setEditError("");
+    try {
+      const saved = await api.customerHistory.updatePurchase(editingOrderId, editForm);
+      setItems(current => current.map(order => String(order.id) === editingOrderId
+        ? { ...order, ...saved }
+        : order));
+      cancelEditOrder();
+    } catch (saveError) {
+      setEditError(saveError.message || "Unable to update your order details.");
+    } finally {
+      setEditSaving(false);
+    }
+  }
+
+  function canEditOrder(order) {
+    return ["pending", "confirmed"].includes(String(order.status || "").toLowerCase());
   }
 
   const title = isPurchases ? "Purchase History" : "Booking History";
@@ -206,8 +254,80 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
                 {order.deliveryLocation && <span><FiMapPin/> {order.deliveryLocation}</span>}
               </div>
               <div className="customer-history-total"><small>Total</small><strong>{money(order.total, order.currency)}</strong></div>
+              <div className="customer-history-order-actions">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="customer-history-view-toggle"
+                  onClick={() => setViewingOrderId(current => current === String(order.id) ? "" : String(order.id))}
+                  aria-expanded={viewingOrderId === String(order.id)}
+                >
+                  <FiEye aria-hidden="true"/>
+                  {viewingOrderId === String(order.id) ? "Hide details" : "View order"}
+                </Button>
+                {canEditOrder(order) && <Button
+                  type="button"
+                  variant="outline"
+                  className="customer-history-edit-toggle"
+                  onClick={() => editingOrderId === String(order.id) ? cancelEditOrder() : beginEditOrder(order)}
+                  aria-expanded={editingOrderId === String(order.id)}
+                >
+                  <FiEdit2 aria-hidden="true"/>
+                  {editingOrderId === String(order.id) ? "Close editor" : "Edit details"}
+                </Button>}
+              </div>
             </div>
+            {viewingOrderId === String(order.id) && <section className="customer-history-order-details" aria-label={`Details for ${order.orderNumber}`}>
+              <div><small>Customer</small><span>{order.customerName || "—"}</span></div>
+              <div><small>Phone</small><span>{order.customerPhone || "—"}</span></div>
+              <div><small>Email</small><span>{order.customerEmail || "—"}</span></div>
+              <div><small>Delivery address</small><span>{order.deliveryLocation || "—"}</span></div>
+              <div><small>Payment method</small><span>{order.paymentMethod ? labelStatus(order.paymentMethod) : "—"}</span></div>
+              <div><small>Amount paid</small><span>{money(order.amountPaid, order.currency)}</span></div>
+              {order.paidAt && <div><small>Paid on</small><span>{dateTime(order.paidAt)}</span></div>}
+              {order.courierName && <div><small>Courier</small><span>{order.courierName}</span></div>}
+              {order.completedAt && <div><small>Completed</small><span>{dateTime(order.completedAt)}</span></div>}
+              {order.notes && <div className="customer-history-order-note"><small>Order notes</small><span>{order.notes}</span></div>}
+            </section>}
             {order.trackingUrl && <a className="customer-history-tracking" href={order.trackingUrl} target="_blank" rel="noreferrer">Track delivery <FiArrowUpRight/></a>}
+            {editingOrderId === String(order.id) && editForm && <form className="customer-history-edit-form" onSubmit={saveOrderDetails}>
+              <div className="customer-history-edit-heading">
+                <div>
+                  <span>ORDER CONTACT & DELIVERY</span>
+                  <p>Update where the seller should contact you and deliver this order.</p>
+                </div>
+              </div>
+              <div className="customer-history-edit-fields">
+                <Label>Full name
+                  <Input value={editForm.customerName} required maxLength="120" autoComplete="name"
+                    onChange={event => setEditForm(current => ({ ...current, customerName: event.target.value }))}/>
+                </Label>
+                <Label>Phone number
+                  <Input value={editForm.customerPhone} required maxLength="30" autoComplete="tel"
+                    onChange={event => setEditForm(current => ({ ...current, customerPhone: event.target.value }))}/>
+                </Label>
+                <Label>Email address
+                  <Input type="email" value={editForm.customerEmail} maxLength="150" autoComplete="email"
+                    onChange={event => setEditForm(current => ({ ...current, customerEmail: event.target.value }))}/>
+                </Label>
+                <Label className="customer-history-edit-wide">Delivery address
+                  <Input value={editForm.deliveryLocation} required maxLength="250" autoComplete="street-address"
+                    onChange={event => setEditForm(current => ({ ...current, deliveryLocation: event.target.value }))}/>
+                </Label>
+                <Label className="customer-history-edit-wide">Order notes
+                  <Textarea rows="2" maxLength="500" value={editForm.notes}
+                    onChange={event => setEditForm(current => ({ ...current, notes: event.target.value }))}/>
+                </Label>
+              </div>
+              {editError && <p className="error customer-history-edit-error" role="alert">{editError}</p>}
+              <div className="customer-history-edit-actions">
+                <Button type="button" variant="outline" onClick={cancelEditOrder} disabled={editSaving}>Cancel</Button>
+                <Button type="submit" disabled={editSaving || !editForm.customerName.trim() || !editForm.customerPhone.trim() || !editForm.deliveryLocation.trim()}>
+                  {editSaving ? "Saving…" : "Save details"}
+                </Button>
+              </div>
+              <p className="customer-history-edit-note">Details can be changed while an order is pending or confirmed. Product quantities and prices remain unchanged.</p>
+            </form>}
           </article>) : items.map(booking => <article className="customer-history-card" key={booking.id}>
             <div className="customer-history-card-top">
               <div className="customer-history-reference">

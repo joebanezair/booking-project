@@ -769,3 +769,241 @@
   }
   .customer-history-page .customer-history-card-bottom { padding: 9px; }
 }
+
+
+/* Purchase history refinements: one clear order surface, no stacked mini-cards. */
+#root .customer-history-page .customer-history-toolbar { margin-bottom: 6px !important; }
+#root .customer-history-page .customer-history-list { gap: 5px !important; }
+#root .customer-history-page .customer-history-card {
+  border-radius: 10px !important;
+  padding: 14px 15px;
+  box-shadow: 0 1px 3px rgba(18, 28, 45, .035);
+}
+#root .customer-history-page .customer-history-card-top {
+  padding-bottom: 9px;
+}
+#root .customer-history-page .customer-history-lines {
+  gap: 0;
+}
+#root .customer-history-page .customer-history-product {
+  padding: 8px 2px;
+  border: 0;
+  border-radius: 0 !important;
+  background: transparent;
+}
+#root .customer-history-page .customer-history-product + .customer-history-product {
+  border-top: 1px solid color-mix(in srgb, var(--history-border) 72%, transparent);
+}
+#root .customer-history-page .customer-history-product > img,
+#root .customer-history-page .customer-history-product-placeholder {
+  border-radius: 10px;
+}
+#root .customer-history-page .customer-history-card-bottom {
+  padding: 9px 0 0;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--history-border) 78%, transparent);
+  border-radius: 0 !important;
+  background: transparent;
+}
+#root .customer-history-page .customer-history-edit-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid var(--history-border);
+  border-radius: 10px !important;
+  background: var(--history-surface);
+  color: var(--history-text);
+  font-size: 11px;
+  font-weight: 400 !important;
+  box-shadow: none;
+}
+#root .customer-history-page .customer-history-edit-toggle:hover {
+  transform: none;
+  filter: none;
+  background: var(--history-soft);
+}
+#root .customer-history-page .customer-history-edit-toggle svg {
+  width: 13px;
+  height: 13px;
+}
+#root .customer-history-page .customer-history-edit-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 5px;
+  padding: 13px 0 2px;
+  border-top: 1px solid var(--history-border);
+}
+#root .customer-history-page .customer-history-edit-heading > div > span {
+  color: var(--history-muted);
+  font-size: 9px;
+  letter-spacing: .1em;
+}
+#root .customer-history-page .customer-history-edit-heading p {
+  margin: 4px 0 0;
+  color: var(--history-muted);
+  font-size: 11px;
+}
+#root .customer-history-page .customer-history-edit-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+#root .customer-history-page .customer-history-edit-fields label {
+  display: grid;
+  gap: 5px;
+  color: var(--history-muted);
+  font-size: 10px;
+  font-weight: 400 !important;
+}
+#root .customer-history-page .customer-history-edit-fields input,
+#root .customer-history-page .customer-history-edit-fields textarea {
+  min-height: 37px;
+  padding: 8px 10px;
+  border: 1px solid var(--history-border);
+  border-radius: 10px !important;
+  background: var(--history-page-bg);
+  color: var(--history-text);
+  font-size: 11px;
+  font-weight: 400 !important;
+  box-shadow: none;
+}
+#root .customer-history-page .customer-history-edit-fields textarea {
+  min-height: 58px;
+  resize: vertical;
+}
+#root .customer-history-page .customer-history-edit-wide { grid-column: 1 / -1; }
+#root .customer-history-page .customer-history-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+}
+#root .customer-history-page .customer-history-edit-actions .ui-button,
+#root .customer-history-page .customer-history-edit-actions button {
+  min-height: 35px;
+  padding: 7px 12px;
+  border-radius: 10px !important;
+  font-size: 11px;
+  font-weight: 400 !important;
+  box-shadow: none;
+}
+#root .customer-history-page .customer-history-edit-note,
+#root .customer-history-page .customer-history-edit-error {
+  margin: 0;
+  color: var(--history-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+#root .customer-history-page .customer-history-edit-error {
+  color: #b42318;
+}
+
+/* Every rounded element on this page uses exactly a 10px radius. */
+#root .customer-history-page,
+#root .customer-history-page * {
+  border-radius: 10px !important;
+}
+@media (max-width: 640px) {
+  #root .customer-history-page .customer-history-edit-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #root .customer-history-page .customer-history-edit-wide { grid-column: auto; }
+  #root .customer-history-page .customer-history-card-bottom {
+    align-items: flex-start;
+  }
+  #root .customer-history-page .customer-history-total {
+    min-width: 0;
+  }
+  #root .customer-history-page .customer-history-edit-actions {
+    justify-content: stretch;
+  }
+  #root .customer-history-page .customer-history-edit-actions > * {
+    flex: 1 1 0;
+  }
+}
+
+
+#root .customer-history-page .customer-history-order-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+#root .customer-history-page .customer-history-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid var(--history-border);
+  border-radius: 10px !important;
+  background: var(--history-surface);
+  color: var(--history-muted);
+  font-size: 11px;
+  font-weight: 400 !important;
+  box-shadow: none;
+}
+#root .customer-history-page .customer-history-view-toggle:hover {
+  transform: none;
+  filter: none;
+  background: var(--history-soft);
+  color: var(--history-text);
+}
+#root .customer-history-page .customer-history-view-toggle svg { width: 13px; height: 13px; }
+#root .customer-history-page .customer-history-order-details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 16px;
+  margin-top: 5px;
+  padding: 12px 0;
+  border-top: 1px solid var(--history-border);
+  border-bottom: 1px solid var(--history-border);
+}
+#root .customer-history-page .customer-history-order-details > div {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+}
+#root .customer-history-page .customer-history-order-details small {
+  color: var(--history-muted);
+  font-size: 9px;
+}
+#root .customer-history-page .customer-history-order-details span {
+  color: var(--history-text);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+#root .customer-history-page .customer-history-order-details .customer-history-order-note {
+  grid-column: 1 / -1;
+}
+#root .customer-history-page .customer-history-booking-detail > div {
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid var(--history-border);
+  border-radius: 0 !important;
+  background: transparent;
+}
+#root .customer-history-page .customer-history-status-help::after {
+  border-radius: 10px !important;
+}
+#root .customer-history-page *,
+#root .customer-history-page *::before,
+#root .customer-history-page *::after {
+  border-radius: 10px !important;
+}
+@media (max-width: 640px) {
+  #root .customer-history-page .customer-history-order-details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  #root .customer-history-page .customer-history-order-actions {
+    width: 100%;
+  }
+  #root .customer-history-page .customer-history-order-actions > * {
+    flex: 1 1 0;
+  }
+}

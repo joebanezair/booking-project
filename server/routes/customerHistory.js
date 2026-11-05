@@ -64,7 +64,7 @@ router.get("/purchases", async (req, res) => {
 
     const [rows, totalCount] = await Promise.all([
       ProductOrder.find(filter)
-        .select("orderNumber items total currency status paymentStatus paymentMethod amountPaid paidAt courierName trackingNumber trackingUrl completedAt createdAt businessOwner deliveryLocation")
+        .select("orderNumber items total currency status paymentStatus paymentMethod amountPaid paidAt courierName trackingNumber trackingUrl completedAt createdAt businessOwner deliveryLocation customerName customerEmail customerPhone notes")
         .populate("businessOwner", "name username")
         .sort({ createdAt: -1, _id: -1 })
         .limit(limit + 1)
@@ -99,6 +99,10 @@ router.get("/purchases", async (req, res) => {
         paymentMethod: order.paymentMethod,
         amountPaid: order.amountPaid,
         paidAt: order.paidAt,
+        customerName: order.customerName,
+        customerEmail: order.customerEmail || "",
+        customerPhone: order.customerPhone,
+        notes: order.notes || "",
         deliveryLocation: order.deliveryLocation,
         courierName: order.courierName,
         trackingNumber: order.trackingNumber,
@@ -117,6 +121,74 @@ router.get("/purchases", async (req, res) => {
   } catch (error) {
     console.error("Customer purchase history failed", error);
     return res.status(500).json({ message: "Unable to load purchase history." });
+  }
+});
+
+router.patch("/purchases/:id", async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).json({ message: "Purchase not found." });
+    }
+
+    const ownedOrder = await ProductOrder.findOne({
+      _id: req.params.id,
+      customerUser: req.user.id
+    }).select("_id status").lean();
+
+    if (!ownedOrder) return res.status(404).json({ message: "Purchase not found." });
+    if (!["pending", "confirmed"].includes(ownedOrder.status)) {
+      return res.status(409).json({
+        message: "Contact and delivery details can only be edited before the order enters processing."
+      });
+    }
+
+    const customerName = String(req.body.customerName || "").trim();
+    const customerPhone = String(req.body.customerPhone || "").trim();
+    const customerEmail = String(req.body.customerEmail || "").trim().toLowerCase();
+    const deliveryLocation = String(req.body.deliveryLocation || "").trim();
+    const notes = String(req.body.notes || "").trim();
+
+    if (!customerName || customerName.length > 120 ||
+        !/^[0-9+().\-\s]{7,30}$/.test(customerPhone) ||
+        customerEmail.length > 150 ||
+        (customerEmail && !/^\S+@\S+\.\S+$/.test(customerEmail)) ||
+        !deliveryLocation || deliveryLocation.length > 250 ||
+        notes.length > 500) {
+      return res.status(400).json({
+        message: "Enter a valid name, phone number, email, delivery address and notes."
+      });
+    }
+
+    const updated = await ProductOrder.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        customerUser: req.user.id,
+        status: { $in: ["pending", "confirmed"] }
+      },
+      { $set: { customerName, customerPhone, customerEmail, deliveryLocation, notes } },
+      { new: true, runValidators: true }
+    ).select("_id status customerName customerEmail customerPhone deliveryLocation notes").lean();
+
+    if (!updated) {
+      return res.status(409).json({
+        message: "This order has started processing and can no longer be edited."
+      });
+    }
+
+    return res.json({
+      id: updated._id,
+      status: updated.status,
+      customerName: updated.customerName,
+      customerEmail: updated.customerEmail || "",
+      customerPhone: updated.customerPhone,
+      deliveryLocation: updated.deliveryLocation,
+      notes: updated.notes || ""
+    });
+  } catch (error) {
+    console.error("Customer purchase details update failed", error);
+    return res.status(error.name === "ValidationError" || error.name === "CastError" ? 400 : 500)
+      .json({ message: "Unable to update your order details." });
   }
 });
 
