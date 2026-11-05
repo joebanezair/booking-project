@@ -38,7 +38,7 @@ Product.schema.index({ user: 1, published: 1, updatedAt: -1 });
 const posSaleSchema = new mongoose.Schema({
   businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   invoiceNumber:{type:String,required:true,unique:true,index:true},
-  items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number,image:{type:String,default:""},images:{type:[String],default:[]},unitCost:{type:Number,min:0,default:null},lineCost:{type:Number,min:0,default:null}}],
+  items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number,unitCost:{type:Number,min:0,default:null},lineCost:{type:Number,min:0,default:null}}],
   total:{type:Number,min:0,required:true}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
   paymentMethod:{type:String,enum:["cash","gcash","maya","card","other"],default:"cash"},
   customerName:{type:String,trim:true,maxlength:120,default:""}, soldAt:{type:Date,default:Date.now,index:true},
@@ -53,7 +53,7 @@ const productOrderSchema = new mongoose.Schema({
   businessOwner:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true,index:true},
   customerUser:{type:mongoose.Schema.Types.ObjectId,ref:"User",default:null,index:true},
   orderNumber:{type:String,required:true,unique:true,index:true},
-  items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number,unitCost:{type:Number,min:0,default:null},lineCost:{type:Number,min:0,default:null}}],
+  items:[{product:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},name:String,sku:String,quantity:Number,unitPrice:Number,lineTotal:Number,image:{type:String,default:""},images:{type:[String],default:[]},unitCost:{type:Number,min:0,default:null},lineCost:{type:Number,min:0,default:null}}],
   total:{type:Number,min:0,required:true}, currency:{type:String,uppercase:true,maxlength:3,default:"PHP"},
   customerName:{type:String,required:true,trim:true,maxlength:120}, customerEmail:{type:String,trim:true,lowercase:true,maxlength:150,default:""},
   customerPhone:{type:String,required:true,trim:true,maxlength:30}, deliveryLocation:{type:String,required:true,trim:true,maxlength:250}, notes:{type:String,trim:true,maxlength:500,default:""},
