@@ -973,3 +973,9 @@
 #root .customer-history-page .customer-history-product-placeholder {
   border-radius: 10px !important;
 }
+
+
+/* Keep the order reference/date divider perfectly straight. */
+#root .customer-history-page .customer-history-card-top {
+  border-radius: 0 !important;
+}
