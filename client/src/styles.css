@@ -10059,3 +10059,9 @@ dialog.ui-dialog.buyer-order-status-dialog .buyer-status-card.buyer-status-modal
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+
+/* Total container: square top corners, retain 10px bottom corners. */
+.buyer-status-modal-card .buyer-order-grand-total {
+  border-radius: 0 0 10px 10px !important;
+}
