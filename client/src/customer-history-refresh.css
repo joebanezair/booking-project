@@ -1396,3 +1396,8 @@
   #root .customer-order-product-dialog-content { padding: 14px; }
   #root .customer-order-product-photo { min-height: 180px; }
 }
+
+/* Edit Details container: square top corners, retain 10px bottom corners. */
+#root .customer-history-page .customer-history-edit-form {
+  border-radius: 0 0 10px 10px !important;
+}
