@@ -99,7 +99,7 @@ export default function OrderStatusPage({ orderId: orderIdProp, token: tokenProp
             </dl>
           :<p className="muted">The seller has not added courier details yet.</p>}
         </section>
-        <section className="buyer-order-section buyer-order-details-panel">
+        <section className="buyer-order-section buyer-order-details-panel buyer-order-items-panel">
           <h2><FiPackage aria-hidden="true"/> Order items</h2>
           <div className="buyer-order-items">{(order.items||[]).map((item,index)=>
             <button key={index} type="button" className="buyer-order-item" aria-label={`View product details for ${item.name}`}
