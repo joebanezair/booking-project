@@ -9815,3 +9815,161 @@ dialog.buyer-order-status-dialog .buyer-order-status-dialog-content {
   overflow-y: auto !important;
   overscroll-behavior: contain;
 }
+
+
+/* Fit the complete order-status popup to content instead of creating an inner scroll area. */
+dialog.buyer-order-status-dialog {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+.buyer-order-status-dialog-content {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  overscroll-behavior: auto !important;
+}
+.buyer-status-card.buyer-status-modal-card {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 14px !important;
+}
+.buyer-status-modal-card .buyer-status-header {
+  margin-bottom: 10px !important;
+  padding-bottom: 8px !important;
+}
+.buyer-status-modal-card .buyer-status-intro {
+  margin-bottom: 10px !important;
+}
+.buyer-status-modal-card .buyer-status-intro h1 {
+  font-size: 22px !important;
+}
+.buyer-status-modal-card .buyer-status-intro > p:last-child {
+  font-size: 10px !important;
+}
+.buyer-status-modal-card .buyer-order-summary {
+  margin-bottom: 9px !important;
+  padding: 8px 10px !important;
+}
+.buyer-status-modal-card .buyer-order-progress-head {
+  margin-bottom: 8px !important;
+}
+.buyer-status-modal-card .buyer-order-section,
+.buyer-status-modal-card .buyer-order-details-panel {
+  padding: 9px !important;
+}
+.buyer-status-modal-card .buyer-order-details-grid {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr) !important;
+  gap: 9px !important;
+}
+.buyer-status-modal-card .buyer-order-timeline > li {
+  min-height: 29px !important;
+  padding-bottom: 5px !important;
+  grid-template-columns: 22px minmax(0, 1fr) !important;
+  gap: 8px !important;
+}
+.buyer-status-modal-card .buyer-order-phase-icon {
+  width: 22px !important;
+  height: 22px !important;
+}
+.buyer-status-modal-card .buyer-order-timeline > li:not(:last-child)::after {
+  top: 22px !important;
+  left: 10px !important;
+}
+.buyer-status-modal-card .buyer-order-phase-text {
+  padding-top: 2px !important;
+  gap: 1px !important;
+}
+.buyer-status-modal-card .buyer-order-phase-text strong {
+  font-size: 10px !important;
+}
+.buyer-status-modal-card .buyer-order-phase-text small,
+.buyer-status-modal-card .buyer-order-updated,
+.buyer-status-modal-card .buyer-order-note {
+  font-size: 9px !important;
+}
+.buyer-status-modal-card .buyer-order-updated {
+  margin-top: 5px !important;
+}
+.buyer-status-modal-card .buyer-order-details-panel h2 {
+  margin-bottom: 7px !important;
+  font-size: 11px !important;
+}
+.buyer-status-modal-card .buyer-order-courier {
+  gap: 6px !important;
+}
+.buyer-status-modal-card .buyer-order-courier > div {
+  grid-template-columns: 72px minmax(0, 1fr) !important;
+  gap: 6px !important;
+}
+.buyer-status-modal-card .buyer-order-courier dt,
+.buyer-status-modal-card .buyer-order-courier dd,
+.buyer-status-modal-card .buyer-order-details-panel > p {
+  font-size: 9px !important;
+}
+.buyer-status-modal-card .buyer-order-items {
+  gap: 8px !important;
+}
+.buyer-status-modal-card .buyer-order-item {
+  grid-template-columns: 36px minmax(0, 1fr) max-content 10px !important;
+  gap: 7px !important;
+}
+.buyer-status-modal-card .buyer-order-item-thumb {
+  width: 36px !important;
+  height: 36px !important;
+}
+.buyer-status-modal-card .buyer-order-item-name {
+  font-size: 10px !important;
+}
+.buyer-status-modal-card .buyer-order-item-info small,
+.buyer-status-modal-card .buyer-order-item-link,
+.buyer-status-modal-card .buyer-order-item-price {
+  font-size: 9px !important;
+}
+.buyer-status-modal-card .buyer-order-grand-total {
+  margin-top: 7px !important;
+  padding-top: 7px !important;
+}
+.buyer-status-modal-card .buyer-order-grand-total span {
+  font-size: 9px !important;
+}
+.buyer-status-modal-card .buyer-order-grand-total strong {
+  font-size: 14px !important;
+}
+.buyer-status-modal-card .buyer-order-note {
+  margin-top: 7px !important;
+}
+@media (max-width: 560px) {
+  dialog.buyer-order-status-dialog {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+  }
+  .buyer-status-modal-card .buyer-order-details-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+}
+@media (max-height: 760px) {
+  .buyer-status-card.buyer-status-modal-card {
+    padding: 10px !important;
+  }
+  .buyer-status-modal-card .buyer-status-header {
+    margin-bottom: 7px !important;
+    padding-bottom: 6px !important;
+  }
+  .buyer-status-modal-card .buyer-order-summary {
+    margin-bottom: 6px !important;
+    padding: 6px 8px !important;
+  }
+  .buyer-status-modal-card .buyer-order-section,
+  .buyer-status-modal-card .buyer-order-details-panel {
+    padding: 7px !important;
+  }
+  .buyer-status-modal-card .buyer-order-timeline > li {
+    min-height: 26px !important;
+    padding-bottom: 3px !important;
+  }
+}
