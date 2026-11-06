@@ -9979,3 +9979,83 @@ dialog.buyer-order-status-dialog {
 .buyer-status-modal-card .buyer-order-progress {
   margin-bottom: 10px !important;
 }
+
+
+/* Center the Order Status dialog in the viewport on desktop and mobile. */
+dialog.ui-dialog.buyer-order-status-dialog {
+  position: fixed !important;
+  inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  width: min(602px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+  height: auto !important;
+  max-height: calc(100dvh - 32px) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+dialog.ui-dialog.buyer-order-status-dialog > .buyer-order-status-dialog-content {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: calc(100dvh - 32px) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  overscroll-behavior: contain;
+}
+dialog.ui-dialog.buyer-order-status-dialog > .buyer-order-status-dialog-content::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+dialog.ui-dialog.buyer-order-status-dialog .buyer-status-card.buyer-status-modal-card {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  border-radius: 10px !important;
+}
+@media (max-width: 700px) {
+  dialog.ui-dialog.buyer-order-status-dialog {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+    max-height: calc(100dvh - 20px) !important;
+  }
+  dialog.ui-dialog.buyer-order-status-dialog > .buyer-order-status-dialog-content {
+    max-height: calc(100dvh - 20px) !important;
+  }
+  dialog.ui-dialog.buyer-order-status-dialog .buyer-status-card.buyer-status-modal-card {
+    padding: 12px !important;
+  }
+  .buyer-status-modal-card .buyer-order-details-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+}
+@media (max-width: 420px) {
+  dialog.ui-dialog.buyer-order-status-dialog {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+  dialog.ui-dialog.buyer-order-status-dialog .buyer-status-card.buyer-status-modal-card {
+    padding: 10px !important;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  dialog.ui-dialog.buyer-order-status-dialog[open] {
+    animation: order-status-dialog-enter .16s ease-out;
+  }
+}
+@keyframes order-status-dialog-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
