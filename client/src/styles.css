@@ -9598,3 +9598,123 @@ dialog.buyer-order-status-dialog::backdrop {
     font-size: 9px;
   }
 }
+
+
+/* Order status modal cleanup: transparent shell, hidden scrollbar, 10px cards. */
+dialog.buyer-order-status-dialog {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+.buyer-order-status-dialog-content {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  overscroll-behavior: contain;
+}
+.buyer-order-status-dialog-content::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.buyer-status-card.buyer-status-modal-card {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+.buyer-status-modal-card .buyer-status-close-button {
+  display: grid !important;
+  flex: 0 0 36px !important;
+  place-items: center !important;
+  width: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: var(--muted-foreground, #758096) !important;
+  box-shadow: none !important;
+}
+.buyer-status-modal-card .buyer-status-close-button svg {
+  width: 17px;
+  height: 17px;
+}
+.buyer-status-modal-card .buyer-status-close-button:hover,
+.buyer-status-modal-card .buyer-status-close-button:focus-visible {
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: var(--foreground, #18212f) !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+.buyer-status-modal-card .buyer-status-close-button:focus-visible {
+  outline: 2px solid var(--ring, #6d82ef) !important;
+  outline-offset: 2px;
+}
+.buyer-status-modal-card .buyer-order-summary,
+.buyer-status-modal-card .buyer-order-section,
+.buyer-status-modal-card .buyer-order-details-panel,
+.buyer-status-modal-card .buyer-order-grand-total {
+  border-radius: 10px !important;
+}
+.buyer-status-modal-card .buyer-order-summary {
+  padding: 14px 16px !important;
+  background: var(--muted-bg, #f8f9fc) !important;
+  border: 0 !important;
+}
+.buyer-status-modal-card .buyer-order-section {
+  padding: 16px !important;
+  background: var(--muted-bg, #f8f9fc) !important;
+  border: 0 !important;
+}
+.buyer-status-modal-card .buyer-order-progress {
+  margin-top: 0 !important;
+}
+.buyer-status-modal-card .buyer-order-details-grid {
+  gap: 14px !important;
+}
+.buyer-status-modal-card .buyer-order-details-panel {
+  padding: 16px !important;
+  background: var(--muted-bg, #f8f9fc) !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+}
+.buyer-status-modal-card .buyer-order-phase-icon,
+.buyer-status-modal-card .buyer-order-item-thumb,
+.buyer-status-modal-card .buyer-order-item {
+  border-radius: 10px !important;
+}
+.buyer-status-modal-card .buyer-order-item-thumb {
+  overflow: hidden;
+}
+.buyer-status-modal-card .buyer-order-grand-total {
+  padding: 12px 0 0 !important;
+  border-top: 1px solid var(--border, #e6eaf0) !important;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+}
+@media (max-width: 700px) {
+  .buyer-status-modal-card .buyer-order-section {
+    padding: 14px !important;
+  }
+  .buyer-status-modal-card .buyer-order-details-grid {
+    gap: 12px !important;
+  }
+  .buyer-status-modal-card .buyer-order-details-panel {
+    padding: 14px !important;
+  }
+}
