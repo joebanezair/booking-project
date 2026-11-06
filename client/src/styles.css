@@ -9914,12 +9914,12 @@ dialog.buyer-order-status-dialog {
   gap: 8px !important;
 }
 .buyer-status-modal-card .buyer-order-item {
-  grid-template-columns: 40.7px minmax(0, 1fr) max-content 10px !important;
+  grid-template-columns: 48.84px minmax(0, 1fr) max-content 10px !important;
   gap: 7px !important;
 }
 .buyer-status-modal-card .buyer-order-item-thumb {
-  width: 40.7px !important;
-  height: 40.7px !important;
+  width: 48.84px !important;
+  height: 48.84px !important;
 }
 .buyer-status-modal-card .buyer-order-item-name {
   font-size: 10px !important;
@@ -10099,4 +10099,26 @@ dialog.ui-dialog.buyer-order-status-dialog > .buyer-order-status-dialog-content 
 .buyer-status-modal-card,
 .buyer-status-modal-card * {
   font-weight: 400 !important;
+}
+
+/* Purchase History Order Status popup: 30% softer neutral borders. */
+.buyer-status-modal-card {
+  --buyer-status-border-muted: color-mix(in srgb, var(--border, #e6eaf0) 70%, transparent);
+}
+.buyer-status-modal-card .buyer-status-header {
+  border-bottom-color: var(--buyer-status-border-muted) !important;
+}
+.buyer-status-modal-card .buyer-order-section,
+.buyer-status-modal-card .buyer-order-details-panel,
+.buyer-status-modal-card .buyer-order-grand-total {
+  border-top-color: var(--buyer-status-border-muted) !important;
+}
+.buyer-status-modal-card .buyer-order-timeline > li:not(:last-child)::after {
+  background: var(--buyer-status-border-muted) !important;
+}
+.buyer-status-modal-card .buyer-order-timeline > li.is-upcoming .buyer-order-phase-icon {
+  border-color: var(--buyer-status-border-muted) !important;
+}
+.buyer-status-modal-card .buyer-status-header-actions .ui-button {
+  border-color: var(--buyer-status-border-muted) !important;
 }
