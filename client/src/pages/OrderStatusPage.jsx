@@ -49,7 +49,7 @@ export default function OrderStatusPage({ orderId: orderIdProp, token: tokenProp
   const statusCard = <section className={"public-card buyer-status-card" + (embedded ? " buyer-status-modal-card" : "")}>
       <header className="buyer-status-header">
         {embedded
-          ? <div className="brand-row"><span className="brand-mark">B</span><strong>BookFlow</strong></div>
+          ? <div className="brand-row"><span className="buyer-status-brand-name">BookFlow</span></div>
           : <Link className="brand-row" to="/"><span className="brand-mark">B</span><strong>BookFlow</strong></Link>}
         <div className="buyer-status-header-actions">
           <Button type="button" variant="outline" onClick={refresh} disabled={refreshing}><FiRefreshCw aria-hidden="true"/>{refreshing?"Refreshing...":"Refresh status"}</Button>
