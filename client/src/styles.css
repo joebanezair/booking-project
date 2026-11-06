@@ -8676,3 +8676,231 @@ td,th{
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Final visual cleanup: rely on hierarchy and whitespace, not nested borders. */
+.customer-order-progress-page .customer-order-status-panel {
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: var(--card, #fff) !important;
+  box-shadow: 0 5px 18px rgba(24, 33, 47, .045) !important;
+  padding: 22px 22px 18px !important;
+}
+.customer-order-progress-page .customer-order-status-panel .customer-order-progress-panel-head {
+  min-height: 0;
+  margin: 0 0 22px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.customer-order-progress-page .customer-order-status-panel .customer-order-progress-panel-head > div {
+  gap: 5px !important;
+}
+.customer-order-progress-page .customer-order-status-panel .customer-order-progress-updated {
+  margin: 18px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.customer-order-progress-page .customer-order-status-panel .customer-order-timeline {
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  align-items: start !important;
+  gap: 0 !important;
+  min-width: 0;
+}
+.customer-order-progress-page .customer-order-status-panel .customer-order-timeline > li {
+  display: grid !important;
+  grid-template-rows: 32px auto !important;
+  justify-items: center !important;
+  align-content: start !important;
+  align-items: start !important;
+  gap: 9px !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+}
+.customer-order-progress-page .customer-order-status-panel .customer-order-timeline-marker {
+  justify-self: center;
+  align-self: start;
+  margin: 0 !important;
+}
+.customer-order-progress-page .customer-order-status-panel .customer-order-timeline-label {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 4px !important;
+  width: 100%;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+}
+.customer-order-progress-page .customer-order-status-panel .customer-order-timeline-label strong {
+  font-size: 10px !important;
+  line-height: 1.4 !important;
+  white-space: normal !important;
+}
+.customer-order-progress-page .customer-order-status-panel .customer-order-timeline li:not(:last-child)::after {
+  top: 15px !important;
+  left: calc(50% + 19px) !important;
+  width: calc(100% - 38px) !important;
+  height: 2px !important;
+}
+
+/* Delivery and payment: open columns with no card backgrounds or divider rails. */
+.customer-order-progress-page .customer-order-progress-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr) !important;
+  column-gap: clamp(28px, 5vw, 64px) !important;
+  row-gap: 24px !important;
+  margin: 0 !important;
+  padding: 30px 4px 26px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.customer-order-progress-page .customer-order-progress-grid > .customer-order-progress-panel,
+.customer-order-progress-page .customer-order-progress-grid > .customer-order-info-section {
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.customer-order-progress-page .customer-order-info-section h2 {
+  margin: 0 0 18px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: -.025em !important;
+}
+.customer-order-progress-page .customer-order-section-icon {
+  width: 28px !important;
+  height: 28px !important;
+  flex-basis: 28px !important;
+  border-radius: 9px !important;
+  background: color-mix(in srgb, var(--foreground, #18212f) 5%, transparent) !important;
+  color: var(--muted-foreground, #758096) !important;
+}
+.customer-order-progress-page .customer-order-progress-facts {
+  gap: 13px !important;
+}
+.customer-order-progress-page .customer-order-progress-facts > div {
+  grid-template-columns: minmax(112px, .72fr) minmax(0, 1.28fr) !important;
+  column-gap: 16px !important;
+}
+.customer-order-progress-page .customer-order-progress-facts dt {
+  color: var(--muted-foreground, #758096) !important;
+  font-size: 11px !important;
+}
+.customer-order-progress-page .customer-order-progress-facts dd {
+  color: var(--foreground, #18212f) !important;
+  font-size: 11px !important;
+  font-weight: 550 !important;
+}
+
+/* Ordered products sit directly on the page; no enclosing card or rules. */
+.customer-order-progress-page .customer-order-products-section,
+.customer-order-progress-page .customer-order-progress-items {
+  width: 100%;
+  margin: 0 !important;
+  padding: 10px 4px 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.customer-order-progress-page .customer-order-products-section > h2 {
+  margin: 0 0 17px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+.customer-order-progress-page .customer-order-progress-product-list {
+  gap: 14px !important;
+}
+.customer-order-progress-page .customer-order-progress-product {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+.customer-order-progress-page .customer-order-progress-product-main {
+  grid-template-columns: 56px minmax(0, 1fr) !important;
+  gap: 14px !important;
+}
+.customer-order-progress-page .customer-order-progress-product-thumb {
+  width: 56px !important;
+  height: 56px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+}
+.customer-order-progress-page .customer-order-progress-product-name {
+  font-size: 13px !important;
+  font-weight: 650 !important;
+}
+.customer-order-progress-page .customer-order-progress-product-meta {
+  font-size: 11px !important;
+}
+.customer-order-progress-page .customer-order-progress-product-line-total {
+  font-size: 12px !important;
+  font-weight: 650 !important;
+}
+.customer-order-progress-page .customer-order-progress-total {
+  margin-top: 18px !important;
+  padding: 14px 0 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+.customer-order-progress-page .customer-order-progress-total > span {
+  font-size: 11px !important;
+}
+.customer-order-progress-page .customer-order-progress-total > strong {
+  min-width: 88px;
+  font-size: 18px !important;
+  font-weight: 750 !important;
+}
+.customer-order-progress-page .customer-order-progress-footnote {
+  margin: 22px 4px 0 !important;
+  font-size: 10px !important;
+}
+
+/* Keep layout calm and usable on narrow screens without restoring card clutter. */
+@media (max-width: 700px) {
+  .customer-order-progress-page .customer-order-status-panel {
+    padding: 18px 14px 16px !important;
+  }
+  .customer-order-progress-page .customer-order-status-panel .customer-order-timeline {
+    grid-template-columns: repeat(6, minmax(82px, 1fr)) !important;
+    min-width: 492px;
+  }
+  .customer-order-progress-page .customer-order-progress-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    padding: 25px 4px 20px !important;
+  }
+  .customer-order-progress-page .customer-order-products-section,
+  .customer-order-progress-page .customer-order-progress-items {
+    padding: 6px 4px 0 !important;
+  }
+}
+@media (max-width: 480px) {
+  .customer-order-progress-page .customer-order-progress-facts > div {
+    grid-template-columns: minmax(100px, .72fr) minmax(0, 1.28fr) !important;
+    gap: 10px !important;
+  }
+  .customer-order-progress-page .customer-order-progress-product-main {
+    grid-template-columns: 48px minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+  .customer-order-progress-page .customer-order-progress-product-thumb {
+    width: 48px !important;
+    height: 48px !important;
+  }
+}
