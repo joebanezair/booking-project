@@ -8,6 +8,7 @@ import { bookingMutationGuard } from "../middleware/bookingMutationGuard.js";
 import { calculateBookingEndsAt, validateBookingWindow } from "../lib/scheduling.js";
 import { Product, ProductOrder } from "../models/Sale.js";
 import { decodeBookingCursor, encodeBookingCursor, readPageSize } from "../lib/pagination.js";
+import { orderTrackingToken } from "../lib/orderTracking.js";
 
 const router = Router();
 router.use(requireAuth, (req, res, next) => {
@@ -109,6 +110,7 @@ router.get("/purchases", async (req, res) => {
       items: items.map(order => ({
         id: order._id,
         orderNumber: order.orderNumber,
+        trackingToken: orderTrackingToken(order),
         items: (order.items || []).map(item => ({
           name: item.name,
           image: item.image || item.images?.[0] || "",
