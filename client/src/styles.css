@@ -8993,3 +8993,304 @@ td,th{
     min-width: 0 !important;
   }
 }
+
+
+/* Product details modal: restrained gallery, fixed-size thumbnails, aligned facts. */
+.customer-order-product-dialog {
+  width: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: var(--foreground, #18212f);
+}
+.customer-order-product-dialog::backdrop {
+  background: rgba(15, 23, 42, .58);
+  backdrop-filter: blur(3px);
+}
+.customer-order-progress-page .customer-order-product-dialog-content {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  width: min(680px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: min(88dvh, 850px) !important;
+  margin: 0 !important;
+  padding: 22px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  border: 1px solid var(--border, #dfe5ee) !important;
+  border-radius: 10px !important;
+  background: var(--card, #fff) !important;
+  color: var(--foreground, #18212f);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, .24) !important;
+}
+.customer-order-progress-page .customer-order-product-dialog-header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  width: 100%;
+  margin: 0 0 16px !important;
+  padding: 0 !important;
+}
+.customer-order-progress-page .customer-order-product-dialog-heading {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 4px;
+}
+.customer-order-progress-page .customer-order-product-dialog-heading .eyebrow {
+  margin: 0 0 2px !important;
+  color: var(--primary, #5267d7);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .13em;
+}
+.customer-order-progress-page .customer-order-product-dialog-heading .ui-dialog-title,
+.customer-order-progress-page .customer-order-product-dialog-heading h2 {
+  margin: 0 !important;
+  color: var(--foreground, #18212f);
+  font-size: 19px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  letter-spacing: -.025em;
+}
+.customer-order-progress-page .customer-order-product-dialog-heading .ui-dialog-description {
+  margin: 0 !important;
+  color: var(--muted-foreground, #758096);
+  font-size: 11px !important;
+  line-height: 1.45;
+}
+.customer-order-progress-page .customer-order-product-dialog-close {
+  display: grid !important;
+  flex: 0 0 32px !important;
+  place-items: center !important;
+  width: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--border, #dfe5ee) !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  color: var(--foreground, #39465b) !important;
+  box-shadow: none !important;
+}
+.customer-order-progress-page .customer-order-product-dialog-close svg {
+  width: 15px;
+  height: 15px;
+}
+.customer-order-progress-page .customer-order-product-dialog-close:hover {
+  background: var(--muted-bg, #f8f9fc) !important;
+  transform: none !important;
+  filter: none !important;
+}
+.customer-order-progress-page .customer-order-product-gallery {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+  width: 100%;
+  min-width: 0;
+  margin: 0 !important;
+}
+.customer-order-progress-page .customer-order-product-photo {
+  display: grid !important;
+  place-items: center !important;
+  width: 100% !important;
+  height: clamp(190px, 38dvh, 350px) !important;
+  min-height: 190px !important;
+  max-height: 350px !important;
+  margin: 0 !important;
+  padding: 10px !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: var(--muted-bg, #f8f9fc) !important;
+}
+.customer-order-progress-page .customer-order-product-photo > img,
+.customer-order-progress-page .customer-order-product-photo > .ui-image {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+}
+.customer-order-progress-page .customer-order-product-photo-controls {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  width: 100%;
+  min-height: 30px;
+  margin: 0 !important;
+  color: var(--muted-foreground, #758096);
+  font-size: 11px;
+}
+.customer-order-progress-page .customer-order-product-photo-controls .ui-button {
+  display: grid !important;
+  flex: 0 0 30px !important;
+  place-items: center !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+}
+.customer-order-progress-page .customer-order-product-thumbnails {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 2px 1px 5px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: thin;
+}
+.customer-order-progress-page .customer-order-product-thumbnails > button {
+  display: grid !important;
+  flex: 0 0 56px !important;
+  place-items: center !important;
+  box-sizing: border-box !important;
+  width: 56px !important;
+  min-width: 56px !important;
+  max-width: 56px !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid var(--border, #dfe5ee) !important;
+  border-radius: 9px !important;
+  background: var(--muted-bg, #f8f9fc) !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transform: none !important;
+}
+.customer-order-progress-page .customer-order-product-thumbnails > button[aria-pressed="true"] {
+  border: 2px solid var(--primary, #5267d7) !important;
+}
+.customer-order-progress-page .customer-order-product-thumbnails > button > img,
+.customer-order-progress-page .customer-order-product-thumbnails > button > .ui-image,
+.customer-order-progress-page .customer-order-product-thumbnails > button .ui-image-fallback {
+  display: grid !important;
+  place-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: cover !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+  color: var(--muted-foreground, #758096);
+  font-size: 17px;
+}
+.customer-order-progress-page .customer-order-product-thumbnails > button:hover {
+  filter: none !important;
+  transform: none !important;
+  border-color: var(--primary, #5267d7) !important;
+}
+.customer-order-progress-page .customer-order-product-description {
+  margin: 18px 0 0 !important;
+  padding: 0 !important;
+}
+.customer-order-progress-page .customer-order-product-description h3 {
+  margin: 0 0 6px !important;
+  color: var(--foreground, #18212f);
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+.customer-order-progress-page .customer-order-product-description p {
+  margin: 0 !important;
+  color: var(--muted-foreground, #657187);
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+  overflow-wrap: anywhere;
+}
+.customer-order-progress-page .customer-order-product-facts {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+  width: 100%;
+  margin: 18px 0 0 !important;
+  padding: 0 !important;
+}
+.customer-order-progress-page .customer-order-product-facts > div {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  align-items: center !important;
+  column-gap: 16px !important;
+  width: 100%;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 8px 0 !important;
+  border: 0 !important;
+}
+.customer-order-progress-page .customer-order-product-facts dt {
+  display: block !important;
+  min-width: 0;
+  margin: 0 !important;
+  color: var(--muted-foreground, #758096) !important;
+  font-size: 11px !important;
+  font-weight: 450 !important;
+  line-height: 1.4 !important;
+}
+.customer-order-progress-page .customer-order-product-facts dd {
+  display: block !important;
+  min-width: 0;
+  margin: 0 !important;
+  color: var(--foreground, #18212f) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  text-align: right !important;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 560px) {
+  .customer-order-progress-page .customer-order-product-dialog-content {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: 90dvh !important;
+    padding: 16px !important;
+  }
+  .customer-order-progress-page .customer-order-product-photo {
+    height: clamp(170px, 34dvh, 280px) !important;
+    min-height: 170px !important;
+  }
+  .customer-order-progress-page .customer-order-product-thumbnails > button {
+    flex-basis: 50px !important;
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    max-height: 50px !important;
+  }
+}
