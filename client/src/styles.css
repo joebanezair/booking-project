@@ -10086,3 +10086,11 @@ dialog.ui-dialog.buyer-order-status-dialog > .buyer-order-status-dialog-content 
     max-height: 78dvh !important;
   }
 }
+
+/* Purchase History Order Status popup: 30% wider on desktop; keep mobile sizing unchanged. */
+@media (min-width: 701px) {
+  dialog.ui-dialog.buyer-order-status-dialog {
+    width: min(783px, calc(100vw - 32px)) !important;
+    max-width: calc(100vw - 32px) !important;
+  }
+}
