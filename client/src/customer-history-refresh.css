@@ -1437,3 +1437,9 @@ html body dialog.ui-dialog.buyer-order-status-dialog
     transition: none !important;
   }
 }
+
+/* Purchase History popup: enforce exactly 5px left padding on the Order items panel. */
+html body dialog.ui-dialog.buyer-order-status-dialog
+  .buyer-status-modal-card .buyer-order-items-panel {
+  padding-left: 5px !important;
+}
