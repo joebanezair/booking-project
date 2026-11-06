@@ -9973,3 +9973,9 @@ dialog.buyer-order-status-dialog {
     padding-bottom: 3px !important;
   }
 }
+
+
+/* Add breathing room below the Order Progress container. */
+.buyer-status-modal-card .buyer-order-progress {
+  margin-bottom: 10px !important;
+}
