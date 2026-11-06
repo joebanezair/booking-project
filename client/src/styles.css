@@ -9718,3 +9718,10 @@ dialog.buyer-order-status-dialog {
     padding: 14px !important;
   }
 }
+
+
+/* White surface for the order-status popup scroll container. */
+.buyer-order-status-dialog-content {
+  background: #fff !important;
+  border-radius: 10px !important;
+}
