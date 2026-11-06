@@ -11,6 +11,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Textarea } from "../components/ui/textarea.jsx";
 import { Image } from "../components/ui/image.jsx";
 import AppLayout from "../components/AppLayout.jsx";
+import OrderStatusPage from "./OrderStatusPage.jsx";
 import { api } from "../api.js";
 
 const purchaseStatuses = [
@@ -72,6 +73,7 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
   const [viewingOrderId, setViewingOrderId] = useState("");
+  const [activeOrderStatus, setActiveOrderStatus] = useState(null);
   const [editingOrderId, setEditingOrderId] = useState("");
   const [editForm, setEditForm] = useState(null);
   const [editSaving, setEditSaving] = useState(false);
@@ -280,14 +282,17 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
               <div className="customer-history-reference">
                 <span className="customer-history-icon"><FiPackage/></span>
                 <div>
-                  <Link
+                  <button
+                    type="button"
                     className="customer-history-order-number"
-                    to={`/order-status/${encodeURIComponent(order.id)}#${order.trackingToken}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    title="Open secure order status in a new tab"
+                    onClick={() => setActiveOrderStatus({
+                      id: String(order.id),
+                      token: order.trackingToken || "",
+                      orderNumber: order.orderNumber
+                    })}
+                    title="View order status"
                     aria-label={`View order status for ${order.orderNumber}`}
-                  >{order.orderNumber}</Link>
+                  >{order.orderNumber}</button>
                   <small>Ordered {dateTime(order.createdAt)}</small>
                 </div>
               </div>
@@ -490,6 +495,14 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
         </Button>
       </div>}
       <p className="customer-history-footnote">Only activity linked to your signed-in account appears here. Guest checkouts and bookings, including activity created before this feature was added, are not automatically linked to your profile.</p>
+      {isPurchases && activeOrderStatus && <OrderStatusPage
+        key={activeOrderStatus.id}
+        embedded
+        open
+        orderId={activeOrderStatus.id}
+        token={activeOrderStatus.token}
+        onOpenChange={open => { if (!open) setActiveOrderStatus(null); }}
+      />}
     </div>
   </AppLayout>;
 }
