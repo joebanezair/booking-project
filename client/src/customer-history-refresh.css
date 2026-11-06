@@ -1449,3 +1449,10 @@ html body dialog.ui-dialog.buyer-order-status-dialog
   .buyer-status-modal-card .buyer-order-details-panel:has(.buyer-order-items) .buyer-order-items {
   padding-left: 5px !important;
 }
+
+/* Purchase History popup: add 5px vertical padding to the individual product card only. */
+html body dialog.ui-dialog.buyer-order-status-dialog
+  .buyer-status-modal-card .buyer-order-details-panel:has(.buyer-order-items) .buyer-order-item {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
