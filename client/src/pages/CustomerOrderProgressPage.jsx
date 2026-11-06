@@ -84,9 +84,12 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
   const currentIndex = phases.findIndex(([key]) => key === order?.status);
   const cancelled = order?.status === "cancelled";
   const selectedItem = selectedItemIndex === null ? null : order?.items?.[selectedItemIndex];
-  const selectedImages = selectedItem?.images?.length
-    ? selectedItem.images
-    : selectedItem?.image ? [selectedItem.image] : [];
+  const selectedImages = selectedItem
+    ? Array.from(new Set([
+        ...(Array.isArray(selectedItem.images) ? selectedItem.images : []),
+        selectedItem.image
+      ].filter(src => typeof src === "string" && src.trim())))
+    : [];
   const shownImageIndex = Math.min(activeImageIndex, Math.max(0, selectedImages.length - 1));
 
   return <AppLayout user={user} onLogout={onLogout}>
@@ -214,33 +217,36 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
             </DialogHeader>
             {selectedItem && <>
               <div className="customer-order-product-gallery">
-                <div className="customer-order-product-photo">
+                <div className="customer-order-product-photo customer-order-product-carousel" aria-label="Product image carousel">
                   {selectedImages.length
-                    ? <Image src={selectedImages[shownImageIndex]} alt={`${selectedItem.name} — image ${shownImageIndex + 1}`}/>
+                    ? <Image src={selectedImages[shownImageIndex]} alt={`${selectedItem.name} — image ${shownImageIndex + 1} of ${selectedImages.length}`}/>
                     : <span className="customer-order-progress-product-placeholder"><FiPackage aria-hidden="true"/>No product images available</span>}
-                </div>
-                {selectedImages.length > 1 && <>
-                  <div className="customer-order-product-photo-controls">
-                    <Button type="button" variant="outline" size="icon" aria-label="Previous image"
-                      onClick={() => setActiveImageIndex(index => (index + selectedImages.length - 1) % selectedImages.length)}>
+                  {selectedImages.length > 1 && <>
+                    <Button
+                      className="customer-order-carousel-arrow customer-order-carousel-prev"
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      aria-label="Show previous product image"
+                      onClick={() => setActiveImageIndex(index => (index - 1 + selectedImages.length) % selectedImages.length)}
+                    >
                       <FiChevronLeft aria-hidden="true"/>
                     </Button>
-                    <span aria-live="polite">{shownImageIndex + 1} / {selectedImages.length}</span>
-                    <Button type="button" variant="outline" size="icon" aria-label="Next image"
-                      onClick={() => setActiveImageIndex(index => (index + 1) % selectedImages.length)}>
+                    <Button
+                      className="customer-order-carousel-arrow customer-order-carousel-next"
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      aria-label="Show next product image"
+                      onClick={() => setActiveImageIndex(index => (index + 1) % selectedImages.length)}
+                    >
                       <FiChevronRight aria-hidden="true"/>
                     </Button>
-                  </div>
-                  <div className="customer-order-product-thumbnails" aria-label="Product image gallery">
-                    {selectedImages.map((src, index) => <button
-                      key={index}
-                      type="button"
-                      aria-label={`View image ${index + 1} of ${selectedItem.name}`}
-                      aria-pressed={index === shownImageIndex}
-                      onClick={() => setActiveImageIndex(index)}
-                    ><Image src={src} alt="" loading="lazy"/></button>)}
-                  </div>
-                </>}
+                    <span className="customer-order-carousel-count" aria-live="polite">
+                      {shownImageIndex + 1} / {selectedImages.length}
+                    </span>
+                  </>}
+                </div>
               </div>
               <section className="customer-order-product-description">
                 <h3>Description</h3>
