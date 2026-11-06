@@ -10094,3 +10094,9 @@ dialog.ui-dialog.buyer-order-status-dialog > .buyer-order-status-dialog-content 
     max-width: calc(100vw - 32px) !important;
   }
 }
+
+/* Purchase History Order Status popup: remove logo mark and use regular-weight typography. */
+.buyer-status-modal-card,
+.buyer-status-modal-card * {
+  font-weight: 400 !important;
+}
