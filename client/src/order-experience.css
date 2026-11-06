@@ -1383,9 +1383,15 @@ html body #root .buyer-order-status-page button.buyer-order-item {
   text-align: left;
   cursor: pointer;
 }
+/* The standalone post-purchase tracking page stays neutral on hover.
+   The light-blue hover is reserved for the Purchase History modal only. */
 html body #root .buyer-order-status-page button.buyer-order-item:hover {
-  border-color: color-mix(in srgb, var(--primary) 30%, var(--border)) !important;
-  background: color-mix(in srgb, var(--primary) 4%, var(--card)) !important;
+  border-color: var(--border) !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+  transition: none !important;
 }
 html body #root .buyer-order-status-page button.buyer-order-item:focus-visible {
   outline: 2px solid var(--ring);
