@@ -282,11 +282,11 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
                 <div>
                   <Link
                     className="customer-history-order-number"
-                    to={`/dashboard/profile/purchases/${encodeURIComponent(order.id)}`}
+                    to={`/order-status/${encodeURIComponent(order.id)}#${order.trackingToken}`}
                     target="_blank"
                     rel="noreferrer"
-                    title="Open order progress in a new tab"
-                    aria-label={`View order progress for ${order.orderNumber}`}
+                    title="Open secure order status in a new tab"
+                    aria-label={`View order status for ${order.orderNumber}`}
                   >{order.orderNumber}</Link>
                   <small>Ordered {dateTime(order.createdAt)}</small>
                 </div>
