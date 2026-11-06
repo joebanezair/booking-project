@@ -10122,3 +10122,14 @@ dialog.ui-dialog.buyer-order-status-dialog > .buyer-order-status-dialog-content 
 .buyer-status-modal-card .buyer-status-header-actions .ui-button {
   border-color: var(--buyer-status-border-muted) !important;
 }
+
+/* Purchase History order item: remove the product-row and thumbnail borders. */
+dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order-items > .buyer-order-item,
+dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order-items > .buyer-order-item .buyer-order-item-thumb,
+dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order-items > .buyer-order-item .buyer-order-item-thumb img,
+dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order-items > .buyer-order-item .buyer-order-item-thumb .ui-image {
+  border: 0 !important;
+}
+dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order-items > .buyer-order-item {
+  box-shadow: none !important;
+}
