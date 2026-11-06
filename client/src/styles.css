@@ -10133,3 +10133,9 @@ dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order
 dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order-items > .buyer-order-item {
   box-shadow: none !important;
 }
+
+/* Purchase History popup: reduce the Order items panel's left inset. */
+dialog.ui-dialog.buyer-order-status-dialog
+  .buyer-status-modal-card .buyer-order-items-panel {
+  padding-left: 5px !important;
+}
