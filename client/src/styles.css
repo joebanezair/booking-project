@@ -9793,3 +9793,25 @@ dialog.buyer-order-status-dialog {
     padding: 11px !important;
   }
 }
+
+
+/* Hide every scrollbar inside the compact Order Status popup without disabling scroll. */
+dialog.buyer-order-status-dialog,
+dialog.buyer-order-status-dialog .buyer-order-status-dialog-content,
+dialog.buyer-order-status-dialog .buyer-status-modal-card {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+dialog.buyer-order-status-dialog::-webkit-scrollbar,
+dialog.buyer-order-status-dialog .buyer-order-status-dialog-content::-webkit-scrollbar,
+dialog.buyer-order-status-dialog .buyer-status-modal-card::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+dialog.buyer-order-status-dialog .buyer-order-status-dialog-content {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
