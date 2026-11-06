@@ -53,7 +53,7 @@ export default function OrderStatusPage({ orderId: orderIdProp, token: tokenProp
           : <Link className="brand-row" to="/"><span className="brand-mark">B</span><strong>BookFlow</strong></Link>}
         <div className="buyer-status-header-actions">
           <Button type="button" variant="outline" onClick={refresh} disabled={refreshing}><FiRefreshCw aria-hidden="true"/>{refreshing?"Refreshing...":"Refresh status"}</Button>
-          {embedded && <Button type="button" variant="ghost" size="icon" aria-label="Close order status"
+          {embedded && <Button className="buyer-status-close-button" type="button" variant="ghost" size="icon" aria-label="Close order status"
             onClick={()=>onOpenChange?.(false)}><FiX aria-hidden="true"/></Button>}
         </div>
       </header>
