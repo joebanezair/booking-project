@@ -1401,3 +1401,23 @@
 #root .customer-history-page .customer-history-edit-form {
   border-radius: 0 0 10px 10px !important;
 }
+
+/* Purchase History Order Items: remove the panel divider and all product-frame borders. */
+html body dialog.ui-dialog.buyer-order-status-dialog
+  .buyer-status-modal-card .buyer-order-items-panel {
+  border: 0 !important;
+  border-top: 0 !important;
+}
+html body dialog.ui-dialog.buyer-order-status-dialog
+  .buyer-status-modal-card .buyer-order-items-panel .buyer-order-item,
+html body dialog.ui-dialog.buyer-order-status-dialog
+  .buyer-status-modal-card .buyer-order-items-panel .buyer-order-item-thumb,
+html body dialog.ui-dialog.buyer-order-status-dialog
+  .buyer-status-modal-card .buyer-order-items-panel .buyer-order-item-thumb .ui-image {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body dialog.ui-dialog.buyer-order-status-dialog
+  .buyer-status-modal-card .buyer-order-items-panel .buyer-order-item-thumb {
+  background: transparent !important;
+}
