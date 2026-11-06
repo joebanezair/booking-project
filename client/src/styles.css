@@ -8993,3 +8993,118 @@ td,th{
     min-width: 0 !important;
   }
 }
+
+
+/* Product image viewer: one-image-at-a-time carousel with left/right controls. */
+.customer-order-progress-page .customer-order-product-gallery {
+  display: block !important;
+  width: 100%;
+  min-width: 0;
+  margin: 8px 0 0 !important;
+}
+.customer-order-progress-page .customer-order-product-photo.customer-order-product-carousel {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 100% !important;
+  height: clamp(240px, 48vh, 440px) !important;
+  min-height: 220px !important;
+  max-height: 440px !important;
+  padding: 12px !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: var(--muted-bg, #f8f9fc) !important;
+}
+.customer-order-progress-page .customer-order-product-carousel > img,
+.customer-order-progress-page .customer-order-product-carousel > .ui-image {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+}
+.customer-order-progress-page .customer-order-carousel-arrow {
+  position: absolute !important;
+  z-index: 2;
+  top: 50% !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid rgba(223, 229, 238, .95) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, .96) !important;
+  color: #25324a !important;
+  box-shadow: 0 3px 12px rgba(20, 30, 48, .12) !important;
+  transform: translateY(-50%) !important;
+  transition: background .15s ease, box-shadow .15s ease !important;
+}
+.customer-order-progress-page .customer-order-carousel-arrow svg {
+  width: 18px;
+  height: 18px;
+}
+.customer-order-progress-page .customer-order-carousel-arrow:hover:not(:disabled) {
+  background: #fff !important;
+  box-shadow: 0 5px 16px rgba(20, 30, 48, .18) !important;
+  filter: none !important;
+  transform: translateY(-50%) !important;
+}
+.customer-order-progress-page .customer-order-carousel-arrow:focus-visible {
+  outline: 2px solid var(--ring, #6d82ef);
+  outline-offset: 3px;
+}
+.customer-order-progress-page .customer-order-carousel-prev {
+  left: 14px !important;
+}
+.customer-order-progress-page .customer-order-carousel-next {
+  right: 14px !important;
+}
+.customer-order-progress-page .customer-order-carousel-count {
+  position: absolute;
+  z-index: 2;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  min-height: 24px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(24, 33, 47, .76);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(5px);
+}
+@media (max-width: 560px) {
+  .customer-order-progress-page .customer-order-product-photo.customer-order-product-carousel {
+    height: clamp(220px, 42vh, 340px) !important;
+    min-height: 200px !important;
+  }
+  .customer-order-progress-page .customer-order-carousel-arrow {
+    width: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+  }
+  .customer-order-progress-page .customer-order-carousel-prev {
+    left: 10px !important;
+  }
+  .customer-order-progress-page .customer-order-carousel-next {
+    right: 10px !important;
+  }
+}
