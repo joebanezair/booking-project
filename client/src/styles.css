@@ -9725,3 +9725,12 @@ dialog.buyer-order-status-dialog {
   background: #fff !important;
   border-radius: 10px !important;
 }
+
+
+/* White belongs to the Order Status popup card, not the dialog scroll shell. */
+.buyer-order-status-dialog-content {
+  background: transparent !important;
+}
+.buyer-status-card.buyer-status-modal-card {
+  background: #fff !important;
+}
