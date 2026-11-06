@@ -1422,18 +1422,18 @@ html body dialog.ui-dialog.buyer-order-status-dialog
   background: transparent !important;
 }
 
-/* Purchase History popup only: visible light-blue hover on the existing Order items row. */
+/* Purchase History Order Items: subtle light-blue hover on the clickable product row. */
 html body dialog.ui-dialog.buyer-order-status-dialog
-  .buyer-status-modal-card .buyer-order-details-grid > .buyer-order-details-panel:nth-child(2) .buyer-order-item {
-  transition: background-color 160ms ease !important;
+  .buyer-status-modal-card .buyer-order-details-panel:has(.buyer-order-items) .buyer-order-item {
+  transition: background-color 140ms ease !important;
 }
 html body dialog.ui-dialog.buyer-order-status-dialog
-  .buyer-status-modal-card .buyer-order-details-grid > .buyer-order-details-panel:nth-child(2) .buyer-order-item:hover {
-  background: color-mix(in srgb, #60a5fa 17%, var(--card, #fff)) !important;
+  .buyer-status-modal-card .buyer-order-details-panel:has(.buyer-order-items) .buyer-order-item:hover {
+  background: color-mix(in srgb, #60a5fa 9%, transparent) !important;
 }
 @media (prefers-reduced-motion: reduce) {
   html body dialog.ui-dialog.buyer-order-status-dialog
-    .buyer-status-modal-card .buyer-order-details-grid > .buyer-order-details-panel:nth-child(2) .buyer-order-item {
+    .buyer-status-modal-card .buyer-order-details-panel:has(.buyer-order-items) .buyer-order-item {
     transition: none !important;
   }
 }
