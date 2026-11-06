@@ -14,9 +14,10 @@ function money(value,currency){
   catch{return String(Number(value||0).toFixed(2))+" "+(currency||"PHP");}
 }
 
-export default function OrderStatusPage(){
-  const {orderId}=useParams();
-  const [token]=useState(()=>window.location.hash.slice(1));
+export default function OrderStatusPage({ orderId: orderIdProp, token: tokenProp, embedded = false, open = false, onOpenChange } = {}){
+  const params=useParams();
+  const orderId=orderIdProp || params.orderId;
+  const [token]=useState(()=>tokenProp || window.location.hash.slice(1));
   const [order,setOrder]=useState(null);
   const [loading,setLoading]=useState(true);
   const [refreshing,setRefreshing]=useState(false);
@@ -45,11 +46,16 @@ export default function OrderStatusPage(){
   const selectedItem=selectedItemIndex===null?null:order?.items?.[selectedItemIndex];
   const selectedImages=selectedItem?.images||[];
   const shownImageIndex=Math.min(activeImageIndex,Math.max(0,selectedImages.length-1));
-  return <main className="public-shell buyer-order-status-page">
-    <section className="public-card buyer-status-card">
+  const statusCard = <section className={"public-card buyer-status-card" + (embedded ? " buyer-status-modal-card" : "")}>
       <header className="buyer-status-header">
-        <Link className="brand-row" to="/"><span className="brand-mark">B</span><strong>BookFlow</strong></Link>
-        <Button type="button" variant="outline" onClick={refresh} disabled={refreshing}><FiRefreshCw aria-hidden="true"/>{refreshing?"Refreshing...":"Refresh status"}</Button>
+        {embedded
+          ? <div className="brand-row"><span className="brand-mark">B</span><strong>BookFlow</strong></div>
+          : <Link className="brand-row" to="/"><span className="brand-mark">B</span><strong>BookFlow</strong></Link>}
+        <div className="buyer-status-header-actions">
+          <Button type="button" variant="outline" onClick={refresh} disabled={refreshing}><FiRefreshCw aria-hidden="true"/>{refreshing?"Refreshing...":"Refresh status"}</Button>
+          {embedded && <Button type="button" variant="ghost" size="icon" aria-label="Close order status"
+            onClick={()=>onOpenChange?.(false)}><FiX aria-hidden="true"/></Button>}
+        </div>
       </header>
       <div className="buyer-status-intro">
         <p className="eyebrow">MY ORDER</p>
@@ -159,7 +165,17 @@ export default function OrderStatusPage(){
         </Dialog>
         <p className="muted buyer-order-note">Keep this link private. Status refreshes every 30 seconds, or you can refresh it manually.</p>
       </>}
-      <Link to="/search" className="buyer-order-back"><FiArrowLeft aria-hidden="true"/> Browse BookFlow</Link>
-    </section>
-  </main>;
+      {!embedded && <Link to="/search" className="buyer-order-back"><FiArrowLeft aria-hidden="true"/> Browse BookFlow</Link>}
+    </section>;
+
+  if (embedded) return <Dialog
+    title="Order status"
+    className="buyer-order-status-dialog"
+    open={open}
+    onOpenChange={onOpenChange}
+  >
+    <DialogContent className="buyer-order-status-dialog-content">{statusCard}</DialogContent>
+  </Dialog>;
+
+  return <main className="public-shell buyer-order-status-page">{statusCard}</main>;
 }
