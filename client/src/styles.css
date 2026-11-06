@@ -9734,3 +9734,62 @@ dialog.buyer-order-status-dialog {
 .buyer-status-card.buyer-status-modal-card {
   background: #fff !important;
 }
+
+
+/* Order status popup: reduce its desktop footprint by roughly 30%. */
+dialog.buyer-order-status-dialog {
+  width: min(602px, calc(100vw - 32px)) !important;
+  max-width: min(602px, calc(100vw - 32px)) !important;
+  max-height: 65dvh !important;
+}
+.buyer-order-status-dialog-content {
+  max-height: 65dvh !important;
+}
+.buyer-status-card.buyer-status-modal-card {
+  padding: 17px !important;
+}
+.buyer-status-modal-card .buyer-status-header {
+  gap: 12px !important;
+  margin-bottom: 15px !important;
+  padding-bottom: 11px !important;
+}
+.buyer-status-modal-card .buyer-order-summary {
+  margin-bottom: 13px !important;
+  padding: 10px 11px !important;
+}
+.buyer-status-modal-card .buyer-order-section,
+.buyer-status-modal-card .buyer-order-details-panel {
+  padding: 11px !important;
+}
+.buyer-status-modal-card .buyer-order-details-grid {
+  gap: 10px !important;
+}
+.buyer-status-modal-card .buyer-order-timeline > li {
+  min-height: 36px !important;
+  padding-bottom: 9px !important;
+}
+.buyer-status-modal-card .buyer-order-item-thumb {
+  width: 40px !important;
+  height: 40px !important;
+}
+.buyer-status-modal-card .buyer-order-grand-total {
+  margin-top: 10px !important;
+  padding-top: 9px !important;
+}
+@media (max-width: 700px) {
+  dialog.buyer-order-status-dialog {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+    max-height: 88dvh !important;
+  }
+  .buyer-order-status-dialog-content {
+    max-height: 88dvh !important;
+  }
+  .buyer-status-card.buyer-status-modal-card {
+    padding: 14px !important;
+  }
+  .buyer-status-modal-card .buyer-order-section,
+  .buyer-status-modal-card .buyer-order-details-panel {
+    padding: 11px !important;
+  }
+}
