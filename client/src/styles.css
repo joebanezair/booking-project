@@ -9914,12 +9914,12 @@ dialog.buyer-order-status-dialog {
   gap: 8px !important;
 }
 .buyer-status-modal-card .buyer-order-item {
-  grid-template-columns: 36px minmax(0, 1fr) max-content 10px !important;
+  grid-template-columns: 40.7px minmax(0, 1fr) max-content 10px !important;
   gap: 7px !important;
 }
 .buyer-status-modal-card .buyer-order-item-thumb {
-  width: 36px !important;
-  height: 36px !important;
+  width: 40.7px !important;
+  height: 40.7px !important;
 }
 .buyer-status-modal-card .buyer-order-item-name {
   font-size: 10px !important;
