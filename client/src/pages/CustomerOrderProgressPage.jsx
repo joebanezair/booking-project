@@ -84,12 +84,9 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
   const currentIndex = phases.findIndex(([key]) => key === order?.status);
   const cancelled = order?.status === "cancelled";
   const selectedItem = selectedItemIndex === null ? null : order?.items?.[selectedItemIndex];
-  const selectedImages = selectedItem
-    ? Array.from(new Set([
-        ...(Array.isArray(selectedItem.images) ? selectedItem.images : []),
-        selectedItem.image
-      ].filter(src => typeof src === "string" && src.trim())))
-    : [];
+  const selectedImages = selectedItem?.images?.length
+    ? selectedItem.images
+    : selectedItem?.image ? [selectedItem.image] : [];
   const shownImageIndex = Math.min(activeImageIndex, Math.max(0, selectedImages.length - 1));
 
   return <AppLayout user={user} onLogout={onLogout}>
@@ -207,12 +204,12 @@ export default function CustomerOrderProgressPage({ user, onLogout }) {
         >
           <DialogContent className="customer-order-product-dialog-content">
             <DialogHeader className="customer-order-product-dialog-header">
-              <div className="customer-order-product-dialog-heading">
+              <div>
                 <p className="eyebrow">ORDERED PRODUCT</p>
                 <DialogTitle>{selectedItem?.name || "Product details"}</DialogTitle>
                 <DialogDescription>Product information and images for the item in this order.</DialogDescription>
               </div>
-              <Button className="customer-order-product-dialog-close" type="button" variant="ghost" size="icon" aria-label="Close product details"
+              <Button type="button" variant="ghost" size="icon" aria-label="Close product details"
                 onClick={() => setSelectedItemIndex(null)}><FiX aria-hidden="true"/></Button>
             </DialogHeader>
             {selectedItem && <>
