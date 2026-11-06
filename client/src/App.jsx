@@ -9,7 +9,6 @@ import CreateContentPage from "./pages/CreateContentPage.jsx";
 import EditContentPage from "./pages/EditContentPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import CustomerHistoryPage from "./pages/CustomerHistoryPage.jsx";
-import CustomerOrderProgressPage from "./pages/CustomerOrderProgressPage.jsx";
 import ProfileSettingsPage from "./pages/ProfileSettingsPage.jsx";
 import BusinessPage from "./pages/BusinessPage.jsx";
 import PublicProfilePage from "./pages/PublicProfilePage.jsx";
@@ -136,10 +135,6 @@ export default function App() {
     ? (user.role === "business" ? <CustomerHistoryPage {...pageProps} kind={kind} /> : <Navigate to="/dashboard" replace />)
     : <Navigate to="/login" replace />;
 
-  const customerOrderProgressPage = user
-    ? (user.role === "business" ? <CustomerOrderProgressPage {...pageProps} /> : <Navigate to="/dashboard" replace />)
-    : <Navigate to="/login" replace />;
-
   return <Routes>
     <Route path="/" element={<SearchPage user={user} />} />
     <Route path="/search" element={<SearchPage user={user} />} />
@@ -167,7 +162,6 @@ export default function App() {
     <Route path="/dashboard/messages/:userId" element={protectedPage(MessagesPage)} />
     <Route path="/dashboard/profile" element={protectedPage(ProfilePage)} />
     <Route path="/dashboard/profile/purchases" element={customerHistoryPage("purchases")} />
-    <Route path="/dashboard/profile/purchases/:orderId" element={customerOrderProgressPage} />
     <Route path="/dashboard/profile/booking-history" element={customerHistoryPage("bookings")} />
     <Route path="/dashboard/profile/edit" element={protectedPage(ProfileSettingsPage)} />
     <Route path="/dashboard/profile/content" element={adminPage(PlatformContentEditorPage)} />
