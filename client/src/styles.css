@@ -10067,9 +10067,9 @@ dialog.ui-dialog.buyer-order-status-dialog .buyer-status-card.buyer-status-modal
 }
 
 
-/* Increase popup height by 20% only; keep its width unchanged and centered. */
+/* Keep the popup vertically proportional and centered; retain natural height with viewport limits. */
 dialog.ui-dialog.buyer-order-status-dialog {
-  transform: translate(-50%, -50%) scaleY(1.2) !important;
+  transform: translate(-50%, -50%) !important;
   transform-origin: center center !important;
   max-height: 82dvh !important;
   overflow: visible !important;
@@ -10080,7 +10080,7 @@ dialog.ui-dialog.buyer-order-status-dialog > .buyer-order-status-dialog-content 
 @media (max-width: 700px) {
   dialog.ui-dialog.buyer-order-status-dialog {
     max-height: 78dvh !important;
-    transform: translate(-50%, -50%) scaleY(1.2) !important;
+    transform: translate(-50%, -50%) !important;
   }
   dialog.ui-dialog.buyer-order-status-dialog > .buyer-order-status-dialog-content {
     max-height: 78dvh !important;
