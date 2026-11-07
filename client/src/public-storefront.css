@@ -1219,3 +1219,28 @@ html body #root .bookflow-storefront .storefront-profile-info .storefront-meta {
     grid-column: 1;
   }
 }
+
+/* Public Booking flow: consistent rounded surfaces for the form reached from a business profile. */
+html body #root .public-booking-flow .public-booking-form-card {
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+html body #root .public-booking-flow .public-booking-form-card .selected-content,
+html body #root .public-booking-flow .public-booking-form-card .booking-slot-picker,
+html body #root .public-booking-flow .public-booking-form-card .public-booking-questions,
+html body #root .public-booking-flow .public-booking-form-card .success {
+  border-radius: 14px !important;
+}
+html body #root .public-booking-flow .public-booking-form-card input:not([type="checkbox"]):not([type="radio"]),
+html body #root .public-booking-flow .public-booking-form-card select,
+html body #root .public-booking-flow .public-booking-form-card textarea {
+  border-radius: 10px !important;
+}
+html body #root .public-booking-flow .public-booking-form-card button,
+html body #root .public-booking-flow .public-booking-form-card .ui-button,
+html body #root .public-booking-flow .public-booking-form-card .slot-button {
+  border-radius: 9999px !important;
+}
+html body #root .public-booking-flow .public-booking-form-card .booking-reference-success {
+  border-radius: 10px;
+}
