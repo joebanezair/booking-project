@@ -72,3 +72,24 @@ html body #root .public-booking-page .ui-button svg {
 html body #root .public-booking-page .public-booking-card h1 {
   font-size: clamp(21px, 3.5vw, 33.6px) !important;
 }
+
+
+/* Make Request booking approximately 30% larger and match the service CTA blue. */
+html body #root .public-booking-page .public-booking-card form > .primary-button {
+  min-height: 52px !important;
+  padding: 12px 18px !important;
+  font-size: 17px !important;
+  background: #1639B3 !important;
+  border-color: #1639B3 !important;
+  color: #FFFFFF !important;
+}
+
+html body #root .public-booking-page .public-booking-card form > .primary-button:hover:not(:disabled) {
+  background: #102F96 !important;
+  border-color: #102F96 !important;
+}
+
+html body #root .public-booking-page .public-booking-card form > .primary-button svg {
+  width: 19.5px !important;
+  height: 19.5px !important;
+}
