@@ -1458,3 +1458,9 @@ html body dialog.ui-dialog.buyer-order-status-dialog
   padding-top: 5px !important;
   padding-bottom: 5px !important;
 }
+
+/* Purchase History only: keep all page text at regular weight. */
+#root .customer-history-page.customer-purchase-history-page,
+#root .customer-history-page.customer-purchase-history-page * {
+  font-weight: 400 !important;
+}
