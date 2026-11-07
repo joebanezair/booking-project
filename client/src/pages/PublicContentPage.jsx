@@ -94,9 +94,9 @@ export default function PublicContentPage({ user }) {
   const reactions = item.reactionSummary || {};
   const paused = item.owner.accountStatus === "paused";
 
-  return <main className="public-page">
+  return <main className="public-page public-service-detail-page">
     <header className="public-top"><Link className="brand-row" to="/search"><span className="brand-mark small">B</span><strong>BookFlow</strong></Link></header>
-    <Card as="article" className="content-detail">
+    <Card as="article" className="content-detail public-service-detail-card">
       <ContentGallery coverImage={item.coverImage} images={item.images} title={item.title} />
       <div className="content-detail-body">
         <span className="category-pill">{item.category}</span>
