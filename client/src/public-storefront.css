@@ -1384,3 +1384,34 @@ html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-thumbnai
   object-fit: cover;
   border-radius: 10px !important;
 }
+
+/* Public service detail page refinements: consistent 10px component gaps, ghost comment action, primary booking CTA. */
+html body #root .public-service-detail-page,
+html body #root .public-service-detail-page * {
+  gap: 10px !important;
+  row-gap: 10px !important;
+  column-gap: 10px !important;
+}
+html body #root .public-service-detail-page .service-booking-cta {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary) !important;
+  box-shadow: none !important;
+}
+html body #root .public-service-detail-page .comment-submit-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+html body #root .public-service-detail-page .comment-submit-button:hover {
+  background: var(--muted) !important;
+}
+html body #root .public-service-detail-page .comment-submit-button svg {
+  width: 16px !important;
+  height: 16px !important;
+}
