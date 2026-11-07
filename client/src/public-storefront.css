@@ -1353,3 +1353,9 @@ html body #root .public-service-detail-page,
 html body #root .public-service-detail-page * {
   font-weight: 400 !important;
 }
+
+/* Public service detail page: 10px inset padding on the image gallery container only. */
+html body #root .public-service-detail-page .content-gallery {
+  padding: 10px !important;
+  box-sizing: border-box !important;
+}
