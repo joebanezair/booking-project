@@ -2373,3 +2373,9 @@ html body #root .public-service-detail-page .reaction-bar .reaction-like.active 
 html body #root .public-service-detail-page .service-booking-cta {
   font-weight: 700 !important;
 }
+
+
+/* Fully rounded pill shape for the Book this service CTA. */
+html body #root .public-service-detail-page .service-booking-cta {
+  border-radius: 9999px !important;
+}
