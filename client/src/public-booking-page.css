@@ -1,0 +1,55 @@
+/* Public booking page: consistent 10px corners, spacing, and regular typography.
+   Scoped to PublicBookingPage so other BookFlow screens keep their existing design. */
+
+html body #root .public-booking-page * {
+  border-radius: 10px !important;
+  font-weight: 400 !important;
+  gap: 10px !important;
+  row-gap: 10px !important;
+  column-gap: 10px !important;
+}
+
+html body #root .public-booking-page .brand-row {
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+html body #root .public-booking-page .eyebrow,
+html body #root .public-booking-page h1,
+html body #root .public-booking-page .muted {
+  margin-bottom: 10px !important;
+}
+
+html body #root .public-booking-page form,
+html body #root .public-booking-page .two-col,
+html body #root .public-booking-page .row-actions,
+html body #root .public-booking-page .selected-content,
+html body #root .public-booking-page .booking-slot-picker,
+html body #root .public-booking-page .public-booking-questions,
+html body #root .public-booking-page .available-slot-grid {
+  gap: 10px !important;
+  row-gap: 10px !important;
+  column-gap: 10px !important;
+}
+
+html body #root .public-booking-page .selected-content {
+  margin-bottom: 10px !important;
+}
+
+html body #root .public-booking-page .available-slot-grid {
+  margin-top: 10px !important;
+}
+
+html body #root .public-booking-page .public-booking-card {
+  border-radius: 10px !important;
+}
+
+@media (max-width: 640px) {
+  html body #root .public-booking-page {
+    padding: 10px !important;
+  }
+
+  html body #root .public-booking-page .public-booking-card {
+    padding: 20px 14px !important;
+  }
+}
