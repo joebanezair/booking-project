@@ -1532,3 +1532,37 @@ html body dialog.ui-dialog.buyer-order-status-dialog
 #root .customer-history-page.customer-booking-history-page .customer-history-booking-actions > * {
   border-radius: 9999px !important;
 }
+
+/* Booking History only: make rounded surfaces visibly distinct, not radius-only. */
+/* Main booking cards */
+#root .customer-history-page.customer-booking-history-page .customer-history-card {
+  border: 1px solid var(--history-border, #e5e7eb) !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+/* Booking detail tiles: Service, Date & time, Location, Price */
+#root .customer-history-page.customer-booking-history-page .customer-history-booking-detail {
+  gap: 8px !important;
+}
+#root .customer-history-page.customer-booking-history-page .customer-history-booking-detail > div {
+  border: 1px solid var(--history-border, #e5e7eb) !important;
+  border-radius: 12px !important;
+  background: var(--history-surface, #fff) !important;
+  padding: 10px 11px !important;
+}
+
+/* Page-level controls and tabs */
+#root .customer-history-page.customer-booking-history-page .customer-history-header-links,
+#root .customer-history-page.customer-booking-history-page .customer-history-toolbar,
+#root .customer-history-page.customer-booking-history-page .customer-history-search,
+#root .customer-history-page.customer-booking-history-page .customer-history-status-filter select {
+  border-radius: 14px !important;
+}
+#root .customer-history-page.customer-booking-history-page .customer-history-view-toggle,
+#root .customer-history-page.customer-booking-history-page .customer-history-edit-toggle {
+  border-radius: 9999px !important;
+}
+#root .customer-history-page.customer-booking-history-page .customer-history-status {
+  border-radius: 9999px !important;
+}
