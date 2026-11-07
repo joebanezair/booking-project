@@ -1506,3 +1506,9 @@ html body dialog.ui-dialog.buyer-order-status-dialog
   border-width: 1px !important;
   box-sizing: border-box !important;
 }
+
+/* Booking History only: use regular font weight throughout the page. */
+#root .customer-history-page.customer-booking-history-page,
+#root .customer-history-page.customer-booking-history-page * {
+  font-weight: 400 !important;
+}
