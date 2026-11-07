@@ -1453,11 +1453,11 @@ html body dialog.ui-dialog.buyer-order-status-dialog
   padding-left: 5px !important;
 }
 
-/* Purchase History popup only: 5px vertical padding on the actual product button/card. */
+/* Purchase History popup only: add 5px more vertical padding to the actual product button/card. */
 html body dialog.ui-dialog.buyer-order-status-dialog
   .buyer-status-modal-card .buyer-order-items > button.buyer-order-item {
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
 }
 
 /* Purchase History only: keep all page text at regular weight. */
