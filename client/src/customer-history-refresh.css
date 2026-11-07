@@ -1500,9 +1500,11 @@ html body dialog.ui-dialog.buyer-order-status-dialog
   border: 1px solid color-mix(in srgb, var(--border, #e6eaf0) 58%, transparent) !important;
 }
 
-/* Purchase History popup: subtle gray border on the clickable product card that hovers. */
+/* Purchase History popup: visible subtle gray border on the hoverable product card. */
 html body dialog.ui-dialog.buyer-order-status-dialog
   .buyer-status-modal-card .buyer-order-items > button.buyer-order-item {
-  border: 1px solid color-mix(in srgb, var(--border, #e6eaf0) 58%, transparent) !important;
+  border: 1px solid #d9dee7 !important;
+  border-style: solid !important;
+  border-width: 1px !important;
   box-sizing: border-box !important;
 }
