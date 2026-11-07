@@ -229,7 +229,7 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
   const statuses = isPurchases ? purchaseStatuses : bookingStatuses;
 
   return <AppLayout user={user} onLogout={onLogout}>
-    <div className={`customer-history-page${isPurchases ? " customer-purchase-history-page" : ""}`}>
+    <div className={`customer-history-page${isPurchases ? " customer-purchase-history-page" : " customer-booking-history-page"}`}>
       <header className="customer-history-header">
         <div>
           <Link className="customer-history-back" to="/dashboard/profile"><FiArrowLeft/> Back to Profile</Link>
