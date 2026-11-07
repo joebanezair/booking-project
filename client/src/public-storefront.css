@@ -2341,3 +2341,29 @@ html body #root .public-service-detail-page .reaction-bar .reaction-like.active 
   background: color-mix(in srgb, #1F51FF 9%, transparent) !important;
   color: #1F51FF !important;
 }
+
+
+/* Darken the Neon Blue service-detail accent by approximately 30%. */
+html body #root main.public-service-detail-page {
+  --primary: #1639B3;
+  --primary-foreground: #FFFFFF;
+  --ring: #1639B3;
+}
+html body #root .public-service-detail-page .content-booking-callout:not(.paused-booking-callout) {
+  border-color: color-mix(in srgb, #1639B3 18%, #e4ebf5) !important;
+  background: color-mix(in srgb, #1639B3 5%, #ffffff) !important;
+}
+html body #root .public-service-detail-page .service-booking-cta {
+  border-color: #1639B3 !important;
+  background: #1639B3 !important;
+  color: #FFFFFF !important;
+}
+html body #root .public-service-detail-page .service-booking-cta:hover {
+  border-color: #102F96 !important;
+  background: #102F96 !important;
+}
+html body #root .public-service-detail-page .reaction-bar .reaction-like.active {
+  border-color: color-mix(in srgb, #1639B3 38%, var(--border)) !important;
+  background: color-mix(in srgb, #1639B3 9%, transparent) !important;
+  color: #1639B3 !important;
+}
