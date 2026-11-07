@@ -46,6 +46,7 @@ import "./public-profile-dashboard-refresh.css";
 import "./auth-enhancements.css";
 import "./platform-content.css";
 import "./customer-history-refresh.css";
+import "./public-booking-page.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
