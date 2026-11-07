@@ -84,7 +84,7 @@ export default function PublicBookingPage({user}){
   const selectedIndex=page?.services?.findIndex(service=>(form.contentId&&String(service.id)===String(form.contentId))||(!form.contentId&&service.title===form.service));
   const today=new Date().toISOString().slice(0,10);
 
-  return <main className="public-shell"><section className="public-card">
+  return <main className="public-shell public-booking-flow"><section className="public-card public-booking-form-card">
     <Link className="brand-row" to="/"><span className="brand-mark">B</span><strong>BookFlow</strong></Link>
     {error&&!page?<p className="error">{error}</p>:!page?<p>Loading...</p>:<>
       <p className="eyebrow">PUBLIC BOOKING</p>
