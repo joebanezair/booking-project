@@ -9,7 +9,7 @@ import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { RatingInput, RatingSummary } from "../components/StarRating.jsx";
 import CommentSection from "../components/CommentSection.jsx";
 import { getRealtimeSocket } from "../realtime.js";
-import { FiCalendar, FiThumbsDown, FiThumbsUp } from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiThumbsDown, FiThumbsUp } from "react-icons/fi";
 
 export default function PublicContentPage({ user }) {
   const { contentId } = useParams();
@@ -96,7 +96,7 @@ export default function PublicContentPage({ user }) {
   const paused = item.owner.accountStatus === "paused";
 
   return <main className="public-page public-service-detail-page">
-    <header className="public-top"><Link className="brand-row" to="/search"><span className="brand-mark small">B</span><strong>BookFlow</strong></Link></header>
+    <header className="public-top"><Link className="service-back-link" to={`/profile/${item.owner.username}`}><FiArrowLeft aria-hidden="true" /><span>Back to business profile</span></Link></header>
     <Card as="article" className="content-detail public-service-detail-card">
       <ContentGallery coverImage={item.coverImage} images={item.images} title={item.title} />
       <div className="content-detail-body">
@@ -141,7 +141,7 @@ export default function PublicContentPage({ user }) {
 
         <div className="owner-strip"><ProfileAvatar profile={item.owner} /><div><strong>{item.owner.name}</strong>{item.owner.headline && <small>{item.owner.headline}</small>}</div><Button asChild variant="outline"><Link  className="secondary button-link" to={`/profile/${item.owner.username}`}>View profile</Link></Button></div>
 
-        {item.allowRatings && <section className="rating-section"><p className="eyebrow">SERVICE RATINGS</p><RatingSummary {...item.ratingSummary} />{!isOwner && (user ? <div className="your-rating"><span>Your rating</span><RatingInput value={item.currentUserRating || 0} onChange={rate} />{item.currentUserRating && <Button variant="plain" className="link-button" onClick={removeRating}>Remove rating</Button>}</div> : <Button variant="plain" className="link-button" onClick={() => navigate("/login")}>Business accounts can sign in to rate this service</Button>)}</section>}
+        {item.allowRatings && <section className="rating-section"><p className="eyebrow">Service ratings</p><RatingSummary {...item.ratingSummary} />{!isOwner && (user ? <div className="your-rating"><span>Your rating</span><RatingInput value={item.currentUserRating || 0} onChange={rate} />{item.currentUserRating && <Button variant="plain" className="link-button" onClick={removeRating}>Remove rating</Button>}</div> : <Button variant="plain" className="link-button" onClick={() => navigate("/login")}>Business accounts can sign in to rate this service</Button>)}</section>}
 
         <CommentSection comments={item.comments || []} currentUser={user} ownerId={item.owner.id} onAdd={addComment} onEdit={editComment} onDelete={deleteComment} onReact={reactToComment} onSignIn={() => navigate("/login")} />
       </div>
