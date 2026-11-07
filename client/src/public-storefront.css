@@ -1359,3 +1359,28 @@ html body #root .public-service-detail-page .content-gallery {
   padding: 10px !important;
   box-sizing: border-box !important;
 }
+
+/* Public service detail page: center the small gallery thumbnails under the main image. */
+html body #root .public-service-detail-page .gallery-thumbs {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  padding: 0 !important;
+}
+html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-thumbnail {
+  flex: 0 0 76px !important;
+  width: 76px !important;
+  height: 76px !important;
+  min-width: 76px !important;
+  min-height: 76px !important;
+}
+html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-thumbnail img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 10px !important;
+}
