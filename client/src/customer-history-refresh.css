@@ -1479,3 +1479,9 @@ html body .content-shell:has(.customer-history-page.customer-purchase-history-pa
 html body .customer-history-page.customer-purchase-history-page {
   background: #fff !important;
 }
+
+/* Purchase History popup: subtle gray border on the outer Order items section only. */
+html body dialog.ui-dialog.buyer-order-status-dialog
+  .buyer-status-modal-card .buyer-order-details-panel:has(.buyer-order-items) {
+  border: 1px solid color-mix(in srgb, var(--border, #e6eaf0) 58%, transparent) !important;
+}
