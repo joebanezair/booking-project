@@ -1444,9 +1444,11 @@ html body dialog.ui-dialog.buyer-order-status-dialog
   padding: 5px 9px 5px 5px !important;
 }
 
-/* Purchase History popup: add 5px left inset to the inner Order items container only. */
+/* Purchase History popup: 5px top, bottom and left padding on the inner Order items container. */
 html body dialog.ui-dialog.buyer-order-status-dialog
   .buyer-status-modal-card .buyer-order-details-panel:has(.buyer-order-items) .buyer-order-items {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
   padding-left: 5px !important;
 }
 
