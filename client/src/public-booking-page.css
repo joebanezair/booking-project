@@ -66,3 +66,9 @@ html body #root .public-booking-page .ui-button svg {
   height: 15px;
   flex: 0 0 auto;
 }
+
+
+/* Reduce the public booking page's main header size by 30%. */
+html body #root .public-booking-page .public-booking-card h1 {
+  font-size: clamp(21px, 3.5vw, 33.6px) !important;
+}
