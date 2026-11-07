@@ -2315,3 +2315,29 @@ html body #root .public-service-detail-page .owner-strip .button-link svg {
   height: 14px !important;
   flex: 0 0 14px !important;
 }
+
+
+/* Neon Blue accent for the public service detail page only. */
+html body #root main.public-service-detail-page {
+  --primary: #1F51FF;
+  --primary-foreground: #FFFFFF;
+  --ring: #1F51FF;
+}
+html body #root .public-service-detail-page .content-booking-callout:not(.paused-booking-callout) {
+  border-color: color-mix(in srgb, #1F51FF 18%, #e4ebf5) !important;
+  background: color-mix(in srgb, #1F51FF 5%, #ffffff) !important;
+}
+html body #root .public-service-detail-page .service-booking-cta {
+  border-color: #1F51FF !important;
+  background: #1F51FF !important;
+  color: #FFFFFF !important;
+}
+html body #root .public-service-detail-page .service-booking-cta:hover {
+  border-color: #1743DF !important;
+  background: #1743DF !important;
+}
+html body #root .public-service-detail-page .reaction-bar .reaction-like.active {
+  border-color: color-mix(in srgb, #1F51FF 38%, var(--border)) !important;
+  background: color-mix(in srgb, #1F51FF 9%, transparent) !important;
+  color: #1F51FF !important;
+}
