@@ -1220,236 +1220,38 @@ html body #root .bookflow-storefront .storefront-profile-info .storefront-meta {
   }
 }
 
-/* Public service detail page: cleaner single-surface layout and 10px image corners. */
-html body #root .public-service-detail-page .public-service-detail-card {
-  border-radius: 20px !important;
-  overflow: hidden !important;
-  box-shadow: 0 8px 28px rgba(31,45,73,.06) !important;
-}
-html body #root .public-service-detail-page .content-detail-body {
-  padding: 28px 32px 32px !important;
-}
 
-/* Only service gallery photos get 10px corners; profile and comment avatars stay circular. */
-html body #root .public-service-detail-page .content-gallery img,
-html body #root .public-service-detail-page .content-gallery .gallery-hero,
-html body #root .public-service-detail-page .content-gallery .ui-gallery-thumbnail {
-  border-radius: 10px !important;
-}
-html body #root .public-service-detail-page .content-gallery .ui-gallery-thumbnail {
-  overflow: hidden !important;
-  padding: 0 !important;
-}
-
-/* Keep one clear booking callout instead of boxing every content section. */
-html body #root .public-service-detail-page .content-booking-callout {
-  border: 0 !important;
-  border-left: 3px solid #cbd5ff !important;
-  border-radius: 10px !important;
-  background: #f6f8ff !important;
-  padding: 15px 18px !important;
-}
-
-/* Provider, rating, and discussion are simple sections separated by dividers, not nested cards. */
-html body #root .public-service-detail-page .owner-strip {
-  border: 0 !important;
-  border-top: 1px solid #edf0f4 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 18px 0 0 !important;
-  overflow: visible !important;
-}
-html body #root .public-service-detail-page .rating-section {
-  border: 0 !important;
-  border-top: 1px solid #edf0f4 !important;
-  border-bottom: 1px solid #edf0f4 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 20px 0 !important;
-}
-html body #root .public-service-detail-page .comments-section {
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 20px 0 0 !important;
-}
-html body #root .public-service-detail-page .comment-form,
-html body #root .public-service-detail-page .signin-callout {
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-html body #root .public-service-detail-page .comment-thread {
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  overflow: visible !important;
-}
-html body #root .public-service-detail-page .comment-item {
-  border-radius: 0 !important;
-  background: transparent !important;
-}
-html body #root .public-service-detail-page .comment-edit {
-  border-radius: 0 !important;
-  background: transparent !important;
-}
-html body #root .public-service-detail-page input:not([type="checkbox"]):not([type="radio"]),
-html body #root .public-service-detail-page select,
-html body #root .public-service-detail-page textarea {
-  border-radius: 10px !important;
-}
-html body #root .public-service-detail-page .button-link,
-html body #root .public-service-detail-page .comment-form button,
-html body #root .public-service-detail-page .comment-edit button {
-  border-radius: 8px !important;
-}
-html body #root .public-service-detail-page .category-pill,
-html body #root .public-service-detail-page .reaction-bar .reaction {
-  border-radius: 9999px !important;
-}
-@media (max-width: 700px) {
-  html body #root .public-service-detail-page .content-detail-body {
-    padding: 20px !important;
-  }
-  html body #root .public-service-detail-page .content-booking-callout {
-    padding: 14px !important;
-  }
-}
-
-/* Public service detail page: remove bold weight from all text only on this view. */
-html body #root .public-service-detail-page,
-html body #root .public-service-detail-page * {
-  font-weight: 400 !important;
-}
-
-/* Public service detail page: 10px inset padding on the image gallery container only. */
-html body #root .public-service-detail-page .content-gallery {
-  padding: 10px !important;
-  box-sizing: border-box !important;
-}
-
-/* Public service detail page: center the small gallery thumbnails under the main image. */
-html body #root .public-service-detail-page .gallery-thumbs {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  flex-wrap: wrap !important;
-  gap: 10px !important;
-  padding: 0 !important;
-}
-html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-thumbnail {
-  flex: 0 0 76px !important;
-  width: 76px !important;
-  height: 76px !important;
-  min-width: 76px !important;
-  min-height: 76px !important;
-}
-html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-thumbnail img {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 10px !important;
-}
-
-/* Public service detail page refinements: consistent 10px component gaps, ghost comment action, primary booking CTA. */
-html body #root .public-service-detail-page,
-html body #root .public-service-detail-page * {
-  gap: 10px !important;
-  row-gap: 10px !important;
-  column-gap: 10px !important;
-}
-html body #root .public-service-detail-page .service-booking-cta {
-  background: var(--primary) !important;
-  color: var(--primary-foreground) !important;
-  border-color: var(--primary) !important;
-  box-shadow: none !important;
-}
-html body #root .public-service-detail-page .comment-submit-button {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  background: transparent !important;
+/* Public service detail page — complete clean layout. */
+html body #root main.public-service-detail-page {
+  min-height: 100vh !important;
+  padding: 14px 12px 40px !important;
+  background: var(--background) !important;
   color: var(--foreground) !important;
-  border: 1px solid transparent !important;
-  box-shadow: none !important;
 }
-html body #root .public-service-detail-page .comment-submit-button:hover {
-  background: var(--muted) !important;
+html body #root .public-service-detail-page > .public-top {
+  width: min(760px, 100%) !important;
+  margin: 0 auto 10px !important;
+  padding: 0 2px !important;
 }
-html body #root .public-service-detail-page .comment-submit-button svg {
-  width: 16px !important;
-  height: 16px !important;
-}
-
-/* Service detail actions: outline the ghost comment button and align the booking icon. */
-html body #root .public-service-detail-page .comment-submit-button {
-  border: 1px solid var(--border, #d9dee7) !important;
-}
-html body #root .public-service-detail-page .comment-submit-button:hover {
-  border-color: var(--ring, #94a3b8) !important;
-}
-html body #root .public-service-detail-page .service-booking-cta {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 10px !important;
-}
-html body #root .public-service-detail-page .service-booking-cta svg {
-  width: 16px !important;
-  height: 16px !important;
-  flex: 0 0 16px !important;
-}
-
-/* Service detail design pass: compact hierarchy, multi-photo gallery, compact actions, collapsible discussion. */
-/* Main service surface and content hierarchy */
 html body #root .public-service-detail-page .public-service-detail-card {
-  width: min(760px, calc(100% - 32px)) !important;
-  max-width: 760px !important;
-  margin: 20px auto !important;
-  border-radius: 18px !important;
-  overflow: hidden !important;
-}
-html body #root .public-service-detail-page .content-detail-body {
-  padding: 20px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 10px !important;
-}
-html body #root .public-service-detail-page .category-pill {
-  align-self: flex-start !important;
-  border-radius: 9999px !important;
-}
-html body #root .public-service-detail-page .content-detail-body h1 {
-  font-size: clamp(26px, 4vw, 32px) !important;
-  line-height: 1.2 !important;
-  margin: 0 !important;
-}
-html body #root .public-service-detail-page .content-price {
   display: block !important;
-  margin: 0 !important;
-  font-size: 22px !important;
-  line-height: 1.3 !important;
-  color: var(--foreground) !important;
-}
-html body #root .public-service-detail-page .content-description {
-  margin: 0 !important;
-  color: var(--muted-foreground) !important;
+  width: min(760px, 100%) !important;
+  max-width: 760px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 18px !important;
+  background: var(--card) !important;
+  color: var(--card-foreground) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
-/* Gallery: 10px inset, 10px image corners, centered multi-image strip. */
+/* Service gallery: 10px image corners and inset, centered multiple-image selector. */
 html body #root .public-service-detail-page .content-gallery {
   display: flex !important;
   flex-direction: column !important;
+  align-items: stretch !important;
   gap: 10px !important;
   padding: 10px !important;
   box-sizing: border-box !important;
@@ -1457,6 +1259,7 @@ html body #root .public-service-detail-page .content-gallery {
 html body #root .public-service-detail-page .content-gallery .gallery-hero {
   display: block !important;
   width: 100% !important;
+  height: auto !important;
   max-height: 420px !important;
   aspect-ratio: 16 / 8 !important;
   object-fit: cover !important;
@@ -1464,29 +1267,33 @@ html body #root .public-service-detail-page .content-gallery .gallery-hero {
 }
 html body #root .public-service-detail-page .gallery-thumbs {
   display: flex !important;
-  justify-content: center !important;
   align-items: center !important;
+  justify-content: center !important;
   flex-wrap: wrap !important;
   gap: 10px !important;
+  width: 100% !important;
   padding: 0 !important;
 }
 html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-thumbnail,
 html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-more {
   display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   flex: 0 0 68px !important;
   width: 68px !important;
   min-width: 68px !important;
   height: 68px !important;
   min-height: 68px !important;
+  margin: 0 !important;
   padding: 0 !important;
-  border-radius: 10px !important;
   overflow: hidden !important;
-}
-html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-thumbnail {
   border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-thumbnail.active {
-  border: 1px solid var(--primary) !important;
+  border-color: var(--primary) !important;
 }
 html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-thumbnail img {
   display: block !important;
@@ -1496,10 +1303,8 @@ html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-thumbnai
   border-radius: 10px !important;
 }
 html body #root .public-service-detail-page .gallery-thumbs .ui-gallery-more {
-  align-items: center !important;
-  justify-content: center !important;
-  border: 1px solid var(--border) !important;
-  background: var(--muted) !important;
+  border-color: var(--border) !important;
+  background: var(--muted-bg) !important;
   color: var(--foreground) !important;
   font-size: 14px !important;
 }
@@ -1508,23 +1313,82 @@ html body #root .public-service-detail-page .gallery-thumbs-footer {
   justify-content: center !important;
 }
 
-/* Reactions stay compact and content-sized. */
+/* Service text and title/price row. */
+html body #root .public-service-detail-page .content-detail-body {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+  padding: 20px !important;
+}
+html body #root .public-service-detail-page .category-pill {
+  align-self: flex-start !important;
+  margin: 0 !important;
+  border-radius: 9999px !important;
+}
+html body #root .public-service-detail-page .service-title-price-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: baseline !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+}
+html body #root .public-service-detail-page .service-title-price-row h1 {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  font-size: clamp(25px, 4vw, 32px) !important;
+  line-height: 1.2 !important;
+  color: var(--foreground) !important;
+}
+html body #root .public-service-detail-page .service-title-price-row .content-price {
+  flex: 0 0 auto !important;
+  display: block !important;
+  margin: 0 !important;
+  color: var(--foreground) !important;
+  font-size: 21px !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+}
+html body #root .public-service-detail-page .content-description {
+  margin: 0 !important;
+  color: var(--muted-foreground) !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+  white-space: pre-wrap;
+}
+
+/* Compact reaction controls. */
 html body #root .public-service-detail-page .reaction-bar {
   display: flex !important;
   flex-wrap: wrap !important;
+  align-items: center !important;
   justify-content: flex-start !important;
   gap: 10px !important;
   margin: 0 !important;
 }
 html body #root .public-service-detail-page .reaction-bar .reaction {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   width: auto !important;
   min-width: 0 !important;
-  min-height: 34px !important;
+  min-height: 32px !important;
+  margin: 0 !important;
   padding: 6px 10px !important;
+  border: 1px solid var(--border) !important;
   border-radius: 9999px !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
+  font-size: 12px !important;
+  box-shadow: none !important;
+}
+html body #root .public-service-detail-page .reaction-bar .reaction.active {
+  background: var(--muted-bg) !important;
+  border-color: var(--ring) !important;
 }
 
-/* Booking callout remains the single emphasized action surface. */
+/* Booking callout is the one intentionally emphasized panel. */
 html body #root .public-service-detail-page .content-booking-callout {
   display: flex !important;
   flex-direction: column !important;
@@ -1536,18 +1400,22 @@ html body #root .public-service-detail-page .content-booking-callout {
   border: 0 !important;
   border-left: 3px solid var(--primary) !important;
   border-radius: 12px !important;
-  background: var(--muted) !important;
+  background: var(--muted-bg) !important;
 }
 html body #root .public-service-detail-page .content-booking-callout > div {
   display: flex !important;
   flex-direction: column !important;
   gap: 10px !important;
+  width: 100% !important;
 }
-html body #root .public-service-detail-page .content-booking-callout strong {
+html body #root .public-service-detail-page .content-booking-callout strong,
+html body #root .public-service-detail-page .content-booking-callout p {
   margin: 0 !important;
 }
 html body #root .public-service-detail-page .content-booking-callout p {
-  margin: 0 !important;
+  color: var(--muted-foreground) !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
 }
 html body #root .public-service-detail-page .service-booking-cta {
   display: inline-flex !important;
@@ -1557,21 +1425,25 @@ html body #root .public-service-detail-page .service-booking-cta {
   width: auto !important;
   min-width: 0 !important;
   min-height: 44px !important;
+  margin: 0 !important;
   padding: 11px 16px !important;
+  border: 1px solid var(--primary) !important;
   border-radius: 9px !important;
   background: var(--primary) !important;
   color: var(--primary-foreground) !important;
-  border: 1px solid var(--primary) !important;
   font-size: 14px !important;
+  line-height: 1.2 !important;
+  text-decoration: none !important;
   box-shadow: none !important;
 }
 html body #root .public-service-detail-page .service-booking-cta svg {
+  display: block !important;
   width: 16px !important;
   height: 16px !important;
   flex: 0 0 16px !important;
 }
 
-/* Provider and rating stay as clean rows rather than nested cards. */
+/* Provider and ratings are clean sections, not nested cards. */
 html body #root .public-service-detail-page .owner-strip {
   display: flex !important;
   flex-wrap: wrap !important;
@@ -1589,15 +1461,20 @@ html body #root .public-service-detail-page .owner-strip > div {
   flex: 1 1 auto !important;
   min-width: 0 !important;
 }
-html body #root .public-service-detail-page .owner-strip .button-link {
+html body #root .public-service-detail-page .owner-strip .button-link,
+html body #root .public-service-detail-page .rating-section .link-button {
+  display: inline-flex !important;
+  align-items: center !important;
   width: auto !important;
-  min-height: 34px !important;
+  min-width: 0 !important;
+  min-height: 32px !important;
   padding: 6px 10px !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
 }
 html body #root .public-service-detail-page .rating-section {
   display: flex !important;
   flex-direction: column !important;
+  align-items: flex-start !important;
   gap: 10px !important;
   margin: 0 !important;
   padding: 14px 0 !important;
@@ -1611,35 +1488,47 @@ html body #root .public-service-detail-page .rating-section {
 html body #root .public-service-detail-page .rating-section .eyebrow {
   margin: 0 !important;
 }
-html body #root .public-service-detail-page .your-rating {
+html body #root .public-service-detail-page .rating-summary {
   display: flex !important;
-  flex-wrap: wrap !important;
   align-items: center !important;
+  flex-wrap: wrap !important;
   gap: 10px !important;
+  margin: 0 !important;
 }
-html body #root .public-service-detail-page .rating-section .link-button {
-  width: auto !important;
-  min-height: 32px !important;
-  padding: 5px 8px !important;
+html body #root .public-service-detail-page .rating-input {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+html body #root .public-service-detail-page .rating-input > button {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 !important;
 }
 
-/* Compact rating, profile, and comment actions; only Book this service is prominent. */
-html body #root .public-service-detail-page .button-link,
+/* Regular-size secondary actions; Book this service remains the larger CTA. */
+html body #root .public-service-detail-page .button-link:not(.service-booking-cta),
 html body #root .public-service-detail-page .link-button,
 html body #root .public-service-detail-page .comment-submit-button,
-html body #root .public-service-detail-page .thread-toggle {
+html body #root .public-service-detail-page .thread-toggle,
+html body #root .public-service-detail-page .row-actions .ui-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   width: auto !important;
   min-width: 0 !important;
   max-width: 100% !important;
   min-height: 32px !important;
+  margin: 0 !important;
   padding: 6px 10px !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   line-height: 1.3 !important;
 }
 html body #root .public-service-detail-page .comment-submit-button {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
   gap: 10px !important;
   border: 1px solid var(--border) !important;
   border-radius: 8px !important;
@@ -1648,12 +1537,19 @@ html body #root .public-service-detail-page .comment-submit-button {
   box-shadow: none !important;
 }
 html body #root .public-service-detail-page .comment-submit-button:hover {
-  background: var(--muted) !important;
   border-color: var(--ring) !important;
+  background: var(--muted-bg) !important;
+}
+html body #root .public-service-detail-page .comment-submit-button svg {
+  width: 16px !important;
+  height: 16px !important;
 }
 
-/* Discussion collapsible header and plain threaded comments. */
+/* Discussion starts closed; its header is a full-width, accessible toggle. */
 html body #root .public-service-detail-page .comments-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
   margin: 0 !important;
   padding: 14px 0 0 !important;
   border: 0 !important;
@@ -1661,10 +1557,12 @@ html body #root .public-service-detail-page .comments-section {
 }
 html body #root .public-service-detail-page .discussion-toggle {
   display: flex !important;
-  width: 100% !important;
-  min-height: 44px !important;
   align-items: center !important;
   justify-content: space-between !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-height: 44px !important;
+  margin: 0 !important;
   padding: 8px 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -1673,25 +1571,26 @@ html body #root .public-service-detail-page .discussion-toggle {
   text-align: left !important;
   box-shadow: none !important;
 }
-html body #root .public-service-detail-page .discussion-title-group,
-html body #root .public-service-detail-page .discussion-toggle-meta {
+html body #root .public-service-detail-page .discussion-title-group {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
   gap: 4px !important;
 }
 html body #root .public-service-detail-page .discussion-title {
-  font-size: 15px !important;
   color: var(--foreground) !important;
+  font-size: 15px !important;
 }
 html body #root .public-service-detail-page .discussion-toggle-meta {
-  flex-direction: row !important;
+  display: inline-flex !important;
   align-items: center !important;
+  gap: 8px !important;
   color: var(--muted-foreground) !important;
 }
 html body #root .public-service-detail-page .discussion-count {
-  font-size: 12px !important;
+  white-space: nowrap !important;
   color: var(--muted-foreground) !important;
+  font-size: 12px !important;
 }
 html body #root .public-service-detail-page .discussion-toggle svg {
   transition: transform 140ms ease;
@@ -1718,6 +1617,7 @@ html body #root .public-service-detail-page .comment-form {
 html body #root .public-service-detail-page .comment-form textarea {
   width: 100% !important;
   min-height: 84px !important;
+  border-radius: 10px !important;
 }
 html body #root .public-service-detail-page .comment-list {
   display: flex !important;
@@ -1744,8 +1644,8 @@ html body #root .public-service-detail-page .comment-item {
   border: 0 !important;
   background: transparent !important;
 }
-html body #root .public-service-detail-page .comment-avatar-link,
-html body #root .public-service-detail-page .comment-avatar-link img {
+html body #root .public-service-detail-page .comment-avatar-link {
+  display: block !important;
   flex: 0 0 auto !important;
 }
 html body #root .public-service-detail-page .comment-body {
@@ -1764,6 +1664,12 @@ html body #root .public-service-detail-page .comment-author-meta {
   flex-direction: column !important;
   gap: 4px !important;
 }
+html body #root .public-service-detail-page .comment-body > p {
+  margin: 0 !important;
+  color: var(--muted-foreground) !important;
+  line-height: 1.6 !important;
+  white-space: pre-wrap;
+}
 html body #root .public-service-detail-page .comment-replies {
   margin-left: 22px !important;
   padding-left: 12px !important;
@@ -1776,16 +1682,36 @@ html body #root .public-service-detail-page .row-actions {
   gap: 10px !important;
 }
 html body #root .public-service-detail-page .row-actions .icon-action {
-  width: 32px !important;
-  min-width: 32px !important;
-  height: 32px !important;
-  min-height: 32px !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
   padding: 0 !important;
 }
+html body #root .public-service-detail-page,
+html body #root .public-service-detail-page * {
+  font-weight: 400 !important;
+}
+html body #root .public-service-detail-page .service-title-price-row,
+html body #root .public-service-detail-page .content-detail-body,
+html body #root .public-service-detail-page .content-gallery,
+html body #root .public-service-detail-page .gallery-thumbs,
+html body #root .public-service-detail-page .reaction-bar,
+html body #root .public-service-detail-page .content-booking-callout,
+html body #root .public-service-detail-page .owner-strip,
+html body #root .public-service-detail-page .rating-section,
+html body #root .public-service-detail-page .comments-section,
+html body #root .public-service-detail-page .comment-form,
+html body #root .public-service-detail-page .comment-list,
+html body #root .public-service-detail-page .comment-item,
+html body #root .public-service-detail-page .comment-head,
+html body #root .public-service-detail-page .row-actions {
+  row-gap: 10px !important;
+  column-gap: 10px !important;
+}
 @media (max-width: 700px) {
-  html body #root .public-service-detail-page .public-service-detail-card {
-    width: calc(100% - 20px) !important;
-    margin: 10px auto !important;
+  html body #root .public-service-detail-page {
+    padding: 10px 10px 30px !important;
   }
   html body #root .public-service-detail-page .content-detail-body {
     padding: 14px !important;
@@ -1797,6 +1723,15 @@ html body #root .public-service-detail-page .row-actions .icon-action {
     min-width: 60px !important;
     height: 60px !important;
     min-height: 60px !important;
+  }
+  html body #root .public-service-detail-page .service-title-price-row {
+    align-items: flex-end !important;
+  }
+  html body #root .public-service-detail-page .service-title-price-row .content-price {
+    font-size: 18px !important;
+  }
+  html body #root .public-service-detail-page .owner-strip {
+    gap: 10px !important;
   }
   html body #root .public-service-detail-page .comment-replies {
     margin-left: 12px !important;
