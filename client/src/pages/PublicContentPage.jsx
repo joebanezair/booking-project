@@ -111,7 +111,7 @@ export default function PublicContentPage({ user }) {
 
         {item.allowBookings && (paused
           ? <div className="content-booking-callout paused-booking-callout"><div><strong>Temporarily unavailable</strong><p>{item.owner.name} is not accepting new bookings right now.</p></div></div>
-          : <div className="content-booking-callout"><div><strong>Interested in this service?</strong><p>Choose a convenient date and request a schedule with {item.owner.name}.</p></div><Button asChild variant="default"><Link  className="primary-button button-link" to={`/b/${item.owner.id}?content=${item._id}&service=${encodeURIComponent(item.title)}`}>Book this service</Link></Button></div>)}
+          : <div className="content-booking-callout"><div><strong>Interested in this service?</strong><p>Choose a convenient date and request a schedule with {item.owner.name}.</p></div><Button asChild variant="default"><Link className="primary-button button-link service-booking-cta" to={`/b/${item.owner.id}?content=${item._id}&service=${encodeURIComponent(item.title)}`}>Book this service</Link></Button></div>)}
 
         <div className="owner-strip"><ProfileAvatar profile={item.owner} /><div><strong>{item.owner.name}</strong>{item.owner.headline && <small>{item.owner.headline}</small>}</div><Button asChild variant="outline"><Link  className="secondary button-link" to={`/profile/${item.owner.username}`}>View profile</Link></Button></div>
 
