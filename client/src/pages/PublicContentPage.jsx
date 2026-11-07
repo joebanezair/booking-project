@@ -101,8 +101,10 @@ export default function PublicContentPage({ user }) {
       <ContentGallery coverImage={item.coverImage} images={item.images} title={item.title} />
       <div className="content-detail-body">
         <span className="category-pill">{item.category}</span>
-        <h1>{item.title}</h1>
-        <PriceDisplay className="content-price" price={item.price} currency={item.currency} />
+        <div className="service-title-price-row">
+          <h1>{item.title}</h1>
+          <PriceDisplay className="content-price" price={item.price} currency={item.currency} />
+        </div>
         <p className="content-description">{item.description}</p>
 
         <div className="reaction-bar">
