@@ -1512,3 +1512,23 @@ html body dialog.ui-dialog.buyer-order-status-dialog
 #root .customer-history-page.customer-booking-history-page * {
   font-weight: 400 !important;
 }
+
+/* Booking History only: consistent rounded corners for its general containers and controls. */
+#root .customer-history-page.customer-booking-history-page .customer-history-header-links,
+#root .customer-history-page.customer-booking-history-page .customer-history-toolbar,
+#root .customer-history-page.customer-booking-history-page .customer-history-search,
+#root .customer-history-page.customer-booking-history-page .customer-history-status-filter select,
+#root .customer-history-page.customer-booking-history-page .customer-history-toolbar > .ui-button,
+#root .customer-history-page.customer-booking-history-page .customer-history-toolbar > button,
+#root .customer-history-page.customer-booking-history-page .customer-history-card,
+#root .customer-history-page.customer-booking-history-page .customer-history-booking-detail,
+#root .customer-history-page.customer-booking-history-page .customer-history-booking-detail > div,
+#root .customer-history-page.customer-booking-history-page .customer-history-order-actions > *,
+#root .customer-history-page.customer-booking-history-page .customer-history-empty {
+  border-radius: 12px !important;
+}
+#root .customer-history-page.customer-booking-history-page .customer-history-header-links a,
+#root .customer-history-page.customer-booking-history-page .customer-history-status,
+#root .customer-history-page.customer-booking-history-page .customer-history-booking-actions > * {
+  border-radius: 9999px !important;
+}
