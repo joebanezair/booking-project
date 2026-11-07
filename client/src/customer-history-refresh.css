@@ -1438,11 +1438,11 @@ html body dialog.ui-dialog.buyer-order-status-dialog
   }
 }
 
-/* Purchase History popup: explicit 5px top padding on the outer Order items section. */
+/* Purchase History popup: add 5px to the existing top padding on the outer Order items section. */
 html body dialog.ui-dialog.buyer-order-status-dialog
   .buyer-status-modal-card .buyer-order-details-panel:has(.buyer-order-items) {
   padding: 5px 9px 5px 5px !important;
-  padding-top: 5px !important;
+  padding-top: 10px !important;
 }
 
 /* Purchase History popup: 5px top, bottom and left padding on the inner Order items container. */
