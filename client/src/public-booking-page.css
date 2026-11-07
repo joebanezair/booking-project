@@ -53,3 +53,16 @@ html body #root .public-booking-page .public-booking-card {
     padding: 20px 14px !important;
   }
 }
+
+
+/* Public booking buttons use full pill corners; keep other surfaces at 10px. */
+html body #root .public-booking-page button,
+html body #root .public-booking-page .ui-button {
+  border-radius: 9999px !important;
+}
+
+html body #root .public-booking-page .ui-button svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
