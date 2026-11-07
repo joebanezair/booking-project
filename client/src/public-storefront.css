@@ -2300,3 +2300,18 @@ html body #root .public-service-detail-page * {
     padding-left: 10px !important;
   }
 }
+
+
+/* Service-detail owner action: icon alignment and full pill shape. */
+html body #root .public-service-detail-page .owner-strip .button-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  border-radius: 999px !important;
+}
+html body #root .public-service-detail-page .owner-strip .button-link svg {
+  width: 14px !important;
+  height: 14px !important;
+  flex: 0 0 14px !important;
+}
