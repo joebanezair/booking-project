@@ -1778,3 +1778,93 @@ html body #root .public-service-detail-page .thread-toggle {
   width: auto !important;
   padding: 6px 10px !important;
 }
+
+
+/* Service detail refinements: icon-led reactions and balanced booking layout. */
+html body #root .public-service-detail-page .service-title-price-row {
+  align-items: center !important;
+  gap: 8px 14px !important;
+}
+html body #root .public-service-detail-page .service-title-price-row h1 {
+  font-size: clamp(26px, 3.7vw, 30px) !important;
+  letter-spacing: -0.025em !important;
+}
+html body #root .public-service-detail-page .content-description {
+  max-width: 68ch;
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+}
+html body #root .public-service-detail-page .reaction-bar {
+  gap: 8px !important;
+}
+html body #root .public-service-detail-page .reaction-bar .reaction {
+  gap: 7px !important;
+  min-height: 34px !important;
+  padding: 7px 11px !important;
+  border-color: var(--border) !important;
+  border-radius: 9px !important;
+  color: var(--muted-foreground) !important;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease !important;
+}
+html body #root .public-service-detail-page .reaction-bar .reaction svg {
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px !important;
+  stroke-width: 1.9 !important;
+}
+html body #root .public-service-detail-page .reaction-bar .reaction span {
+  color: inherit !important;
+}
+html body #root .public-service-detail-page .reaction-bar .reaction strong {
+  padding-left: 1px !important;
+  color: inherit !important;
+  font-size: 12px !important;
+  font-variant-numeric: tabular-nums;
+}
+html body #root .public-service-detail-page .reaction-bar .reaction:not(:disabled):hover {
+  border-color: var(--ring) !important;
+  background: var(--muted-bg) !important;
+  color: var(--foreground) !important;
+}
+html body #root .public-service-detail-page .reaction-bar .reaction-like.active {
+  border-color: color-mix(in srgb, var(--primary) 38%, var(--border)) !important;
+  background: color-mix(in srgb, var(--primary) 9%, transparent) !important;
+  color: var(--primary) !important;
+}
+html body #root .public-service-detail-page .reaction-bar .reaction-dislike.active {
+  border-color: color-mix(in srgb, #dc2626 34%, var(--border)) !important;
+  background: color-mix(in srgb, #dc2626 8%, transparent) !important;
+  color: #dc2626 !important;
+}
+html body #root .public-service-detail-page .content-booking-callout {
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+}
+html body #root .public-service-detail-page .content-booking-callout > div {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+}
+html body #root .public-service-detail-page .content-booking-callout > div > strong {
+  font-size: 14px !important;
+}
+html body #root .public-service-detail-page .content-booking-callout > div > p {
+  margin-top: 4px !important;
+}
+html body #root .public-service-detail-page .service-booking-cta {
+  flex: 0 0 auto !important;
+  align-self: center !important;
+  white-space: nowrap !important;
+}
+@media (max-width: 560px) {
+  html body #root .public-service-detail-page .content-booking-callout {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+  html body #root .public-service-detail-page .service-booking-cta {
+    align-self: flex-start !important;
+  }
+}
