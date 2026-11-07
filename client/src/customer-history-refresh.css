@@ -1447,8 +1447,8 @@ html body dialog.ui-dialog.buyer-order-status-dialog
 /* Purchase History popup: 5px top, bottom and left padding on the inner Order items container. */
 html body dialog.ui-dialog.buyer-order-status-dialog
   .buyer-status-modal-card .buyer-order-details-panel:has(.buyer-order-items) .buyer-order-items {
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
   padding-left: 5px !important;
 }
 
