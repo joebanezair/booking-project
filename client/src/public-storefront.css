@@ -1631,7 +1631,7 @@ html body #root .public-service-detail-page .comment-thread {
   margin: 0 !important;
   padding: 10px 0 !important;
   border: 0 !important;
-  border-bottom: 1px solid var(--border) !important;
+  border-bottom: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
@@ -2200,7 +2200,7 @@ html body #root .public-service-detail-page .comment-thread {
   margin: 0 !important;
   padding: 10px 0 !important;
   border: 0 !important;
-  border-bottom: 1px solid var(--border) !important;
+  border-bottom: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
