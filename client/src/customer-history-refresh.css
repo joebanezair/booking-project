@@ -1464,3 +1464,9 @@ html body dialog.ui-dialog.buyer-order-status-dialog
 #root .customer-history-page.customer-purchase-history-page * {
   font-weight: 400 !important;
 }
+
+/* Purchase History Order Status popup: force the Order placed status badge fully round. */
+html body dialog.ui-dialog.buyer-order-status-dialog
+  .buyer-status-modal-card .buyer-order-summary .buyer-status-pill {
+  border-radius: 9999px !important;
+}
