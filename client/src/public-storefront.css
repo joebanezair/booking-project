@@ -1245,68 +1245,105 @@ html body #root .public-booking-flow .public-booking-form-card .booking-referenc
   border-radius: 10px;
 }
 
-/* Public service detail page: consistent rounded surfaces for the service opened from a business profile. */
+/* Public service detail page: cleaner single-surface layout and 10px image corners. */
 html body #root .public-service-detail-page .public-service-detail-card {
   border-radius: 20px !important;
   overflow: hidden !important;
+  box-shadow: 0 8px 28px rgba(31,45,73,.06) !important;
 }
 html body #root .public-service-detail-page .content-detail-body {
-  border-radius: 0 0 20px 20px !important;
+  padding: 28px 32px 32px !important;
 }
-html body #root .public-service-detail-page .category-pill {
-  border-radius: 9999px !important;
+
+/* Only service gallery photos get 10px corners; profile and comment avatars stay circular. */
+html body #root .public-service-detail-page .content-gallery img,
+html body #root .public-service-detail-page .content-gallery .gallery-hero,
+html body #root .public-service-detail-page .content-gallery .ui-gallery-thumbnail {
+  border-radius: 10px !important;
 }
-html body #root .public-service-detail-page .reaction-bar .reaction {
-  border-radius: 9999px !important;
+html body #root .public-service-detail-page .content-gallery .ui-gallery-thumbnail {
+  overflow: hidden !important;
+  padding: 0 !important;
 }
+
+/* Keep one clear booking callout instead of boxing every content section. */
 html body #root .public-service-detail-page .content-booking-callout {
-  border: 1px solid #d9e1ff !important;
-  border-radius: 16px !important;
-  padding: 18px !important;
+  border: 0 !important;
+  border-left: 3px solid #cbd5ff !important;
+  border-radius: 10px !important;
+  background: #f6f8ff !important;
+  padding: 15px 18px !important;
 }
+
+/* Provider, rating, and discussion are simple sections separated by dividers, not nested cards. */
 html body #root .public-service-detail-page .owner-strip {
-  border: 1px solid var(--border, #e4e8ef) !important;
-  border-radius: 16px !important;
-  padding: 14px !important;
-  overflow: hidden;
+  border: 0 !important;
+  border-top: 1px solid #edf0f4 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 18px 0 0 !important;
+  overflow: visible !important;
 }
 html body #root .public-service-detail-page .rating-section {
-  border: 1px solid var(--border, #e4e8ef) !important;
-  border-radius: 16px !important;
-  padding: 18px !important;
+  border: 0 !important;
+  border-top: 1px solid #edf0f4 !important;
+  border-bottom: 1px solid #edf0f4 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 20px 0 !important;
 }
 html body #root .public-service-detail-page .comments-section {
-  border: 1px solid var(--border, #e4e8ef) !important;
-  border-radius: 16px !important;
-  padding: 18px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 20px 0 0 !important;
 }
 html body #root .public-service-detail-page .comment-form,
 html body #root .public-service-detail-page .signin-callout {
-  border-radius: 14px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 html body #root .public-service-detail-page .comment-thread {
-  border-radius: 14px !important;
-  overflow: hidden;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  overflow: visible !important;
 }
-html body #root .public-service-detail-page .comment-item,
+html body #root .public-service-detail-page .comment-item {
+  border-radius: 0 !important;
+  background: transparent !important;
+}
 html body #root .public-service-detail-page .comment-edit {
-  border-radius: 12px !important;
+  border-radius: 0 !important;
+  background: transparent !important;
 }
 html body #root .public-service-detail-page input:not([type="checkbox"]):not([type="radio"]),
 html body #root .public-service-detail-page select,
 html body #root .public-service-detail-page textarea {
   border-radius: 10px !important;
 }
-html body #root .public-service-detail-page button,
-html body #root .public-service-detail-page .ui-button,
-html body #root .public-service-detail-page .button-link {
+html body #root .public-service-detail-page .button-link,
+html body #root .public-service-detail-page .comment-form button,
+html body #root .public-service-detail-page .comment-edit button {
+  border-radius: 8px !important;
+}
+html body #root .public-service-detail-page .category-pill,
+html body #root .public-service-detail-page .reaction-bar .reaction {
   border-radius: 9999px !important;
 }
 @media (max-width: 700px) {
-  html body #root .public-service-detail-page .owner-strip,
-  html body #root .public-service-detail-page .rating-section,
-  html body #root .public-service-detail-page .comments-section {
-    border-radius: 14px !important;
+  html body #root .public-service-detail-page .content-detail-body {
+    padding: 20px !important;
+  }
+  html body #root .public-service-detail-page .content-booking-callout {
     padding: 14px !important;
   }
 }
