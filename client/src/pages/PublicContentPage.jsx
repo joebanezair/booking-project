@@ -9,7 +9,7 @@ import ProfileAvatar from "../components/ProfileAvatar.jsx";
 import { RatingInput, RatingSummary } from "../components/StarRating.jsx";
 import CommentSection from "../components/CommentSection.jsx";
 import { getRealtimeSocket } from "../realtime.js";
-import { FiCalendar } from "react-icons/fi";
+import { FiCalendar, FiThumbsDown, FiThumbsUp } from "react-icons/fi";
 
 export default function PublicContentPage({ user }) {
   const { contentId } = useParams();
@@ -100,16 +100,39 @@ export default function PublicContentPage({ user }) {
     <Card as="article" className="content-detail public-service-detail-card">
       <ContentGallery coverImage={item.coverImage} images={item.images} title={item.title} />
       <div className="content-detail-body">
-        <span className="category-pill">{item.category}</span>
         <div className="service-title-price-row">
           <h1>{item.title}</h1>
           <PriceDisplay className="content-price" price={item.price} currency={item.currency} />
         </div>
         <p className="content-description">{item.description}</p>
 
-        <div className="reaction-bar">
-          <Button variant="plain" className={reactions.currentReaction === "like" ? "reaction active" : "reaction"} disabled={isOwner} onClick={() => react("like")}>👍 Like <strong>{reactions.likes || 0}</strong></Button>
-          <Button variant="plain" className={reactions.currentReaction === "dislike" ? "reaction active" : "reaction"} disabled={isOwner} onClick={() => react("dislike")}>👎 Dislike <strong>{reactions.dislikes || 0}</strong></Button>
+        <div className="reaction-bar" aria-label="Service reactions">
+          <Button
+            type="button"
+            variant="plain"
+            className={`reaction reaction-like ${reactions.currentReaction === "like" ? "active" : ""}`}
+            aria-label={`Like service, ${reactions.likes || 0} likes`}
+            aria-pressed={reactions.currentReaction === "like"}
+            disabled={isOwner}
+            onClick={() => react("like")}
+          >
+            <FiThumbsUp aria-hidden="true" />
+            <span>Like</span>
+            <strong>{reactions.likes || 0}</strong>
+          </Button>
+          <Button
+            type="button"
+            variant="plain"
+            className={`reaction reaction-dislike ${reactions.currentReaction === "dislike" ? "active" : ""}`}
+            aria-label={`Dislike service, ${reactions.dislikes || 0} dislikes`}
+            aria-pressed={reactions.currentReaction === "dislike"}
+            disabled={isOwner}
+            onClick={() => react("dislike")}
+          >
+            <FiThumbsDown aria-hidden="true" />
+            <span>Dislike</span>
+            <strong>{reactions.dislikes || 0}</strong>
+          </Button>
         </div>
 
         {item.allowBookings && (paused
