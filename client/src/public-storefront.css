@@ -2367,3 +2367,9 @@ html body #root .public-service-detail-page .reaction-bar .reaction-like.active 
   background: color-mix(in srgb, #1639B3 9%, transparent) !important;
   color: #1639B3 !important;
 }
+
+
+/* Emphasize the primary Book this service CTA label. */
+html body #root .public-service-detail-page .service-booking-cta {
+  font-weight: 700 !important;
+}
