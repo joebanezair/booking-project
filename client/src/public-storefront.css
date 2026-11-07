@@ -1310,3 +1310,9 @@ html body #root .public-service-detail-page .button-link {
     padding: 14px !important;
   }
 }
+
+/* Public service detail page: remove bold weight from all text only on this view. */
+html body #root .public-service-detail-page,
+html body #root .public-service-detail-page * {
+  font-weight: 400 !important;
+}
