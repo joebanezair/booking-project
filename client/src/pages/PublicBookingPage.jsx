@@ -6,6 +6,7 @@ import { Label } from "../components/ui/label.jsx";
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
+import { FiCalendar, FiCheck, FiClock, FiMapPin, FiX } from "react-icons/fi";
 
 function money(value,currency="PHP"){try{return new Intl.NumberFormat(undefined,{style:"currency",currency,maximumFractionDigits:2}).format(value||0);}catch{return `${currency} ${Number(value||0).toLocaleString()}`;}}
 function durationLabel(minutes){const value=Number(minutes||60);if(value<60)return value+" min";const hours=Math.floor(value/60);const rest=value%60;return rest?`${hours}h ${rest}m`:`${hours}h`;}
@@ -99,7 +100,7 @@ export default function PublicBookingPage({user}){
         </div>
         <Label>Phone number<Input type="tel" value={form.guestPhone} onChange={e=>setForm({...form,guestPhone:e.target.value})} placeholder="+63 912 345 6789" required autoComplete="tel"/></Label>
         <Label>Location / service address<Input value={form.locationLabel} onChange={e=>setForm({...form,locationLabel:e.target.value})} placeholder="Address, barangay, city, or area" autoComplete="street-address" maxLength="200"/></Label>
-        <div className="row-actions"><Button variant="plain" className="secondary" type="button" onClick={detectLocation} disabled={locating}>{locating?"Detecting location...":"Use my current location"}</Button>{form.locationLatitude!==null&&form.locationLongitude!==null&&<Button variant="plain" className="secondary" type="button" onClick={()=>{setForm(current=>({...current,locationLatitude:null,locationLongitude:null,locationAccuracy:null}));setLocationStatus("Saved coordinates removed. Your typed location is still kept.");}}>Remove detected location</Button>}</div>
+        <div className="row-actions"><Button variant="plain" className="secondary" type="button" onClick={detectLocation} disabled={locating}><FiMapPin aria-hidden="true" />{locating?"Detecting location...":"Use my current location"}</Button>{form.locationLatitude!==null&&form.locationLongitude!==null&&<Button variant="plain" className="secondary" type="button" onClick={()=>{setForm(current=>({...current,locationLatitude:null,locationLongitude:null,locationAccuracy:null}));setLocationStatus("Saved coordinates removed. Your typed location is still kept.");}}><FiX aria-hidden="true" />Remove detected location</Button>}</div>
         <p className="muted">Location sharing is optional and only happens after you press the button and approve your browser's permission request.</p>
         {locationStatus&&<p className="muted">{locationStatus}</p>}
 
@@ -107,7 +108,7 @@ export default function PublicBookingPage({user}){
 
         <div className="booking-slot-picker">
           <Label>Choose date<Input type="date" min={today} value={slotDate} onChange={e=>setSlotDate(e.target.value)} required/></Label>
-          {slotDate&&<div><strong>Available times</strong>{slotsLoading?<p className="muted">Checking availability…</p>:slots.length===0?<p className="warning-note">No available slots on this date. Choose another day.</p>:<div className="available-slot-grid">{slots.map(slot=><Button variant="plain" type="button" key={slot.value} className={form.bookingDate===slot.value?"slot-button active":"slot-button"} onClick={()=>setForm({...form,bookingDate:slot.value})}>{slot.label}</Button>)}</div>}</div>}
+          {slotDate&&<div><strong>Available times</strong>{slotsLoading?<p className="muted">Checking availability…</p>:slots.length===0?<p className="warning-note">No available slots on this date. Choose another day.</p>:<div className="available-slot-grid">{slots.map(slot=><Button variant="plain" type="button" key={slot.value} className={form.bookingDate===slot.value?"slot-button active":"slot-button"} onClick={()=>setForm({...form,bookingDate:slot.value})}>{form.bookingDate===slot.value?<FiCheck aria-hidden="true" />:<FiClock aria-hidden="true" />}{slot.label}</Button>)}</div>}</div>}
         </div>
 
         {(selectedService?.bookingQuestions||[]).length>0&&<fieldset className="public-booking-questions"><legend>Booking details</legend>{selectedService.bookingQuestions.map(question=><Label key={question.id}>{question.label}{question.required&&" *"}
@@ -121,7 +122,7 @@ export default function PublicBookingPage({user}){
         {error&&<p className="error">{error}</p>}
         {message&&<div className="success"><strong>{message}</strong>{reference&&<span className="booking-reference-success">Reference: {reference}</span>}</div>}
         {user?.role === "business" ? <p className="customer-history-checkout-note">This booking will be saved to your Booking History.</p> : <p className="customer-history-checkout-note">Sign in with your BookFlow business account to save this booking to your Booking History. <Link to="/login">Sign in</Link></p>}
-        <Button variant="plain" className="primary-button" disabled={!form.bookingDate}>Request booking</Button>
+        <Button variant="plain" className="primary-button" disabled={!form.bookingDate}><FiCalendar aria-hidden="true" />Request booking</Button>
       </form>
     </>}
   </section></main>;
