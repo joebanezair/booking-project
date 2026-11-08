@@ -3576,3 +3576,174 @@ html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-se
     min-height: 74px !important;
   }
 }
+
+/* Business setup checklist refinement: consistent 10px padding and gaps. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.onboarding-panel.onboarding-relaunch {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  padding: 10px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-hero {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 0 0 10px !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-trigger.ui-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  gap: 10px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  text-align: left !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-copy {
+  display: grid !important;
+  min-width: 0 !important;
+  gap: 5px !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-metrics {
+  display: grid !important;
+  align-content: center !important;
+  justify-items: end !important;
+  gap: 4px !important;
+  min-width: 104px !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-progress {
+  width: 100% !important;
+  height: 6px !important;
+  min-height: 6px !important;
+  margin: 0 0 10px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch
+.onboarding-launch-progress:has(+ .onboarding-launch-list[hidden]) {
+  margin-bottom: 0 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+  margin: 10px 0 0 !important;
+  padding: 10px 0 0 !important;
+  border: 0 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-list[hidden] {
+  display: none !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch
+.onboarding-launch-list > .ui-button {
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-item {
+  display: grid !important;
+  grid-template-columns: 30px minmax(0, 1fr) 14px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 58px !important;
+  height: 100% !important;
+  padding: 10px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  text-align: left !important;
+  transition: background-color .15s ease !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch
+.onboarding-launch-item:hover {
+  background: #f1f5ff !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch
+.onboarding-item-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  border-radius: 50% !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-item-copy {
+  display: grid !important;
+  min-width: 0 !important;
+  gap: 4px !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-item-copy strong {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-item-copy small {
+  font-size: 10.5px !important;
+  line-height: 1.4 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-item-arrow {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+@media (max-width: 760px) {
+  html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-hero {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-metrics {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-list {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 420px) {
+  html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch {
+    padding: 10px !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-item {
+    min-height: 54px !important;
+  }
+}
