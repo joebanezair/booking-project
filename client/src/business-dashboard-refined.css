@@ -1365,3 +1365,11 @@ html:not([data-theme="dark"]) body #root .content-shell:has(.admin-dashboard-pla
 html:not([data-theme="dark"]) body #root .page-shell:has(.admin-dashboard-platform) {
   --background: #ffffff;
 }
+
+/* Shared Admin + Business dashboard canvas: clean white background. */
+html body #root .page-shell:has(.dashboard-content-rail) > .content-shell {
+  background-color: #fff !important;
+}
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail {
+  background-color: #fff !important;
+}
