@@ -442,14 +442,14 @@ html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-cont
 }
 
 html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-label {
-  order: 1 !important;
+  order: 2 !important;
   margin: 0 !important;
   font-size: 10.5px !important;
   line-height: 1.25 !important;
 }
 
 html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-number {
-  order: 2 !important;
+  order: 1 !important;
   margin: 1px 0 0 !important;
   font-size: clamp(21px, 1.55vw, 24px) !important;
   line-height: 1.05 !important;
