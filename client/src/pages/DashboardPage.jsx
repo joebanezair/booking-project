@@ -323,9 +323,9 @@ export default function DashboardPage({ user, onLogout }) {
           ) : (
             <Link to={section.to} key={section.to}
               aria-label={section.action}>
-              <span className="route-card-icon"><Icon aria-hidden="true" /></span>
-              <span className="dashboard-quick-copy">
-                <span className="dashboard-quick-title-row"><strong>{section.title}</strong></span>
+              <span><Icon aria-hidden="true" /></span>
+              <span>
+                <span><strong>{section.title}</strong></span>
                 <small>{section.text}</small>
               </span>
               {section.countKey && <span aria-label={`Total ${section.title.toLowerCase()}`}>
