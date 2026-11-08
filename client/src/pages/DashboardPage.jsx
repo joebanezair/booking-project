@@ -161,8 +161,7 @@ export default function DashboardPage({ user, onLogout }) {
           if (hasLocalSettings) await api.profile.saveDashboardPreferences(kind, localPreferences);
         }
       } catch {
-        // Keep local settings when offline; saving will report an error if the API is unavailable.
-      } finally {
+        // Keep local settings when offline; preferences can still be changed from Settings.
       }
     }
     loadPreferences();
