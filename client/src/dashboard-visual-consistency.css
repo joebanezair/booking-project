@@ -1,0 +1,130 @@
+/* Dashboard visual consistency:
+   Use a clean white canvas and a single 10px corner radius for dashboard
+   surfaces and rectangular controls. Keep the global sidebar palette,
+   avatar circles, chart marks and status dots unchanged. */
+
+html body #root .page-shell:has(.dashboard-content-rail) {
+  --background: #ffffff !important;
+  --card: #ffffff !important;
+  --card-foreground: #18212f !important;
+  --foreground: #18212f !important;
+  --muted-bg: #ffffff !important;
+  background: #ffffff !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) > .content-shell,
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail {
+  background: #ffffff !important;
+}
+
+/* Main dashboard surfaces remain white in both light and dark app themes. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .onboarding-panel,
+  .onboarding-relaunch,
+  .onboarding-launch-item,
+  .business-dashboard-analytics,
+  .dashboard-v2-stats,
+  .dashboard-v2-stat,
+  .dashboard-v2-analysis-grid,
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services,
+  .dashboard-route-section,
+  .dashboard-route-grid,
+  .dashboard-shadcn-card,
+  .dashboard-quick-grid,
+  .dashboard-quick-link,
+  .admin-dashboard-platform,
+  .admin-tool-link,
+  .business-admin-page,
+  .business-admin-activity,
+  .business-admin-platform-grid,
+  .business-admin-platform-metric,
+  .business-admin-breakdowns,
+  .business-admin-breakdown-group,
+  .business-admin-breakdown-metric,
+  .dashboard-status-zero,
+  .business-feature-access-banner,
+  .business-dashboard-all-hidden
+) {
+  background-color: #ffffff !important;
+}
+
+/* One consistent 10px radius for dashboard cards, panels, and grouped areas. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .onboarding-panel,
+  .onboarding-relaunch,
+  .onboarding-launch-item,
+  .onboarding-progress,
+  .business-dashboard-analytics,
+  .dashboard-v2-stats,
+  .dashboard-v2-stat,
+  .dashboard-v2-analysis-grid,
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services,
+  .dashboard-v2-sales-controls,
+  .dashboard-chart-tab,
+  .dashboard-v2-chart-area,
+  .chart-shell,
+  .service-chart,
+  .dashboard-route-section,
+  .dashboard-route-grid,
+  .dashboard-shadcn-card,
+  .dashboard-quick-grid,
+  .dashboard-quick-link,
+  .route-card-icon,
+  .dashboard-v2-stat-icon,
+  .admin-dashboard-platform,
+  .admin-tool-link,
+  .business-admin-page,
+  .business-admin-activity,
+  .business-admin-platform-grid,
+  .business-admin-platform-metric,
+  .business-admin-breakdowns,
+  .business-admin-breakdown-group,
+  .business-admin-breakdown-metric,
+  .dashboard-status-zero,
+  .business-feature-access-banner,
+  .business-dashboard-all-hidden,
+  .ui-card,
+  .panel,
+  .stat-card,
+  .route-card
+) {
+  border-radius: 10px !important;
+}
+
+/* Dashboard action buttons and ordinary rectangular form controls. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  button,
+  a.ui-button,
+  a.button-link,
+  .ui-button,
+  .dashboard-post-service,
+  .business-dashboard-customize-button,
+  input,
+  select,
+  textarea,
+  .ui-input
+) {
+  border-radius: 10px !important;
+}
+
+/* The dashboard customization dialog is rendered outside the content rail. */
+html body .ui-dialog.business-dashboard-dialog,
+html body .business-dashboard-dialog :is(
+  .business-dashboard-widget-group,
+  .business-dashboard-widget-trigger,
+  .business-dashboard-widget-row,
+  button,
+  .ui-button,
+  input
+) {
+  border-radius: 10px !important;
+}
+
+html body .ui-dialog.business-dashboard-dialog {
+  background: #ffffff !important;
+}
