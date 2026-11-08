@@ -1,0 +1,516 @@
+/* Settings-only dashboard preference UI styles preserved after disabling dashboard styles. */
+/* Business Dashboard — quiet surfaces, variable cards, and personal widget selection.
+   Scoped to business pages and the dedicated modal to avoid changing admin styling. */
+
+
+/* Business Customize: flat list sections, short rows, and right-aligned values.
+   Compact but fully accessible: no nested scrolling or decorative group cards. */
+
+html body .ui-dialog.business-dashboard-dialog {
+  width: min(520px, calc(100vw - 24px));
+  max-width: min(520px, calc(100vw - 24px));
+  max-height: min(710px, calc(100dvh - 24px));
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 !important;
+  border: 1px solid var(--border);
+  border-radius: 12px !important;
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: 0 18px 50px rgba(22, 34, 60, .14);
+}
+
+html body .ui-dialog.business-dashboard-dialog::backdrop {
+  background: rgba(17, 27, 47, .30);
+}
+
+html body .business-dashboard-dialog .ui-dialog-content {
+  display: grid;
+  gap: 0;
+  padding: 19px 20px 16px;
+}
+
+html body .business-dashboard-dialog .ui-dialog-header {
+  display: grid;
+  gap: 5px;
+  margin: 0 0 13px;
+}
+
+html body .business-dashboard-dialog .ui-dialog-title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.25;
+  letter-spacing: -.025em;
+  font-weight: 680;
+}
+
+html body .business-dashboard-dialog .ui-dialog-description {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--muted-foreground);
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 34px;
+  margin: 0 0 4px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-summary strong {
+  font-weight: 680;
+  color: var(--foreground);
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-summary > span:last-child {
+  font-size: 10px;
+  text-align: right;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-list {
+  display: grid;
+  align-content: start;
+  gap: 0;
+  overflow: visible !important;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0 !important;
+  border-top: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 3px;
+  border: 0 !important;
+  border-radius: 5px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--foreground);
+  text-align: left;
+  cursor: pointer;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-trigger:hover {
+  color: var(--primary);
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-trigger:focus-visible,
+html body .business-dashboard-dialog .business-dashboard-widget-row:focus-within {
+  outline: 2px solid var(--ring, var(--primary));
+  outline-offset: -2px;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-trigger > span:first-child {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 640;
+  line-height: 1.4;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-count {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-trigger svg {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  color: var(--muted-foreground);
+  transform: rotate(-90deg);
+  transition: transform .14s ease;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-trigger svg.is-expanded {
+  transform: rotate(0);
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-rows {
+  padding: 0 0 10px;
+  width: 100%;
+  overflow: visible !important;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-rows[hidden] {
+  display: none !important;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 35px;
+  padding: 6px 9px;
+  margin: 0;
+  border: 0 !important;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-row:hover {
+  background: var(--secondary);
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-name {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  gap: 10px;
+  min-width: 0;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-name > span {
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-name input[type="checkbox"] {
+  display: block !important;
+  flex: 0 0 15px;
+  width: 15px !important;
+  height: 15px !important;
+  min-width: 15px !important;
+  margin: 0 !important;
+  padding: 0;
+  accent-color: var(--primary, #5269ea);
+  cursor: pointer;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-value {
+  display: block;
+  flex: 0 1 45%;
+  max-width: 45%;
+  min-width: 35px;
+  margin-left: auto;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-footer {
+  display: flex;
+  position: sticky;
+  bottom: -16px;
+  z-index: 1;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 9px 12px;
+  margin: 11px 0 0;
+  padding: 12px 0 1px;
+  border-top: 1px solid var(--border);
+  background: var(--card);
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-helpers,
+html body .business-dashboard-dialog .business-dashboard-widget-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-footer .ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 6px 9px;
+  border-radius: 7px !important;
+  font-size: 11px;
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-helpers .ui-button {
+  border-color: transparent;
+}
+
+html body .business-dashboard-dialog .business-dashboard-widget-footer .ui-button svg {
+  flex: 0 0 13px;
+  width: 13px;
+  height: 13px;
+}
+
+@media (max-width: 560px) {
+html body .business-dashboard-dialog .business-dashboard-widget-summary > span:last-child { display: none; }
+
+  html body .business-dashboard-dialog .business-dashboard-widget-footer {
+    position: static;
+    align-items: stretch;
+  }
+
+  html body .business-dashboard-dialog .business-dashboard-widget-actions {
+    margin-left: auto;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+html body .business-dashboard-dialog .business-dashboard-widget-trigger svg { transition: none; }
+
+}
+
+@media (max-width: 560px) {
+html body .business-dashboard-dialog .ui-dialog-content { padding: 14px; }
+
+  html body .business-dashboard-dialog .business-dashboard-widget-footer { align-items: stretch; }
+
+}
+
+@media (max-width: 420px) {
+html body .business-dashboard-dialog .business-dashboard-widget-name > span { font-size: 11px; }
+
+}
+
+
+
+/* Dashboard v3: compact checklist and data-aware analytics (2026-10). */
+
+/* The old checklist reserved a blank 148px illustration column even with
+   the illustration hidden. Remove that space and keep progress actionable. */
+
+
+/* Compact metric summaries. All figures still come from live sales data. */
+
+
+/* Compact analytics when a business does not have transactions yet.
+   Once records arrive, normal chart sizing and donut visualization return. */
+
+/* Zero bookings should not resemble a real distribution chart. */
+
+/* Preserve readable charts when live numbers exist. */
+
+
+
+/* Targeted checklist and booking legend refinement. */
+
+/* Checklist only: two tidy columns in one subtle parent panel. */
+
+/* Booking Status only: replace square blocks with small circular legend dots. */
+
+
+
+/* Minimal analytics group: unified KPI strip and shared sales/status/services surface. */
+
+/* Four KPIs share a single rounded boundary, without individual card outlines. */
+
+
+/* Sales, Booking Status, and Top Services form one surface with separators.
+   All React components, charts, data, and Customize toggles remain intact. */
+
+
+/* Narrower desktop: full-width last analytic segment, then single column. */
+
+
+
+/* Business Quick Access — flat section, seven independent white shortcuts,
+   and a shared blue accent. Admin Quick Access remains unchanged. */
+
+/* Make the second row feel deliberate instead of leaving five tiny cards
+   on the first row and two stranded on the next. */
+
+
+
+/* Admin Dashboard only: normal text weight across the heading, live metrics,
+   booking/order breakdown, quick-access links and Customize controls.
+   This leaves the business dashboard and global workspace navigation untouched. */
+
+
+/* Business dashboard only — normal text weight throughout the existing layout.
+   Keep every heading, statistic, tab, button, label, link, and value in place.
+   Match the business header instead of the analytics panels so customization
+   cannot accidentally disable the typography treatment. */
+
+
+
+/* Admin Dashboard white background: light theme only. */
+
+
+
+
+/* Dashboard visual refresh — presentation only; preserve all existing widgets and actions. */
+
+
+/* Launch checklist: stronger title hierarchy and a calmer progress track. */
+
+
+/* KPI strip: consistent icon/value hierarchy, comfortable tap-free desktop sizing. */
+
+
+/* Analytics: three clearly organized columns with aligned headings and chart area. */
+
+
+/* Quick access: spacious, tidy rows with clear clickable targets. */
+
+
+/* Tablet and mobile: keep every section and link visible without cramped columns. */
+
+
+
+/* Second-pass dashboard refinement: give each data group its own visual rhythm. */
+
+
+/* Replace the single analytics slab with three balanced, independent panels. */
+
+
+/* Quick access items become distinct, easy-to-scan destinations. */
+
+
+/* Keep the refreshed card layout fluid at every breakpoint. */
+
+/* Dashboard-wide border reset.
+   Scoped to the dashboard page so cards and controls elsewhere are unaffected.
+   Layout, spacing, backgrounds, radii, shadows and keyboard focus outlines remain unchanged. */
+
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .panel,
+  .ui-card,
+  .onboarding-panel,
+  .onboarding-launch-item,
+  .onboarding-progress,
+  .dashboard-v2-stats,
+  .dashboard-v2-stat,
+  .dashboard-v2-analysis-grid,
+  .dashboard-v2-sales-controls,
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services,
+  .dashboard-status-zero,
+  .dashboard-section,
+  .dashboard-route-section,
+  .dashboard-route-grid,
+  .dashboard-quick-grid,
+  .dashboard-quick-link,
+  .dashboard-shadcn-card,
+  .admin-tool-link,
+  .business-admin-page,
+  .business-admin-activity,
+  .business-admin-platform-grid,
+  .business-admin-platform-metric,
+  .business-admin-breakdowns,
+  .business-admin-breakdown-group,
+  .business-admin-breakdown-metric,
+  .business-feature-access-banner,
+  .business-dashboard-all-hidden,
+  .business-dashboard-widget-row
+) {
+  border: 0 !important;
+}
+
+
+/* Remove dashboard-only dividers inside grouped statistics and analytics. */
+
+
+/* Dashboard header actions use the same borderless treatment. */
+
+
+/* Customize-dashboard dialog is part of the dashboard experience too. */
+
+html body .ui-dialog.business-dashboard-dialog,
+html body .business-dashboard-dialog .business-dashboard-widget-group {
+  border: 0 !important;
+}
+
+
+/* Business dashboard welcome label: regular text sizing, not a page title. */
+
+/* Premium BookFlow dashboard refresh.
+   Presentation only: all dashboard data, sections, navigation and settings remain intact. */
+
+
+/* Consistent rhythm across every dashboard section. */
+
+
+/* Launch checklist: compact, calm, readable. Preserve all seven task links. */
+
+
+/* KPI strip: grouped parent outline, horizontal icon / value / copy / divider units. */
+
+
+/* Analytics container: single shared boundary, three clean internal panels. */
+
+
+/* Quick access: compact clickable rows with icon tiles, no heavy card chrome. */
+
+
+/* Settings keeps the moved dashboard customization visible and consistent. */
+
+html body #root .bookflow-settings-v2 .settings-v2-dashboard {
+  align-items: center !important;
+  gap: 10px !important;
+  padding-block: 12px !important;
+}
+
+
+html body #root .bookflow-settings-v2 .settings-v2-dashboard .settings-v2-customize.ui-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  flex: 0 0 auto !important;
+  min-height: 36px !important;
+  width: auto !important;
+  padding: 8px 12px !important;
+  border: 1px solid var(--premium-line) !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  color: var(--premium-ink) !important;
+  font-size: 12px !important;
+  font-weight: 550 !important;
+  box-shadow: none !important;
+}
+
+
+html body #root .bookflow-settings-v2 .settings-v2-dashboard .settings-v2-customize.ui-button:hover {
+  border-color: #cbd5e1 !important;
+  background: var(--premium-blue-soft) !important;
+  color: #496be9 !important;
+}
+
+
+/* Responsive rules retain all sections and prevent compressed controls. */
+
+
+@media (max-width: 760px) {
+html body #root .bookflow-settings-v2 .settings-v2-dashboard {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+
+}
