@@ -778,10 +778,13 @@ html body #root .bookflow-settings-v2 .settings-v2-dashboard .settings-v2-custom
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
   html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-hero {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr) 58px !important;
+    gap: 8px !important;
   }
   html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-art {
-    display: none !important;
+    display: block !important;
+    width: 58px !important;
+    max-width: 58px !important;
   }
   html body #root .bookflow-settings-v2 .settings-v2-dashboard {
     align-items: flex-start !important;
