@@ -10176,7 +10176,7 @@ dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order
   background-color: #0d1422 !important;
 }
 :root[data-theme="dark"] #root .dashboard-content-rail {
-  background: transparent !important;
+  background: #0d1422 !important;
   color: #e8edf6 !important;
 }
 :root[data-theme="dark"] #root .dashboard-route-section,
