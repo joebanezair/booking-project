@@ -10136,3 +10136,8 @@ dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order
 
 
 
+
+/* Regular business workspace drawer: 70% darker than the original drawer tone. */
+.page-shell--business > .sidebar {
+  background: #05080d;
+}
