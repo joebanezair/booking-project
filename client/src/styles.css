@@ -10175,10 +10175,7 @@ dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order
 :root[data-theme="dark"] #root .page-shell > .content-shell {
   background-color: #0d1422 !important;
 }
-:root[data-theme="dark"] #root .dashboard-content-rail {
-  background: transparent !important;
-  color: #e8edf6 !important;
-}
+:root[data-theme="dark"] #root .dashboard-content-rail,
 :root[data-theme="dark"] #root .dashboard-route-section,
 :root[data-theme="dark"] #root .business-admin-page,
 :root[data-theme="dark"] #root .business-dashboard-analytics {
