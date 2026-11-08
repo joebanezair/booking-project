@@ -3747,3 +3747,29 @@ html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .o
     min-height: 54px !important;
   }
 }
+
+/* Checklist type scale: every visible checklist text is 12px; step cards keep 10px padding. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.onboarding-panel.onboarding-relaunch :is(
+  .onboarding-launch-eyebrow,
+  .onboarding-launch-title,
+  .onboarding-launch-description,
+  .onboarding-progress-label,
+  .onboarding-completion-count,
+  .onboarding-item-copy strong,
+  .onboarding-item-copy small
+) {
+  font-size: 12px !important;
+}
+
+/* Make the checklist step cards consistently padded and aligned. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.onboarding-panel.onboarding-relaunch .onboarding-launch-item {
+  box-sizing: border-box !important;
+  padding: 10px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.onboarding-panel.onboarding-relaunch .onboarding-launch-list > .ui-button {
+  padding: 0 !important;
+}
