@@ -41,7 +41,7 @@ html body #root .business-dashboard-header-actions .ui-button {
 html body #root .business-dashboard-header-actions .business-dashboard-customize-button.ui-button {
   background: var(--card);
   color: var(--foreground);
-  border: 1px solid var(--border);
+  border: 0 !important;
   box-shadow: none;
 }
 html body #root .dashboard-content-rail > .onboarding-panel.onboarding-relaunch {
@@ -898,8 +898,8 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboar
   margin: 0 0 14px !important;
   padding: 0 !important;
   overflow: hidden !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 12px !important;
+  border: 0 !important;
+  border: 0 !important;
   background: var(--card) !important;
   box-shadow: none !important;
 }
@@ -921,12 +921,12 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboar
   margin: 0 !important;
   padding: 15px 18px !important;
   border: 0 !important;
-  border-radius: 0 !important;
+  border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card + .dashboard-v2-stat.ui-card {
-  border-left: 1px solid var(--border) !important;
+  border: 0 !important;
 }
 
 /* Sales, Booking Status, and Top Services form one surface with separators.
@@ -940,8 +940,8 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboar
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 12px !important;
+  border: 0 !important;
+  border: 0 !important;
   background: var(--card) !important;
   box-shadow: none !important;
 }
@@ -962,7 +962,7 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboar
   margin: 0 !important;
   padding: 17px 18px !important;
   border: 0 !important;
-  border-radius: 0 !important;
+  border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
   align-self: stretch !important;
@@ -971,7 +971,7 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboar
   min-height: 270px !important;
 }
 html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) + :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services) {
-  border-left: 1px solid var(--border) !important;
+  border: 0 !important;
 }
 html body #root .business-dashboard-analytics.dashboard-v2-analytics .dashboard-v2-sales.is-empty .dashboard-v2-chart-area {
   flex: 0 0 auto;
@@ -989,8 +989,8 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics .dashboard-
   }
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="3"] > :last-child {
     grid-column: 1 / -1 !important;
-    border-left: 0 !important;
-    border-top: 1px solid var(--border) !important;
+    border: 0 !important;
+    border: 0 !important;
   }
 }
 @media (max-width: 760px) {
@@ -1003,17 +1003,17 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics .dashboard-
     grid-template-columns: minmax(0, 1fr) !important;
   }
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card {
-    border-left: 0 !important;
-    border-top: 1px solid var(--border) !important;
+    border: 0 !important;
+    border: 0 !important;
   }
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card:nth-child(-n+2) {
-    border-top: 0 !important;
+    border: 0 !important;
   }
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card:nth-child(even) {
-    border-left: 1px solid var(--border) !important;
+    border: 0 !important;
   }
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card:nth-child(odd) {
-    border-left: 0 !important;
+    border: 0 !important;
   }
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid,
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="2"],
@@ -1023,11 +1023,11 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics .dashboard-
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales,.dashboard-v2-status,.dashboard-v2-top-services),
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="3"] > :last-child {
     grid-column: auto !important;
-    border-left: 0 !important;
-    border-top: 1px solid var(--border) !important;
+    border: 0 !important;
+    border: 0 !important;
   }
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-analysis-grid > :first-child {
-    border-top: 0 !important;
+    border: 0 !important;
   }
 }
 @media (max-width: 420px) {
@@ -1037,11 +1037,11 @@ html body #root .business-dashboard-analytics.dashboard-v2-analytics .dashboard-
     grid-template-columns: minmax(0, 1fr) !important;
   }
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card {
-    border-left: 0 !important;
-    border-top: 1px solid var(--border) !important;
+    border: 0 !important;
+    border: 0 !important;
   }
   html body #root .business-dashboard-analytics.dashboard-v2-analytics > .dashboard-v2-stats > .dashboard-v2-stat.ui-card:first-child {
-    border-top: 0 !important;
+    border: 0 !important;
   }
 }
 
@@ -1363,4 +1363,11 @@ html:not([data-theme="dark"]) body #root .content-shell:has(.admin-dashboard-pla
 }
 html:not([data-theme="dark"]) body #root .page-shell:has(.admin-dashboard-platform) {
   --background: #ffffff;
+}
+
+
+/* Business dashboard header actions: keep button shapes, remove decorative borders. */
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar > .dashboard-post-service.ui-button,
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar > .dashboard-post-service.ui-button:hover {
+  border: 0 !important;
 }
