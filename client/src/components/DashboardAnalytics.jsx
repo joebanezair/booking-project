@@ -140,8 +140,8 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
       {visibleMetrics.map(({ icon: Icon, ...metric }) => <Card key={metric.key} as="article" className={`dashboard-v2-stat tone-${metric.tone}`}>
         <span className="dashboard-v2-stat-icon"><Icon aria-hidden="true" /></span>
         <div className="dashboard-v2-stat-content">
-          <span className="dashboard-v2-stat-label">{metric.label === "This period" ? title : metric.label}</span>
           <strong className="dashboard-v2-stat-number">{metric.value}</strong>
+          <span className="dashboard-v2-stat-label">{metric.label === "This period" ? title : metric.label}</span>
           <small>{metric.description}</small>
         </div>
       </Card>)}
