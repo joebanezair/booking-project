@@ -391,3 +391,130 @@ html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat > sm
     padding: 9px 12px !important;
   }
 }
+
+/* KPI item layout: icon, value and supporting text, then a straight separator. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+  min-height: 82px !important;
+  padding: 9px 18px !important;
+  text-align: left !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  right: 0 !important;
+  width: 1px !important;
+  height: 48px !important;
+  background: #dbe2ea !important;
+  transform: translateY(-50%) !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat:last-child::after {
+  display: none !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-icon {
+  flex: 0 0 30px !important;
+  width: 30px !important;
+  height: 30px !important;
+  margin: 0 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-content {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  gap: 2px !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-label {
+  order: 1 !important;
+  margin: 0 !important;
+  font-size: 10.5px !important;
+  line-height: 1.25 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-number {
+  order: 2 !important;
+  margin: 1px 0 0 !important;
+  font-size: clamp(21px, 1.55vw, 24px) !important;
+  line-height: 1.05 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-content > small {
+  order: 3 !important;
+  display: block !important;
+  margin: 2px 0 0 !important;
+  padding: 0 !important;
+  font-size: 9.5px !important;
+  line-height: 1.25 !important;
+  white-space: normal !important;
+}
+
+@media (max-width: 760px) {
+  html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+  .business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat {
+    min-height: 78px !important;
+    gap: 9px !important;
+    padding: 8px 11px !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics
+  > .dashboard-v2-stats > .dashboard-v2-stat:nth-child(2n)::after {
+    display: none !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics
+  > .dashboard-v2-stats > .dashboard-v2-stat:nth-child(-n+2)::before {
+    content: "" !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 10px !important;
+    right: 10px !important;
+    height: 1px !important;
+    background: #eef1f5 !important;
+  }
+}
+
+@media (max-width: 420px) {
+  html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+  .business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat {
+    min-height: 72px !important;
+    padding: 8px 12px !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics
+  > .dashboard-v2-stats > .dashboard-v2-stat::after {
+    top: auto !important;
+    bottom: 0 !important;
+    left: 48px !important;
+    right: 12px !important;
+    width: auto !important;
+    height: 1px !important;
+    transform: none !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics
+  > .dashboard-v2-stats > .dashboard-v2-stat:last-child::after {
+    display: none !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics
+  > .dashboard-v2-stats > .dashboard-v2-stat:nth-child(-n+2)::before {
+    display: none !important;
+  }
+}
