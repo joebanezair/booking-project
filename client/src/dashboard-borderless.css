@@ -1,0 +1,61 @@
+/* Dashboard-wide border reset.
+   Scoped to the dashboard page so cards and controls elsewhere are unaffected.
+   Layout, spacing, backgrounds, radii, shadows and keyboard focus outlines remain unchanged. */
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .onboarding-panel,
+  .onboarding-launch-item,
+  .dashboard-v2-stats,
+  .dashboard-v2-stat,
+  .dashboard-v2-analysis-grid,
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services,
+  .dashboard-status-zero,
+  .dashboard-route-section,
+  .dashboard-quick-grid,
+  .dashboard-quick-link,
+  .dashboard-shadcn-card,
+  .admin-tool-link,
+  .business-admin-activity,
+  .business-admin-platform-grid,
+  .business-admin-platform-metric,
+  .business-admin-breakdowns,
+  .business-admin-breakdown-group,
+  .business-admin-breakdown-metric,
+  .business-feature-access-banner,
+  .business-dashboard-all-hidden
+) {
+  border: 0 !important;
+}
+
+/* Remove dashboard-only dividers inside grouped statistics and analytics. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .dashboard-v2-stat,
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services,
+  .business-admin-platform-metric,
+  .business-admin-breakdown-group,
+  .business-admin-breakdown-metric
+) {
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+
+/* Dashboard header actions use the same borderless treatment. */
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar :is(
+  .business-dashboard-header-actions .ui-button,
+  .dashboard-post-service.ui-button
+),
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar .dashboard-post-service.ui-button:hover {
+  border: 0 !important;
+}
+
+/* Customize-dashboard dialog is part of the dashboard experience too. */
+html body .ui-dialog.business-dashboard-dialog,
+html body .business-dashboard-dialog .business-dashboard-widget-group {
+  border: 0 !important;
+}
