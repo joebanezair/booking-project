@@ -3,20 +3,27 @@
    Layout, spacing, backgrounds, radii, shadows and keyboard focus outlines remain unchanged. */
 
 html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .panel,
+  .ui-card,
   .onboarding-panel,
   .onboarding-launch-item,
+  .onboarding-progress,
   .dashboard-v2-stats,
   .dashboard-v2-stat,
   .dashboard-v2-analysis-grid,
+  .dashboard-v2-sales-controls,
   .dashboard-v2-sales,
   .dashboard-v2-status,
   .dashboard-v2-top-services,
   .dashboard-status-zero,
+  .dashboard-section,
   .dashboard-route-section,
+  .dashboard-route-grid,
   .dashboard-quick-grid,
   .dashboard-quick-link,
   .dashboard-shadcn-card,
   .admin-tool-link,
+  .business-admin-page,
   .business-admin-activity,
   .business-admin-platform-grid,
   .business-admin-platform-metric,
@@ -24,7 +31,8 @@ html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
   .business-admin-breakdown-group,
   .business-admin-breakdown-metric,
   .business-feature-access-banner,
-  .business-dashboard-all-hidden
+  .business-dashboard-all-hidden,
+  .business-dashboard-widget-row
 ) {
   border: 0 !important;
 }
