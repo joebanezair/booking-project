@@ -11,6 +11,9 @@ html body #root main.page-shell:has(.dashboard-content-rail) {
   --dash-blue-soft: #f1f5ff;
   --dash-green: #16845b;
   --dash-orange: #c47a27;
+  --dash-purple: #7257c7;
+  --dash-purple-soft: #f5f2ff;
+  --dash-orange-soft: #fff6eb;
   min-height: 100vh;
   height: auto !important;
   color: var(--dash-ink) !important;
@@ -28,6 +31,9 @@ body[data-theme="dark"] #root main.page-shell:has(.dashboard-content-rail) {
   --dash-blue-soft: #202d48;
   --dash-green: #6bd3a2;
   --dash-orange: #f0b66e;
+  --dash-purple: #b7a2ff;
+  --dash-purple-soft: #30264b;
+  --dash-orange-soft: #3a2d20;
 }
 
 html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell {
@@ -307,6 +313,10 @@ html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-progres
   transition: width .2s ease;
 }
 
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-launch-list[hidden] {
+  display: none !important;
+}
+
 html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-launch-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -462,6 +472,21 @@ html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-
   height: 17px !important;
 }
 
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat.tone-green .dashboard-v2-stat-icon {
+  background: color-mix(in srgb, var(--dash-green) 12%, var(--dash-surface)) !important;
+  color: var(--dash-green) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat.tone-purple .dashboard-v2-stat-icon {
+  background: var(--dash-purple-soft) !important;
+  color: var(--dash-purple) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat.tone-orange .dashboard-v2-stat-icon {
+  background: var(--dash-orange-soft) !important;
+  color: var(--dash-orange) !important;
+}
+
 html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-content {
   display: grid !important;
   align-content: center;
@@ -470,7 +495,7 @@ html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-
 }
 
 html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-number {
-  order: 1;
+  order: 2;
   display: block;
   margin: 0 !important;
   color: var(--dash-ink) !important;
@@ -483,7 +508,7 @@ html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-
 }
 
 html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-label {
-  order: 2;
+  order: 1;
   display: block;
   color: var(--dash-muted) !important;
   font-size: 10px !important;
@@ -514,6 +539,11 @@ html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analy
   border-radius: 10px !important;
   background: var(--dash-surface) !important;
   box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid > .ui-card:first-child {
+  border-left: 0 !important;
+  border-top: 0 !important;
 }
 
 html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid > .ui-card {
@@ -1306,6 +1336,10 @@ html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-
     border-left: 0 !important;
   }
 
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid > .ui-card:first-child {
+    border-top: 0 !important;
+  }
+
   html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-content {
     justify-content: flex-start;
   }
@@ -1333,7 +1367,8 @@ html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-
 
 @media (max-width: 460px) {
   html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-stats,
-  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stats[data-visible-count="3"] {
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stats[data-visible-count="3"],
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stats[data-visible-count="2"] {
     grid-template-columns: minmax(0, 1fr) !important;
   }
 
