@@ -1,0 +1,136 @@
+/* Last-loaded theme correction for all dashboard surfaces.
+   This file intentionally loads after dashboard styling so explicit light
+   palette declarations cannot override the active dark theme. */
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) {
+  --background: #0d1422 !important;
+  --card: #151f30 !important;
+  --card-foreground: #e8edf6 !important;
+  --foreground: #e8edf6 !important;
+  --muted-bg: #111b2b !important;
+  --muted-foreground: #9eabc0 !important;
+  --border: #2a374b !important;
+  --input: #344158 !important;
+  background: #0d1422 !important;
+  color: #e8edf6 !important;
+}
+
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) > .content-shell,
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) > .content-shell > .topbar,
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail,
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section {
+  background: #0d1422 !important;
+  color: #e8edf6 !important;
+}
+
+/* Panels and cards */
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .onboarding-panel,
+  .onboarding-relaunch,
+  .business-dashboard-analytics,
+  .dashboard-v2-analysis-grid,
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services,
+  .dashboard-v2-stat,
+  .dashboard-quick-link,
+  .dashboard-shadcn-card,
+  .dashboard-status-zero,
+  .business-feature-access-banner,
+  .business-dashboard-all-hidden,
+  .ui-card,
+  .panel,
+  .stat-card,
+  .route-card
+) {
+  background-color: #151f30 !important;
+  color: #e8edf6 !important;
+  border-color: #2a374b !important;
+  box-shadow: none !important;
+}
+
+/* Analytics and quick access layout wrappers should not become a second card. */
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .dashboard-v2-stats,
+  .dashboard-quick-grid,
+  .dashboard-route-grid
+) {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+/* Inputs, pills, icon tiles, and compact supporting surfaces */
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .dashboard-v2-sales-controls,
+  .dashboard-chart-tab,
+  .dashboard-v2-stat-icon,
+  .route-card-icon,
+  .dashboard-quick-count,
+  .dashboard-v2-top-list li > span,
+  .dashboard-single-period,
+  .onboarding-launch-progress
+) {
+  background-color: #202d42 !important;
+  color: #dbe5f5 !important;
+  border-color: #344158 !important;
+}
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail .dashboard-chart-tab.selected {
+  background: #34456a !important;
+  color: #ffffff !important;
+}
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail .onboarding-launch-progress > span {
+  background: var(--primary) !important;
+}
+
+/* Divider lines and borders */
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .dashboard-v2-analysis-grid > .ui-card + .ui-card,
+  .dashboard-v2-stat::before,
+  .dashboard-v2-stat::after,
+  .onboarding-launch-item,
+  .dashboard-quick-link
+) {
+  border-color: #344158 !important;
+}
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail .dashboard-v2-stat::before,
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail .dashboard-v2-stat::after {
+  background: #344158 !important;
+}
+
+/* Readable typography without flattening semantic status colors. */
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  h1, h2, h3, h4,
+  .business-dashboard-welcome,
+  .dashboard-v2-stat-number,
+  .dashboard-v2-stat-label,
+  .dashboard-quick-title-row strong,
+  .dashboard-v2-top-list strong,
+  .dashboard-single-period strong,
+  .onboarding-launch-title,
+  .business-admin-platform-metric,
+  .business-admin-breakdown-metric strong
+) {
+  color: #e8edf6 !important;
+}
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  p, small, .muted, .dashboard-v2-muted,
+  .dashboard-v2-stat-content > small,
+  .dashboard-quick-copy small,
+  .dashboard-section-heading .muted,
+  .dashboard-status-name,
+  .dashboard-status-row small,
+  .dashboard-v2-top-list small,
+  .dashboard-single-period small,
+  .onboarding-launch-description,
+  .onboarding-completion-count,
+  .business-admin-activity-heading p,
+  .business-admin-breakdown-metric span
+) {
+  color: #9eabc0 !important;
+}
+
+/* Keep the heading action legible in dark mode. */
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-header-actions .dashboard-post-service {
+  background: #263652 !important;
+  color: #eef3ff !important;
+  border-color: #3a4c68 !important;
+}
