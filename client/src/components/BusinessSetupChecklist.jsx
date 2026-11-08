@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   FiArrowRight, FiBriefcase, FiCamera, FiChevronDown, FiCircle,
-  FiClock, FiFileText, FiLink, FiSend, FiSettings,
-  FiClipboard, FiInfo, FiCheckCircle
+  FiClock, FiFileText, FiLink, FiSend, FiSettings
 } from "react-icons/fi";
 import { Button } from "./ui/button.jsx";
 import { Card } from "./ui/card.jsx";
@@ -10,7 +9,7 @@ import { Card } from "./ui/card.jsx";
 const stepIcons = [FiBriefcase, FiFileText, FiCamera, FiClock, FiSettings, FiSend, FiLink];
 
 function LaunchIllustration() {
-  return <div aria-hidden="true">
+  return <div className="onboarding-launch-art" aria-hidden="true">
     <svg viewBox="0 0 170 126" fill="none" focusable="false">
       <circle cx="98" cy="64" r="52" fill="currentColor" opacity=".055" />
       <circle cx="105" cy="58" r="37" fill="currentColor" opacity=".045" />
@@ -38,48 +37,42 @@ export default function BusinessSetupChecklist({ items, expanded, onToggle }) {
   const completed = items.filter(item => item.done).length;
   const percentage = Math.round((completed / Math.max(items.length, 1)) * 100);
 
-  return <Card as="section">
-    <div>
-      <Button type="button" variant="ghost"
-        onClick={onToggle} aria-expanded={expanded}
+  return <Card as="section" className="panel onboarding-panel onboarding-relaunch" aria-labelledby="business-setup-title">
+    <div className="onboarding-launch-hero">
+      <Button type="button" variant="ghost" className="onboarding-collapse-trigger onboarding-launch-trigger"
+        onClick={onToggle} aria-expanded={expanded} aria-controls="business-onboarding-steps"
         aria-label={`Business setup checklist, ${percentage}% complete. ${expanded ? "Collapse" : "Expand"} steps`}>
-        <span>
-          <span><FiSend aria-hidden="true" /> GET READY TO LAUNCH</span>
-          <span role="heading" aria-level={2}>
-            <FiClipboard aria-hidden="true" />
-            <span>Business setup checklist</span>
-          </span>
-          <span>
-            <FiInfo aria-hidden="true" />
-            <span>Complete these steps to set up your business and start offering services.</span>
-          </span>
+        <span className="onboarding-launch-copy">
+          <span className="onboarding-launch-eyebrow">GET READY TO LAUNCH</span>
+          <span id="business-setup-title" role="heading" aria-level={2} className="onboarding-launch-title">Business setup checklist</span>
+          <span className="onboarding-launch-description">Complete these steps to set up your business and start offering services.</span>
         </span>
-        <span>
-          <strong>{percentage}%</strong>
-          <span><FiCheckCircle aria-hidden="true" /> {completed} of {items.length} completed</span>
-          <FiChevronDown aria-hidden="true" />
+        <span className="onboarding-launch-metrics">
+          <strong className="onboarding-progress-label">{percentage}%</strong>
+          <span>{completed} of {items.length} completed</span>
+          <FiChevronDown className={expanded ? "onboarding-chevron open" : "onboarding-chevron"} aria-hidden="true" />
         </span>
       </Button>
       <LaunchIllustration />
     </div>
 
-    <div role="progressbar"
+    <div className="onboarding-progress onboarding-launch-progress" role="progressbar"
       aria-label="Business setup progress" aria-valuemin={0} aria-valuemax={items.length} aria-valuenow={completed}>
       <span style={{ width: percentage + "%" }} />
     </div>
 
-    <div hidden={!expanded}>
+    <div id="business-onboarding-steps" className="onboarding-list onboarding-launch-list" hidden={!expanded}>
       {items.map((item, index) => {
         const Icon = stepIcons[index] || FiCircle;
         return <Button key={item.label} asChild variant="ghost">
-          <Link
+          <Link className={item.done ? "onboarding-item onboarding-launch-item done" : "onboarding-item onboarding-launch-item"}
             to={item.to} aria-label={`${item.label}. ${item.done ? "Completed" : "Not completed"}. ${item.description}`}>
-            <span aria-hidden="true"><Icon /></span>
-            <span>
+            <span className="onboarding-item-icon" aria-hidden="true"><Icon /></span>
+            <span className="onboarding-item-copy">
               <strong>{item.label}</strong>
               <small>{item.description}</small>
             </span>
-            <FiArrowRight aria-hidden="true" />
+            <FiArrowRight className="onboarding-item-arrow" aria-hidden="true" />
           </Link>
         </Button>;
       })}

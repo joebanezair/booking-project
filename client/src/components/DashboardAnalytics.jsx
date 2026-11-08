@@ -22,6 +22,21 @@ function currencyFormat(value, currency) {
   catch { return `${currency} ${Number(value || 0).toLocaleString()}`; }
 }
 
+function MetricSparkline({ points, tone }) {
+  const numbers = (points || []).map(point => Number(point || 0)).filter(Number.isFinite);
+  if (numbers.length < 2 || !numbers.some(Boolean)) return null;
+  const max = Math.max(...numbers, 1);
+  const min = Math.min(...numbers, 0);
+  const spread = Math.max(1, max - min);
+  const path = numbers.map((value, index) => {
+    const x = 3 + index / (numbers.length - 1) * 114;
+    const y = 29 - (value - min) / spread * 23;
+    return `${index ? "L" : "M"} ${x.toFixed(2)} ${y.toFixed(2)}`;
+  }).join(" ");
+  return <svg className={`dashboard-metric-sparkline tone-${tone}`} viewBox="0 0 120 36" preserveAspectRatio="none"
+    aria-hidden="true"><path d={path} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+}
+
 function SinglePeriodSummary({ point, value, unit }) {
   // One recorded point is not a trend: show the actual observation rather
   // than placing a misleading disconnected dot in a line graph.
@@ -114,10 +129,10 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
   const completedTrend = useMemo(() => completionTrend(data?.records, range, primaryCurrency), [data, range, primaryCurrency]);
   const salesTrend = data?.trend || [];
   const metrics = [
-    { key: "sales", label: "This period", value: summary ? currencyFormat(summary.totalSales, primaryCurrency) : "—", description: "Recorded service and product sales", icon: FaMoneyBillTrendUp, tone: "blue" },
-    { key: "completed", label: "Completed", value: summary?.completedServices ?? "—", description: "Services completed this period", icon: FiCalendar, tone: "green" },
-    { key: "average", label: "Average sale", value: summary ? currencyFormat(summary.averageSale, primaryCurrency) : "—", description: "Primary currency", icon: FiTrendingUp, tone: "purple" },
-    { key: "services", label: "Services sold", value: summary?.servicesSold ?? "—", description: "Distinct services this period", icon: FiBriefcase, tone: "orange" }
+    { key: "sales", label: "This period", value: summary ? currencyFormat(summary.totalSales, primaryCurrency) : "—", description: "Recorded service and product sales", icon: FaMoneyBillTrendUp, tone: "blue", series: salesTrend.map(item => item.revenue) },
+    { key: "completed", label: "Completed", value: summary?.completedServices ?? "—", description: "Services completed this period", icon: FiCalendar, tone: "green", series: completedTrend.map(item => item.revenue) },
+    { key: "average", label: "Average sale", value: summary ? currencyFormat(summary.averageSale, primaryCurrency) : "—", description: "Primary currency", icon: FiTrendingUp, tone: "purple", series: [] },
+    { key: "services", label: "Services sold", value: summary?.servicesSold ?? "—", description: "Distinct services this period", icon: FiBriefcase, tone: "orange", series: [] }
   ];
   const title = DASHBOARD_RANGES.find(item => item.value === range)?.label || "This month";
   const statKeys = { sales: "statSales", completed: "statCompleted", average: "statAverage", services: "statServices" };
@@ -138,12 +153,13 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
   return <section className="business-dashboard-analytics dashboard-v2-analytics" aria-label="Business analytics">
     {visibleMetrics.length > 0 && <div className="dashboard-v2-stats" data-visible-count={visibleMetrics.length}>
       {visibleMetrics.map(({ icon: Icon, ...metric }) => <Card key={metric.key} as="article" className={`dashboard-v2-stat tone-${metric.tone}`}>
-        <span className="dashboard-v2-stat-icon"><Icon aria-hidden="true" /></span>
-        <div className="dashboard-v2-stat-content">
-          <strong className="dashboard-v2-stat-number">{metric.value}</strong>
+        <div className="dashboard-v2-stat-heading">
+          <span className="dashboard-v2-stat-icon"><Icon aria-hidden="true" /></span>
           <span className="dashboard-v2-stat-label">{metric.label === "This period" ? title : metric.label}</span>
-          <small>{metric.description}</small>
         </div>
+        <strong className="dashboard-v2-stat-number">{metric.value}</strong>
+        <MetricSparkline points={metric.series} tone={metric.tone} />
+        <small>{metric.description}</small>
       </Card>)}
     </div>}
     {visiblePanels.length > 0 && <div className="dashboard-v2-analysis-grid" data-visible-count={visiblePanels.length} data-all-empty={allPanelsEmpty ? "true" : "false"}>
