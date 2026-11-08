@@ -172,3 +172,20 @@ html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
   box-shadow: none !important;
   background: #ffffff !important;
 }
+
+/* Launch checklist: one subtle outline around the whole GET READY TO LAUNCH container. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.onboarding-panel.onboarding-relaunch {
+  box-sizing: border-box !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+}
+
+/* Checklist steps and progress remain unbordered inside the parent container. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.onboarding-panel.onboarding-relaunch .onboarding-launch-item,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.onboarding-panel.onboarding-relaunch .onboarding-progress {
+  border: 0 !important;
+}
