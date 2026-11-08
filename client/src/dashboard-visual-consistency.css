@@ -598,3 +598,32 @@ html[data-theme="dark"] body .ui-dialog.business-dashboard-dialog :is(
 ) {
   color: #e8edf6;
 }
+
+/* KPI value alignment: keep numbers anchored to the content column, not centered in the tile. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat {
+  text-align: left !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-content {
+  width: 100% !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  text-align: left !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-number {
+  display: block !important;
+  align-self: flex-start !important;
+  width: auto !important;
+  margin-left: 0 !important;
+  text-align: left !important;
+  justify-self: start !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-label,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-content > small {
+  align-self: flex-start !important;
+  width: 100% !important;
+  text-align: left !important;
+}
