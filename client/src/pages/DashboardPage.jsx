@@ -29,17 +29,17 @@ const adminSections = [
   { title: "Settings", text: "Manage your administrator appearance settings.", to: "/dashboard/settings", action: "Open settings", icon: FiSettings }
 ];
 
-function PlatformMetric({ icon: Icon, label, value, note, title }) {
-  return <div title={title}>
-    <span><Icon aria-hidden="true" /></span>
+function PlatformMetric({ icon: Icon, label, value, note, className = "", title }) {
+  return <div className={["business-admin-platform-metric", className].filter(Boolean).join(" ")} title={title}>
+    <span className="business-admin-platform-icon"><Icon aria-hidden="true" /></span>
     <strong>{value ?? "—"}</strong>
-    <span>{label}</span>
+    <span className="business-admin-platform-label">{label}</span>
     <small>{note}</small>
   </div>;
 }
 
 function BreakdownMetric({ label, value }) {
-  return <div>
+  return <div className="business-admin-breakdown-metric">
     <span>{label}</span>
     <strong>{value ?? "—"}</strong>
   </div>;
@@ -185,11 +185,11 @@ export default function DashboardPage({ user, onLogout }) {
   const businessAnalyticsVisible = businessWidgetGroups[1].widgets.concat(businessWidgetGroups[2].widgets)
     .some(([key]) => visibleBusinessWidgets[key] !== false);
   return <AppLayout user={user} onLogout={onLogout}>
-    <header>
+    <header className={isAdmin ? "topbar" : undefined}>
       <div>
-        <p>{isAdmin ? "ADMIN DASHBOARD" : "BUSINESS DASHBOARD"}</p>
+        <p className={isAdmin ? "eyebrow" : undefined}>{isAdmin ? "ADMIN DASHBOARD" : "BUSINESS DASHBOARD"}</p>
         <h1>{isAdmin ? `Welcome back, ${user.name.split(" ")[0]}` : `Welcome ${user.name.split(" ")[0]}`}</h1>
-        <p>{isAdmin ? "Manage businesses and monitor platform activity." : user.accountStatus === "paused" ? "Your account is paused. Existing data remains available while new publishing and bookings are disabled." : "Manage services, bookings, recorded sales, messages, reviews, and your public profile."}</p>
+        <p className={isAdmin ? "muted" : undefined}>{isAdmin ? "Manage businesses and monitor platform activity." : user.accountStatus === "paused" ? "Your account is paused. Existing data remains available while new publishing and bookings are disabled." : "Manage services, bookings, recorded sales, messages, reviews, and your public profile."}</p>
       </div>
       {!isAdmin && user.accountStatus === "active" && hasBusinessFeature(user, "booking") &&
         <div>
@@ -201,8 +201,8 @@ export default function DashboardPage({ user, onLogout }) {
         </div>}
     </header>
 
-    <div>
-      {overviewError && <p>{overviewError}</p>}
+    <div className={isAdmin ? "dashboard-content-rail" : undefined}>
+      {overviewError && <p className={isAdmin ? "error" : undefined}>{overviewError}</p>}
 
       {!isAdmin && user.accountStatus === "active" &&
         (!hasBusinessFeature(user, "booking") || !hasBusinessFeature(user, "pos")) && <section role="status">
@@ -222,25 +222,25 @@ export default function DashboardPage({ user, onLogout }) {
           </Button>
         </section>}
 
-      {isAdmin && <div>
-      <section aria-busy={!overview && !overviewError}>
-        <div>
+      {isAdmin && <div className="business-admin-page admin-dashboard-platform">
+      <section className="business-admin-activity" aria-labelledby="platform-activity-title" aria-busy={!overview && !overviewError}>
+        <div className="business-admin-activity-heading">
           <div>
-            <h2>Platform statistics</h2>
+            <h2 id="platform-activity-title">Platform statistics</h2>
             <p>All registered businesses · lifetime totals</p>
           </div>
-          <div>
-            <span aria-live="polite">
+          <div className="admin-stats-heading-actions">
+            <span aria-live="polite" className="business-admin-activity-updated">
               {overview?.generatedAt ? `Updated ${new Date(overview.generatedAt).toLocaleString()}` : !overviewError ? "Loading live totals…" : "Statistics unavailable"}
             </span>
           </div>
         </div>
-        {mainVisible && <div>
+        {mainVisible && <div className="business-admin-platform-grid">
           {visibleMetrics.revenue && <PlatformMetric icon={FiDollarSign} label="Total platform revenue"
             value={revenueDisplay}
             note={revenueRows === null ? "Revenue unavailable" : revenueRows.length > 1
               ? revenueBreakdown : "Gross sales · not platform fees"}
-           
+            className="business-admin-platform-metric--revenue"
             title="Gross recorded service and POS sales plus completed online order value; excludes voided and fully refunded orders. Not verified payments or platform commissions." />}
           {visibleMetrics.products && <PlatformMetric icon={FiPackage} label="Total products"
             value={overview?.products?.total}
@@ -258,10 +258,10 @@ export default function DashboardPage({ user, onLogout }) {
             value={overview?.reviews?.averageRating != null ? `${overview.reviews.averageRating.toFixed(1)} / 5` : "—"}
             note={overview ? `${overview.reviews.ratingsCount} verified ratings` : "—"} />}
         </div>}
-        {(bookingsVisible || salesVisible) && <div>
-          {bookingsVisible && <div>
+        {(bookingsVisible || salesVisible) && <div className={"business-admin-breakdowns" + (bookingsVisible !== salesVisible ? " business-admin-breakdowns--single" : "")}>
+          {bookingsVisible && <div className="business-admin-breakdown-group">
             <h3>Booking status</h3>
-            <div>
+            <div className="business-admin-breakdown-grid">
               {visibleMetrics.pending && <BreakdownMetric label="Pending" value={overview?.bookings?.pending} />}
               {visibleMetrics.confirmed && <BreakdownMetric label="Confirmed" value={overview?.bookings?.confirmed} />}
               {visibleMetrics.inProgress && <BreakdownMetric label="In progress" value={overview?.bookings?.inProgress} />}
@@ -270,9 +270,9 @@ export default function DashboardPage({ user, onLogout }) {
               {visibleMetrics.noShow && <BreakdownMetric label="No-show" value={overview?.bookings?.noShow} />}
             </div>
           </div>}
-          {salesVisible && <div>
+          {salesVisible && <div className="business-admin-breakdown-group">
             <h3>Sales and orders</h3>
-            <div>
+            <div className="business-admin-breakdown-grid">
               {visibleMetrics.serviceSales && <BreakdownMetric label="Service sales recorded" value={overview?.sales?.recorded} />}
               {visibleMetrics.posSales && <BreakdownMetric label="POS sales recorded" value={overview?.sales?.posRecorded} />}
               {visibleMetrics.onlineOrders && <BreakdownMetric label="Online orders" value={overview?.sales?.onlineOrders} />}
@@ -281,7 +281,7 @@ export default function DashboardPage({ user, onLogout }) {
           </div>}
         </div>}
         {!mainVisible && !bookingsVisible && !salesVisible &&
-          <p>No statistics selected. Choose which statistics to show in <Link to="/dashboard/settings">Settings</Link>.</p>}
+          <p className="admin-stats-empty">No statistics selected. Choose which statistics to show in <Link to="/dashboard/settings">Settings</Link>.</p>}
       </section>
       </div>}
 
@@ -300,20 +300,20 @@ export default function DashboardPage({ user, onLogout }) {
         statusLoading={statusLoading}
       />}
 
-      {(isAdmin || sections.length > 0) && <section>
-        <div>
+      {(isAdmin || sections.length > 0) && <section className={isAdmin ? "dashboard-route-section dashboard-route-section--admin" : undefined}>
+        <div className={isAdmin ? "dashboard-section-heading" : undefined}>
           <div>
-            <p>QUICK ACCESS</p>
+            <p className={isAdmin ? "eyebrow" : undefined}>QUICK ACCESS</p>
             <h2>{isAdmin ? "Administration" : "Manage your business"}</h2>
-            <p>{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
+            <p className={isAdmin ? "muted" : undefined}>{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
           </div>
         </div>
-        <section>
+        <section className={isAdmin ? "dashboard-route-grid" : undefined}>
           {sections.map(({ icon: Icon, ...section }) => isAdmin ? (
-            <Card as={Link} to={section.to} key={section.to}
+            <Card as={Link} to={section.to} className="dashboard-shadcn-card admin-tool-link" key={section.to}
               aria-label={section.action}>
-              <CardHeader>
-                <span><Icon aria-hidden="true" /></span>
+              <CardHeader className="dashboard-shadcn-card-header">
+                <span className="route-card-icon"><Icon aria-hidden="true" /></span>
                 <div>
                   <CardTitle>{section.title}</CardTitle>
                   <CardDescription>{section.text}</CardDescription>
@@ -323,9 +323,9 @@ export default function DashboardPage({ user, onLogout }) {
           ) : (
             <Link to={section.to} key={section.to}
               aria-label={section.action}>
-              <span><Icon aria-hidden="true" /></span>
-              <span>
-                <span><strong>{section.title}</strong></span>
+              <span className="route-card-icon"><Icon aria-hidden="true" /></span>
+              <span className="dashboard-quick-copy">
+                <span className="dashboard-quick-title-row"><strong>{section.title}</strong></span>
                 <small>{section.text}</small>
               </span>
               {section.countKey && <span aria-label={`Total ${section.title.toLowerCase()}`}>
