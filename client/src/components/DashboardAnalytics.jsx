@@ -27,6 +27,8 @@ function MetricSparkline({ points, tone }) {
   if (numbers.length < 2 || !numbers.some(Boolean)) return null;
   const max = Math.max(...numbers, 1);
   const min = Math.min(...numbers, 0);
+  // A flat line is not a meaningful trend and looks like a detached divider.
+  if (numbers.every(value => value === numbers[0])) return null;
   const spread = Math.max(1, max - min);
   const path = numbers.map((value, index) => {
     const x = 3 + index / (numbers.length - 1) * 114;
