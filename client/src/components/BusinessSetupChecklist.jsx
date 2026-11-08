@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import {
   FiArrowRight, FiBriefcase, FiCamera, FiChevronDown, FiCircle,
-  FiClock, FiFileText, FiLink, FiSend, FiSettings
+  FiClock, FiFileText, FiLink, FiSend, FiSettings,
+  FiRocket, FiClipboard, FiInfo, FiCheckCircle
 } from "react-icons/fi";
 import { Button } from "./ui/button.jsx";
 import { Card } from "./ui/card.jsx";
@@ -43,13 +44,19 @@ export default function BusinessSetupChecklist({ items, expanded, onToggle }) {
         onClick={onToggle} aria-expanded={expanded} aria-controls="business-onboarding-steps"
         aria-label={`Business setup checklist, ${percentage}% complete. ${expanded ? "Collapse" : "Expand"} steps`}>
         <span className="onboarding-launch-copy">
-          <span className="onboarding-launch-eyebrow">GET READY TO LAUNCH</span>
-          <span id="business-setup-title" role="heading" aria-level={2} className="onboarding-launch-title">Business setup checklist</span>
-          <span className="onboarding-launch-description">Complete these steps to set up your business and start offering services.</span>
+          <span className="onboarding-launch-eyebrow"><FiRocket aria-hidden="true" /> GET READY TO LAUNCH</span>
+          <span id="business-setup-title" role="heading" aria-level={2} className="onboarding-launch-title">
+            <FiClipboard aria-hidden="true" />
+            <span>Business setup checklist</span>
+          </span>
+          <span className="onboarding-launch-description">
+            <FiInfo aria-hidden="true" />
+            <span>Complete these steps to set up your business and start offering services.</span>
+          </span>
         </span>
         <span className="onboarding-launch-metrics">
           <strong className="onboarding-progress-label">{percentage}%</strong>
-          <span>{completed} of {items.length} completed</span>
+          <span className="onboarding-completion-count"><FiCheckCircle aria-hidden="true" /> {completed} of {items.length} completed</span>
           <FiChevronDown className={expanded ? "onboarding-chevron open" : "onboarding-chevron"} aria-hidden="true" />
         </span>
       </Button>
