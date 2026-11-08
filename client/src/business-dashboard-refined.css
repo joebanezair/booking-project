@@ -1822,3 +1822,216 @@ html body #root .dashboard-route-section:not(.dashboard-route-section--admin) .d
     background: var(--border);
   }
 }
+
+
+/* Second-pass dashboard refinement: give each data group its own visual rhythm. */
+html body #root .dashboard-content-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+html body #root .dashboard-content-rail > .onboarding-panel.onboarding-relaunch {
+  margin: 0 !important;
+  padding: 18px 20px 16px !important;
+  box-shadow: 0 1px 2px rgba(15,23,42,.035);
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-stats {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="1"] {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-stats > .dashboard-v2-stat {
+  position: relative;
+  min-height: 100px !important;
+  padding: 16px !important;
+  gap: 12px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: 0 1px 2px rgba(15,23,42,.035) !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-stats > .dashboard-v2-stat::after,
+html body #root .dashboard-v2-analytics .dashboard-v2-stats > .dashboard-v2-stat::before {
+  display: none !important;
+}
+#root .dashboard-v2-analytics .dashboard-v2-stat-icon {
+  width: 38px !important;
+  height: 38px !important;
+  flex-basis: 38px !important;
+  border-radius: 10px !important;
+}
+#root .dashboard-v2-analytics .dashboard-v2-stat-number {
+  font-size: clamp(23px, 2vw, 28px) !important;
+}
+#root .dashboard-v2-analytics .dashboard-v2-stat-label {
+  margin-top: 2px;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+}
+#root .dashboard-v2-analytics .dashboard-v2-stat-content > small {
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+}
+
+/* Replace the single analytics slab with three balanced, independent panels. */
+html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid,
+html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-visible-count="2"],
+html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-visible-count="1"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.55fr) minmax(220px, .9fr) minmax(210px, .85fr) !important;
+  gap: 10px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-visible-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-visible-count="1"] {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid > .ui-card,
+html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid > .ui-card + .ui-card {
+  min-height: 260px !important;
+  padding: 18px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: 0 1px 2px rgba(15,23,42,.035) !important;
+}
+#root .dashboard-v2-analytics .dashboard-v2-panel-head {
+  min-height: 48px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+#root .dashboard-v2-analytics .dashboard-v2-analysis-grid h3 {
+  font-size: 15px !important;
+  letter-spacing: -.025em;
+}
+#root .dashboard-v2-analytics .dashboard-v2-muted {
+  font-size: 11px !important;
+}
+#root .dashboard-v2-analytics .dashboard-v2-chart-area {
+  min-height: 150px;
+  margin-top: 10px;
+}
+#root .dashboard-v2-analytics .dashboard-single-period {
+  min-height: 150px;
+  border-radius: 8px;
+  background: var(--background);
+}
+#root .dashboard-v2-analytics .dashboard-status-content {
+  gap: 15px;
+  padding-top: 15px;
+}
+#root .dashboard-v2-analytics .dashboard-status-donut {
+  width: 112px;
+  height: 112px;
+}
+#root .dashboard-v2-analytics .dashboard-v2-top-list {
+  margin-top: 20px;
+  gap: 14px;
+}
+#root .dashboard-v2-analytics .dashboard-v2-top-list li > span {
+  width: 28px;
+  height: 28px;
+  flex-basis: 28px;
+  border-radius: 8px;
+}
+#root .dashboard-v2-analytics .dashboard-v2-top-list strong {
+  font-size: 12px;
+}
+#root .dashboard-v2-analytics .dashboard-v2-top-list small {
+  font-size: 11px;
+}
+
+/* Quick access items become distinct, easy-to-scan destinations. */
+html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 9px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link {
+  min-height: 76px !important;
+  padding: 12px 14px !important;
+  gap: 12px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link:hover {
+  border-color: var(--primary) !important;
+  background: var(--muted-bg) !important;
+  transform: translateY(-1px);
+}
+#root .dashboard-route-section--business .dashboard-quick-grid .route-card-icon {
+  width: 38px !important;
+  height: 38px !important;
+  flex-basis: 38px !important;
+  border-radius: 10px !important;
+}
+#root .dashboard-route-section--business .dashboard-quick-copy {
+  gap: 5px;
+}
+#root .dashboard-route-section--business .dashboard-quick-title-row strong {
+  font-size: 12px !important;
+  font-weight: 650;
+}
+#root .dashboard-route-section--business .dashboard-quick-copy small {
+  font-size: 11px !important;
+  line-height: 1.45;
+}
+#root .dashboard-route-section--business .dashboard-quick-count {
+  min-width: 23px;
+  height: 23px;
+  font-size: 10px;
+}
+
+/* Keep the refreshed card layout fluid at every breakpoint. */
+@media (max-width: 1100px) {
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid,
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-visible-count="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid > .dashboard-v2-top-services {
+    grid-column: 1 / -1;
+  }
+  html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 680px) {
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid,
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-visible-count="2"],
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid[data-visible-count="1"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  html body #root .dashboard-v2-analytics .dashboard-v2-analysis-grid > .dashboard-v2-top-services {
+    grid-column: auto;
+  }
+  html body #root .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  html body #root .dashboard-v2-analytics .dashboard-v2-stats,
+  html body #root .dashboard-v2-analytics .dashboard-v2-stats[data-visible-count="3"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
