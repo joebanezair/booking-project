@@ -29,7 +29,7 @@ const adminSections = [
   { title: "Settings", text: "Manage your administrator appearance settings.", to: "/dashboard/settings", action: "Open settings", icon: FiSettings }
 ];
 
-function PlatformMetric({ icon: Icon, label, value, note, className = "", title }) {
+function PlatformMetric({ icon: Icon, label, value, note, title }) {
   return <div title={title}>
     <span><Icon aria-hidden="true" /></span>
     <strong>{value ?? "—"}</strong>
