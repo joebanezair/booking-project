@@ -1,0 +1,103 @@
+/* Sales Overview layout repair — scoped to the business dashboard analytics panel.
+   Keep all three chart views usable on narrow screens and prevent the plot from clipping. */
+
+html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-sales {
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-sales .dashboard-v2-panel-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 10px 12px !important;
+  min-width: 0 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-panel-head > div:first-child {
+  flex: 1 1 170px !important;
+  min-width: 0 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-sales-controls {
+  display: flex !important;
+  flex: 0 1 auto !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  gap: 3px !important;
+  overflow: visible !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-sales-controls .dashboard-chart-tab {
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-chart-area {
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-chart-area > .chart-shell {
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-chart-area > .chart-shell > svg.sales-line-chart {
+  display: block !important;
+  width: 100% !important;
+  min-width: 560px !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+/* The service comparison uses the same available width as the sales chart. */
+html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-chart-area > .service-chart {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+@media (max-width: 760px) {
+  html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-sales .dashboard-v2-panel-head {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-content: stretch !important;
+    gap: 9px !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-panel-head > div:first-child {
+    width: 100% !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-sales-controls {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics .dashboard-v2-sales-controls .dashboard-chart-tab {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-inline: 6px !important;
+  }
+}
