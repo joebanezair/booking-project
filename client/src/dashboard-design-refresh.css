@@ -1,0 +1,265 @@
+/* Dashboard design refresh.
+   Presentation-only: keep every dashboard section, metric, link and data source intact. */
+
+html body #root .page-shell:has(.dashboard-content-rail) > .content-shell {
+  padding-top: 22px !important;
+  padding-bottom: 36px !important;
+  background: #ffffff !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar {
+  align-items: center !important;
+  margin-bottom: 16px !important;
+  gap: 14px !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail {
+  display: grid !important;
+  align-content: start !important;
+  gap: 14px !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail > :is(
+  .onboarding-panel,
+  .business-dashboard-analytics,
+  .dashboard-route-section,
+  .business-feature-access-banner,
+  .business-admin-page,
+  .business-dashboard-all-hidden
+) {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Getting-started checklist: one calm surface with clear progress hierarchy. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail > .onboarding-panel.onboarding-relaunch {
+  padding: 16px 18px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(24, 33, 47, .045) !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-title {
+  font-size: 16px !important;
+  line-height: 1.35 !important;
+  font-weight: 600 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-description {
+  max-width: 680px;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-progress {
+  margin-top: 12px !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+
+/* KPI group: equal heights, readable numbers and soft depth instead of borders. */
+html body #root .page-shell:has(.dashboard-content-rail) .business-dashboard-analytics {
+  display: grid !important;
+  gap: 12px !important;
+  margin: 0 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics .dashboard-v2-stats {
+  gap: 10px !important;
+  margin: 0 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics .dashboard-v2-stat {
+  min-height: 126px !important;
+  padding: 16px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(24, 33, 47, .05) !important;
+  transition: box-shadow .16s ease, transform .16s ease;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics .dashboard-v2-stat:hover {
+  box-shadow: 0 5px 16px rgba(24, 33, 47, .075) !important;
+  transform: translateY(-1px);
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-label {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-number {
+  margin-top: 11px !important;
+  font-size: clamp(23px, 2vw, 28px) !important;
+  font-weight: 650 !important;
+  letter-spacing: -.035em !important;
+}
+
+/* Analytics: consistent spacing across Sales Overview, status and top services. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics .dashboard-v2-analysis-grid {
+  gap: 10px !important;
+  margin: 0 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid > :is(
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services
+) {
+  min-width: 0 !important;
+  padding: 16px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(24, 33, 47, .05) !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid h3 {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: -.015em !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-sales-controls {
+  border-radius: 10px !important;
+  padding: 3px !important;
+  background: #f4f6fb !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-sales-controls .dashboard-chart-tab {
+  border-radius: 10px !important;
+}
+
+/* Quick Access: align all links and keep hover feedback light and consistent. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-route-section {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-route-section .dashboard-section-heading {
+  margin: 0 0 10px !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-route-section .dashboard-section-heading h2 {
+  margin: 0 0 4px !important;
+  font-size: 18px !important;
+  line-height: 1.35 !important;
+  font-weight: 550 !important;
+  letter-spacing: -.015em !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-route-section .dashboard-section-heading .muted {
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-grid {
+  gap: 10px !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-link {
+  min-height: 74px !important;
+  padding: 10px 12px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 7px rgba(24, 33, 47, .045) !important;
+  transition: background-color .16s ease, box-shadow .16s ease, transform .16s ease !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-link:hover {
+  border: 0 !important;
+  background: #f8faff !important;
+  box-shadow: 0 4px 12px rgba(24, 33, 47, .065) !important;
+  transform: translateY(-1px);
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-title-row strong {
+  font-size: 13px !important;
+  font-weight: 550 !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-copy small {
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+}
+
+/* Admin dashboard uses the same soft surfaces and rhythm. */
+html body #root .page-shell:has(.dashboard-content-rail) .admin-dashboard-platform {
+  display: grid;
+  gap: 12px;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .business-admin-activity,
+html body #root .page-shell:has(.dashboard-content-rail) .business-admin-breakdown-group,
+html body #root .page-shell:has(.dashboard-content-rail) .admin-tool-link {
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(24, 33, 47, .05) !important;
+}
+
+/* Settings entry for the moved business-dashboard customization controls. */
+html body #root .bookflow-settings-v2 .settings-v2-dashboard {
+  align-items: center;
+}
+
+html body #root .bookflow-settings-v2 .settings-v2-dashboard .settings-v2-customize.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex: 0 0 auto !important;
+  min-height: 36px !important;
+  width: auto !important;
+  padding: 8px 12px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  color: #18212f !important;
+  font-size: 12px;
+  font-weight: 550;
+  box-shadow: none !important;
+}
+
+html body #root .bookflow-settings-v2 .settings-v2-dashboard .settings-v2-customize.ui-button:hover {
+  color: var(--primary) !important;
+  border-color: color-mix(in srgb, var(--primary) 30%, #e5e7eb) !important;
+}
+
+html body #root .bookflow-settings-v2 .settings-v2-dashboard .settings-v2-stats-count {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+@media (max-width: 760px) {
+  html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail {
+    gap: 12px !important;
+  }
+
+  html body #root .page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  html body #root .bookflow-settings-v2 .settings-v2-dashboard {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat,
+  html body #root .page-shell:has(.dashboard-content-rail) .dashboard-quick-link {
+    transition: none !important;
+  }
+}
