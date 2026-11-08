@@ -129,3 +129,27 @@ html body .business-dashboard-dialog :is(
 html body .ui-dialog.business-dashboard-dialog {
   background: #ffffff !important;
 }
+
+/* Major dashboard container outlines only.
+   Individual metric tiles, analytics panels, quick links and buttons stay borderless. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .onboarding-panel.onboarding-relaunch,
+  .business-dashboard-analytics,
+  .dashboard-route-section,
+  .business-admin-page .business-admin-activity
+) {
+  box-sizing: border-box !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+}
+
+/* Give the grouped content a little breathing room inside its outer outline. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .business-dashboard-analytics {
+  padding: 12px !important;
+}
+
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .dashboard-route-section {
+  padding: 12px !important;
+}
+
