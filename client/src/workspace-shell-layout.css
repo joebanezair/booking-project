@@ -1,15 +1,4 @@
-/*
- * BookFlow full-page business dashboard — approved October 2026 design.
- * Scoped to the dashboard analytics and shared workspace chrome.
- * Original role permissions, routes, data and dark theme are preserved.
- */
-
 #root .page-shell {
-  --dashboard-blue: #4675f6;
-  --dashboard-green: #18b76a;
-  --dashboard-orange: #f28d39;
-  --dashboard-purple: #8c58e6;
-  --dashboard-track: color-mix(in srgb, var(--border) 65%, var(--secondary));
   min-width: 0;
 }
 
@@ -460,9 +449,6 @@ html body #root .workspace-account-popover :is(a,button.ui-button):hover {
 #root .workspace-account-popover svg { width: 15px; height: 15px; }
 
 
-/* Dashboard itself: spaced like the screenshot, with no second navigation bar
- * and no fake trends or fabricated comparison percentages. */
-
 /* Four equal cards. Former 3+1 wrap was caused by legacy grid overrides. */
 
 
@@ -478,8 +464,6 @@ html body #root .workspace-account-popover :is(a,button.ui-button):hover {
 /* Quick access: screenshot-style tight, aligned three-column tools.
  * Preserve ALL 7 links (including Search, which extends to a third row). */
 
-
-/* Compact onboarding, light panel and a clear but quiet completion indicator. */
 
 @media (max-width: 800px) {
 html body #root .page-shell {
@@ -537,10 +521,6 @@ html body #root .page-shell > .workspace-topbar { flex-wrap: wrap; }
 /* A two-panel layout is still preferable when three cards would be too narrow. */
 
 /* Mobile gets one balanced column and keeps usable tab button hit targets. */
-
-
-
-/* Secondary variant for the business dashboard creation action. */
 
 
 
