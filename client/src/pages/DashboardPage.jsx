@@ -9,7 +9,6 @@ import { api } from "../api.js";
 import { hasBusinessFeature } from "../featureAccess.js";
 import { Button } from "../components/ui/button.jsx";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.jsx";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { adminMetricsKey, defaultVisibleMetrics, metricGroups, normalizeVisibleMetrics, readVisibleMetrics } from "../utils/adminMetricPreferences.js";
 
 const businessSections = [
@@ -113,7 +112,6 @@ export default function DashboardPage({ user, onLogout }) {
   const [visibleMetrics, setVisibleMetrics] = useState(() => readVisibleMetrics(visibilityKey));
   const businessWidgetKey = `bookflow:business-dashboard:v1:${user._id || user.id || user.email}`;
   const [visibleBusinessWidgets, setVisibleBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
-  const [dashboardPreferencesLoading, setDashboardPreferencesLoading] = useState(true);
   const [quickAccessCounts, setQuickAccessCounts] = useState(null);
   useEffect(() => {
     if (isAdmin) return;
@@ -138,7 +136,6 @@ export default function DashboardPage({ user, onLogout }) {
     const originalToken = window.localStorage.getItem("booking_token");
     setVisibleBusinessWidgets(localBusiness);
     setVisibleMetrics(localMetrics);
-    setDashboardPreferencesLoading(true);
 
     async function loadPreferences() {
       try {
@@ -166,7 +163,6 @@ export default function DashboardPage({ user, onLogout }) {
       } catch {
         // Keep local settings when offline; saving will report an error if the API is unavailable.
       } finally {
-        if (active) setDashboardPreferencesLoading(false);
       }
     }
     loadPreferences();
@@ -239,7 +235,6 @@ export default function DashboardPage({ user, onLogout }) {
     topServices: "Top 5"
   };
   const businessWidgetCount = Object.values(visibleBusinessWidgets).filter(Boolean).length;
-  const businessWidgetTotal = businessWidgetGroups.reduce((count, group) => count + group.widgets.length, 0);
   const businessAnalyticsVisible = businessWidgetGroups[1].widgets.concat(businessWidgetGroups[2].widgets)
     .some(([key]) => visibleBusinessWidgets[key] !== false);
   return <AppLayout user={user} onLogout={onLogout}>
