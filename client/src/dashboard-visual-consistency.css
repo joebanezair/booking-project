@@ -2599,3 +2599,376 @@ body[data-theme="dark"] #root main.page-shell:has(.dashboard-content-rail) .dash
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+
+/* Minimal, readable dashboard finish — borderless surfaces and stronger type. */
+html body #root main.page-shell:has(.dashboard-content-rail) {
+  --dash-ink: #172033;
+  --dash-muted: #5f6d82;
+  --dash-line: transparent;
+  --dash-blue: #315ce5;
+  --dash-blue-soft: #eff3ff;
+  --dash-bg: #f7f9fc;
+  --dash-surface: #ffffff;
+  --dash-card: #ffffff;
+  color: var(--dash-ink) !important;
+}
+
+html[data-theme="dark"] body #root main.page-shell:has(.dashboard-content-rail),
+body[data-theme="dark"] #root main.page-shell:has(.dashboard-content-rail) {
+  --dash-ink: #f1f5fb;
+  --dash-muted: #bdc8d8;
+  --dash-line: transparent;
+  --dash-blue: #9bb0ff;
+  --dash-blue-soft: #202d49;
+  --dash-bg: #0d1422;
+  --dash-surface: #151f30;
+  --dash-card: #151f30;
+}
+
+/* Strip outlines and decorative separators from dashboard surfaces. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .onboarding-panel,
+  .dashboard-v2-stats,
+  .dashboard-v2-stat,
+  .dashboard-v2-analysis-grid,
+  .dashboard-v2-analysis-grid > .ui-card,
+  .dashboard-single-period,
+  .dashboard-quick-link,
+  .business-admin-activity,
+  .business-admin-platform-metric,
+  .business-admin-breakdown-group,
+  .dashboard-post-service
+) {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stats > .dashboard-v2-stat,
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid > :is(
+  .dashboard-v2-status,
+  .dashboard-v2-top-services
+),
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-launch-list {
+  border: 0 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-launch-list {
+  border-top: 0 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell {
+  background: var(--dash-bg) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell > .topbar .eyebrow,
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-section-heading .eyebrow {
+  font-size: 10px !important;
+  line-height: 1.4;
+  letter-spacing: .1em;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell > .topbar h1 {
+  font-size: clamp(25px, 2.2vw, 29px) !important;
+  line-height: 1.2;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell > .topbar .muted,
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-section-heading .muted {
+  color: var(--dash-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.55;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-header-actions .dashboard-post-service {
+  min-height: 38px !important;
+  padding: 9px 14px !important;
+  border: 0 !important;
+  background: var(--dash-blue-soft) !important;
+  color: var(--dash-blue) !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-panel.onboarding-relaunch {
+  padding: 15px 17px 13px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: linear-gradient(105deg, var(--dash-blue-soft) 0%, var(--dash-surface) 75%) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-launch-eyebrow {
+  font-size: 10px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-launch-title {
+  font-size: 16px !important;
+  line-height: 1.35;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-launch-description {
+  color: var(--dash-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.5;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-progress-label {
+  font-size: 22px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-completion-count {
+  color: var(--dash-muted) !important;
+  font-size: 11px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-launch-list {
+  gap: 7px 14px;
+  padding-top: 10px;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-launch-item {
+  min-height: 50px !important;
+  gap: 10px;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-item-copy strong {
+  color: var(--dash-ink) !important;
+  font-size: 12px !important;
+  line-height: 1.4;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-item-copy small {
+  color: var(--dash-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.45;
+}
+
+/* KPI row: uncluttered, borderless and comfortably readable. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stats[data-visible-count="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stats[data-visible-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stats[data-visible-count="1"] {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics .dashboard-v2-stat {
+  min-height: 88px !important;
+  gap: 12px !important;
+  padding: 13px 14px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: var(--dash-card) !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-number {
+  color: var(--dash-ink) !important;
+  font-size: clamp(22px, 1.8vw, 26px) !important;
+  font-weight: 680 !important;
+  line-height: 1.12;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-label {
+  color: var(--dash-muted) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.35;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-content > small {
+  color: var(--dash-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.4;
+}
+
+/* Analytics: use whitespace, not outlines, to separate the panels. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-analysis-grid,
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="2"],
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-analysis-grid[data-visible-count="1"] {
+  gap: 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid > .ui-card {
+  min-width: 0;
+  padding: 15px 16px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: var(--dash-card) !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid h3 {
+  color: var(--dash-ink) !important;
+  font-size: 15px !important;
+  font-weight: 650 !important;
+  line-height: 1.35;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid .dashboard-v2-muted {
+  color: var(--dash-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.5;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-sales-controls {
+  gap: 3px;
+  padding: 3px;
+  background: var(--dash-bg) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-chart-tab {
+  min-height: 29px !important;
+  padding: 6px 10px !important;
+  font-size: 11px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-single-period {
+  padding: 14px !important;
+  border: 0 !important;
+  background: var(--dash-bg) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-single-period strong {
+  color: var(--dash-ink) !important;
+  font-size: 25px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-content {
+  gap: 14px;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-name,
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-row > small {
+  color: var(--dash-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.4;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-top-list li > div strong {
+  color: var(--dash-ink) !important;
+  font-size: 12px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-top-list li > div small {
+  color: var(--dash-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.4;
+}
+
+/* Quick Access: simple, borderless links with readable labels and descriptions. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-section-heading h2 {
+  color: var(--dash-ink) !important;
+  font-size: 16px !important;
+  font-weight: 650 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
+  gap: 9px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-link {
+  min-height: 62px !important;
+  padding: 9px 11px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: var(--dash-card) !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-title-row strong {
+  color: var(--dash-ink) !important;
+  font-size: 11px !important;
+  font-weight: 650 !important;
+  line-height: 1.35;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-copy small {
+  color: var(--dash-muted) !important;
+  font-size: 10px !important;
+  line-height: 1.4;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-count {
+  font-size: 10px !important;
+  font-weight: 650 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-link:hover {
+  background: var(--dash-blue-soft) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Admin dashboard typography follows the same restrained scale. */
+html body #root main.page-shell:has(.dashboard-content-rail) .business-admin-activity-heading h2 {
+  color: var(--dash-ink) !important;
+  font-size: 16px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .business-admin-activity-heading p,
+html body #root main.page-shell:has(.dashboard-content-rail) .business-admin-activity-updated,
+html body #root main.page-shell:has(.dashboard-content-rail) .business-admin-platform-label,
+html body #root main.page-shell:has(.dashboard-content-rail) .business-admin-platform-metric small,
+html body #root main.page-shell:has(.dashboard-content-rail) .business-admin-breakdown-metric > span {
+  color: var(--dash-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.45;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .business-admin-platform-metric > strong {
+  color: var(--dash-ink) !important;
+  font-size: 23px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .business-admin-breakdown-metric > strong {
+  color: var(--dash-ink) !important;
+  font-size: 16px !important;
+}
+
+/* Preserve clear keyboard focus while keeping idle surfaces borderless. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .dashboard-quick-link,
+  .onboarding-launch-trigger,
+  .onboarding-launch-item,
+  .dashboard-chart-tab,
+  .dashboard-post-service
+):focus-visible {
+  outline: 2px solid var(--dash-blue) !important;
+  outline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-stats,
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="3"],
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-launch-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 440px) {
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-stats,
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="3"],
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-stats[data-visible-count="2"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
