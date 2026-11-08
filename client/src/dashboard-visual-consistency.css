@@ -2972,3 +2972,27 @@ html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+
+/* User typography preference: set every dashboard text element to 15px. */
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell,
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell * ,
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell *::before,
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell *::after {
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+}
+
+/* Allow 15px Quick Access text to wrap instead of being clipped. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-link {
+  min-height: 0 !important;
+  align-items: start;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-title-row strong,
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-copy small {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: anywhere;
+}
