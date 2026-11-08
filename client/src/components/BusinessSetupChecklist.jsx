@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import {
   FiArrowRight, FiBriefcase, FiCamera, FiChevronDown, FiCircle,
   FiClock, FiFileText, FiLink, FiSend, FiSettings,
-  FiRocket, FiClipboard, FiInfo, FiCheckCircle
+  FiClipboard, FiInfo, FiCheckCircle
 } from "react-icons/fi";
 import { Button } from "./ui/button.jsx";
 import { Card } from "./ui/card.jsx";
@@ -44,7 +44,7 @@ export default function BusinessSetupChecklist({ items, expanded, onToggle }) {
         onClick={onToggle} aria-expanded={expanded} aria-controls="business-onboarding-steps"
         aria-label={`Business setup checklist, ${percentage}% complete. ${expanded ? "Collapse" : "Expand"} steps`}>
         <span className="onboarding-launch-copy">
-          <span className="onboarding-launch-eyebrow"><FiRocket aria-hidden="true" /> GET READY TO LAUNCH</span>
+          <span className="onboarding-launch-eyebrow"><FiSend aria-hidden="true" /> GET READY TO LAUNCH</span>
           <span id="business-setup-title" role="heading" aria-level={2} className="onboarding-launch-title">
             <FiClipboard aria-hidden="true" />
             <span>Business setup checklist</span>
