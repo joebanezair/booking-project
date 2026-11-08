@@ -129,3 +129,26 @@ html body .business-dashboard-dialog :is(
 html body .ui-dialog.business-dashboard-dialog {
   background: #ffffff !important;
 }
+
+/* Shared analytics group: outline only the container for Sales, Booking status and Top Services. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.business-dashboard-analytics .dashboard-v2-analysis-grid {
+  box-sizing: border-box !important;
+  padding: 12px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+}
+
+/* The three panels inside the shared container stay borderless. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.business-dashboard-analytics .dashboard-v2-analysis-grid > :is(
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services
+) {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: #ffffff !important;
+  border-radius: 10px !important;
+}
