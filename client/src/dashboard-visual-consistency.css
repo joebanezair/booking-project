@@ -74,6 +74,7 @@ html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
   .dashboard-shadcn-card,
   .dashboard-quick-grid,
   .dashboard-quick-link,
+  .dashboard-quick-count,
   .route-card-icon,
   .dashboard-v2-stat-icon,
   .admin-dashboard-platform,
