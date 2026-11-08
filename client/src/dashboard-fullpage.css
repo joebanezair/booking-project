@@ -591,39 +591,6 @@ html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-ta
   background: transparent !important;
   color: var(--muted-foreground) !important;
   font-size: 11px;
-  font-weight: 600;html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab {
-  flex: 0 0 auto !important;
-  width: auto !important;
-  min-height: 29px !important;
-  height: 29px !important;
-  padding: 5px 9px !important;
-  border: 0 !important;
-  border-radius: 9999px !important;
-  background: transparent !important;
-  color: var(--muted-foreground) !important;
-  font-size: 11px;
-  font-weight: 600;html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab {
-  flex: 0 0 auto !important;
-  width: auto !important;
-  min-height: 29px !important;
-  height: 29px !important;
-  padding: 5px 9px !important;
-  border: 0 !important;
-  border-radius: 8px !important;
-  background: transparent !important;
-  color: var(--muted-foreground) !important;
-  font-size: 11px;
-  font-weight: 600;html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab {
-  flex: 0 0 auto !important;
-  width: auto !important;
-  min-height: 29px !important;
-  height: 29px !important;
-  padding: 5px 9px !important;
-  border: 0 !important;
-  border-radius: 8px !important;
-  background: transparent !important;
-  color: var(--muted-foreground) !important;
-  font-size: 11px;
   font-weight: 600;
 }
 html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab.selected {
