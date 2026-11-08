@@ -15,7 +15,7 @@ import "./business-onboarding-refresh.css";
 import "./workspace-polish.css";
 import "./sidebar-redesign.css";
 import "./profile-dashboard-refresh.css";
-import "./dashboard-fullpage.css";
+import "./workspace-shell-layout.css";
 import "./workspace-header-rail.css";
 import "./booking-compact-refresh.css";
 import "./service-create-outline.css";
@@ -36,7 +36,6 @@ import "./business-management-refresh.css";
 import "./business-detail-refresh.css";
 import "./business-insights-refined.css";
 import "./feature-access-notice.css";
-import "./business-dashboard-refined.css";
 import "./notifications-typography.css";
 import "./sidebar-typography.css";
 import "./public-admin-profile.css";
@@ -47,11 +46,7 @@ import "./auth-enhancements.css";
 import "./platform-content.css";
 import "./customer-history-refresh.css";
 import "./public-booking-page.css";
-import "./dashboard-borderless.css";
-import "./dashboard-sales-overview-fix.css";
-import "./dashboard-visual-consistency.css";
-import "./dashboard-premium-refresh.css";
-import "./dashboard-premium-details.css";
+import "./settings-business-dashboard.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
