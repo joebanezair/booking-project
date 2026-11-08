@@ -279,7 +279,7 @@ export default function DashboardPage({ user, onLogout }) {
     <header className="topbar">
       <div>
         <p className="eyebrow">{isAdmin ? "ADMIN DASHBOARD" : "BUSINESS DASHBOARD"}</p>
-        <h1>Welcome back, {user.name.split(" ")[0]}</h1>
+        <h1 className={isAdmin ? undefined : "business-dashboard-welcome"}>{isAdmin ? `Welcome back, ${user.name.split(" ")[0]}` : `Business Owner ${user.name.split(" ")[0]}`}</h1>
         <p className="muted">{isAdmin ? "Manage businesses and monitor platform activity." : user.accountStatus === "paused" ? "Your account is paused. Existing data remains available while new publishing and bookings are disabled." : "Manage services, bookings, recorded sales, messages, reviews, and your public profile."}</p>
       </div>
       {!isAdmin && <div className="business-dashboard-header-actions">
