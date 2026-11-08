@@ -8,7 +8,7 @@ import DashboardAnalytics from "../components/DashboardAnalytics.jsx";
 import { api } from "../api.js";
 import { hasBusinessFeature } from "../featureAccess.js";
 import { Button } from "../components/ui/button.jsx";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.jsx";
+import { Card, CardDescription, CardHeader, CardTitle } from "../components/ui/card.jsx";
 import { adminMetricsKey, defaultVisibleMetrics, metricGroups, normalizeVisibleMetrics, readVisibleMetrics } from "../utils/adminMetricPreferences.js";
 import { businessDashboardPreferenceKey, businessWidgetGroups, defaultBusinessWidgets, normalizeBusinessWidgets, readBusinessWidgets } from "../utils/businessDashboardPreferences.js";
 
@@ -28,14 +28,6 @@ const adminSections = [
   { title: "Search", text: "Inspect public business profiles and services.", to: "/search", action: "Browse BookFlow", icon: FiSearch },
   { title: "Settings", text: "Manage your administrator appearance settings.", to: "/dashboard/settings", action: "Open settings", icon: FiSettings }
 ];
-
-function money(value, currency) {
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(value || 0);
-  } catch {
-    return `${currency} ${Number(value || 0).toLocaleString()}`;
-  }
-}
 
 function PlatformMetric({ icon: Icon, label, value, note, className = "", title }) {
   return <div className={["business-admin-platform-metric", className].filter(Boolean).join(" ")} title={title}>
