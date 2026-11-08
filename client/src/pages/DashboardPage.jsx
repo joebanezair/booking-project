@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBarChart2, FiBriefcase, FiCalendar, FiCheckSquare, FiChevronDown, FiChevronRight, FiDollarSign, FiInfo, FiMessageSquare, FiPackage, FiPlus, FiRotateCcw, FiSave, FiSearch, FiSettings, FiStar, FiUser, FiUsers, FiX } from "react-icons/fi";
+import { FiBarChart2, FiBriefcase, FiCalendar, FiChevronRight, FiDollarSign, FiInfo, FiMessageSquare, FiPackage, FiPlus, FiSearch, FiSettings, FiStar, FiUser, FiUsers } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import BusinessSetupChecklist from "../components/BusinessSetupChecklist.jsx";
 import DashboardAnalytics from "../components/DashboardAnalytics.jsx";
@@ -113,12 +113,7 @@ export default function DashboardPage({ user, onLogout }) {
   const [visibleMetrics, setVisibleMetrics] = useState(() => readVisibleMetrics(visibilityKey));
   const businessWidgetKey = `bookflow:business-dashboard:v1:${user._id || user.id || user.email}`;
   const [visibleBusinessWidgets, setVisibleBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
-  const [draftBusinessWidgets, setDraftBusinessWidgets] = useState(() => readBusinessWidgets(businessWidgetKey));
-  const [businessCustomizeOpen, setBusinessCustomizeOpen] = useState(false);
   const [dashboardPreferencesLoading, setDashboardPreferencesLoading] = useState(true);
-  const [dashboardPreferencesSaving, setDashboardPreferencesSaving] = useState(false);
-  const [dashboardPreferencesError, setDashboardPreferencesError] = useState("");
-  const [expandedBusinessGroups, setExpandedBusinessGroups] = useState({ "Key metrics": true });
   const [quickAccessCounts, setQuickAccessCounts] = useState(null);
   useEffect(() => {
     if (isAdmin) return;
@@ -142,10 +137,7 @@ export default function DashboardPage({ user, onLogout }) {
     const localPreferences = isAdmin ? localMetrics : localBusiness;
     const originalToken = window.localStorage.getItem("booking_token");
     setVisibleBusinessWidgets(localBusiness);
-    setDraftBusinessWidgets(localBusiness);
     setVisibleMetrics(localMetrics);
-    setBusinessCustomizeOpen(false);
-    setDashboardPreferencesError("");
     setDashboardPreferencesLoading(true);
 
     async function loadPreferences() {
@@ -161,7 +153,6 @@ export default function DashboardPage({ user, onLogout }) {
             setVisibleMetrics(normalizeVisibleMetrics(stored));
           } else {
             setVisibleBusinessWidgets(stored);
-            setDraftBusinessWidgets(stored);
           }
           try { window.localStorage.setItem(storageKey, JSON.stringify(stored)); }
           catch { /* Database values remain the source of truth. */ }
@@ -181,29 +172,6 @@ export default function DashboardPage({ user, onLogout }) {
     loadPreferences();
     return () => { active = false; };
   }, [businessWidgetKey, visibilityKey, isAdmin]);
-  function openBusinessCustomize() {
-    setDraftBusinessWidgets({ ...visibleBusinessWidgets });
-    setExpandedBusinessGroups({ "Key metrics": true });
-    setDashboardPreferencesError("");
-    setBusinessCustomizeOpen(true);
-  }
-  async function saveBusinessCustomize() {
-    if (dashboardPreferencesLoading || dashboardPreferencesSaving) return;
-    setDashboardPreferencesSaving(true);
-    setDashboardPreferencesError("");
-    try {
-      const { preferences } = await api.profile.saveDashboardPreferences("businessWidgets", draftBusinessWidgets);
-      setVisibleBusinessWidgets({ ...preferences });
-      setDraftBusinessWidgets({ ...preferences });
-      try { window.localStorage.setItem(businessWidgetKey, JSON.stringify(preferences)); }
-      catch { /* Saved to the account even if browser storage is unavailable. */ }
-      setBusinessCustomizeOpen(false);
-    } catch (error) {
-      setDashboardPreferencesError(error.message || "Unable to save dashboard preferences.");
-    } finally {
-      setDashboardPreferencesSaving(false);
-    }
-  }
   useEffect(() => {
     if (isAdmin) {
       api.admin.overview().then(setOverview).catch(error => setOverviewError(error.message));
@@ -272,7 +240,6 @@ export default function DashboardPage({ user, onLogout }) {
   };
   const businessWidgetCount = Object.values(visibleBusinessWidgets).filter(Boolean).length;
   const businessWidgetTotal = businessWidgetGroups.reduce((count, group) => count + group.widgets.length, 0);
-  const draftBusinessWidgetCount = Object.values(draftBusinessWidgets).filter(Boolean).length;
   const businessAnalyticsVisible = businessWidgetGroups[1].widgets.concat(businessWidgetGroups[2].widgets)
     .some(([key]) => visibleBusinessWidgets[key] !== false);
   return <AppLayout user={user} onLogout={onLogout}>
@@ -282,19 +249,15 @@ export default function DashboardPage({ user, onLogout }) {
         <h1>Welcome back, {user.name.split(" ")[0]}</h1>
         <p className="muted">{isAdmin ? "Manage businesses and monitor platform activity." : user.accountStatus === "paused" ? "Your account is paused. Existing data remains available while new publishing and bookings are disabled." : "Manage services, bookings, recorded sales, messages, reviews, and your public profile."}</p>
       </div>
-      {!isAdmin && <div className="business-dashboard-header-actions">
-        <Button type="button" size="sm" variant="outline"
-          className="business-dashboard-customize-button" aria-haspopup="dialog"
-          onClick={openBusinessCustomize}>
-          <FiSettings aria-hidden="true" /> Customize
-        </Button>
-        {user.accountStatus === "active" && hasBusinessFeature(user, "booking") &&
+      {!isAdmin && user.accountStatus === "active" && hasBusinessFeature(user, "booking") &&
+        <div className="business-dashboard-header-actions">
           <Button asChild variant="secondary">
             <Link className="secondary button-link icon-link dashboard-post-service" to="/dashboard/services/new">
               <FiPlus aria-hidden="true" /> Post a service
             </Link>
-          </Button>}
-      </div>}
+          </Button>
+        </div>}
+
     </header>
 
     <div className="dashboard-content-rail">
@@ -381,79 +344,6 @@ export default function DashboardPage({ user, onLogout }) {
       </section>
       </div>}
 
-      {!isAdmin && <Dialog open={businessCustomizeOpen} onOpenChange={setBusinessCustomizeOpen}
-        className="business-dashboard-dialog" title="Customize business dashboard">
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Customize dashboard</DialogTitle>
-            <DialogDescription>Show only what matters to you. Hidden items can be restored anytime.</DialogDescription>
-          </DialogHeader>
-          <div className="business-dashboard-widget-summary" aria-live="polite">
-            <span><strong>{draftBusinessWidgetCount}</strong> of {businessWidgetTotal} widgets selected</span>
-            <span>{dashboardPreferencesLoading ? "Loading saved settings…" : "Changes apply when saved"}</span>
-          </div>
-          <div className="business-dashboard-widget-list">
-            {businessWidgetGroups.map(group => {
-              const id = `business-widget-${group.title.toLowerCase().replaceAll(" ", "-")}`;
-              const expanded = Boolean(expandedBusinessGroups[group.title]);
-              const shown = group.widgets.filter(([key]) => draftBusinessWidgets[key] !== false).length;
-              return <section className="business-dashboard-widget-group" key={group.title}>
-                <button className="business-dashboard-widget-trigger" type="button"
-                  aria-controls={id} aria-expanded={expanded}
-                  onClick={() => setExpandedBusinessGroups(current => ({
-                    ...current, [group.title]: !current[group.title]
-                  }))}>
-                  <span>{group.title}</span>
-                  <span className="business-dashboard-widget-count">{shown} / {group.widgets.length}</span>
-                  <FiChevronDown className={expanded ? "is-expanded" : ""} aria-hidden="true" />
-                </button>
-                <div id={id} className="business-dashboard-widget-rows" hidden={!expanded}>
-                  {group.widgets.map(([key, label]) => {
-                    const related = businessSections.find(item => item.widgetKey === key);
-                    const value = related?.feature && !hasBusinessFeature(user, related.feature)
-                      ? "Plan inactive" : (liveBusinessValues[key] ?? "Shortcut");
-                    return <label className="business-dashboard-widget-row" key={key}>
-                      <span className="business-dashboard-widget-name">
-                        <input type="checkbox"
-                          checked={draftBusinessWidgets[key] !== false}
-                          disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
-                          onChange={event => setDraftBusinessWidgets(current => ({ ...current, [key]: event.target.checked }))}
-                          aria-label={`Show ${label}`} />
-                        <span>{label}</span>
-                      </span>
-                      <span className="business-dashboard-widget-value" title={String(value)}>{value}</span>
-                    </label>;
-                  })}
-                </div>
-              </section>;
-            })}
-          </div>
-          {dashboardPreferencesError && <p role="alert">{dashboardPreferencesError}</p>}
-          <DialogFooter className="business-dashboard-widget-footer">
-            <div className="business-dashboard-widget-helpers">
-              <Button type="button" variant="ghost" size="sm"
-                disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
-                onClick={() => setDraftBusinessWidgets(defaultBusinessWidgets())}>
-                <FiCheckSquare aria-hidden="true" /> Select all
-              </Button>
-              <Button type="button" variant="ghost" size="sm"
-                disabled={dashboardPreferencesLoading || dashboardPreferencesSaving}
-                onClick={() => setDraftBusinessWidgets({ ...visibleBusinessWidgets })}>
-                <FiRotateCcw aria-hidden="true" /> Undo changes
-              </Button>
-            </div>
-            <div className="business-dashboard-widget-actions">
-              <Button type="button" variant="outline" size="sm" disabled={dashboardPreferencesSaving} onClick={() => setBusinessCustomizeOpen(false)}>
-                <FiX aria-hidden="true" /> Cancel
-              </Button>
-              <Button type="button" size="sm" disabled={dashboardPreferencesLoading || dashboardPreferencesSaving} onClick={saveBusinessCustomize}>
-                <FiSave aria-hidden="true" /> Save changes
-              </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>}
-
             {!isAdmin && visibleBusinessWidgets.setupChecklist !== false && setupLoaded && !setupComplete && <BusinessSetupChecklist
         items={onboarding}
         expanded={setupExpanded}
@@ -508,8 +398,7 @@ export default function DashboardPage({ user, onLogout }) {
       {!isAdmin && businessWidgetCount === 0 && <div className="business-dashboard-all-hidden">
         <FiSettings aria-hidden="true" />
         <strong>Your dashboard is customized</strong>
-        <p>No sections are selected. Use Customize to choose what you want to see.</p>
-        <Button size="sm" variant="outline" type="button" onClick={openBusinessCustomize}>Customize dashboard</Button>
+        <p>No sections are selected. Choose what you want to see in <Link to="/dashboard/settings">Settings</Link>.</p>
       </div>}
     </div>
   </AppLayout>;
