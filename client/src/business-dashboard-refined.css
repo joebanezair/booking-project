@@ -1113,7 +1113,7 @@ html body #root .dashboard-route-section--business .dashboard-quick-grid .dashbo
   min-height: 76px !important;
   margin: 0 !important;
   padding: 7px 13px !important;
-  border: 1px solid #e5e7eb !important;
+  border: 0 !important;
   border-radius: 10px !important;
   background: #ffffff !important;
   box-shadow: none !important;
@@ -1123,7 +1123,6 @@ html body #root .dashboard-route-section--business .dashboard-quick-grid .dashbo
   transition: border-color .15s ease, box-shadow .15s ease;
 }
 html body #root .dashboard-route-section--business .dashboard-quick-grid .dashboard-quick-link:hover {
-  border-color: #bfcef4 !important;
   background: #fff !important;
   box-shadow: 0 3px 9px rgba(15, 23, 42, .045) !important;
 }
