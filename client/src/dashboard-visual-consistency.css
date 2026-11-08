@@ -129,3 +129,33 @@ html body .business-dashboard-dialog :is(
 html body .ui-dialog.business-dashboard-dialog {
   background: #ffffff !important;
 }
+
+/* Major dashboard components: subtle outlines, not borders on every small control.
+   Keep the global white canvas, 10px corners, and borderless inner quick links. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .onboarding-panel.onboarding-relaunch,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .business-dashboard-analytics .dashboard-v2-stats > .dashboard-v2-stat,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .business-dashboard-analytics .dashboard-v2-analysis-grid > :is(
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services
+),
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .dashboard-route-section--business,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .business-admin-page .business-admin-activity,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .business-admin-page .business-admin-breakdown-group,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .dashboard-route-section--admin .admin-tool-link {
+  box-sizing: border-box !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+}
+
+/* Preserve the simple, borderless style of the individual quick-access links. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .dashboard-route-section--business .dashboard-quick-link {
+  border: 0 !important;
+  border-radius: 10px !important;
+}
+
+/* Major cards retain a quiet edge on hover; do not introduce heavier outlines. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail .dashboard-route-section--admin .admin-tool-link:hover {
+  border-color: #d1d5db !important;
+}
