@@ -263,3 +263,25 @@ html body #root .bookflow-settings-v2 .settings-v2-dashboard .settings-v2-stats-
     transition: none !important;
   }
 }
+
+/* Dashboard has a flat, shadow-free finish.
+   Keep keyboard focus outlines; remove only decorative elevation from dashboard content. */
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar *,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail *,
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar *::before,
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar *::after,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail *::before,
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail *::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Prevent hover animations from reintroducing shadows or lifting dashboard cards. */
+html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .dashboard-v2-stat,
+  .dashboard-quick-link,
+  .admin-tool-link
+):hover {
+  box-shadow: none !important;
+  transform: none !important;
+}
