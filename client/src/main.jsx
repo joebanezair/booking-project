@@ -50,6 +50,7 @@ import "./public-booking-page.css";
 import "./dashboard-borderless.css";
 import "./dashboard-sales-overview-fix.css";
 import "./dashboard-visual-consistency.css";
+import "./dashboard-premium-refresh.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
