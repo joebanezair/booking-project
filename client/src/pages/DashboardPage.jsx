@@ -30,16 +30,16 @@ const adminSections = [
 ];
 
 function PlatformMetric({ icon: Icon, label, value, note, className = "", title }) {
-  return <div className={["business-admin-platform-metric", className].filter(Boolean).join(" ")} title={title}>
-    <span className="business-admin-platform-icon"><Icon aria-hidden="true" /></span>
+  return <div title={title}>
+    <span><Icon aria-hidden="true" /></span>
     <strong>{value ?? "—"}</strong>
-    <span className="business-admin-platform-label">{label}</span>
+    <span>{label}</span>
     <small>{note}</small>
   </div>;
 }
 
 function BreakdownMetric({ label, value }) {
-  return <div className="business-admin-breakdown-metric">
+  return <div>
     <span>{label}</span>
     <strong>{value ?? "—"}</strong>
   </div>;
@@ -185,29 +185,29 @@ export default function DashboardPage({ user, onLogout }) {
   const businessAnalyticsVisible = businessWidgetGroups[1].widgets.concat(businessWidgetGroups[2].widgets)
     .some(([key]) => visibleBusinessWidgets[key] !== false);
   return <AppLayout user={user} onLogout={onLogout}>
-    <header className="topbar">
+    <header>
       <div>
-        <p className="eyebrow">{isAdmin ? "ADMIN DASHBOARD" : "BUSINESS DASHBOARD"}</p>
-        <h1 className={isAdmin ? undefined : "business-dashboard-welcome"}>{isAdmin ? `Welcome back, ${user.name.split(" ")[0]}` : `Welcome ${user.name.split(" ")[0]}`}</h1>
-        <p className="muted">{isAdmin ? "Manage businesses and monitor platform activity." : user.accountStatus === "paused" ? "Your account is paused. Existing data remains available while new publishing and bookings are disabled." : "Manage services, bookings, recorded sales, messages, reviews, and your public profile."}</p>
+        <p>{isAdmin ? "ADMIN DASHBOARD" : "BUSINESS DASHBOARD"}</p>
+        <h1>{isAdmin ? `Welcome back, ${user.name.split(" ")[0]}` : `Welcome ${user.name.split(" ")[0]}`}</h1>
+        <p>{isAdmin ? "Manage businesses and monitor platform activity." : user.accountStatus === "paused" ? "Your account is paused. Existing data remains available while new publishing and bookings are disabled." : "Manage services, bookings, recorded sales, messages, reviews, and your public profile."}</p>
       </div>
       {!isAdmin && user.accountStatus === "active" && hasBusinessFeature(user, "booking") &&
-        <div className="business-dashboard-header-actions">
+        <div>
           <Button asChild variant="secondary">
-            <Link className="secondary button-link icon-link dashboard-post-service" to="/dashboard/services/new">
+            <Link to="/dashboard/services/new">
               <FiPlus aria-hidden="true" /> Post a service
             </Link>
           </Button>
         </div>}
     </header>
 
-    <div className="dashboard-content-rail">
-      {overviewError && <p className="error">{overviewError}</p>}
+    <div>
+      {overviewError && <p>{overviewError}</p>}
 
       {!isAdmin && user.accountStatus === "active" &&
-        (!hasBusinessFeature(user, "booking") || !hasBusinessFeature(user, "pos")) && <section className="business-feature-access-banner" role="status">
-          <span className="business-feature-access-icon"><FiInfo aria-hidden="true"/></span>
-          <div className="business-feature-access-copy">
+        (!hasBusinessFeature(user, "booking") || !hasBusinessFeature(user, "pos")) && <section role="status">
+          <span><FiInfo aria-hidden="true"/></span>
+          <div>
             <strong>Feature activation required</strong>
             <p>
               {[
@@ -222,25 +222,25 @@ export default function DashboardPage({ user, onLogout }) {
           </Button>
         </section>}
 
-      {isAdmin && <div className="business-admin-page admin-dashboard-platform">
-      <section className="business-admin-activity" aria-labelledby="platform-activity-title" aria-busy={!overview && !overviewError}>
-        <div className="business-admin-activity-heading">
+      {isAdmin && <div>
+      <section aria-busy={!overview && !overviewError}>
+        <div>
           <div>
-            <h2 id="platform-activity-title">Platform statistics</h2>
+            <h2>Platform statistics</h2>
             <p>All registered businesses · lifetime totals</p>
           </div>
-          <div className="admin-stats-heading-actions">
-            <span aria-live="polite" className="business-admin-activity-updated">
+          <div>
+            <span aria-live="polite">
               {overview?.generatedAt ? `Updated ${new Date(overview.generatedAt).toLocaleString()}` : !overviewError ? "Loading live totals…" : "Statistics unavailable"}
             </span>
           </div>
         </div>
-        {mainVisible && <div className="business-admin-platform-grid">
+        {mainVisible && <div>
           {visibleMetrics.revenue && <PlatformMetric icon={FiDollarSign} label="Total platform revenue"
             value={revenueDisplay}
             note={revenueRows === null ? "Revenue unavailable" : revenueRows.length > 1
               ? revenueBreakdown : "Gross sales · not platform fees"}
-            className="business-admin-platform-metric--revenue"
+           
             title="Gross recorded service and POS sales plus completed online order value; excludes voided and fully refunded orders. Not verified payments or platform commissions." />}
           {visibleMetrics.products && <PlatformMetric icon={FiPackage} label="Total products"
             value={overview?.products?.total}
@@ -258,10 +258,10 @@ export default function DashboardPage({ user, onLogout }) {
             value={overview?.reviews?.averageRating != null ? `${overview.reviews.averageRating.toFixed(1)} / 5` : "—"}
             note={overview ? `${overview.reviews.ratingsCount} verified ratings` : "—"} />}
         </div>}
-        {(bookingsVisible || salesVisible) && <div className={"business-admin-breakdowns" + (bookingsVisible !== salesVisible ? " business-admin-breakdowns--single" : "")}>
-          {bookingsVisible && <div className="business-admin-breakdown-group">
+        {(bookingsVisible || salesVisible) && <div>
+          {bookingsVisible && <div>
             <h3>Booking status</h3>
-            <div className="business-admin-breakdown-grid">
+            <div>
               {visibleMetrics.pending && <BreakdownMetric label="Pending" value={overview?.bookings?.pending} />}
               {visibleMetrics.confirmed && <BreakdownMetric label="Confirmed" value={overview?.bookings?.confirmed} />}
               {visibleMetrics.inProgress && <BreakdownMetric label="In progress" value={overview?.bookings?.inProgress} />}
@@ -270,9 +270,9 @@ export default function DashboardPage({ user, onLogout }) {
               {visibleMetrics.noShow && <BreakdownMetric label="No-show" value={overview?.bookings?.noShow} />}
             </div>
           </div>}
-          {salesVisible && <div className="business-admin-breakdown-group">
+          {salesVisible && <div>
             <h3>Sales and orders</h3>
-            <div className="business-admin-breakdown-grid">
+            <div>
               {visibleMetrics.serviceSales && <BreakdownMetric label="Service sales recorded" value={overview?.sales?.recorded} />}
               {visibleMetrics.posSales && <BreakdownMetric label="POS sales recorded" value={overview?.sales?.posRecorded} />}
               {visibleMetrics.onlineOrders && <BreakdownMetric label="Online orders" value={overview?.sales?.onlineOrders} />}
@@ -281,7 +281,7 @@ export default function DashboardPage({ user, onLogout }) {
           </div>}
         </div>}
         {!mainVisible && !bookingsVisible && !salesVisible &&
-          <p className="admin-stats-empty">No statistics selected. Choose which statistics to show in <Link to="/dashboard/settings">Settings</Link>.</p>}
+          <p>No statistics selected. Choose which statistics to show in <Link to="/dashboard/settings">Settings</Link>.</p>}
       </section>
       </div>}
 
@@ -300,20 +300,20 @@ export default function DashboardPage({ user, onLogout }) {
         statusLoading={statusLoading}
       />}
 
-      {(isAdmin || sections.length > 0) && <section className={"dashboard-route-section" + (isAdmin ? " dashboard-route-section--admin" : " dashboard-route-section--business")}>
-        <div className="dashboard-section-heading">
+      {(isAdmin || sections.length > 0) && <section>
+        <div>
           <div>
-            <p className="eyebrow">QUICK ACCESS</p>
+            <p>QUICK ACCESS</p>
             <h2>{isAdmin ? "Administration" : "Manage your business"}</h2>
-            <p className="muted">{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
+            <p>{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
           </div>
         </div>
-        <section className={"dashboard-route-grid" + (isAdmin ? "" : " dashboard-quick-grid dashboard-quick-grid--grid")}>
+        <section>
           {sections.map(({ icon: Icon, ...section }) => isAdmin ? (
-            <Card as={Link} to={section.to} className="dashboard-shadcn-card admin-tool-link" key={section.to}
+            <Card as={Link} to={section.to} key={section.to}
               aria-label={section.action}>
-              <CardHeader className="dashboard-shadcn-card-header">
-                <span className="route-card-icon"><Icon aria-hidden="true" /></span>
+              <CardHeader>
+                <span><Icon aria-hidden="true" /></span>
                 <div>
                   <CardTitle>{section.title}</CardTitle>
                   <CardDescription>{section.text}</CardDescription>
@@ -321,22 +321,22 @@ export default function DashboardPage({ user, onLogout }) {
               </CardHeader>
             </Card>
           ) : (
-            <Link to={section.to} className="dashboard-quick-link" key={section.to}
+            <Link to={section.to} key={section.to}
               aria-label={section.action}>
-              <span className="route-card-icon"><Icon aria-hidden="true" /></span>
-              <span className="dashboard-quick-copy">
-                <span className="dashboard-quick-title-row"><strong>{section.title}</strong></span>
+              <span><Icon aria-hidden="true" /></span>
+              <span>
+                <span><strong>{section.title}</strong></span>
                 <small>{section.text}</small>
               </span>
-              {section.countKey && <span className="dashboard-quick-count" aria-label={`Total ${section.title.toLowerCase()}`}>
+              {section.countKey && <span aria-label={`Total ${section.title.toLowerCase()}`}>
                 {typeof quickAccessCounts?.[section.countKey] === "number" ? quickAccessCounts[section.countKey].toLocaleString() : "—"}
               </span>}
-              <FiChevronRight className="dashboard-quick-arrow" aria-hidden="true" />
+              <FiChevronRight aria-hidden="true" />
             </Link>
           ))}
         </section>
       </section>}
-      {!isAdmin && businessWidgetCount === 0 && <div className="business-dashboard-all-hidden">
+      {!isAdmin && businessWidgetCount === 0 && <div>
         <FiSettings aria-hidden="true" />
         <strong>Your dashboard is customized</strong>
         <p>No sections are selected. Choose which sections to display in Settings.</p>
