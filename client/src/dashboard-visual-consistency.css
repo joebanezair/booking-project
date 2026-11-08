@@ -518,3 +518,83 @@ html body #root .page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-cont
     display: none !important;
   }
 }
+
+
+/* Dark theme: the dashboard's light-mode polish must follow the active app theme. */
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) {
+  --background: #0d1422 !important;
+  --card: #151f30 !important;
+  --card-foreground: #e8edf6 !important;
+  --foreground: #e8edf6 !important;
+  --muted-bg: #111b2b !important;
+  background: #0d1422 !important;
+  color: #e8edf6 !important;
+}
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) > .content-shell,
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar,
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail {
+  background: #0d1422 !important;
+  color: #e8edf6 !important;
+}
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .onboarding-panel, .onboarding-relaunch, .onboarding-launch-item, .onboarding-progress,
+  .business-dashboard-analytics, .dashboard-v2-stats, .dashboard-v2-stat,
+  .dashboard-v2-analysis-grid, .dashboard-v2-sales, .dashboard-v2-status,
+  .dashboard-v2-top-services, .dashboard-route-section, .dashboard-route-grid,
+  .dashboard-shadcn-card, .dashboard-quick-grid, .dashboard-quick-link,
+  .admin-dashboard-platform, .admin-tool-link, .business-admin-page,
+  .business-admin-activity, .business-admin-platform-grid, .business-admin-platform-metric,
+  .business-admin-breakdowns, .business-admin-breakdown-group, .business-admin-breakdown-metric,
+  .dashboard-status-zero, .business-feature-access-banner, .business-dashboard-all-hidden,
+  .ui-card, .panel, .stat-card, .route-card
+) {
+  background-color: #151f30 !important;
+  color: #e8edf6 !important;
+  border-color: #2a374b !important;
+}
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  .dashboard-v2-analysis-grid, .dashboard-v2-stats, .onboarding-panel.onboarding-relaunch
+) {
+  border-color: #344158 !important;
+}
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.business-dashboard-analytics .dashboard-v2-analysis-grid > :is(
+  .dashboard-v2-sales, .dashboard-v2-status, .dashboard-v2-top-services
+) {
+  background: #151f30 !important;
+  color: #e8edf6 !important;
+}
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat {
+  background: transparent !important;
+  color: #e8edf6 !important;
+}
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  h1, h2, h3, h4, strong, .dashboard-v2-stat-number, .business-dashboard-welcome,
+  .dashboard-section-heading h2, .dashboard-quick-link, .business-admin-platform-metric
+) {
+  color: #e8edf6 !important;
+}
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail :is(
+  p, small, .muted, .dashboard-v2-stat-label, .dashboard-v2-stat-content > small,
+  .dashboard-section-heading .muted, .business-admin-activity-heading p,
+  .business-admin-breakdown-metric span
+) {
+  color: #9eabc0 !important;
+}
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.dashboard-v2-stat::after,
+html[data-theme="dark"] body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail
+.dashboard-v2-stat::before {
+  background: #344158 !important;
+}
+html[data-theme="dark"] body .ui-dialog.business-dashboard-dialog {
+  background: #151f30 !important;
+  color: #e8edf6 !important;
+  border-color: #2a374b !important;
+}
+html[data-theme="dark"] body .ui-dialog.business-dashboard-dialog :is(
+  h1, h2, h3, h4, p, span, label, strong
+) {
+  color: #e8edf6;
+}
