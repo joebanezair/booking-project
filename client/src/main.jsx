@@ -51,6 +51,7 @@ import "./dashboard-borderless.css";
 import "./dashboard-sales-overview-fix.css";
 import "./dashboard-visual-consistency.css";
 import "./dashboard-premium-refresh.css";
+import "./dashboard-premium-details.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
