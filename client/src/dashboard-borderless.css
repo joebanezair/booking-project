@@ -73,5 +73,6 @@ html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topba
   margin: 0 !important;
   font-size: 18px !important;
   line-height: 1.4 !important;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
+  color: #5d7cff !important;
 }
