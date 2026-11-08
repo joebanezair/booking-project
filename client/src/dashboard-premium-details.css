@@ -1,0 +1,612 @@
+/* Premium dashboard finishing pass — alignment, hierarchy, and restrained details.
+   Existing data, feature visibility, links, and settings preferences are untouched. */
+
+html body #root main.page-shell:has(.dashboard-content-rail) {
+  --premium-blue: #5d7cff;
+  --premium-blue-deep: #4869e6;
+  --premium-ink: #172033;
+  --premium-muted: #68758a;
+  --premium-line: #e5eaf1;
+  --premium-soft: #f7f9fd;
+  background: #ffffff !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell,
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail {
+  background: #ffffff !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell {
+  max-width: 100% !important;
+  padding: 22px 26px 32px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell > .topbar {
+  align-items: center !important;
+  gap: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-welcome {
+  color: var(--premium-blue) !important;
+  font-size: 18px !important;
+  font-weight: 550 !important;
+  letter-spacing: -.03em !important;
+  line-height: 1.25 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell > .topbar .muted {
+  max-width: 650px;
+  color: var(--premium-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-header-actions .dashboard-post-service {
+  min-height: 36px !important;
+  padding: 8px 14px !important;
+  border-radius: 10px !important;
+  background: var(--premium-blue) !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: .005em !important;
+  box-shadow: none !important;
+  transition: background-color .16s ease !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-header-actions .dashboard-post-service:hover {
+  background: var(--premium-blue-deep) !important;
+}
+
+/* Unified vertical rhythm. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail {
+  gap: 12px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-content-rail > :is(
+  .onboarding-panel,
+  .business-dashboard-analytics,
+  .dashboard-route-section,
+  .business-feature-access-banner,
+  .business-admin-page
+) {
+  margin: 0 !important;
+}
+
+/* Setup checklist: a composed header, compact progress, and balanced two-column tasks. */
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-panel.onboarding-relaunch {
+  padding: 12px !important;
+  border: 1px solid var(--premium-line) !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-hero {
+  grid-template-columns: minmax(0, 1fr) 76px !important;
+  gap: 12px !important;
+  margin-bottom: 10px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-art {
+  width: 76px !important;
+  max-width: 76px !important;
+  opacity: .82 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-copy {
+  gap: 4px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-eyebrow {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  color: var(--premium-blue) !important;
+  font-size: 10px !important;
+  font-weight: 650 !important;
+  letter-spacing: .075em !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  color: var(--premium-ink) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: -.015em !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-description {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 6px !important;
+  color: var(--premium-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-metrics {
+  min-width: 96px !important;
+  gap: 2px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-progress-label {
+  color: var(--premium-blue) !important;
+  font-size: 21px !important;
+  line-height: 1 !important;
+  font-weight: 650 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-completion-count {
+  color: var(--premium-muted) !important;
+  font-size: 10px !important;
+  white-space: nowrap !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-list {
+  gap: 10px !important;
+  padding-top: 10px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-item {
+  min-height: 56px !important;
+  padding: 10px !important;
+  gap: 10px !important;
+  border-radius: 10px !important;
+  background: #f8faff !important;
+  transition: background-color .15s ease !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-item:hover {
+  background: #f0f4ff !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-item-copy strong {
+  color: var(--premium-ink) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-item-copy small {
+  color: var(--premium-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+/* KPI strip: even units with clean dividers and carefully balanced typography. */
+html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  padding: 5px !important;
+  border: 1px solid var(--premium-line) !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat {
+  min-height: 72px !important;
+  padding: 8px 13px !important;
+  gap: 10px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat::after {
+  right: 0 !important;
+  height: 38px !important;
+  background: #e6eaf1 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-icon {
+  flex: 0 0 30px !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 10px !important;
+  background: #f0f4ff !important;
+  color: var(--premium-blue) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat.tone-green .dashboard-v2-stat-icon {
+  background: #edf9f2 !important;
+  color: #269b63 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat.tone-purple .dashboard-v2-stat-icon {
+  background: #f4efff !important;
+  color: #8660d6 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat.tone-orange .dashboard-v2-stat-icon {
+  background: #fff5e9 !important;
+  color: #c9822c !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-number {
+  font-size: 22px !important;
+  font-weight: 650 !important;
+  letter-spacing: -.04em !important;
+  line-height: 1 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-label {
+  color: #344155 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-stat-content > small {
+  color: var(--premium-muted) !important;
+  font-size: 10px !important;
+  line-height: 1.3 !important;
+}
+
+/* Analytics: balanced column proportions; the shared parent owns the border. */
+html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-analysis-grid {
+  grid-template-columns: minmax(0, 1.45fr) minmax(205px, .86fr) minmax(205px, .86fr) !important;
+  gap: 12px !important;
+  padding: 12px !important;
+  border: 1px solid #dfe5ee !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid > :is(
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services
+) {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 10px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid h3 {
+  color: var(--premium-ink) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: -.018em !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analysis-grid .dashboard-v2-muted {
+  color: var(--premium-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+}
+
+/* Sales tabs look like a single segmented control, with a restrained active state. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-sales-controls {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  padding: 3px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #f3f5f9 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-sales-controls .dashboard-chart-tab {
+  min-height: 28px !important;
+  padding: 5px 10px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: #667085 !important;
+  font-size: 11px !important;
+  font-weight: 550 !important;
+  line-height: 1.2 !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-sales-controls .dashboard-chart-tab.selected {
+  background: #ffffff !important;
+  color: var(--premium-blue-deep) !important;
+}
+
+/* The chart gets room; the empty/single-period state remains compact and informative. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-chart-area {
+  min-height: 142px !important;
+  margin-top: 10px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-single-period {
+  display: grid !important;
+  justify-items: start !important;
+  align-content: center !important;
+  gap: 5px !important;
+  min-height: 128px !important;
+  padding: 12px 14px !important;
+  border-radius: 10px !important;
+  background: #f8faff !important;
+  text-align: left !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-single-period strong {
+  color: var(--premium-ink) !important;
+  font-size: 24px !important;
+  font-weight: 650 !important;
+  letter-spacing: -.035em !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-single-period span {
+  color: #344155 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-single-period small {
+  max-width: 390px !important;
+  color: var(--premium-muted) !important;
+  font-size: 10px !important;
+  line-height: 1.4 !important;
+}
+
+/* Booking legend and top-service items use a quieter information hierarchy. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-content {
+  gap: 12px !important;
+  margin-top: 12px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-donut {
+  flex: 0 0 86px !important;
+  width: 86px !important;
+  height: 86px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-hole strong {
+  color: var(--premium-ink) !important;
+  font-size: 19px !important;
+  font-weight: 650 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-legend {
+  gap: 8px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-row {
+  gap: 6px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-name,
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-row > strong,
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-status-row > small {
+  font-size: 10px !important;
+  line-height: 1.35 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-top-list {
+  gap: 7px !important;
+  margin-top: 12px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-top-list li {
+  min-height: 48px !important;
+  padding: 7px 8px !important;
+  border-radius: 10px !important;
+  background: #f8faff !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-top-list li > div strong {
+  color: var(--premium-ink) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-top-list li > div small {
+  color: var(--premium-muted) !important;
+  font-size: 10px !important;
+}
+
+/* Quick access is a consistent, compact navigation system rather than loose cards. */
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-section-heading {
+  margin: 0 0 9px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-section-heading .eyebrow {
+  margin: 0 0 3px !important;
+  color: var(--premium-blue) !important;
+  font-size: 10px !important;
+  font-weight: 650 !important;
+  letter-spacing: .085em !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-section-heading h2 {
+  margin: 0 0 3px !important;
+  color: var(--premium-ink) !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  letter-spacing: -.02em !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-section-heading .muted {
+  margin: 0 !important;
+  color: var(--premium-muted) !important;
+  font-size: 11px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-link {
+  min-height: 70px !important;
+  padding: 10px !important;
+  gap: 3px 9px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #f8faff !important;
+  box-shadow: none !important;
+  transition: background-color .15s ease !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-quick-link:hover {
+  background: #f0f4ff !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-quick-link .route-card-icon {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 10px !important;
+  background: #edf2ff !important;
+  color: var(--premium-blue) !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-quick-title-row strong {
+  color: var(--premium-ink) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-quick-copy small {
+  color: var(--premium-muted) !important;
+  font-size: 10px !important;
+  line-height: 1.35 !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-quick-count {
+  border-radius: 10px !important;
+  background: #edf2ff !important;
+  color: var(--premium-blue-deep) !important;
+  font-size: 10px !important;
+  font-weight: 650 !important;
+}
+
+/* Admin dashboard gets the same crisp surfaces and type scale. */
+html body #root main.page-shell:has(.dashboard-content-rail) .business-admin-page .business-admin-activity {
+  padding: 14px !important;
+  border: 1px solid var(--premium-line) !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) .business-admin-platform-metric {
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #f8faff !important;
+  box-shadow: none !important;
+}
+
+html body #root main.page-shell:has(.dashboard-content-rail) :is(
+  .dashboard-v2-stats,
+  .dashboard-v2-stat,
+  .dashboard-v2-analysis-grid,
+  .dashboard-v2-sales,
+  .dashboard-v2-status,
+  .dashboard-v2-top-services,
+  .dashboard-quick-link,
+  .onboarding-panel,
+  .onboarding-launch-item,
+  .business-admin-activity,
+  .business-admin-platform-metric
+) {
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+/* Responsive layout keeps the same hierarchy without squeezing labels. */
+@media (max-width: 1120px) {
+  html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-analysis-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-analysis-grid > .dashboard-v2-sales {
+    grid-column: 1 / -1 !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell {
+    padding: 16px 14px 24px !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell > .topbar {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-analytics > .dashboard-v2-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat {
+    min-height: 68px !important;
+    padding: 8px 10px !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat:nth-child(2n)::after {
+    display: none !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-stats > .dashboard-v2-stat:nth-child(-n+2)::before {
+    content: "" !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 8px !important;
+    right: 8px !important;
+    height: 1px !important;
+    background: var(--premium-line) !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-analysis-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .business-dashboard-analytics > .dashboard-v2-analysis-grid > .dashboard-v2-sales {
+    grid-column: auto !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-hero {
+    grid-template-columns: minmax(0, 1fr) 58px !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .onboarding-relaunch .onboarding-launch-art {
+    display: block !important;
+    width: 58px !important;
+    max-width: 58px !important;
+  }
+}
+
+@media (max-width: 460px) {
+  html body #root main.page-shell:has(.dashboard-content-rail) > .content-shell {
+    padding: 14px 10px 20px !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-route-section--business .dashboard-route-grid.dashboard-quick-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-panel-head {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-sales-controls {
+    width: 100% !important;
+  }
+
+  html body #root main.page-shell:has(.dashboard-content-rail) .dashboard-v2-sales-controls .dashboard-chart-tab {
+    flex: 1 1 0 !important;
+  }
+}
