@@ -1366,18 +1366,3 @@ html:not([data-theme="dark"]) body #root .page-shell:has(.admin-dashboard-platfo
   --background: #ffffff;
 }
 
-/* Shared Admin + Business dashboard canvas: clean white background. */
-html body #root .page-shell:has(.dashboard-content-rail) > .content-shell {
-  background-color: #fff !important;
-}
-html body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail {
-  background-color: #fff !important;
-}
-
-/* Regular business dashboard: keep the canvas transparent so the selected
-   account theme supplies the page background. Admin dashboard is unchanged. */
-html body #root .page-shell--business:has(.dashboard-content-rail) > .content-shell,
-html body #root .page-shell--business:has(.dashboard-content-rail) .dashboard-content-rail {
-  background: transparent !important;
-  background-color: transparent !important;
-}
