@@ -8,7 +8,7 @@ const router = Router();
 router.use(requireAuth);
 router.use(storeImageFields(["profileImage", "coverImage"]));
 const imagePattern = /^data:image\/(jpeg|png|webp|gif);base64,[a-z0-9+/=]+$/i;
-const fields = "name username email role bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage createdAt updatedAt";
+const fields = "name username email role theme bio headline location website profileImage profileImagePositionX profileImagePositionY coverImage createdAt updatedAt";
 function slug(value){return String(value||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,30)||"user";}
 async function ensureUsername(user){if(user.username)return user;const base=slug(user.name);let candidate=base,i=1;while(await User.exists({username:candidate,_id:{$ne:user._id}}))candidate=`${base}-${i++}`;user.username=candidate;await user.save();return user;}
 function imageError(value) {
@@ -17,6 +17,25 @@ function imageError(value) {
   if (!imagePattern.test(value)) return "Profile image must be a JPEG, PNG, WebP, or GIF.";
   return Math.ceil((value.split(",")[1] || "").length * 3 / 4) > 2 * 1024 * 1024 ? "Profile image must be 2 MB or smaller." : null;
 }
+
+// Appearance belongs to the authenticated account, not the shared browser.
+router.put("/theme", async (req, res) => {
+  const theme = req.body?.theme;
+  if (theme !== "light" && theme !== "dark") {
+    return res.status(400).json({ message: "Choose a valid appearance theme." });
+  }
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id, { $set: { theme } }, { new: true, runValidators: true }
+    ).select("theme");
+    if (!user) return res.status(401).json({ message: "Please sign in again." });
+    res.set("Cache-Control", "no-store");
+    return res.json({ theme: user.theme });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Unable to save your appearance preference." });
+  }
+});
 
 // The logged-in account owns its visibility settings; these are never shared across users.
 router.get("/dashboard-preferences", async (req, res) => {
