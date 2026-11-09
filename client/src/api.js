@@ -149,6 +149,9 @@ export const api = {
   },
   profile: {
     get: () => request("/profile"),
+    saveTheme: theme => request("/profile/theme", {
+      method: "PUT", body: JSON.stringify({ theme })
+    }),
     getDashboardPreferences: () => request("/profile/dashboard-preferences", { cache: "no-store" }),
     saveDashboardPreferences: (kind, preferences) => request("/profile/dashboard-preferences", {
       method: "PUT", body: JSON.stringify({ kind, preferences })
