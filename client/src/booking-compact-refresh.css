@@ -1318,3 +1318,12 @@ html[data-theme="dark"] body #root #bookings .booking-list-panel .booking-layout
   border: 0 !important;
   box-shadow: none !important;
 }
+
+/* Keep the guest-booking count and list/grid controls transparent in both themes. */
+html body #root #bookings .booking-list-panel .booking-total-pill,
+html body #root #bookings .booking-list-panel .booking-layout-switch,
+html body #root #bookings .booking-list-panel .booking-layout-button.ui-button,
+html body #root #bookings .booking-list-panel .booking-layout-button.ui-button:hover,
+html body #root #bookings .booking-list-panel .booking-layout-button.ui-button.active {
+  background: transparent !important;
+}
