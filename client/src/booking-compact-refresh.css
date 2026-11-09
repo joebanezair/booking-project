@@ -1249,36 +1249,36 @@ html body #root #bookings .booking-list-panel .booking-queue-empty .ui-button {
 
 /* Dark theme — booking toolbar and Guest bookings stay theme-aware.
    Scoped to this page; does not alter dashboard or other booking surfaces. */
-[data-theme="dark"] html body #root #bookings .booking-view-toolbar .booking-view-tabs {
+html[data-theme="dark"] body #root #bookings .booking-view-toolbar .booking-view-tabs {
   background: transparent !important;
   border-color: var(--border, #303442) !important;
 }
-[data-theme="dark"] html body #root #bookings .booking-view-toolbar .booking-view-tabs button.ui-button {
+html[data-theme="dark"] body #root #bookings .booking-view-toolbar .booking-view-tabs button.ui-button {
   background: transparent !important;
   color: var(--muted-foreground, #a1a1aa) !important;
   border-color: transparent !important;
 }
-[data-theme="dark"] html body #root #bookings .booking-view-toolbar .booking-view-tabs button.ui-button:hover {
+html[data-theme="dark"] body #root #bookings .booking-view-toolbar .booking-view-tabs button.ui-button:hover {
   background: rgba(255, 255, 255, .06) !important;
   color: var(--foreground, #f4f4f5) !important;
 }
-[data-theme="dark"] html body #root #bookings .booking-view-toolbar .booking-view-tabs button.ui-button.active {
+html[data-theme="dark"] body #root #bookings .booking-view-toolbar .booking-view-tabs button.ui-button.active {
   background: #242733 !important;
   color: var(--foreground, #f4f4f5) !important;
   border-color: #383d4c !important;
   box-shadow: none !important;
 }
-[data-theme="dark"] html body #root #bookings .booking-view-toolbar .booking-new-button.ui-button {
+html[data-theme="dark"] body #root #bookings .booking-view-toolbar .booking-new-button.ui-button {
   background: transparent !important;
   color: var(--foreground, #f4f4f5) !important;
   border-color: var(--border, #383d4c) !important;
 }
-[data-theme="dark"] html body #root #bookings .booking-view-toolbar .booking-new-button.ui-button:hover {
+html[data-theme="dark"] body #root #bookings .booking-view-toolbar .booking-new-button.ui-button:hover {
   background: rgba(255, 255, 255, .06) !important;
   border-color: #555d70 !important;
 }
 /* Guest bookings is intentionally transparent in both themes. */
-[data-theme="dark"] html body #root #bookings .booking-list-panel.booking-compact-panel {
+html[data-theme="dark"] body #root #bookings .booking-list-panel.booking-compact-panel {
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
