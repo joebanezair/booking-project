@@ -1310,3 +1310,11 @@ html[data-theme="dark"] body #root #bookings .booking-list-panel.booking-compact
   border-color: transparent !important;
   box-shadow: none !important;
 }
+
+/* Dark theme — remove outlines from the booking count and layout toggle controls. */
+html[data-theme="dark"] body #root #bookings .booking-list-panel .booking-total-pill,
+html[data-theme="dark"] body #root #bookings .booking-list-panel .booking-layout-switch,
+html[data-theme="dark"] body #root #bookings .booking-list-panel .booking-layout-button.ui-button {
+  border: 0 !important;
+  box-shadow: none !important;
+}
