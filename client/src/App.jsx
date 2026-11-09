@@ -46,6 +46,7 @@ export default function App() {
   const [user, setUser] = useState(readUser);
   const [theme, setTheme] = useState(() => readTheme(readUser()));
   const [themeReady, setThemeReady] = useState(false);
+  const [themeOwnerId, setThemeOwnerId] = useState(null);
   const [featureClock, setFeatureClock] = useState(() => Date.now());
 
   // Load appearance from the authenticated account, never from a shared
@@ -53,16 +54,19 @@ export default function App() {
   useEffect(() => {
     if (!user) {
       setTheme("light");
+      setThemeOwnerId(null);
       setThemeReady(true);
       return undefined;
     }
     let active = true;
+    const ownerId = user._id || user.id;
     const originalToken = localStorage.getItem("booking_token");
     setThemeReady(false);
     api.profile.get().then(profile => {
       if (!active || originalToken !== localStorage.getItem("booking_token")) return;
       const savedTheme = profile?.theme === "dark" ? "dark" : "light";
       setTheme(savedTheme);
+      setThemeOwnerId(ownerId);
       setUser(current => {
         if (!current || (current._id || current.id) !== (user._id || user.id)) return current;
         const updated = { ...current, theme: savedTheme };
@@ -70,7 +74,10 @@ export default function App() {
         return updated;
       });
     }).catch(() => {
-      if (active) setTheme(readTheme(user));
+      if (active) {
+        setTheme(readTheme(user));
+        setThemeOwnerId(ownerId);
+      }
     }).finally(() => {
       if (active) setThemeReady(true);
     });
@@ -79,13 +86,13 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    if (!user || !themeReady) return;
+    if (!user || !themeReady || themeOwnerId !== (user._id || user.id)) return;
     const updated = { ...user, theme };
     localStorage.setItem("booking_user", JSON.stringify(updated));
     api.profile.saveTheme(theme).catch(() => {
       // Keep the selected theme for this session; it will retry on the next change/sign-in.
     });
-  }, [theme, themeReady, user?._id, user?.id]);
+  }, [theme, themeReady, themeOwnerId, user?._id, user?.id]);
 
   useEffect(() => {
     if (!localStorage.getItem("booking_token")) return;
