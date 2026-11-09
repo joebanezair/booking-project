@@ -38,19 +38,54 @@ function readUser() {
   try { return JSON.parse(localStorage.getItem("booking_user")); }
   catch { return null; }
 }
-function readTheme() {
-  return localStorage.getItem("booking_theme") === "dark" ? "dark" : "light";
+function readTheme(user) {
+  return user?.theme === "dark" ? "dark" : "light";
 }
 
 export default function App() {
   const [user, setUser] = useState(readUser);
-  const [theme, setTheme] = useState(readTheme);
+  const [theme, setTheme] = useState(() => readTheme(readUser()));
+  const [themeReady, setThemeReady] = useState(false);
   const [featureClock, setFeatureClock] = useState(() => Date.now());
+
+  // Load appearance from the authenticated account, never from a shared
+  // browser-wide theme key. This keeps separate users and devices independent.
+  useEffect(() => {
+    if (!user) {
+      setTheme("light");
+      setThemeReady(true);
+      return undefined;
+    }
+    let active = true;
+    const originalToken = localStorage.getItem("booking_token");
+    setThemeReady(false);
+    api.profile.get().then(profile => {
+      if (!active || originalToken !== localStorage.getItem("booking_token")) return;
+      const savedTheme = profile?.theme === "dark" ? "dark" : "light";
+      setTheme(savedTheme);
+      setUser(current => {
+        if (!current || (current._id || current.id) !== (user._id || user.id)) return current;
+        const updated = { ...current, theme: savedTheme };
+        localStorage.setItem("booking_user", JSON.stringify(updated));
+        return updated;
+      });
+    }).catch(() => {
+      if (active) setTheme(readTheme(user));
+    }).finally(() => {
+      if (active) setThemeReady(true);
+    });
+    return () => { active = false; };
+  }, [user?._id, user?.id]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem("booking_theme", theme);
-  }, [theme]);
+    if (!user || !themeReady) return;
+    const updated = { ...user, theme };
+    localStorage.setItem("booking_user", JSON.stringify(updated));
+    api.profile.saveTheme(theme).catch(() => {
+      // Keep the selected theme for this session; it will retry on the next change/sign-in.
+    });
+  }, [theme, themeReady, user?._id, user?.id]);
 
   useEffect(() => {
     if (!localStorage.getItem("booking_token")) return;
