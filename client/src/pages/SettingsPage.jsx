@@ -227,7 +227,7 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
             <span className="settings-v2-heading-icon"><FiSliders aria-hidden="true"/></span>
             <div>
               <h2>Appearance</h2>
-              <p>Choose how BookFlow looks on this device.</p>
+              <p>Choose how BookFlow looks for your account. Your preference follows you across devices.</p>
             </div>
           </div>
           <div className="settings-v2-theme-grid" role="group" aria-label="Color theme">
