@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ["business", "admin"], default: "business", index: true },
+    // Appearance is an account preference and follows the user across devices.
+    theme: { type: String, enum: ["light", "dark"], default: "light" },
     accountStatus: { type: String, enum: ["active", "paused", "disabled"], default: "active", index: true },
     termsAcceptance: {
       versionId: { type: String, trim: true, maxlength: 80, default: "" },
