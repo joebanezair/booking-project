@@ -187,7 +187,7 @@ export default function BusinessManagementPage({ user, onLogout }) {
     <div className="business-admin-page">
       <header className="business-admin-header">
         <div className="business-admin-heading">
-          <p className="eyebrow">ADMINISTRATION</p>
+          <p className="eyebrow">Administration</p>
           <h1>Business management</h1>
           <p className="muted">Manage business accounts and their activity in one place.</p>
         </div>
