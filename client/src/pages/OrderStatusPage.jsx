@@ -58,7 +58,7 @@ export default function OrderStatusPage({ orderId: orderIdProp, token: tokenProp
         </div>
       </header>
       <div className="buyer-status-intro">
-        <p className="eyebrow">MY ORDER</p>
+        <p className="eyebrow">My Order</p>
         <h1>Order status</h1>
         <p className="muted">Track your order, delivery, and courier updates in one place.</p>
       </div>
@@ -123,7 +123,7 @@ export default function OrderStatusPage({ orderId: orderIdProp, token: tokenProp
           <DialogContent className="buyer-product-dialog-content">
             <DialogHeader className="buyer-product-dialog-heading">
               <div>
-                <p className="eyebrow">ORDERED PRODUCT</p>
+                <p className="eyebrow">Ordered Product</p>
                 <DialogTitle>{selectedItem?.name}</DialogTitle>
                 <DialogDescription>Product information and images from the seller.</DialogDescription>
               </div>
