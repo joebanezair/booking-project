@@ -97,7 +97,8 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
     setSaving(true);
     try {
       const enteredWebsite = String(form.website || "").trim();
-      const normalizedWebsite = enteredWebsite && !/^https?:\\/\\//i.test(enteredWebsite)
+      const hasWebsiteScheme = enteredWebsite.toLowerCase().startsWith("http://") || enteredWebsite.toLowerCase().startsWith("https://");
+      const normalizedWebsite = enteredWebsite && !hasWebsiteScheme ? "https://" + enteredWebsite : enteredWebsite;
         ? "https://" + enteredWebsite
         : enteredWebsite;
       const updated = await api.profile.update({ ...form, website: normalizedWebsite });
