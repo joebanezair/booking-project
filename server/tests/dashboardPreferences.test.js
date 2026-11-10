@@ -12,9 +12,10 @@ test("a business dashboard can persist individual hidden widgets", () => {
 });
 
 test("an admin dashboard can persist hidden statistics", () => {
-  const saved = normalizeDashboardPreferences("adminMetrics", { revenue: false, bookings: true });
+  const saved = normalizeDashboardPreferences("adminMetrics", { revenue: false, bookings: true, workspaceTopbar: false });
   assert.equal(saved.revenue, false);
   assert.equal(saved.bookings, true);
+  assert.equal(saved.workspaceTopbar, false);
   assert.equal(Object.keys(saved).length, DASHBOARD_PREFERENCE_KEYS.adminMetrics.length);
 });
 
