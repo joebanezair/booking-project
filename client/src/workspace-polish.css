@@ -573,3 +573,19 @@ html body dialog.ui-dialog.product-create-dialog .product-create-previews .produ
   border-radius: 9px !important;
 }
 
+
+
+/* Edit Product dialog typography: title case heading, 14px title, regular text throughout. */
+html body .booking-modal-backdrop .product-edit-modal,
+html body .booking-modal-backdrop .product-edit-modal * {
+  font-weight: 400 !important;
+}
+html body .booking-modal-backdrop .product-edit-modal > .panel-title h2 {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  text-transform: capitalize;
+}
+html body .booking-modal-backdrop .product-edit-modal .product-edit-form .row-actions > button {
+  text-transform: capitalize;
+}
+
