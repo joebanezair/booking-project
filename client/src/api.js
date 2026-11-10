@@ -159,7 +159,7 @@ export const api = {
     update: async body => request("/profile", { method: "PUT", body: JSON.stringify(await uploadedFields(body, ["profileImage", "coverImage"])) })
   },
   business: {
-    mine: () => request("/businesses/mine"),
+    mine: () => request("/businesses/mine", { cache: "no-store" }),
     quickAccessCounts: () => request("/businesses/quick-access-counts"),
     update: async body => request("/businesses/mine", { method: "PUT", body: JSON.stringify(await uploadedFields(body, ["logo"])) })
   },
