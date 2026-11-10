@@ -858,3 +858,94 @@ html:not([data-theme="dark"]) body #root .bookflow-settings-v2 .settings-v2-them
     gap: 10px;
   }
 }
+
+
+/* Settings page polish: balanced type hierarchy capped at 15px. */
+html body #root .bookflow-settings-v2 .settings-v2-header h1,
+html body #root .bookflow-settings-v2 .settings-v2-section-title h2 {
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-header .eyebrow {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+}
+html body #root .bookflow-settings-v2 .settings-v2-header .muted,
+html body #root .bookflow-settings-v2 .settings-v2-section-title p {
+  font-size: 12px !important;
+  line-height: 1.55;
+}
+html body #root .bookflow-settings-v2 .settings-v2-stats-count,
+html body #root .bookflow-settings-v2 .settings-v2-autosave {
+  font-size: 11px !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-section-title h2 {
+  font-weight: 600 !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button,
+html body #root .bookflow-settings-v2 .settings-v2-customize.ui-button,
+html body #root .bookflow-settings-v2 .settings-v2-signout.ui-button {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border-radius: 10px !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button > span {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-heading-icon {
+  border-radius: 10px !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button > svg.settings-v2-theme-icon {
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button > svg.settings-v2-theme-check {
+  border-radius: 0 !important;
+}
+
+/* Keep one clear settings card with consistent 10px corners. */
+html body #root .bookflow-settings-v2 .settings-v2-panel.panel {
+  padding: 20px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-settings-v2 .settings-v2-divider {
+  margin: 20px 0;
+}
+html body #root .bookflow-settings-v2 .settings-v2-customize.ui-button,
+html body #root .bookflow-settings-v2 .settings-v2-signout.ui-button,
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button,
+html body #root .bookflow-settings-v2 .settings-v2-theme-button.ui-button.active {
+  border-radius: 10px !important;
+}
+
+/* Responsive padding remains comfortable on narrow screens. */
+@media (max-width: 560px) {
+  html body #root .bookflow-settings-v2 .settings-v2-panel.panel {
+    padding: 15px !important;
+  }
+}
+
+/* Settings customization dialogs use the same 15px type ceiling and 10px surfaces. */
+html body .ui-dialog.business-dashboard-dialog,
+html body .ui-dialog.admin-stats-dialog {
+  border-radius: 10px !important;
+}
+html body .ui-dialog.business-dashboard-dialog :is(.ui-dialog-title, .business-dashboard-widget-trigger > span:first-child),
+html body .ui-dialog.admin-stats-dialog :is(.ui-dialog-title, .admin-stats-group-heading) {
+  font-size: 15px !important;
+}
+html body .ui-dialog.business-dashboard-dialog :is(.ui-button, .business-dashboard-widget-row, .business-dashboard-widget-name > span, .business-dashboard-widget-value),
+html body .ui-dialog.admin-stats-dialog :is(.ui-button, .admin-stats-table) {
+  font-size: 13px !important;
+}
+html body .ui-dialog.business-dashboard-dialog .ui-button,
+html body .ui-dialog.admin-stats-dialog .ui-button,
+html body .ui-dialog.business-dashboard-dialog .business-dashboard-widget-row {
+  border-radius: 10px !important;
+}
