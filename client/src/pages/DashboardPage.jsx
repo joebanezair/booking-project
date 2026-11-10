@@ -239,7 +239,7 @@ export default function DashboardPage({ user, onLogout }) {
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
       <div>
-        <p className="eyebrow">{isAdmin ? "ADMIN DASHBOARD" : "BUSINESS DASHBOARD"}</p>
+        <p className="eyebrow">{isAdmin ? "Admin Dashboard" : "Business Dashboard"}</p>
         <h1>Welcome back, {user.name.split(" ")[0]}</h1>
         <p className="muted">{isAdmin ? "Manage businesses and monitor platform activity." : user.accountStatus === "paused" ? "Your account is paused. Existing data remains available while new publishing and bookings are disabled." : "Manage services, bookings, recorded sales, messages, reviews, and your public profile."}</p>
       </div>
@@ -356,7 +356,7 @@ export default function DashboardPage({ user, onLogout }) {
       {(isAdmin || sections.length > 0) && <section className={"dashboard-route-section" + (isAdmin ? " dashboard-route-section--admin" : " dashboard-route-section--business")}>
         <div className="dashboard-section-heading">
           <div>
-            <p className="eyebrow">QUICK ACCESS</p>
+            <p className="eyebrow">Quick Access</p>
             <h2>{isAdmin ? "Administration" : "Manage your business"}</h2>
             <p className="muted">{isAdmin ? "Your platform tools, all in one place." : "Jump straight to the tools you use most."}</p>
           </div>
