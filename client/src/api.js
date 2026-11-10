@@ -148,7 +148,7 @@ export const api = {
     })
   },
   profile: {
-    get: () => request("/profile"),
+    get: () => request("/profile", { cache: "no-store" }),
     saveTheme: theme => request("/profile/theme", {
       method: "PUT", body: JSON.stringify({ theme })
     }),
