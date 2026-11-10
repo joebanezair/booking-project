@@ -36,7 +36,9 @@ export default function AppLayout({ children, user, onLogout }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [globalSearch, setGlobalSearch] = useState("");
-  const businessWidgetKey = `bookflow:business-dashboard:v1:${user?._id || user?.id || user?.email}`;
+  const accountPreferenceId = user?._id || user?.id || user?.email;
+  const businessWidgetKey = `bookflow:business-dashboard:v1:${accountPreferenceId}`;
+  const adminMetricsPreferenceKey = `bookflow:admin-metrics:v1:${accountPreferenceId}`;
   const [workspaceTopbarVisible, setWorkspaceTopbarVisible] = useState(true);
   const [profile, setProfile] = useState(null);
   const [isOnline, setIsOnline] = useState(() => typeof navigator !== "undefined" ? navigator.onLine : true);
@@ -63,35 +65,44 @@ export default function AppLayout({ children, user, onLogout }) {
   }, []);
 
   useEffect(() => {
-    if (user?.role !== "business") {
+    const isBusiness = user?.role === "business";
+    const isAdmin = user?.role === "admin";
+    if (!isBusiness && !isAdmin) {
       setWorkspaceTopbarVisible(true);
       return;
     }
+
     let active = true;
     let changedDuringLoad = false;
+    const preferenceKind = isBusiness ? "businessWidgets" : "adminMetrics";
+    const preferenceKey = isBusiness ? businessWidgetKey : adminMetricsPreferenceKey;
+    const eventName = isBusiness
+      ? "bookflow:business-dashboard-preferences-updated"
+      : "bookflow:admin-dashboard-preferences-updated";
     const readPreference = value => {
       if (typeof value?.workspaceTopbar === "boolean") {
         setWorkspaceTopbarVisible(value.workspaceTopbar);
       }
     };
+
     try {
-      readPreference(JSON.parse(window.localStorage.getItem(businessWidgetKey) || "null"));
+      readPreference(JSON.parse(window.localStorage.getItem(preferenceKey) || "null"));
     } catch { /* The account preference can still be loaded from the server. */ }
 
     const onPreferencesUpdated = event => {
       changedDuringLoad = true;
       readPreference(event.detail);
     };
-    window.addEventListener("bookflow:business-dashboard-preferences-updated", onPreferencesUpdated);
+    window.addEventListener(eventName, onPreferencesUpdated);
 
     api.profile.getDashboardPreferences().then(remote => {
       if (!active || changedDuringLoad) return;
-      const stored = remote?.businessWidgets;
+      const stored = remote?.[preferenceKind];
       if (stored && typeof stored === "object" && !Array.isArray(stored)) {
         readPreference(stored);
         try {
-          const local = JSON.parse(window.localStorage.getItem(businessWidgetKey) || "{}");
-          window.localStorage.setItem(businessWidgetKey, JSON.stringify({
+          const local = JSON.parse(window.localStorage.getItem(preferenceKey) || "{}");
+          window.localStorage.setItem(preferenceKey, JSON.stringify({
             ...(local && typeof local === "object" && !Array.isArray(local) ? local : {}),
             workspaceTopbar: typeof stored.workspaceTopbar === "boolean" ? stored.workspaceTopbar : true
           }));
@@ -101,9 +112,9 @@ export default function AppLayout({ children, user, onLogout }) {
 
     return () => {
       active = false;
-      window.removeEventListener("bookflow:business-dashboard-preferences-updated", onPreferencesUpdated);
+      window.removeEventListener(eventName, onPreferencesUpdated);
     };
-  }, [user?.role, user?._id, user?.id, user?.email, businessWidgetKey]);
+  }, [user?.role, user?._id, user?.id, user?.email, businessWidgetKey, adminMetricsPreferenceKey]);
 
   useEffect(() => {
     const updateConnection = () => setIsOnline(navigator.onLine);
