@@ -1326,3 +1326,9 @@ html body #root .dashboard-route-section--admin .admin-tool-link .ui-card-descri
     transition: none !important;
   }
 }
+
+/* Keep the two outer chart tabs visibly pill-shaped at both ends. */
+html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab:first-child,
+html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab:last-child {
+  border-radius: 9999px !important;
+}
