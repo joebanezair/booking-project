@@ -1158,3 +1158,20 @@ html body #root .profile-overview-clean svg polygon {
   stroke-linecap: butt !important;
   stroke-linejoin: miter !important;
 }
+
+
+/* Remove radius from the SVG shapes themselves, not from their surrounding icon containers. */
+html body #root .profile-overview-clean svg rect,
+html body #root .profile-overview-clean svg rect * {
+  rx: 0 !important;
+  ry: 0 !important;
+  border-radius: 0 !important;
+}
+html body #root .profile-overview-clean svg path,
+html body #root .profile-overview-clean svg line,
+html body #root .profile-overview-clean svg polyline,
+html body #root .profile-overview-clean svg polygon,
+html body #root .profile-overview-clean svg rect {
+  stroke-linecap: butt !important;
+  stroke-linejoin: miter !important;
+}
