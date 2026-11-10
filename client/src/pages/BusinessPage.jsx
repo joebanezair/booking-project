@@ -50,9 +50,9 @@ export default function BusinessPage({ user, onLogout, onUserUpdate }) {
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar business-page-topbar">
       <div>
-        <p className="eyebrow">PROFILE · BUSINESS PAGE</p>
-        <h1>Business Page</h1>
-        <p className="muted">Manage your business identity, contact details and branding in one place.</p>
+        <p className="eyebrow">PROFILE · EDIT BUSINESS PROFILE</p>
+        <h1>Edit Business Profile</h1>
+        <p className="muted">Update your business identity, contact details and branding. Changes are published after you save.</p>
       </div>
       <div className="business-page-header-actions">
         <Button type="button" variant="outline" className="business-page-share-button" onClick={shareBusinessProfile}>
