@@ -816,3 +816,128 @@ html body #root .sales-channel-breakdown .sales-channel-breakdown-amount {
 html body #root .sales-records-panel .sales-records-heading h2 {
   overflow-wrap: anywhere;
 }
+
+
+/* Sales channel breakdown: flexible rounded tiles, centered content, no borders. */
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-channel-breakdown.currency-summary {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 10px 0 !important;
+  padding: 14px !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-heading.panel-title {
+  justify-content: center !important;
+  text-align: center !important;
+  margin: 0 0 12px !important;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-heading > div {
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-heading h2,
+html body #root .sales-channel-breakdown .sales-channel-breakdown-description {
+  text-align: center !important;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-grid.currency-total-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)) !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+  width: 100%;
+  min-width: 0;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-grid > .sales-channel-breakdown-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 9px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 132px !important;
+  margin: 0 !important;
+  padding: 14px 12px !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  border-radius: 12px !important;
+  background: color-mix(in srgb, var(--foreground) 4%, var(--card)) !important;
+  box-shadow: none !important;
+  text-align: center !important;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-label {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  flex: 0 1 auto !important;
+  width: 100%;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  text-align: center !important;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-label strong {
+  display: block;
+  max-width: 100%;
+  text-align: center !important;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-icon {
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 34px !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 10px !important;
+  background: color-mix(in srgb, var(--foreground) 7%, var(--card)) !important;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-details {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  flex: 0 1 auto !important;
+  width: 100%;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  text-align: center !important;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-amount {
+  display: block;
+  max-width: 100%;
+  font-size: clamp(17px, 1.8vw, 21px) !important;
+  line-height: 1.2;
+  text-align: center !important;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-count {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  max-width: 100%;
+  text-align: center !important;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 520px) {
+  html body #root .sales-channel-breakdown .sales-channel-breakdown-grid.currency-total-list {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr)) !important;
+    gap: 8px !important;
+  }
+  html body #root .sales-channel-breakdown .sales-channel-breakdown-grid > .sales-channel-breakdown-card {
+    min-height: 122px !important;
+    padding: 12px 9px !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+  }
+}
