@@ -496,9 +496,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
             <button type="button" className="sales-earnings-table-trigger-button"
               onClick={()=>setProductCostDialogOpen(true)}
               aria-haspopup="dialog" aria-controls="sales-product-cost-dialog">
-              <span className="sales-earnings-table-trigger-columns">
-                <span>Product</span><span>Units sold</span><span>Unit cost</span><span>Total cost</span><span>Sales</span>
-              </span>
+              <span className="sales-earnings-table-trigger-label">View product cost breakdown</span>
               <FiChevronRight aria-hidden="true"/>
             </button>
           </div>
