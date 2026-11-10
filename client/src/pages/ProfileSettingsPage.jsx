@@ -130,7 +130,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
     <div className={"profile-edit-shell" + (isAdmin ? " profile-edit-admin" : "")}>
       <header className="topbar profile-edit-topbar">
         <div>
-          <p className="eyebrow">{isAdmin ? "ADMINISTRATION · PUBLIC PROFILE" : "PROFILE · EDIT PROFILE"}</p>
+          <p className="eyebrow">{isAdmin ? "Administration · Public Profile" : "Profile · Edit Profile"}</p>
           <h1>{isAdmin ? "Edit admin profile" : "Edit Profile"}</h1>
           <p className="muted">{isAdmin ? "Manage the details and photos shown on your public administrator page. Your email and permissions stay private." : "Manage your profile details, cover photo and avatar."}</p>
         </div>
@@ -160,10 +160,10 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
             onReposition={showReposition}
           />
 
-      {form.profileImage && repositionOpen && <div className="photo-position-modal" role="dialog" aria-modal="true" aria-label="Reposition profile photo" onClick={() => setRepositionOpen(false)}><section className="profile-photo-editor linked-media-reposition" id="profile-photo-position" onClick={e => e.stopPropagation()}><div className="profile-position-title"><div><p className="eyebrow">EDIT IMAGE</p><h2>Reposition profile photo</h2></div><Button variant="plain" type="button" className="secondary" onClick={() => setRepositionOpen(false)}>Done</Button></div>
+      {form.profileImage && repositionOpen && <div className="photo-position-modal" role="dialog" aria-modal="true" aria-label="Reposition profile photo" onClick={() => setRepositionOpen(false)}><section className="profile-photo-editor linked-media-reposition" id="profile-photo-position" onClick={e => e.stopPropagation()}><div className="profile-position-title"><div><p className="eyebrow">Edit Image</p><h2>Reposition profile photo</h2></div><Button variant="plain" type="button" className="secondary" onClick={() => setRepositionOpen(false)}>Done</Button></div>
         <div className="profile-editor-head">
           <div className="profile-photo-drag-wrap">
-            <p className="eyebrow">PROFILE PHOTO POSITION</p>
+            <p className="eyebrow">Profile Photo Position</p>
             <div
               className="profile-photo-drag-frame"
               role="application"
