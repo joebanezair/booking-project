@@ -749,3 +749,70 @@ html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .currenc
     font-size: 15px !important;
   }
 }
+
+
+/* Sales alignment guard: keep nested content inside the shared section edges. */
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-earnings-overview,
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .analytics-grid,
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-records-panel {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+html body #root .sales-earnings-overview .sales-earnings-grid,
+html body #root .sales-earnings-overview .sales-earnings-note,
+html body #root .sales-earnings-overview .sales-earnings-table-wrap,
+html body #root .sales-records-panel .sales-records-content,
+html body #root .sales-channel-breakdown .sales-channel-breakdown-grid,
+html body #root .analytics-chart-panel .chart-shell,
+html body #root .analytics-chart-panel .service-chart {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+html body #root .sales-earnings-overview .sales-table-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-x: contain;
+}
+html body #root .analytics-chart-panel .service-bar-row,
+html body #root .analytics-chart-panel .service-bar-meta,
+html body #root .sales-records-panel .sales-records-heading > div:first-child {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+html body #root .analytics-chart-panel .service-bar-meta > strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+html body #root .analytics-chart-panel .service-bar-meta > span {
+  flex: 0 1 52%;
+  min-width: 0;
+  max-width: 58%;
+  overflow-wrap: anywhere;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-details {
+  box-sizing: border-box;
+  flex: 0 1 auto !important;
+  min-width: 0;
+  max-width: 58%;
+}
+html body #root .sales-channel-breakdown .sales-channel-breakdown-amount {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+html body #root .sales-records-panel .sales-records-heading h2 {
+  overflow-wrap: anywhere;
+}
