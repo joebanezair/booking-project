@@ -518,22 +518,13 @@ html body #root .sales-earnings-table-trigger-button:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
-html body #root .sales-earnings-table-trigger-columns {
-  display: grid;
-  grid-template-columns: minmax(150px, 1.7fr) repeat(4, minmax(78px, 1fr));
-  align-items: center;
-  gap: 10px;
+html body #root .sales-earnings-table-trigger-label {
+  display: block;
   min-width: 0;
-  overflow: hidden;
-}
-html body #root .sales-earnings-table-trigger-columns > span {
-  min-width: 0;
-  color: var(--muted-foreground);
-  font-size: 10px;
-  font-weight: 650;
-  text-transform: uppercase;
-  letter-spacing: .035em;
-  white-space: nowrap;
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
 }
 html body #root .sales-earnings-table-trigger-button > svg {
   width: 16px;
@@ -637,11 +628,6 @@ html body #root .sales-earnings-product-dialog-footer {
   dialog.ui-dialog.sales-earnings-product-dialog > .sales-earnings-product-dialog-content {
     max-height: calc(100dvh - 20px) !important;
     padding: 12px !important;
-  }
-  html body #root .sales-earnings-table-trigger-columns {
-    grid-template-columns: repeat(5, max-content);
-    gap: 12px;
-    overflow-x: auto;
   }
 }
 
