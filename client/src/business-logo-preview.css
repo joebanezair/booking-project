@@ -596,3 +596,9 @@ html body #root .business-page-share-fallback a svg { width: 14px; height: 14px;
     flex-wrap: wrap;
   }
 }
+
+
+/* Edit Business Profile: remove the radius from the outer container only. */
+html body .business-page-shell .business-profile-redesign {
+  border-radius: 0 !important;
+}
