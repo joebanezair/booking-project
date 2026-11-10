@@ -391,7 +391,7 @@ html body #root .sales-earnings-channel-card {
   margin: 0;
   padding: 9px 12px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 10px;
   background: color-mix(in srgb, var(--foreground) 4%, var(--card));
   box-shadow: none;
 }
