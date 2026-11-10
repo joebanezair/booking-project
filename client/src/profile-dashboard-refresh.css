@@ -1075,3 +1075,11 @@ html body #root .profile-overview-clean .profile-home-panel .linkedin-cover,
 html body #root .profile-overview-clean .profile-home-panel .linkedin-cover > .ui-profile-cover-image {
   border-radius: 10px 10px 0 0 !important;
 }
+
+
+/* Edit business profile hover row: square corners on the hoverable surface itself. */
+html body #root .profile-overview-clean .profile-home-actions > .profile-business-link,
+html body #root .profile-overview-clean .profile-home-actions > .profile-business-link:hover,
+html body #root .profile-overview-clean .profile-home-actions > .profile-business-link:focus-visible {
+  border-radius: 0 !important;
+}
