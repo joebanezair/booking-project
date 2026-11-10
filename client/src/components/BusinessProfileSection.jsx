@@ -93,8 +93,13 @@ export default function BusinessProfileSection({ user, onUserUpdate }) {
     setError("");
     setMessage("");
     try {
+      const enteredWebsite = String(form.website || "").trim();
+      const normalizedWebsite = enteredWebsite && !/^https?:\\/\\//i.test(enteredWebsite)
+        ? "https://" + enteredWebsite
+        : enteredWebsite;
       const saved = await api.business.update({
         ...form,
+        website: normalizedWebsite,
         leadTimeMinutes: Number(form.leadTimeMinutes),
         maxAdvanceDays: Number(form.maxAdvanceDays),
         slotIntervalMinutes: Number(form.slotIntervalMinutes)
@@ -188,7 +193,7 @@ export default function BusinessProfileSection({ user, onUserUpdate }) {
               autoComplete="email" required />
           </Label>
           <Label>Website
-            <Input type="url" value={form.website} onChange={e => patch("website", e.target.value)}
+            <Input type="text" inputMode="url" value={form.website} onChange={e => patch("website", e.target.value)}
               placeholder="https://example.com" autoComplete="url" />
           </Label>
         </div>
