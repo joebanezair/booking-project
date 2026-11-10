@@ -96,8 +96,6 @@ export default function BusinessProfileSection({ user, onUserUpdate }) {
       const enteredWebsite = String(form.website || "").trim();
       const hasWebsiteScheme = enteredWebsite.toLowerCase().startsWith("http://") || enteredWebsite.toLowerCase().startsWith("https://");
       const normalizedWebsite = enteredWebsite && !hasWebsiteScheme ? "https://" + enteredWebsite : enteredWebsite;
-        ? "https://" + enteredWebsite
-        : enteredWebsite;
       const saved = await api.business.update({
         ...form,
         website: normalizedWebsite,
