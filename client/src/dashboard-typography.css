@@ -42,3 +42,12 @@ html body:has(#root .page-shell) dialog.ui-dialog :not(svg) {
 html body:has(#root .page-shell) dialog.ui-dialog .ui-dialog-title {
   text-transform: none !important;
 }
+/* Keep dashboard table and detail labels in normal case as well. */
+html body #root .page-shell .content-shell th,
+html body #root .page-shell .content-shell .sales-table td::before,
+html body #root .page-shell .content-shell .receipt-details dt,
+html body #root .page-shell .content-shell .booking-calendar-weekdays strong,
+html body #root .page-shell .content-shell .friend-requests > strong,
+html body #root .page-shell .content-shell .people-results > strong {
+  text-transform: none !important;
+}
