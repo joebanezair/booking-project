@@ -10,7 +10,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiCalendar, FiCheckCircle, FiChevronDown, FiChevronLeft, FiChevronRight, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
-import { SalesTrendChart, SalesTrendProposalChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
+import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import OnlineOrdersOverview from "../components/OnlineOrdersOverview.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
 import { api } from "../api.js";
@@ -575,24 +575,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         </section>
       </div>
 
-      <section className="panel analytics-chart-panel sales-trend-proposal" aria-labelledby="sales-trend-proposal-heading">
-        <div className="panel-title sales-trend-proposal-heading">
-          <div>
-            <p className="eyebrow">Option 1 · Preview</p>
-            <h2 id="sales-trend-proposal-heading">Sales trend</h2>
-          </div>
-          <div className="sales-trend-proposal-filters" role="group" aria-label="Filter sales trend by period">
-            {ranges.map(([value,label]) => <Button key={value} type="button" variant="outline"
-              className={"sales-trend-proposal-filter"+(range===value?" active":"")}
-              aria-pressed={range===value} onClick={()=>selectRange(value)}>
-              {value==="month"?"Month":value==="year"?"Year":value==="7d"?"7 Days":value==="today"?"Today":value==="all"?"All":"Custom"}
-            </Button>)}
-          </div>
-        </div>
-        <SalesTrendProposalChart data={data?.trend || []} currency={primaryCurrency} />
-      </section>
-
-      {(data?.byChannel?.length > 0 || data?.byPaymentMethod?.length > 0) && <section className="panel currency-summary sales-channel-breakdown">
+      <section className=length > 0 || data?.byPaymentMethod?.length > 0) && <section className="panel currency-summary sales-channel-breakdown">
         <div className="panel-title sales-channel-breakdown-heading"><div><p className="eyebrow">Breakdown</p><h2>Sales channels & POS payments</h2><p className="muted sales-channel-breakdown-description">Revenue and transaction breakdown by source.</p></div></div>
         <div className="currency-total-list sales-channel-breakdown-grid">
           {(data?.byChannel || []).map(item => {
