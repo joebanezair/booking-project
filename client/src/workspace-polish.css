@@ -589,3 +589,58 @@ html body .booking-modal-backdrop .product-edit-modal .product-edit-form .row-ac
   text-transform: capitalize;
 }
 
+/* Edit Product form: mirror New Product rounded upload, preview, and publish surfaces. */
+html body .booking-modal-backdrop .product-edit-modal .product-edit-images-field {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 9px !important;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px !important;
+  background: var(--card);
+}
+html body .booking-modal-backdrop .product-edit-modal .product-edit-images-field input[type="file"] {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 9px 10px !important;
+  border: 1px dashed var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--muted-bg, var(--secondary)) !important;
+  color: var(--foreground);
+  font-size: 12px;
+}
+html body .booking-modal-backdrop .product-edit-modal .product-edit-previews .product-image-thumb {
+  overflow: hidden;
+  border-radius: 10px !important;
+}
+html body .booking-modal-backdrop .product-edit-modal .product-edit-previews .product-image-thumb > img,
+html body .booking-modal-backdrop .product-edit-modal .product-edit-previews .product-image-thumb .ui-image {
+  border-radius: 9px !important;
+}
+html body .booking-modal-backdrop .product-edit-modal .product-edit-publish {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 11px !important;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 13px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  background: var(--card) !important;
+}
+html body .booking-modal-backdrop .product-edit-modal .product-edit-publish > input[type="checkbox"] {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+html body .booking-modal-backdrop .product-edit-modal .product-edit-form .row-actions > button {
+  font-weight: 400 !important;
+  text-transform: capitalize;
+}
+
