@@ -140,7 +140,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   const [orderStatusNotice,setOrderStatusNotice]=useState("");
   const [receipt,setReceipt]=useState(null);
   const [historyExpanded,setHistoryExpanded]=useState(false);
-  const [productCostExpanded,setProductCostExpanded]=useState(false);
+  const [productCostDialogOpen,setProductCostDialogOpen]=useState(false);
 
   const offset = new Date().getTimezoneOffset();
 
@@ -455,17 +455,17 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         </div>
         <div className="sales-earnings-grid">
           <Card as="article" className="sales-earnings-card">
-            <span>Gross earnings</span>
+            <span className="sales-earnings-card-label"><span className="sales-earnings-card-icon"><FiTrendingUp aria-hidden="true"/></span>Gross earnings</span>
             <strong>{money(earnings.grossEarnings, primaryCurrency)}</strong>
             <small>All recorded sales before product costs</small>
           </Card>
           <Card as="article" className="sales-earnings-card">
-            <span>Total product cost</span>
+            <span className="sales-earnings-card-label"><span className="sales-earnings-card-icon"><FiPackage aria-hidden="true"/></span>Total product cost</span>
             <strong>{money(earnings.totalProductCost, primaryCurrency)}</strong>
             <small>{earnings.unknownCostUnits ? earnings.unknownCostUnits + " unit(s) have no saved cost" : "Based on saved checkout cost per unit"}</small>
           </Card>
           <Card as="article" className="sales-earnings-card">
-            <span>Net earnings</span>
+            <span className="sales-earnings-card-label"><span className="sales-earnings-card-icon"><FiCheckCircle aria-hidden="true"/></span>Net earnings</span>
             <strong>{earnings.costComplete ? money(earnings.netEarnings, primaryCurrency) : "Incomplete"}</strong>
             <small>{earnings.costComplete ? "Gross earnings less product costs" : "Add missing product costs to calculate accurately"}</small>
           </Card>
@@ -491,29 +491,55 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
           </div>
         </div>}
         <p className="sales-earnings-note">Net earnings here deducts product costs only. Service operating expenses, platform fees, taxes, and other expenses are not included.</p>
-        {earnings.productBreakdown.length > 0 && <div className="sales-earnings-table-wrap">
-          <div className="sales-table-wrap">
-            <table className="sales-table sales-earnings-table">
-              <thead>
-                <tr className="sales-earnings-table-trigger" role="button" tabIndex={0}
-                  aria-expanded={productCostExpanded} aria-controls="sales-product-cost-content"
-                  onClick={()=>setProductCostExpanded(value=>!value)}
-                  onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();setProductCostExpanded(value=>!value);}}}>
-                  <th scope="col">Product</th><th scope="col">Units sold</th><th scope="col">Unit cost</th><th scope="col">Total cost</th><th scope="col">Sales</th>
-                </tr>
-              </thead>
-              <tbody id="sales-product-cost-content" hidden={!productCostExpanded}>
-                {earnings.productBreakdown.map((item,index)=><tr key={item.sku + "-" + item.name + "-" + index}>
-                  <td data-label="Product"><strong>{item.name}</strong>{item.sku && <small className="muted">SKU: {item.sku}</small>}</td>
-                  <td data-label="Units sold">{item.quantity}</td>
-                  <td data-label="Unit cost">{item.unitCost == null ? "Unknown" : money(item.unitCost, item.currency)}</td>
-                  <td data-label="Total cost">{item.unknownCostUnits ? "Incomplete" : money(item.totalCost, item.currency)}</td>
-                  <td data-label="Sales">{money(item.revenue, item.currency)}</td>
-                </tr>)}
-              </tbody>
-            </table>
+        {earnings.productBreakdown.length > 0 && <>
+          <div className="sales-earnings-table-wrap">
+            <button type="button" className="sales-earnings-table-trigger-button"
+              onClick={()=>setProductCostDialogOpen(true)}
+              aria-haspopup="dialog" aria-controls="sales-product-cost-dialog">
+              <span className="sales-earnings-table-trigger-columns">
+                <span>Product</span><span>Units sold</span><span>Unit cost</span><span>Total cost</span><span>Sales</span>
+              </span>
+              <FiChevronRight aria-hidden="true"/>
+            </button>
           </div>
-        </div>}
+          <Dialog open={productCostDialogOpen} onOpenChange={setProductCostDialogOpen}
+            title="Product cost breakdown" className="sales-earnings-product-dialog">
+            <DialogContent id="sales-product-cost-dialog" className="sales-earnings-product-dialog-content">
+              <DialogHeader className="sales-earnings-product-dialog-header">
+                <div>
+                  <p className="eyebrow">Product Costs</p>
+                  <DialogTitle>Product cost breakdown</DialogTitle>
+                  <DialogDescription>Units sold, saved acquisition costs, and sales revenue for completed product sales.</DialogDescription>
+                </div>
+                <Button type="button" variant="outline" size="icon" aria-label="Close product cost breakdown"
+                  onClick={()=>setProductCostDialogOpen(false)}>
+                  <FiX aria-hidden="true"/>
+                </Button>
+              </DialogHeader>
+              <div className="sales-table-wrap sales-earnings-dialog-table-wrap">
+                <table className="sales-table sales-earnings-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Product</th><th scope="col">Units sold</th><th scope="col">Unit cost</th><th scope="col">Total cost</th><th scope="col">Sales</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {earnings.productBreakdown.map((item,index)=><tr key={item.sku + "-" + item.name + "-" + index}>
+                      <td data-label="Product"><strong>{item.name}</strong>{item.sku && <small className="muted">SKU: {item.sku}</small>}</td>
+                      <td data-label="Units sold">{item.quantity}</td>
+                      <td data-label="Unit cost">{item.unitCost == null ? "Unknown" : money(item.unitCost, item.currency)}</td>
+                      <td data-label="Total cost">{item.unknownCostUnits ? "Incomplete" : money(item.totalCost, item.currency)}</td>
+                      <td data-label="Sales">{money(item.revenue, item.currency)}</td>
+                    </tr>)}
+                  </tbody>
+                </table>
+              </div>
+              <DialogFooter className="sales-earnings-product-dialog-footer">
+                <Button type="button" variant="outline" onClick={()=>setProductCostDialogOpen(false)}>Close</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </>}
       </section>
 
       </>}
