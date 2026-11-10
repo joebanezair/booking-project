@@ -180,7 +180,7 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
 
   function openMetricsDialog() {
     setDraftMetrics({ ...visibleMetrics });
-    setExpandedGroup("Main statistics");
+    setExpandedGroup("Navigation");
     setPreferencesError("");
     setCustomizeOpen(true);
     setOverviewLoading(true);
@@ -201,6 +201,7 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
       setDraftMetrics(saved);
       try { window.localStorage.setItem(visibilityKey, JSON.stringify(saved)); }
       catch { /* Account settings are already saved remotely. */ }
+      window.dispatchEvent(new CustomEvent("bookflow:admin-dashboard-preferences-updated", { detail: saved }));
       setCustomizeOpen(false);
     } catch (error) {
       setPreferencesError(error.message || "Unable to save platform statistics preferences.");
@@ -308,8 +309,8 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
         className="admin-stats-dialog" title="Customize platform statistics">
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Customize statistics</DialogTitle>
-            <DialogDescription>Select which statistics appear on your Dashboard. Unchecking hides a number; it never deletes data.</DialogDescription>
+            <DialogTitle>Customize dashboard</DialogTitle>
+            <DialogDescription>Choose which statistics and workspace navigation appear on your Dashboard. Hiding an item never deletes data.</DialogDescription>
           </DialogHeader>
           <div className="admin-stats-checklist">
             {metricGroups.map(group => {
