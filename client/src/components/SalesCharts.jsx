@@ -54,3 +54,62 @@ export function ServiceSalesChart({ data = [], currency = "PHP" }) {
     </div>)}
   </div>;
 }
+
+
+/* Alternate line/area treatment for the Sales page trend-chart proposal. */
+export function SalesTrendProposalChart({ data = [], currency = "PHP" }) {
+  if (!data.length) return <div className="analytics-empty">No completed sales in this period.</div>;
+
+  const width = 760;
+  const height = 260;
+  const padding = { top: 24, right: 20, bottom: 48, left: 58 };
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+  const max = Math.max(...data.map(item => Number(item.revenue || 0)), 1);
+  const points = data.map((item, index) => ({
+    ...item,
+    x: padding.left + (data.length === 1 ? chartW / 2 : (index / (data.length - 1)) * chartW),
+    y: padding.top + chartH - (Number(item.revenue || 0) / max) * chartH
+  }));
+  const linePath = points.reduce((path, point, index) => {
+    if (index === 0) return `M ${point.x} ${point.y}`;
+    const previous = points[index - 1];
+    const midpoint = (previous.x + point.x) / 2;
+    return path + ` C ${midpoint} ${previous.y}, ${midpoint} ${point.y}, ${point.x} ${point.y}`;
+  }, "");
+  const first = points[0];
+  const last = points[points.length - 1];
+  const areaPath = `${linePath} L ${last.x} ${padding.top + chartH} L ${first.x} ${padding.top + chartH} Z`;
+  const format = value => {
+    try {
+      return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 0 }).format(value || 0);
+    } catch {
+      return `${currency} ${Number(value || 0).toLocaleString()}`;
+    }
+  };
+
+  return <div className="chart-shell sales-trend-proposal-chart-shell">
+    <svg className="sales-line-chart sales-trend-proposal-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Sales trend preview with an area line">
+      <defs>
+        <linearGradient id="sales-trend-proposal-gradient" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="var(--primary)" stopOpacity=".24" />
+          <stop offset="100%" stopColor="var(--primary)" stopOpacity=".015" />
+        </linearGradient>
+      </defs>
+      {[0, .25, .5, .75, 1].map(step => {
+        const y = padding.top + chartH - step * chartH;
+        return <g key={step}>
+          <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} className="chart-grid-line" />
+          <text x={padding.left - 8} y={y + 4} textAnchor="end" className="chart-axis-label">{format(max * step)}</text>
+        </g>;
+      })}
+      <path d={areaPath} className="sales-trend-proposal-area" />
+      <path d={linePath} className="sales-trend-proposal-line" />
+      {points.map((point, index) => <g key={point.key || `${point.label}-${index}`}>
+        <circle cx={point.x} cy={point.y} r="4.5" className="chart-point"><title>{point.label}: {format(point.revenue)}</title></circle>
+        {(data.length <= 8 || index % Math.ceil(data.length / 8) === 0 || index === data.length - 1) &&
+          <text x={point.x} y={height - 18} textAnchor="middle" className="chart-x-label">{point.label}</text>}
+      </g>)}
+    </svg>
+  </div>;
+}
