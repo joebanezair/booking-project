@@ -36,6 +36,8 @@ export default function AppLayout({ children, user, onLogout }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [globalSearch, setGlobalSearch] = useState("");
+  const businessWidgetKey = `bookflow:business-dashboard:v1:${user?._id || user?.id || user?.email}`;
+  const [workspaceTopbarVisible, setWorkspaceTopbarVisible] = useState(true);
   const [profile, setProfile] = useState(null);
   const [isOnline, setIsOnline] = useState(() => typeof navigator !== "undefined" ? navigator.onLine : true);
   const profileMenuRef = useRef(null);
@@ -59,6 +61,49 @@ export default function AppLayout({ children, user, onLogout }) {
     api.profile.get().then(result => { if (mounted) setProfile(result); }).catch(() => {});
     return () => { mounted = false; };
   }, []);
+
+  useEffect(() => {
+    if (user?.role !== "business") {
+      setWorkspaceTopbarVisible(true);
+      return;
+    }
+    let active = true;
+    let changedDuringLoad = false;
+    const readPreference = value => {
+      if (typeof value?.workspaceTopbar === "boolean") {
+        setWorkspaceTopbarVisible(value.workspaceTopbar);
+      }
+    };
+    try {
+      readPreference(JSON.parse(window.localStorage.getItem(businessWidgetKey) || "null"));
+    } catch { /* The account preference can still be loaded from the server. */ }
+
+    const onPreferencesUpdated = event => {
+      changedDuringLoad = true;
+      readPreference(event.detail);
+    };
+    window.addEventListener("bookflow:business-dashboard-preferences-updated", onPreferencesUpdated);
+
+    api.profile.getDashboardPreferences().then(remote => {
+      if (!active || changedDuringLoad) return;
+      const stored = remote?.businessWidgets;
+      if (stored && typeof stored === "object" && !Array.isArray(stored)) {
+        readPreference(stored);
+        try {
+          const local = JSON.parse(window.localStorage.getItem(businessWidgetKey) || "{}");
+          window.localStorage.setItem(businessWidgetKey, JSON.stringify({
+            ...(local && typeof local === "object" && !Array.isArray(local) ? local : {}),
+            workspaceTopbar: typeof stored.workspaceTopbar === "boolean" ? stored.workspaceTopbar : true
+          }));
+        } catch { /* The server remains the source of truth. */ }
+      }
+    }).catch(() => {});
+
+    return () => {
+      active = false;
+      window.removeEventListener("bookflow:business-dashboard-preferences-updated", onPreferencesUpdated);
+    };
+  }, [user?.role, user?._id, user?.id, user?.email, businessWidgetKey]);
 
   useEffect(() => {
     const updateConnection = () => setIsOnline(navigator.onLine);
@@ -254,7 +299,7 @@ export default function AppLayout({ children, user, onLogout }) {
     };
   }, [mobileOpen, isMobile]);
 
-  return <main className={"page-shell" + (user?.role === "business" ? " page-shell--business" : "") + (user?.role === "admin" ? " page-shell--admin" : "")}>
+  return <main className={"page-shell" + (user?.role === "business" ? " page-shell--business" : "") + (user?.role === "admin" ? " page-shell--admin" : "") + (!workspaceTopbarVisible ? " page-shell--topbar-hidden" : "")}>
     <header className="mobile-app-header">
       <Link to="/dashboard" className="sidebar-brand"><span className="brand-mark small"><FiCalendar aria-hidden="true" /></span><strong>BookFlow</strong></Link>
       <Button variant="plain" type="button" className="mobile-menu-button" aria-label="Open navigation" aria-controls="mobile-dashboard-drawer" aria-expanded={mobileOpen} onClick={toggleMobileNavigation}><FiMenu aria-hidden="true" /></Button>
@@ -307,7 +352,7 @@ export default function AppLayout({ children, user, onLogout }) {
       </div>
     </aside>
 
-    <header className="workspace-topbar" aria-label="Workspace tools">
+    {workspaceTopbarVisible && <header className="workspace-topbar" aria-label="Workspace tools">
       <form className="workspace-global-search" role="search"
         onSubmit={event => {
           event.preventDefault();
@@ -377,7 +422,7 @@ export default function AppLayout({ children, user, onLogout }) {
           </div>
         </details>
       </div>
-    </header>
+    </header>}
 
     <section className="content-shell">
       {user?.role === "business" && user?.accountStatus === "paused" && <div className="account-status-banner">Your business is temporarily paused. Existing data stays available, but publishing services and new guest bookings are disabled.</div>}
