@@ -1138,3 +1138,9 @@ html body #root .profile-overview-clean .profile-overview-heading h2 {
 html body #root .profile-overview-clean .eyebrow {
   text-transform: uppercase;
 }
+
+
+/* Section eyebrow labels such as PROFILE, QR BOOKING and YOUR ACCOUNT are key labels. */
+html body #root .profile-overview-clean .eyebrow {
+  font-weight: 600 !important;
+}
