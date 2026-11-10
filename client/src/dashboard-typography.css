@@ -96,3 +96,80 @@ html body:has(#root) dialog :not(svg):not(svg *) :is(small, .eyebrow, .caption, 
 html body:has(#root) [role="dialog"] :not(svg):not(svg *) :is(small, .eyebrow, .caption, .helper-text) {
   font-size: 13px !important;
 }
+
+/* Emphasize important interface text without making every line bold. */
+html body:has(#root) #root :not(svg):not(svg *) :is(h1, h2, h3, h4, h5, h6) {
+  font-weight: 700 !important;
+}
+
+html body:has(#root) #root :not(svg):not(svg *) :is(
+  strong,
+  b,
+  .dashboard-v2-stat-number,
+  .business-admin-platform-metric > strong,
+  .business-admin-breakdown-metric > strong,
+  .stat-card > strong,
+  .metric-value,
+  .stat-value,
+  .product-details-price
+),
+html body:has(#root) > :not(#root) :not(svg):not(svg *) :is(strong, b) {
+  font-weight: 650 !important;
+}
+
+html body:has(#root) #root :not(svg):not(svg *) :is(
+  button,
+  [role="button"],
+  .button-link,
+  .sidebar-nav-link,
+  .sidebar-nav-toggle,
+  label,
+  th,
+  dt,
+  summary,
+  legend,
+  .eyebrow,
+  .sidebar-section-label,
+  .badge,
+  .chip,
+  .status,
+  .count
+),
+html body:has(#root) > :not(#root) :not(svg):not(svg *) :is(
+  button,
+  [role="button"],
+  label,
+  th,
+  summary,
+  legend,
+  .badge,
+  .chip,
+  .status
+) {
+  font-weight: 600 !important;
+}
+
+/* Helper text and descriptions stay regular so the bold hierarchy remains
+   useful and the compact 13–15px typography does not feel visually crowded. */
+html body:has(#root) #root :not(svg):not(svg *) :is(
+  .muted,
+  .helper-text,
+  .field-hint,
+  .caption,
+  .meta,
+  .metadata,
+  .timestamp,
+  .notification-item p,
+  .message-bubble p
+),
+html body:has(#root) > :not(#root) :not(svg):not(svg *) :is(
+  .muted,
+  .helper-text,
+  .field-hint,
+  .caption,
+  .meta,
+  .metadata,
+  .timestamp
+) {
+  font-weight: 400 !important;
+}
