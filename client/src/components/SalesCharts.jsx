@@ -61,8 +61,8 @@ export function SalesTrendProposalChart({ data = [], currency = "PHP" }) {
   if (!data.length) return <div className="analytics-empty">No completed sales in this period.</div>;
 
   const width = 760;
-  const height = 260;
-  const padding = { top: 24, right: 20, bottom: 48, left: 58 };
+  const height = 190;
+  const padding = { top: 16, right: 18, bottom: 36, left: 54 };
   const chartW = width - padding.left - padding.right;
   const chartH = height - padding.top - padding.bottom;
   const max = Math.max(...data.map(item => Number(item.revenue || 0)), 1);
