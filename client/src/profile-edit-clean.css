@@ -515,20 +515,7 @@ html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-position-t
   line-height: 1.4 !important;
 }
 
-/* Preserve the existing smaller sizes for helper text and fields; cap controls at 15px. */
-html body #root .profile-edit-shell:not(.profile-edit-admin) :is(
-  .ui-button,
-  .ui-label,
-  .ui-input,
-  .ui-textarea,
-  .profile-edit-char-count,
-  .profile-edit-save-footer,
-  .profile-media-menu,
-  .profile-edit-feedback,
-  .linkedin-cover-placeholder
-) {
-  font-size: min(15px, 1em) !important;
-}
+/* Existing helper text and field sizes remain in place; headings above are capped at 15px. */
 
 /* The outer form card, inputs, buttons, menus and nested editor cards share 10px corners. */
 html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-edit-clean,
