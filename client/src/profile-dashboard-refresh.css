@@ -1083,3 +1083,17 @@ html body #root .profile-overview-clean .profile-home-actions > .profile-busines
 html body #root .profile-overview-clean .profile-home-actions > .profile-business-link:focus-visible {
   border-radius: 0 !important;
 }
+
+
+/* My Activity rows: square hover surfaces, with a 10px radius only at Booking History's bottom edge. */
+html body #root .profile-overview-clean .profile-customer-activity-panel > a.profile-customer-activity-link,
+html body #root .profile-overview-clean .profile-customer-activity-panel > a.profile-customer-activity-link:hover,
+html body #root .profile-overview-clean .profile-customer-activity-panel > a.profile-customer-activity-link:focus-visible {
+  border-radius: 0 !important;
+}
+
+html body #root .profile-overview-clean .profile-customer-activity-panel > a.profile-customer-activity-link:last-of-type,
+html body #root .profile-overview-clean .profile-customer-activity-panel > a.profile-customer-activity-link:last-of-type:hover,
+html body #root .profile-overview-clean .profile-customer-activity-panel > a.profile-customer-activity-link:last-of-type:focus-visible {
+  border-radius: 0 0 10px 10px !important;
+}
