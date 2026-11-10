@@ -215,7 +215,7 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
     <div className="bookflow-settings-v2">
       <header className="topbar settings-v2-header">
         <div>
-          <p className="eyebrow">PREFERENCES</p>
+          <p className="eyebrow">Preferences</p>
           <h1>Settings</h1>
           <p className="muted">Manage your preferences and account.</p>
         </div>
