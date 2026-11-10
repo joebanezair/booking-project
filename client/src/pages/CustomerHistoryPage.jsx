@@ -233,7 +233,7 @@ export default function CustomerHistoryPage({ user, onLogout, kind = "purchases"
       <header className="customer-history-header">
         <div>
           <Link className="customer-history-back" to="/dashboard/profile"><FiArrowLeft/> Back to Profile</Link>
-          <p className="eyebrow">MY ACTIVITY</p>
+          <p className="eyebrow">My Activity</p>
           <h1>{title}</h1>
           <p className="muted">{subtitle}</p>
         </div>
