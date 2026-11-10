@@ -1035,3 +1035,9 @@ html body #root .profile-overview-clean .profile-customer-activity-panel * {
 html body #root .profile-overview-clean .linkedin-avatar-button {
   border: 4px solid var(--card) !important;
 }
+
+
+/* QR Booking container: square top corners, retain 10px bottom corners. */
+html body #root .profile-overview-clean .profile-home-panel > .booking-qr-card {
+  border-radius: 0 0 10px 10px !important;
+}
