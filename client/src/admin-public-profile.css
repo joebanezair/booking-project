@@ -187,10 +187,10 @@ html body #root .bookflow-discover-v2 .admin-results .admin-result .admin-result
   max-width: 100%;
   margin-bottom: 5px;
   padding: 4px 10px;
-  border: 1px solid #bbf7d0;
-  border-radius: 999px;
-  background: #dcfce7;
-  color: #166534;
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.10);
+  color: #15803d;
   font-size: 10px;
   font-weight: 600;
   line-height: 1.35;
