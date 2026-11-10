@@ -10141,3 +10141,16 @@ dialog.ui-dialog.buyer-order-status-dialog .buyer-status-modal-card .buyer-order
 .page-shell--business > .sidebar {
   background: #040317;
 }
+
+
+/* Product Details dialog: round the product image viewport and clip its image/fallback to 10px. */
+html body #root .public-page.bookflow-storefront .search-product-details .public-gallery-stage {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+html body #root .public-page.bookflow-storefront .search-product-details .public-gallery-stage > .ui-image,
+html body #root .public-page.bookflow-storefront .search-product-details .public-gallery-stage > img,
+html body #root .public-page.bookflow-storefront .search-product-details .public-gallery-stage > .ui-image-fallback,
+html body #root .public-page.bookflow-storefront .search-product-details .public-gallery-stage > .product-image-placeholder {
+  border-radius: 10px !important;
+}
