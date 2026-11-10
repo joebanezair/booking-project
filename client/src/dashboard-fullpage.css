@@ -960,10 +960,11 @@ html body #root .dashboard-v2-analytics .dashboard-v2-stat-icon {
   border-radius: 10px !important;
 }
 html body #root .dashboard-v2-analytics .dashboard-v2-sales-controls {
-  border-radius: 10px !important;
+  border-radius: 9999px !important;
+  overflow: hidden !important;
 }
 html body #root .dashboard-v2-analytics .dashboard-v2-sales-controls .dashboard-chart-tab {
-  border-radius: 8px !important;
+  border-radius: 9999px !important;
 }
 html body #root .dashboard-v2-analytics .dashboard-v2-chart-area {
   margin-top: 11px !important;
