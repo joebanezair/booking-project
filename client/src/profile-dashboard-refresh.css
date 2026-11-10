@@ -1041,3 +1041,10 @@ html body #root .profile-overview-clean .linkedin-avatar-button {
 html body #root .profile-overview-clean .profile-home-panel > .booking-qr-card {
   border-radius: 0 0 10px 10px !important;
 }
+
+
+/* Icons stay square; their surrounding icon containers keep the 10px radius. */
+html body #root .profile-overview-clean svg,
+html body #root .profile-overview-clean svg * {
+  border-radius: 0 !important;
+}
