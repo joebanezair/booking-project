@@ -8,7 +8,7 @@ export const DASHBOARD_PREFERENCE_KEYS = Object.freeze({
   adminMetrics: Object.freeze([
     "revenue", "products", "services", "bookings", "reviews", "rating",
     "pending", "confirmed", "inProgress", "completed", "cancelled", "noShow",
-    "serviceSales", "posSales", "onlineOrders", "completedOrders"
+    "serviceSales", "posSales", "onlineOrders", "completedOrders", "workspaceTopbar"
   ])
 });
 
