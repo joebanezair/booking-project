@@ -999,3 +999,26 @@ html body #root .profile-overview-clean .linkedin-cover,
 html body #root .profile-overview-clean .linkedin-cover > .ui-profile-cover-image {
   border-radius: 10px 10px 0 0 !important;
 }
+
+
+/* Final specificity guard: these rules override older component-level radius and weight declarations. */
+html body #root .profile-overview-clean *:not(.linkedin-avatar-wrap):not(.linkedin-avatar-button):not(.profile-avatar) {
+  border-radius: 10px !important;
+  font-weight: 400 !important;
+}
+
+/* Enforce the 15px heading ceiling over the page's earlier responsive heading rules. */
+html body #root .profile-overview-clean .profile-page-topbar h1,
+html body #root .profile-overview-clean .profile-overview-heading h2,
+html body #root .profile-overview-clean .booking-qr-card h2,
+html body #root .profile-overview-clean .profile-customer-activity-heading h2 {
+  font-size: 15px !important;
+  font-weight: 400 !important;
+}
+
+/* Circular crop is reserved for the profile avatar itself and its frame. */
+html body #root .profile-overview-clean .linkedin-avatar-wrap,
+html body #root .profile-overview-clean .linkedin-avatar-button,
+html body #root .profile-overview-clean .linkedin-avatar-button > .profile-avatar {
+  border-radius: 50% !important;
+}
