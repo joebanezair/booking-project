@@ -19,7 +19,7 @@ function worksheet(name, rows) {
   return `<Worksheet ss:Name="${escapeXml(name)}"><Table>${rows.join("")}</Table></Worksheet>`;
 }
 
-export function exportSalesSpreadsheet(data, rangeLabel = "Sales") {
+export function exportSalesSpreadsheet(data, rangeLabel = "Sales", earnings = {}) {
   const summaryRows = [
     row([cell("Metric"), cell("Value")]),
     row([cell("Period"), cell(rangeLabel)]),
@@ -28,7 +28,12 @@ export function exportSalesSpreadsheet(data, rangeLabel = "Sales") {
     row([cell("Transactions"), cell(data.summary?.transactionCount || 0, "Number")]),
     row([cell("Completed Services"), cell(data.summary?.completedServices || 0, "Number")]),
     row([cell("Average Sale"), cell(data.summary?.averageSale || 0, "Number")]),
-    row([cell("Services Sold"), cell(data.summary?.servicesSold || 0, "Number")])
+    row([cell("Services Sold"), cell(data.summary?.servicesSold || 0, "Number")]),
+    row([cell("Gross Earnings"), cell(earnings.grossEarnings ?? data.summary?.totalSales ?? 0, "Number")]),
+    row([cell("Total Product Cost"), cell(earnings.totalProductCost || 0, "Number")]),
+    row([cell("Net Earnings"), earnings.netEarnings == null ? cell("Incomplete") : cell(earnings.netEarnings, "Number")]),
+    row([cell("Unknown Cost Units"), cell(earnings.unknownCostUnits || 0, "Number")]),
+    row([cell("Net Earnings Basis"), cell("Gross earnings less product costs only; excludes operating expenses, fees and taxes")])
   ];
 
   for (const total of data.totalsByCurrency || []) {
@@ -74,6 +79,36 @@ export function exportSalesSpreadsheet(data, rangeLabel = "Sales") {
     ]));
   }
 
+  const productCostRows = [
+    row(["Source","Reference","Completed Date","Product","SKU","Quantity","Unit Price","Sales Revenue","Unit Cost","Total Product Cost","Gross Product Earnings","Cost Status","Currency"].map(value => cell(value)))
+  ];
+  for (const sale of data.productRecords || []) {
+    for (const item of sale.items || []) {
+      const quantity = Number(item.quantity || 0);
+      const unitCost = item.unitCost == null ? null : Number(item.unitCost);
+      const lineCost = item.lineCost == null
+        ? (unitCost != null && Number.isFinite(unitCost) && unitCost >= 0 ? unitCost * quantity : null)
+        : Number(item.lineCost);
+      const hasCost = lineCost != null && Number.isFinite(lineCost) && lineCost >= 0;
+      const revenue = item.lineTotal == null ? Number(item.unitPrice || 0) * quantity : Number(item.lineTotal || 0);
+      productCostRows.push(row([
+        cell(sale.source === "pos" ? "POS" : "Online Order"),
+        cell(sale.reference),
+        cell(new Date(sale.completedAt).toLocaleString()),
+        cell(item.name),
+        cell(item.sku),
+        cell(quantity, "Number"),
+        cell(item.unitPrice || 0, "Number"),
+        cell(revenue, "Number"),
+        hasCost ? cell(lineCost / Math.max(quantity, 1), "Number") : cell("Unknown"),
+        hasCost ? cell(lineCost, "Number") : cell("Unknown"),
+        hasCost ? cell(revenue - lineCost, "Number") : cell("Unknown"),
+        cell(hasCost ? "Recorded" : "Missing cost snapshot"),
+        cell(sale.currency || data.primaryCurrency || "PHP")
+      ]));
+    }
+  }
+
   const trendRows = [
     row([cell("Period"), cell("Completed Sales"), cell("Revenue"), cell("Currency")])
   ];
@@ -109,6 +144,7 @@ export function exportSalesSpreadsheet(data, rangeLabel = "Sales") {
  ${worksheet("Service Sales", recordRows)}
  ${worksheet("Sales Trend", trendRows)}
  ${worksheet("Service Performance", serviceRows)}
+ ${worksheet("Product Cost Details", productCostRows)}
 </Workbook>`;
 
   const blob = new Blob([xml], { type: "application/vnd.ms-excel;charset=utf-8" });
