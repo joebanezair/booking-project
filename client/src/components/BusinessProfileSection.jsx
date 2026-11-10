@@ -31,11 +31,20 @@ function businessLogoUrl(value) {
   return logo;
 }
 
-function completeForm(data) {
+function completeForm(data, user) {
+  const source = data && typeof data === "object" ? data : {};
+  const storedEmail = String(source.email || "").trim();
+  const accountEmail = String(user?.email || "").trim();
+  const validEmail = value => /^\S+@\S+\.\S+$/.test(value);
+  const email = validEmail(storedEmail) ? storedEmail : (validEmail(accountEmail) ? accountEmail : storedEmail);
+  const name = String(source.name || user?.business?.name || user?.name || "").trim();
+
   return {
-    ...empty, ...data,
-    workingHours: data.workingHours?.length ? data.workingHours : defaultHours(),
-    blackoutDates: data.blackoutDates || []
+    ...empty, ...source,
+    name,
+    email,
+    workingHours: source.workingHours?.length ? source.workingHours : defaultHours(),
+    blackoutDates: source.blackoutDates || []
   };
 }
 
@@ -51,7 +60,7 @@ export default function BusinessProfileSection({ user, onUserUpdate }) {
 
   useEffect(() => {
     api.business.mine().then(data => {
-      setForm(completeForm(data));
+      setForm(completeForm(data, user));
       const next = {
         ...user, business: { id: data._id, name: data.name, category: data.category }
       };
@@ -88,7 +97,7 @@ export default function BusinessProfileSection({ user, onUserUpdate }) {
         maxAdvanceDays: Number(form.maxAdvanceDays),
         slotIntervalMinutes: Number(form.slotIntervalMinutes)
       });
-      setForm(completeForm(saved));
+      setForm(completeForm(saved, user));
       const next = {
         ...user, business: { id: saved._id, name: saved.name, category: saved.category }
       };
