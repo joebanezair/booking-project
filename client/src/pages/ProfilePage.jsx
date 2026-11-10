@@ -82,7 +82,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
     <div className="profile-page-redesign profile-overview-clean">
     <header className="topbar profile-page-topbar">
       <div><p className="eyebrow">{isAdmin ? "ADMIN PROFILE" : "PROFILE"}</p><h1>Your profile</h1><p className="muted">{isAdmin ? "Manage the public profile that everyone can view." : "Manage how your account appears across BookFlow."}</p></div>
-      <Button asChild variant="default"><Link  className="primary-button button-link icon-link" to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit profile</Link></Button>
+      <Button asChild variant="default"><Link  className="primary-button button-link icon-link" to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit personal profile</Link></Button>
     </header>
 
     {!profile ? <p>{error || "Loading..."}</p> : <>
@@ -116,8 +116,8 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
           <Link className="profile-business-link" to="/dashboard/profile/business">
             <span className="profile-business-icon" aria-hidden="true"><FiBriefcase /></span>
             <span className="profile-business-copy">
-              <strong>Business Page</strong>
-              <small>Manage your business name, description, contact information and logo.</small>
+              <strong>Edit business profile</strong>
+              <small>Update your business name, description, contact information and logo.</small>
             </span>
             <FiArrowUpRight className="profile-business-arrow" aria-hidden="true" />
           </Link>
