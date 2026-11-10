@@ -578,7 +578,7 @@ html body #root .dashboard-v2-analysis-grid > :is(.dashboard-v2-sales, .dashboar
   flex: 0 0 auto;
   background: var(--secondary);
   padding: 3px;
-  border-radius: 10px;
+  border-radius: 9999px;
 }
 html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab {
   flex: 0 0 auto !important;
@@ -587,7 +587,7 @@ html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-ta
   height: 29px !important;
   padding: 5px 9px !important;
   border: 0 !important;
-  border-radius: 8px !important;
+  border-radius: 9999px !important;
   background: transparent !important;
   color: var(--muted-foreground) !important;
   font-size: 11px;
