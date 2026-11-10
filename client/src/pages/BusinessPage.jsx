@@ -50,7 +50,7 @@ export default function BusinessPage({ user, onLogout, onUserUpdate }) {
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar business-page-topbar">
       <div>
-        <p className="eyebrow">PROFILE · EDIT BUSINESS PROFILE</p>
+        <p className="eyebrow">Profile · Edit Business Profile</p>
         <h1>Edit Business Profile</h1>
         <p className="muted">Update your business identity, contact details and branding. Changes are published after you save.</p>
       </div>
