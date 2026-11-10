@@ -37,7 +37,9 @@ function completeForm(data, user) {
   const accountEmail = String(user?.email || "").trim();
   const validEmail = value => /^\S+@\S+\.\S+$/.test(value);
   const email = validEmail(storedEmail) ? storedEmail : (validEmail(accountEmail) ? accountEmail : storedEmail);
-  const name = String(source.name || user?.business?.name || user?.name || "").trim();
+  const storedName = String(source.name || "").trim();
+  const fallbackName = String(user?.business?.name || user?.name || "").trim();
+  const name = storedName || fallbackName;
 
   return {
     ...empty, ...source,
