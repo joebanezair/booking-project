@@ -37,7 +37,7 @@
   flex: 0 0 172px;
   overflow: hidden;
   /* Match the product card's rounded top corners before opening the seller profile. */
-  border-radius: var(--radius) var(--radius) 0 0;
+  border-radius: 10px 10px 0 0;
   background: var(--muted-bg);
   border-bottom: 1px solid var(--border);
 }
