@@ -11,8 +11,8 @@ html body #root .page-shell > .content-shell:has(> .analytics-topbar) {
 }
 html body #root .page-shell > .content-shell:has(> .analytics-topbar) > :is(
   .analytics-topbar, .pos-history-panel, .analytics-controls,
-  .sales-stats-grid, .analytics-grid, .currency-summary,
-  .sales-records-panel
+  .sales-stats-grid, .sales-earnings-overview, .analytics-grid,
+  .currency-summary, .sales-records-panel
 ) {
   box-sizing: border-box;
   width: 100% !important;
