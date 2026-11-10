@@ -352,7 +352,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         <p className="muted">Manage orders from your public storefront, update fulfillment, and share buyer tracking links.</p>
       </div>
     </header> : <>
-    <header className="topbar analytics-topbar">
+    <header className="topbar analytics-topbar sales-page-header">
       <div>
         <p className="eyebrow">Sales & Analytics</p>
         <h1>Sales & analytics</h1>
