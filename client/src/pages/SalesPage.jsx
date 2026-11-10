@@ -340,6 +340,53 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     record.source === "online"
       ? total + (record.items || []).reduce((units, item) => units + (Number(item.quantity) || 0), 0)
       : total, 0);
+  // Use immutable checkout/completion cost snapshots. Missing legacy costs remain unknown.
+  const earnings = useMemo(() => {
+    const productBreakdown = new Map();
+    let totalProductCost = 0;
+    let unknownCostUnits = 0;
+    for (const record of data?.productRecords || []) {
+      const currency = record.currency || primaryCurrency;
+      if (currency !== primaryCurrency) continue;
+      for (const item of record.items || []) {
+        const quantity = Math.max(0, Number(item.quantity) || 0);
+        if (!quantity) continue;
+        const unitCost = item.unitCost == null ? null : Number(item.unitCost);
+        const lineCost = item.lineCost == null
+          ? (unitCost != null && Number.isFinite(unitCost) && unitCost >= 0 ? unitCost * quantity : null)
+          : Number(item.lineCost);
+        const hasCost = lineCost != null && Number.isFinite(lineCost) && lineCost >= 0;
+        const unitPrice = Number(item.unitPrice || 0);
+        const revenue = item.lineTotal == null ? unitPrice * quantity : Number(item.lineTotal || 0);
+        const key = [item.sku || "", item.name || "Product", currency, hasCost ? (lineCost / quantity).toFixed(4) : "unknown"].join("|");
+        const current = productBreakdown.get(key) || {
+          name: item.name || "Product", sku: item.sku || "", currency, quantity: 0,
+          revenue: 0, unitCost: hasCost ? lineCost / quantity : null,
+          totalCost: 0, unknownCostUnits: 0
+        };
+        current.quantity += quantity;
+        current.revenue += revenue;
+        if (hasCost) {
+          current.totalCost += lineCost;
+          totalProductCost += lineCost;
+        } else {
+          current.unknownCostUnits += quantity;
+          unknownCostUnits += quantity;
+        }
+        productBreakdown.set(key, current);
+      }
+    }
+    const grossEarnings = Number(summary.totalSales || 0);
+    const costComplete = unknownCostUnits === 0;
+    return {
+      grossEarnings,
+      totalProductCost: Math.round((totalProductCost + Number.EPSILON) * 100) / 100,
+      netEarnings: costComplete ? Math.round((grossEarnings - totalProductCost + Number.EPSILON) * 100) / 100 : null,
+      unknownCostUnits,
+      costComplete,
+      productBreakdown: [...productBreakdown.values()].sort((a, b) => b.totalCost - a.totalCost || a.name.localeCompare(b.name))
+    };
+  }, [data, primaryCurrency, summary.totalSales]);
   const unifiedTransactions = useMemo(() => [
     ...(data?.records || []).map(record => ({ id:`service-${record.id}`, type:"Service Sale", completedAt:record.completedAt, customer:record.guestName || "Guest", description:record.serviceName, amount:record.saleAmount, currency:record.currency || primaryCurrency, reference:`SALE-${String(record.id).slice(-8).toUpperCase()}`, status:record.status || "recorded" })),
     ...(data?.productRecords || []).map(record => ({ id:`${record.source}-${record.id}`, type:record.source === "pos" ? "POS Sale" : "Online Product Sale", completedAt:record.completedAt, customer:record.customerName || "Customer", description:record.description, items:record.items || [], amount:record.amount, currency:record.currency || primaryCurrency, reference:record.reference, status:record.status || "recorded" }))
@@ -358,7 +405,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         <h1>Sales & analytics</h1>
         <p className="muted">Track revenue, transactions, and sales performance.</p>
       </div>
-      <Button variant="outline" className="sales-export-button icon-link" type="button" aria-label="Export spreadsheet" disabled={!unifiedTransactions.length} onClick={() => exportSalesSpreadsheet(data, rangeLabel)}>
+      <Button variant="outline" className="sales-export-button icon-link" type="button" aria-label="Export spreadsheet" disabled={!unifiedTransactions.length} onClick={() => exportSalesSpreadsheet(data, rangeLabel, earnings)}>
         <FiDownload aria-hidden="true"/>Export
       </Button>
     </header>
@@ -392,6 +439,48 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         <Card as="article" className="stat-card analytics-stat"><span><FiPackage aria-hidden="true"/>Products sold online</span><strong>{onlineProductsSold}</strong><small>Units from completed online orders</small></Card>
       </section>
 
+      <section className="panel sales-earnings-overview" aria-labelledby="sales-earnings-heading">
+        <div className="panel-title sales-earnings-heading">
+          <div>
+            <p className="eyebrow">Earnings Breakdown</p>
+            <h2 id="sales-earnings-heading">Gross earnings & product costs</h2>
+            <p className="muted">Completed service and product revenue, less recorded product acquisition costs.</p>
+          </div>
+        </div>
+        <div className="sales-earnings-grid">
+          <Card as="article" className="sales-earnings-card">
+            <span>Gross earnings</span>
+            <strong>{money(earnings.grossEarnings, primaryCurrency)}</strong>
+            <small>All recorded sales before product costs</small>
+          </Card>
+          <Card as="article" className="sales-earnings-card">
+            <span>Total product cost</span>
+            <strong>{money(earnings.totalProductCost, primaryCurrency)}</strong>
+            <small>{earnings.unknownCostUnits ? earnings.unknownCostUnits + " unit(s) have no saved cost" : "Based on saved checkout cost per unit"}</small>
+          </Card>
+          <Card as="article" className="sales-earnings-card">
+            <span>Net earnings</span>
+            <strong>{earnings.costComplete ? money(earnings.netEarnings, primaryCurrency) : "Incomplete"}</strong>
+            <small>{earnings.costComplete ? "Gross earnings less product costs" : "Add missing product costs to calculate accurately"}</small>
+          </Card>
+        </div>
+        <p className="sales-earnings-note">Net earnings here deducts product costs only. Service operating expenses, platform fees, taxes, and other expenses are not included.</p>
+        {earnings.productBreakdown.length > 0 && <div className="sales-earnings-table-wrap">
+          <h3>Product cost per item</h3>
+          <div className="sales-table-wrap">
+            <table className="sales-table sales-earnings-table">
+              <thead><tr><th scope="col">Product</th><th scope="col">Units sold</th><th scope="col">Unit cost</th><th scope="col">Total cost</th><th scope="col">Sales</th></tr></thead>
+              <tbody>{earnings.productBreakdown.map((item,index)=><tr key={item.sku + "-" + item.name + "-" + index}>
+                <td data-label="Product"><strong>{item.name}</strong>{item.sku && <small className="muted">SKU: {item.sku}</small>}</td>
+                <td data-label="Units sold">{item.quantity}</td>
+                <td data-label="Unit cost">{item.unitCost == null ? "Unknown" : money(item.unitCost, item.currency)}</td>
+                <td data-label="Total cost">{item.unknownCostUnits ? "Incomplete" : money(item.totalCost, item.currency)}</td>
+                <td data-label="Sales">{money(item.revenue, item.currency)}</td>
+              </tr>)}</tbody>
+            </table>
+          </div>
+        </div>}
+      </section>
 
       </>}
     </>}
