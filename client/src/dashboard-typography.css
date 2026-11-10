@@ -35,3 +35,16 @@ html body #root .page-shell .content-shell .dashboard-route-section .dashboard-s
 html body #root .page-shell .content-shell .dashboard-v2-analysis-grid > .ui-card > h3 {
   text-transform: capitalize;
 }
+
+/* Native dialogs are portaled to <body>, so apply the same ceiling there. */
+html body:has(#root .page-shell) dialog.ui-dialog,
+html body:has(#root .page-shell) dialog.ui-dialog :not(svg) {
+  font-size: min(15px, 1em) !important;
+}
+html body:has(#root .page-shell) dialog.ui-dialog .ui-dialog-title {
+  text-transform: capitalize;
+}
+/* Keep owner-entered product names in confirmation titles unchanged. */
+html body:has(#root .page-shell) dialog.ui-dialog .ui-product-confirm .panel-title h2 {
+  text-transform: none;
+}
