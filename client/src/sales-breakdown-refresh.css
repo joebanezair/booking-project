@@ -658,3 +658,29 @@ html body #root .sales-earnings-dialog-table-wrap,
 html body #root .sales-earnings-dialog-table-wrap .sales-earnings-table {
   border-radius: var(--sales-earnings-component-radius) !important;
 }
+
+
+/* Product cost table: round the actual table corners, not only its wrapper. */
+html body #root .sales-earnings-dialog-table-wrap {
+  overflow: auto !important;
+  border-radius: 10px !important;
+  clip-path: inset(0 round 10px);
+}
+html body #root .sales-earnings-dialog-table-wrap .sales-earnings-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+html body #root .sales-earnings-dialog-table-wrap .sales-earnings-table thead tr:first-child th:first-child {
+  border-top-left-radius: 10px;
+}
+html body #root .sales-earnings-dialog-table-wrap .sales-earnings-table thead tr:first-child th:last-child {
+  border-top-right-radius: 10px;
+}
+html body #root .sales-earnings-dialog-table-wrap .sales-earnings-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+html body #root .sales-earnings-dialog-table-wrap .sales-earnings-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
