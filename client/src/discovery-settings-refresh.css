@@ -949,3 +949,83 @@ html body .ui-dialog.admin-stats-dialog .ui-button,
 html body .ui-dialog.business-dashboard-dialog .business-dashboard-widget-row {
   border-radius: 10px !important;
 }
+
+
+/* Find Services / public discovery: balanced text hierarchy, maximum 15px. */
+html body #root main.public-page.bookflow-discover-v2 .browse-top .brand-row strong,
+html body #root main.public-page.bookflow-discover-v2 .browse-top .button-link,
+html body #root .bookflow-discover-content .section-heading h1,
+html body #root .bookflow-discover-content .discovery-tabs button.ui-button,
+html body #root .bookflow-discover-content .bookflow-business-view-toggle button.ui-button,
+html body #root .bookflow-discover-content .public-content-card-body h3,
+html body #root .bookflow-discover-content .public-content-card-body > strong,
+html body #root .bookflow-discover-content .search-product-body h3,
+html body #root .bookflow-discover-content .search-product-price,
+html body #root .bookflow-discover-content .user-result .business-card-info h2,
+html body #root .bookflow-discover-content .admin-result .business-card-info h2,
+html body #root .bookflow-discover-content .admin-result-role {
+  font-size: 15px !important;
+  line-height: 1.4;
+}
+html body #root .bookflow-discover-content .section-heading h1,
+html body #root .bookflow-discover-content .public-content-card-body h3,
+html body #root .bookflow-discover-content .search-product-body h3,
+html body #root .bookflow-discover-content .user-result .business-card-info h2,
+html body #root .bookflow-discover-content .admin-result .business-card-info h2 {
+  font-weight: 600 !important;
+}
+html body #root .bookflow-discover-content .section-heading .muted,
+html body #root .bookflow-discover-content .ui-search-results-status,
+html body #root .bookflow-discover-content .public-content-card-body p,
+html body #root .bookflow-discover-content .rating-summary,
+html body #root .bookflow-discover-content .search-product-body p,
+html body #root .bookflow-discover-content .search-product-meta,
+html body #root .bookflow-discover-content .user-result .business-card-info > :is(strong, p, small),
+html body #root .bookflow-discover-content .user-result .business-rating,
+html body #root .bookflow-discover-content .admin-result .business-card-info > :is(strong, p, small),
+html body #root .bookflow-discover-content .bookflow-discover-filter :is(input, select),
+html body #root .bookflow-discover-content .ui-discovery-query input {
+  font-size: 12px !important;
+  line-height: 1.5;
+}
+html body #root .bookflow-discover-content .discovery-tab-count {
+  font-size: 11px !important;
+}
+html body #root .bookflow-discover-content .rating-summary strong,
+html body #root .bookflow-discover-content .search-product-price {
+  font-weight: 600 !important;
+}
+
+/* Keep every discovery control and result card on the shared 10px radius system. */
+html body #root main.public-page.bookflow-discover-v2 .browse-top .button-link,
+html body #root .bookflow-discover-v2 .ui-discovery-query,
+html body #root .bookflow-discover-v2 .bookflow-discover-filter,
+html body #root .bookflow-discover-v2 .bookflow-discover-filter > :is(input.ui-input, select.ui-select),
+html body #root .bookflow-discover-v2 .ui-discovery-query > input.ui-search-input,
+html body #root .bookflow-discover-v2 .ui-discovery-query button.ui-search-clear,
+html body #root .bookflow-discover-v2 .discovery-tabs button.ui-button,
+html body #root .bookflow-discover-v2 .bookflow-business-view-toggle button.ui-button,
+html body #root .bookflow-discover-content .load-more,
+html body #root .bookflow-discover-content .search-service-grid .public-content-card,
+html body #root .bookflow-discover-content .search-product-grid .search-product-card,
+html body #root .bookflow-discover-content .user-results .user-result,
+html body #root .bookflow-discover-content .admin-results .admin-result {
+  border-radius: 10px !important;
+}
+
+/* Preserve circular profile avatars; only surrounding business/admin cards use 10px corners. */
+html body #root .bookflow-discover-content .user-result .profile-avatar,
+html body #root .bookflow-discover-content .admin-result .profile-avatar,
+html body #root .bookflow-discover-content .user-result .business-card-avatar,
+html body #root .bookflow-discover-content .admin-result .business-card-avatar {
+  border-radius: 50% !important;
+}
+
+/* Load-more action follows the same control typography and corner radius. */
+html body #root .bookflow-discover-content .load-more.ui-button {
+  min-height: 38px;
+  padding: 8px 14px;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border-radius: 10px !important;
+}
