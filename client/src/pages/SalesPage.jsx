@@ -467,26 +467,26 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         </div>
         <p className="sales-earnings-note">Net earnings here deducts product costs only. Service operating expenses, platform fees, taxes, and other expenses are not included.</p>
         {earnings.productBreakdown.length > 0 && <div className="sales-earnings-table-wrap">
-          <Button type="button" variant="outline" className="sales-earnings-breakdown-toggle"
-            onClick={()=>setProductCostExpanded(value=>!value)}
-            aria-expanded={productCostExpanded}
-            aria-controls="sales-product-cost-content">
-            <span>Product cost per item</span>
-            <FiChevronDown aria-hidden="true"/>
-          </Button>
-          <div id="sales-product-cost-content" className="sales-earnings-table-content" hidden={!productCostExpanded}>
-            <div className="sales-table-wrap">
-              <table className="sales-table sales-earnings-table">
-                <thead><tr><th scope="col">Product</th><th scope="col">Units sold</th><th scope="col">Unit cost</th><th scope="col">Total cost</th><th scope="col">Sales</th></tr></thead>
-                <tbody>{earnings.productBreakdown.map((item,index)=><tr key={item.sku + "-" + item.name + "-" + index}>
+          <div className="sales-table-wrap">
+            <table className="sales-table sales-earnings-table">
+              <thead>
+                <tr className="sales-earnings-table-trigger" role="button" tabIndex={0}
+                  aria-expanded={productCostExpanded} aria-controls="sales-product-cost-content"
+                  onClick={()=>setProductCostExpanded(value=>!value)}
+                  onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();setProductCostExpanded(value=>!value);}}}>
+                  <th scope="col">Product</th><th scope="col">Units sold</th><th scope="col">Unit cost</th><th scope="col">Total cost</th><th scope="col">Sales</th>
+                </tr>
+              </thead>
+              <tbody id="sales-product-cost-content" hidden={!productCostExpanded}>
+                {earnings.productBreakdown.map((item,index)=><tr key={item.sku + "-" + item.name + "-" + index}>
                   <td data-label="Product"><strong>{item.name}</strong>{item.sku && <small className="muted">SKU: {item.sku}</small>}</td>
                   <td data-label="Units sold">{item.quantity}</td>
                   <td data-label="Unit cost">{item.unitCost == null ? "Unknown" : money(item.unitCost, item.currency)}</td>
                   <td data-label="Total cost">{item.unknownCostUnits ? "Incomplete" : money(item.totalCost, item.currency)}</td>
                   <td data-label="Sales">{money(item.revenue, item.currency)}</td>
-                </tr>)}</tbody>
-              </table>
-            </div>
+                </tr>)}
+              </tbody>
+            </table>
           </div>
         </div>}
       </section>
