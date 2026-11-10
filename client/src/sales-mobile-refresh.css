@@ -559,10 +559,10 @@ html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-a
   background: transparent !important;
   box-shadow: none !important;
 }
-/* Four KPIs read as one aligned scorecard separated by slender rules. */
+/* Five KPIs read as one aligned scorecard separated by slender rules. */
 html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-kpis.sales-stats-grid.stats-grid {
   display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   gap: 0 !important;
   overflow: hidden;
   margin-bottom: 10px !important;
@@ -717,11 +717,15 @@ html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .currenc
     min-height: 100px !important;
     padding: 12px !important;
   }
-  html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-kpis > .analytics-stat.stat-card:nth-child(2) {
+  html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-kpis > .analytics-stat.stat-card:nth-child(2n),
+  html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-kpis > .analytics-stat.stat-card:last-child {
     border-right: 0 !important;
   }
-  html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-kpis > .analytics-stat.stat-card:nth-child(-n+2) {
+  html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-kpis > .analytics-stat.stat-card:nth-child(-n+4) {
     border-bottom: 1px solid var(--border) !important;
+  }
+  html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-kpis > .analytics-stat.stat-card:last-child {
+    grid-column: 1 / -1;
   }
   html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .analytics-grid > .analytics-chart-panel.panel {
     padding: 14px !important;
