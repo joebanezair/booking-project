@@ -10,7 +10,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiCalendar, FiCheckCircle, FiChevronDown, FiChevronLeft, FiChevronRight, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
-import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
+import { SalesTrendChart, SalesTrendProposalChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import OnlineOrdersOverview from "../components/OnlineOrdersOverview.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
 import { api } from "../api.js";
@@ -574,6 +574,17 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
           <ServiceSalesChart data={data?.byService || []} currency={primaryCurrency} />
         </section>
       </div>
+
+      <section className="panel analytics-chart-panel sales-trend-proposal" aria-labelledby="sales-trend-proposal-heading">
+        <div className="panel-title sales-trend-proposal-heading">
+          <div>
+            <p className="eyebrow">Option 1 · Preview</p>
+            <h2 id="sales-trend-proposal-heading">Sales trend</h2>
+            <p className="muted">A smooth line with a subtle area fill to make revenue movement easier to follow.</p>
+          </div>
+        </div>
+        <SalesTrendProposalChart data={data?.trend || []} currency={primaryCurrency} />
+      </section>
 
       {(data?.byChannel?.length > 0 || data?.byPaymentMethod?.length > 0) && <section className="panel currency-summary sales-channel-breakdown">
         <div className="panel-title sales-channel-breakdown-heading"><div><p className="eyebrow">Breakdown</p><h2>Sales channels & POS payments</h2><p className="muted sales-channel-breakdown-description">Revenue and transaction breakdown by source.</p></div></div>
