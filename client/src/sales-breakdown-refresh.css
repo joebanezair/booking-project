@@ -198,3 +198,31 @@ html body #root .sales-earnings-table td small {
   html body #root .sales-earnings-grid { grid-template-columns: 1fr; }
   html body #root .sales-earnings-overview { padding: 12px !important; }
 }
+
+
+/* Add breathing room below the earnings summary and make its item detail collapsible. */
+html body #root .sales-earnings-overview {
+  margin-bottom: 10px !important;
+}
+html body #root .sales-earnings-breakdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 36px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 650;
+}
+html body #root .sales-earnings-breakdown-toggle svg {
+  flex: 0 0 auto;
+  transition: transform 160ms ease;
+}
+html body #root .sales-earnings-breakdown-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+html body #root .sales-earnings-table-content[hidden] {
+  display: none !important;
+}
