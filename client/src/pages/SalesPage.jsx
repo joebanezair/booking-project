@@ -575,7 +575,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         </section>
       </div>
 
-      <section className=length > 0 || data?.byPaymentMethod?.length > 0) && <section className="panel currency-summary sales-channel-breakdown">
+      {(data?.byChannel?.length > 0 || data?.byPaymentMethod?.length > 0) && <section className="panel currency-summary sales-channel-breakdown">
         <div className="panel-title sales-channel-breakdown-heading"><div><p className="eyebrow">Breakdown</p><h2>Sales channels & POS payments</h2><p className="muted sales-channel-breakdown-description">Revenue and transaction breakdown by source.</p></div></div>
         <div className="currency-total-list sales-channel-breakdown-grid">
           {(data?.byChannel || []).map(item => {
