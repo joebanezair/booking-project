@@ -226,3 +226,33 @@ html body #root .sales-earnings-breakdown-toggle[aria-expanded="true"] svg {
 html body #root .sales-earnings-table-content[hidden] {
   display: none !important;
 }
+
+
+/* Keep the collapsible product-cost control in the same content column as the cards and table. */
+html body #root .sales-earnings-overview .sales-earnings-table-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+  overflow: visible;
+}
+html body #root .sales-earnings-overview .sales-earnings-breakdown-toggle {
+  position: relative;
+  inset: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 auto;
+  align-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0 !important;
+  transform: none;
+}
+html body #root .sales-earnings-overview .sales-earnings-table-content,
+html body #root .sales-earnings-overview .sales-earnings-table-content > .sales-table-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
