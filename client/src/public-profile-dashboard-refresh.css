@@ -518,3 +518,57 @@ html body #root .bookflow-storefront.public-business-profile .storefront-footer-
     transition: none !important;
   }
 }
+
+/* App-wide cover photo sizing: increase existing cover heights by 40% while
+   preserving each surface's responsive layout and image cropping. */
+html body #root .profile-overview-clean .linkedin-cover {
+  height: 305px !important; /* 218px × 1.4 */
+}
+html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
+  height: 238px !important; /* 170px × 1.4 */
+  min-height: 238px !important;
+}
+html body #root main.public-page.bookflow-discover-v2 .browse-section .user-results:not(.list-view) .business-card-cover,
+html body #root .bookflow-discover-v2 .admin-results .admin-result .business-card-cover {
+  height: 126px !important; /* 90px × 1.4 */
+  min-height: 126px !important;
+  flex-basis: 126px !important;
+}
+html body #root .admin-public-page .admin-public-hero > .admin-public-cover {
+  height: 364px !important; /* 260px × 1.4 */
+  min-height: 364px !important;
+}
+@media (max-width: 960px) {
+  html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
+    height: 203px !important; /* 145px × 1.4 */
+    min-height: 203px !important;
+  }
+}
+@media (max-width: 800px) {
+  html body #root .profile-overview-clean .linkedin-cover {
+    height: 277px !important; /* 198px × 1.4 */
+  }
+}
+@media (max-width: 700px) {
+  html body #root .admin-public-page .admin-public-hero > .admin-public-cover {
+    height: 238px !important; /* 170px × 1.4 */
+    min-height: 238px !important;
+  }
+}
+@media (max-width: 560px) {
+  html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
+    height: 154px !important; /* 110px × 1.4 */
+    min-height: 154px !important;
+  }
+}
+@media (max-width: 520px) {
+  html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
+    height: 182px !important; /* 130px × 1.4 */
+    min-height: 182px !important;
+  }
+}
+@media (max-width: 480px) {
+  html body #root .profile-overview-clean .linkedin-cover {
+    height: 232px !important; /* 166px × 1.4 */
+  }
+}
