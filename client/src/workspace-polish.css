@@ -312,6 +312,13 @@ html body .product-create-dialog .product-create-actions > button.ui-button {
   font-size: 12px;
 }
 
+/* New Product is rendered through a body-level portal, so scope this rule
+   to the dialog itself (not #root). Make every visible text element regular. */
+html body dialog.ui-dialog.product-create-dialog .product-create-dialog-content,
+html body dialog.ui-dialog.product-create-dialog .product-create-dialog-content * {
+  font-weight: 400 !important;
+}
+
 /* SIDEBAR: compact, readable navigation with a distinct but restrained active
  * state. The existing desktop hover-to-expand and mobile drawer still work. */
 html body .page-shell > aside.sidebar {
