@@ -1097,3 +1097,44 @@ html body #root .profile-overview-clean .profile-customer-activity-panel > a.pro
 html body #root .profile-overview-clean .profile-customer-activity-panel > a.profile-customer-activity-link:last-of-type:focus-visible {
   border-radius: 0 0 10px 10px !important;
 }
+
+
+/* Profile page: icon artwork is square; only its surrounding icon tile keeps 10px corners. */
+html body #root .profile-overview-clean svg,
+html body #root .profile-overview-clean svg *,
+html body #root .profile-overview-clean .profile-customer-activity-icon svg {
+  border-radius: 0 !important;
+}
+
+/* Restore emphasis for important profile labels and actions, without bolding descriptions. */
+html body #root .profile-overview-clean .profile-page-topbar h1,
+html body #root .profile-overview-clean .profile-page-topbar > .ui-button,
+html body #root .profile-overview-clean .profile-overview-heading h2,
+html body #root .profile-overview-clean .profile-overview-heading .ui-button,
+html body #root .profile-overview-clean .profile-business-copy strong,
+html body #root .profile-overview-clean .booking-qr-card h2,
+html body #root .profile-overview-clean .booking-qr-actions > .ui-button,
+html body #root .profile-overview-clean .profile-customer-activity-heading h2,
+html body #root .profile-overview-clean .profile-customer-activity-link strong {
+  font-weight: 600 !important;
+}
+
+/* Capitalize key titles and action labels while leaving explanatory copy unchanged. */
+html body #root .profile-overview-clean .profile-page-topbar h1,
+html body #root .profile-overview-clean .profile-page-topbar > .ui-button,
+html body #root .profile-overview-clean .profile-overview-heading .ui-button,
+html body #root .profile-overview-clean .profile-business-copy strong,
+html body #root .profile-overview-clean .booking-qr-card h2,
+html body #root .profile-overview-clean .booking-qr-actions > .ui-button,
+html body #root .profile-overview-clean .profile-customer-activity-heading h2,
+html body #root .profile-overview-clean .profile-customer-activity-link strong {
+  text-transform: capitalize;
+}
+
+/* Keep the profile name in its intended name casing and keep eyebrow labels uppercase. */
+html body #root .profile-overview-clean .profile-overview-heading h2 {
+  text-transform: none;
+}
+html body #root .profile-overview-clean .eyebrow {
+  text-transform: uppercase;
+}
