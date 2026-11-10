@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { FiShield } from "react-icons/fi";
 import { Card } from "./ui/card.jsx";
+import { Badge } from "./ui/badge.jsx";
 import { Image } from "./ui/image.jsx";
 import ProfileAvatar from "./ProfileAvatar.jsx";
 
@@ -17,7 +18,7 @@ export default function AdminSearchCard({ profile }) {
     </div>
     <div className="business-card-avatar"><ProfileAvatar profile={profile} size="lg" /></div>
     <div className="business-card-info">
-      <span className="admin-result-role"><FiShield aria-hidden="true" /> Administrator</span>
+      <Badge variant="success" className="admin-result-role"><FiShield aria-hidden="true" /> Administrator</Badge>
       <h2>{profile.name}</h2>
       <strong>@{profile.username}</strong>
       {profile.headline && <p>{profile.headline}</p>}
