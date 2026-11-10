@@ -12,7 +12,8 @@ export const metricGroups = [
   { title: "Sales and orders", metrics: [
     ["serviceSales", "Service sales recorded"], ["posSales", "POS sales recorded"],
     ["onlineOrders", "Online orders"], ["completedOrders", "Orders completed"]
-  ] }
+  ] },
+  { title: "Navigation", metrics: [["workspaceTopbar", "Top navigation bar (search and profile)"]] }
 ];
 
 export const defaultVisibleMetrics = () =>
