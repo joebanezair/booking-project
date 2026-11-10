@@ -126,3 +126,75 @@ html body #root .sales-channel-breakdown .sales-channel-breakdown-count svg {
     font-size: 18px;
   }
 }
+
+
+/* Gross earnings and product acquisition cost summary. */
+html body #root .sales-earnings-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px !important;
+}
+html body #root .sales-earnings-heading { margin: 0 !important; }
+html body #root .sales-earnings-heading h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 700;
+}
+html body #root .sales-earnings-heading .muted {
+  margin: 0;
+  font-size: 12px;
+}
+html body #root .sales-earnings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+html body #root .sales-earnings-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  padding: 12px !important;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  box-shadow: none;
+}
+html body #root .sales-earnings-card > span {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 600;
+}
+html body #root .sales-earnings-card > strong {
+  color: var(--foreground);
+  font-size: clamp(17px, 2vw, 23px);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+html body #root .sales-earnings-card > small,
+html body #root .sales-earnings-note {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.45;
+}
+html body #root .sales-earnings-note { margin: 0; }
+html body #root .sales-earnings-table-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+html body #root .sales-earnings-table-wrap h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+}
+html body #root .sales-earnings-table td small {
+  display: block;
+  margin-top: 2px;
+}
+@media (max-width: 720px) {
+  html body #root .sales-earnings-grid { grid-template-columns: 1fr; }
+  html body #root .sales-earnings-overview { padding: 12px !important; }
+}
