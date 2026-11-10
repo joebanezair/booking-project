@@ -26,3 +26,12 @@ html body #root .page-shell .dashboard-content-rail .dashboard-route-section .da
 html body #root .page-shell .dashboard-content-rail .dashboard-v2-stat-label {
   text-transform: capitalize;
 }
+
+/* Consistent title casing for common page and panel headings. */
+html body #root .page-shell .content-shell .panel-title :is(h2, h3),
+html body #root .page-shell .content-shell .settings-v2-section-title h2,
+html body #root .page-shell .content-shell .business-admin-activity-heading h2,
+html body #root .page-shell .content-shell .dashboard-route-section .dashboard-section-heading h2,
+html body #root .page-shell .content-shell .dashboard-v2-analysis-grid > .ui-card > h3 {
+  text-transform: capitalize;
+}
