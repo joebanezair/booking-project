@@ -186,3 +186,50 @@ html:not([data-theme="dark"]) body #root .page-shell:has(.dashboard-content-rail
 html:not([data-theme="dark"]) body #root .page-shell:has(.dashboard-content-rail) {
   --background: #ffffff;
 }
+
+
+/* POS, Online Orders and Services workspace pages: pure white canvas in light mode only. */
+html:not([data-theme="dark"]) body:has(:is(
+  .products-pos-header,
+  .online-orders-page-header,
+  .services-management-header,
+  .services-editor-page-header,
+  .booking-page-header,
+  .booking-detail-page-header
+)),
+html:not([data-theme="dark"]) body:has(:is(
+  .products-pos-header,
+  .online-orders-page-header,
+  .services-management-header,
+  .services-editor-page-header,
+  .booking-page-header,
+  .booking-detail-page-header
+)) #root,
+html:not([data-theme="dark"]) body:has(:is(
+  .products-pos-header,
+  .online-orders-page-header,
+  .services-management-header,
+  .services-editor-page-header,
+  .booking-page-header,
+  .booking-detail-page-header
+)) #root .page-shell,
+html:not([data-theme="dark"]) body:has(:is(
+  .products-pos-header,
+  .online-orders-page-header,
+  .services-management-header,
+  .services-editor-page-header,
+  .booking-page-header,
+  .booking-detail-page-header
+)) #root .page-shell > .content-shell {
+  background-color: #ffffff !important;
+}
+html:not([data-theme="dark"]) body:has(:is(
+  .products-pos-header,
+  .online-orders-page-header,
+  .services-management-header,
+  .services-editor-page-header,
+  .booking-page-header,
+  .booking-detail-page-header
+)) #root .page-shell {
+  --background: #ffffff;
+}
