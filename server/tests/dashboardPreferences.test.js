@@ -3,9 +3,9 @@ import assert from "node:assert/strict";
 import { DASHBOARD_PREFERENCE_KEYS, normalizeDashboardPreferences } from "../lib/dashboardPreferences.js";
 
 test("a business dashboard can persist individual hidden widgets", () => {
-  const saved = normalizeDashboardPreferences("businessWidgets", { statSales: false, quickServices: true, salesChartNavigation: false });
+  const saved = normalizeDashboardPreferences("businessWidgets", { statSales: false, quickServices: true, workspaceTopbar: false });
   assert.equal(saved.statSales, false);
-  assert.equal(saved.salesChartNavigation, false);
+  assert.equal(saved.workspaceTopbar, false);
   assert.equal(saved.quickServices, true);
   assert.equal(saved.setupChecklist, true);
   assert.equal(Object.keys(saved).length, DASHBOARD_PREFERENCE_KEYS.businessWidgets.length);
