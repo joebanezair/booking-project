@@ -602,3 +602,60 @@ html body #root .business-page-share-fallback a svg { width: 14px; height: 14px;
 html body .business-page-shell .business-profile-redesign {
   border-radius: 0 !important;
 }
+
+
+/* Edit Business Profile refinement: 15px maximum typography with a balanced hierarchy. */
+html body #root .business-page-topbar h1,
+html body #root .business-profile-redesign .business-identity-text h2,
+html body #root .business-profile-redesign .business-section-heading h3 {
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+}
+
+/* Keep descriptions and helper text comfortably smaller than headings. */
+html body #root .business-page-topbar .muted,
+html body #root .business-profile-redesign .business-identity-text p,
+html body #root .business-profile-redesign .business-section-heading p,
+html body #root .business-profile-redesign .business-fields-grid .ui-label,
+html body #root .business-profile-redesign .business-fields-grid :is(.ui-input, .ui-textarea),
+html body #root .business-profile-redesign .business-logo-upload-copy strong,
+html body #root .business-profile-redesign .business-logo-upload-copy p,
+html body #root .business-profile-redesign .business-schedule-note p,
+html body #root .business-profile-redesign .business-save-footer p,
+html body #root .business-profile-redesign .business-upload-button,
+html body #root .business-profile-redesign .business-remove-logo,
+html body #root .business-profile-redesign .business-save-button,
+html body #root .business-page-topbar .business-page-header-actions > .ui-button {
+  font-size: 13px !important;
+}
+
+/* Fine print remains subordinate. */
+html body #root .business-profile-redesign .business-field-hint,
+html body #root .business-profile-redesign .business-logo-upload-copy .business-logo-subtle {
+  font-size: 11px !important;
+}
+
+/* Consistent 10px corners on the page card, inputs, buttons, and nested surfaces. */
+html body #root .business-page-shell .business-profile-redesign,
+html body #root .business-profile-redesign .business-logo-image,
+html body #root .business-profile-redesign .business-logo-image > .ui-image,
+html body #root .business-profile-redesign .business-brand-preview,
+html body #root .business-profile-redesign .business-brand-preview > .ui-image,
+html body #root .business-profile-redesign .business-account-status,
+html body #root .business-profile-redesign .business-account-warning,
+html body #root .business-profile-redesign .business-fields-grid :is(.ui-input, .ui-textarea),
+html body #root .business-profile-redesign .business-upload-button,
+html body #root .business-profile-redesign .business-remove-logo,
+html body #root .business-profile-redesign .business-logo-error,
+html body #root .business-profile-redesign .business-feedback :is(.success, .error),
+html body #root .business-profile-redesign .business-save-button,
+html body #root .business-page-topbar .business-page-header-actions > .ui-button,
+html body #root .business-page-share-feedback,
+html body #root .business-page-share-fallback input {
+  border-radius: 10px !important;
+}
+
+/* Restore a 10px radius on the main Business Profile card (overriding the earlier square-corner rule). */
+html body .business-page-shell .business-profile-redesign {
+  border-radius: 10px !important;
+}
