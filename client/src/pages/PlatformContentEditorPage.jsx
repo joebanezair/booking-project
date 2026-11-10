@@ -279,7 +279,7 @@ export default function PlatformContentEditorPage({ user, onLogout }) {
       <header className="platform-editor-topbar">
         <div>
           <Link to="/dashboard/profile" className="platform-editor-back"><FiArrowLeft/> Back to profile</Link>
-          <p className="eyebrow">ADMIN PROFILE / PLATFORM CONTENT</p>
+          <p className="eyebrow">Admin Profile / Platform Content</p>
           <h1>Page builder</h1>
           <p className="muted">Build and publish the public Terms & Conditions and FAQ pages.</p>
         </div>
