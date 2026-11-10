@@ -51,7 +51,7 @@ export default function OrdersPage({user,onLogout}) {
   }
 
   return <AppLayout user={user} onLogout={onLogout}>
-    <header className="topbar"><div><p className="eyebrow">ORDERS</p><h1>Product orders</h1>
+    <header className="topbar"><div><p className="eyebrow">Orders</p><h1>Product orders</h1>
       <p className="muted">Manage fulfillment and record manual payments without a payment API.</p></div></header>
     <div className="order-filter-row" role="group" aria-label="Filter orders by status">
       {["all",...statuses].map(s=><Button type="button" variant={filter===s?"secondary":"ghost"}
