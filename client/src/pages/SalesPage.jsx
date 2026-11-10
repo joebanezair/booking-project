@@ -580,7 +580,13 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
           <div>
             <p className="eyebrow">Option 1 · Preview</p>
             <h2 id="sales-trend-proposal-heading">Sales trend</h2>
-            <p className="muted">A smooth line with a subtle area fill to make revenue movement easier to follow.</p>
+          </div>
+          <div className="sales-trend-proposal-filters" role="group" aria-label="Filter sales trend by period">
+            {ranges.map(([value,label]) => <Button key={value} type="button" variant="outline"
+              className={"sales-trend-proposal-filter"+(range===value?" active":"")}
+              aria-pressed={range===value} onClick={()=>selectRange(value)}>
+              {value==="month"?"Month":value==="year"?"Year":value==="7d"?"7 Days":value==="today"?"Today":value==="all"?"All":"Custom"}
+            </Button>)}
           </div>
         </div>
         <SalesTrendProposalChart data={data?.trend || []} currency={primaryCurrency} />
