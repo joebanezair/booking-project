@@ -96,7 +96,11 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
     setMessage("");
     setSaving(true);
     try {
-      const updated = await api.profile.update(form);
+      const enteredWebsite = String(form.website || "").trim();
+      const normalizedWebsite = enteredWebsite && !/^https?:\\/\\//i.test(enteredWebsite)
+        ? "https://" + enteredWebsite
+        : enteredWebsite;
+      const updated = await api.profile.update({ ...form, website: normalizedWebsite });
       setForm(updated);
       const next = { ...user, name: updated.name, username: updated.username };
       localStorage.setItem("booking_user", JSON.stringify(next));
@@ -200,7 +204,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
                 <Input value={form.name || ""} onChange={e => setForm({ ...form, name: e.target.value })} autoComplete="name" required />
               </Label>
               <Label>Username
-                <Input value={form.username || ""} onChange={e => setForm({ ...form, username: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })} autoComplete="username" required />
+                <Input value={form.username || ""} onChange={e => setForm({ ...form, username: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 40) })} autoComplete="username" minLength="3" maxLength="40" required />
               </Label>
               <Label className="profile-edit-wide-field">Bio
                 <Textarea rows="4" maxLength="1000" value={form.bio || ""} onChange={e => setForm({ ...form, bio: e.target.value })} placeholder="A short introduction about yourself" />
@@ -213,7 +217,7 @@ export default function ProfileSettingsPage({ user, onLogout, onUserUpdate }) {
                 <Input value={form.location || ""} onChange={e => setForm({ ...form, location: e.target.value })} placeholder="City or location" />
               </Label>
               {!isAdmin && <Label className="profile-edit-wide-field">Website
-                <Input type="url" placeholder="https://example.com" value={form.website || ""} onChange={e => setForm({ ...form, website: e.target.value })} />
+                <Input type="text" inputMode="url" placeholder="https://example.com" value={form.website || ""} onChange={e => setForm({ ...form, website: e.target.value })} />
               </Label>}
             </div>
           </section>
