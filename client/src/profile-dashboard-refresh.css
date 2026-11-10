@@ -1060,3 +1060,18 @@ html body #root .profile-overview-clean .profile-home-panel .linkedin-cover,
 html body #root .profile-overview-clean .profile-home-panel .linkedin-cover > .ui-profile-cover-image {
   border-radius: 0 !important;
 }
+
+
+/* QR Booking: the bordered QR section itself has square top corners. */
+html body #root .profile-overview-clean .profile-home-panel > .booking-qr-card.booking-qr-card {
+  border-radius: 0 0 10px 10px !important;
+}
+
+/* Keep the main Profile card at the standard 10px radius; the QR section is the exception. */
+html body #root .profile-overview-clean .profile-home-panel {
+  border-radius: 10px !important;
+}
+html body #root .profile-overview-clean .profile-home-panel .linkedin-cover,
+html body #root .profile-overview-clean .profile-home-panel .linkedin-cover > .ui-profile-cover-image {
+  border-radius: 10px 10px 0 0 !important;
+}
