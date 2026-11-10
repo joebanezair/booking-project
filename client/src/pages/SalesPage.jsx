@@ -140,7 +140,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
   const [orderStatusNotice,setOrderStatusNotice]=useState("");
   const [receipt,setReceipt]=useState(null);
   const [historyExpanded,setHistoryExpanded]=useState(false);
-  const [productCostExpanded,setProductCostExpanded]=useState(true);
+  const [productCostExpanded,setProductCostExpanded]=useState(false);
 
   const offset = new Date().getTimezoneOffset();
 
