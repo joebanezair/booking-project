@@ -548,3 +548,26 @@ html body .page-shell > aside.sidebar .sidebar-email {
   #root .onboarding-relaunch .onboarding-launch-hero { grid-template-columns: minmax(0, 1fr); }
   #root .onboarding-relaunch .onboarding-launch-art { display: none; }
 }
+
+/* New Product upload/publish surfaces and selected image previews: consistent rounded containers. */
+html body dialog.ui-dialog.product-create-dialog .product-form-upload {
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px !important;
+  background: var(--card);
+}
+html body dialog.ui-dialog.product-create-dialog .product-upload-dropzone {
+  border-radius: 10px !important;
+}
+html body dialog.ui-dialog.product-create-dialog .product-create-publish {
+  border-radius: 12px !important;
+}
+html body dialog.ui-dialog.product-create-dialog .product-create-previews .product-image-thumb {
+  border-radius: 10px !important;
+}
+html body dialog.ui-dialog.product-create-dialog .product-create-previews .product-image-thumb > img,
+html body dialog.ui-dialog.product-create-dialog .product-create-previews .product-image-thumb .ui-image {
+  border-radius: 9px !important;
+}
+
