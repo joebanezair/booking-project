@@ -81,7 +81,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
   return <AppLayout user={user} onLogout={onLogout}>
     <div className="profile-page-redesign profile-overview-clean">
     <header className="topbar profile-page-topbar">
-      <div><p className="eyebrow">{isAdmin ? "ADMIN PROFILE" : "PROFILE"}</p><h1>Your profile</h1><p className="muted">{isAdmin ? "Manage the public profile that everyone can view." : "Manage how your account appears across BookFlow."}</p></div>
+      <div><p className="eyebrow">{isAdmin ? "Admin Profile" : "PROFILE"}</p><h1>Your profile</h1><p className="muted">{isAdmin ? "Manage the public profile that everyone can view." : "Manage how your account appears across BookFlow."}</p></div>
       <Button asChild variant="default"><Link  className="primary-button button-link icon-link" to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit personal profile</Link></Button>
     </header>
 
@@ -129,7 +129,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
       {!isAdmin && <Card as="section" className="profile-customer-activity-panel">
         <div className="profile-customer-activity-heading">
           <div>
-            <p className="eyebrow">YOUR ACCOUNT</p>
+            <p className="eyebrow">Your Account</p>
             <h2>My Activity</h2>
             <p className="muted">Keep track of products you buy and services you book across BookFlow.</p>
           </div>
@@ -151,7 +151,7 @@ export default function ProfilePage({ user, onLogout, onUserUpdate }) {
       {isAdmin && <Card as="section" className="platform-content-profile-panel">
         <div className="platform-content-profile-heading">
           <div>
-            <p className="eyebrow">ADMIN TOOLS</p>
+            <p className="eyebrow">Admin Tools</p>
             <h2>Platform content</h2>
             <p className="muted">Manage the public information shown to visitors and new accounts.</p>
           </div>
