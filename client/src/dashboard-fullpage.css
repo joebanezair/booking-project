@@ -596,8 +596,9 @@ html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-ta
   font-weight: 600;
 }
 html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab.selected {
-  background: var(--primary) !important;
-  color: var(--primary-foreground) !important;
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+  border-radius: 9999px !important;
   box-shadow: none !important;
 }
 #root .dashboard-v2-chart-area {
