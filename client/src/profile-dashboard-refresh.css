@@ -1144,3 +1144,17 @@ html body #root .profile-overview-clean .eyebrow {
 html body #root .profile-overview-clean .eyebrow {
   font-weight: 600 !important;
 }
+
+
+/* SVG icon artwork: use flat stroke ends and sharp joins; keep the icon tile/container radius. */
+html body #root .profile-overview-clean svg {
+  stroke-linecap: butt !important;
+  stroke-linejoin: miter !important;
+}
+html body #root .profile-overview-clean svg path,
+html body #root .profile-overview-clean svg line,
+html body #root .profile-overview-clean svg polyline,
+html body #root .profile-overview-clean svg polygon {
+  stroke-linecap: butt !important;
+  stroke-linejoin: miter !important;
+}
