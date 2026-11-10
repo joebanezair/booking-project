@@ -254,7 +254,7 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
               <span className="settings-v2-heading-icon"><FiBarChart2 aria-hidden="true"/></span>
               <div>
                 <h2 id="settings-stats-title">Platform statistics</h2>
-                <p>Choose which statistics appear on your administrator Dashboard.</p>
+                <p>Choose which statistics and workspace navigation appear on your administrator Dashboard.</p>
                 <small className="settings-v2-stats-count">
                   {preferencesLoading ? "Loading saved preferences…" : `${shownCount} of ${totalCount} visible`}
                 </small>
@@ -342,8 +342,8 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
                             <span>{label}</span>
                           </label>
                         </th>
-                        <td className="admin-stats-metric-value" title={String(metricValues[key] ?? "—")}>
-                          {overviewLoading ? "Loading…" : metricValues[key] ?? "—"}
+                        <td className="admin-stats-metric-value" title={key === "workspaceTopbar" ? (draftMetrics[key] !== false ? "Top navigation bar shown" : "Top navigation bar hidden") : String(metricValues[key] ?? "—")}>
+                          {key === "workspaceTopbar" ? (draftMetrics[key] !== false ? "Shown" : "Hidden") : overviewLoading ? "Loading…" : metricValues[key] ?? "—"}
                         </td>
                       </tr>)}
                     </tbody>
