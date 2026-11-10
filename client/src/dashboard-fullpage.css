@@ -1333,3 +1333,10 @@ html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-ta
 html body #root .dashboard-v2-sales-controls button.ui-button.dashboard-chart-tab:last-child {
   border-radius: 9999px !important;
 }
+
+/* Final override: make the entire gray Sales / Completed / Services track a capsule. */
+html body #root .dashboard-v2-analytics [data-slot="button-group"].dashboard-v2-sales-controls {
+  border-radius: 9999px !important;
+  overflow: hidden !important;
+  clip-path: inset(0 round 9999px);
+}
