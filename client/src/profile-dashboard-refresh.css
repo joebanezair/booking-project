@@ -1048,3 +1048,15 @@ html body #root .profile-overview-clean svg,
 html body #root .profile-overview-clean svg * {
   border-radius: 0 !important;
 }
+
+
+/* Main Profile card: square top corners, 10px bottom corners. */
+html body #root .profile-overview-clean .profile-home-panel {
+  border-radius: 0 0 10px 10px !important;
+}
+
+/* The cover follows the outer card's square top edge. */
+html body #root .profile-overview-clean .profile-home-panel .linkedin-cover,
+html body #root .profile-overview-clean .profile-home-panel .linkedin-cover > .ui-profile-cover-image {
+  border-radius: 0 !important;
+}
