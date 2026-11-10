@@ -1041,3 +1041,9 @@ html body #root .pos-earnings-panel .pos-earnings-table td .pos-earnings-estimat
 html body #root .pos-earnings-panel .pos-earnings-table td.pos-earnings-loss {
   color: #c2410c !important;
 }
+
+/* New Product dialog: keep every text element at regular weight without affecting other product views. */
+html body #root dialog.ui-dialog.product-create-dialog .product-create-dialog-content,
+html body #root dialog.ui-dialog.product-create-dialog .product-create-dialog-content * {
+  font-weight: 400 !important;
+}
