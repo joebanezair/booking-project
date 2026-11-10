@@ -25,7 +25,7 @@ const businessWidgetGroups = [
     ["statAverage", "Average sale"], ["statServices", "Services sold"]
   ] },
   { title: "Analytics", widgets: [
-    ["salesOverview", "Sales overview"], ["salesChartNavigation", "Sales chart navigation"], ["serviceStatus", "Service status"],
+    ["salesOverview", "Sales overview"], ["salesChartNavigation", "Sales / Completed / Services navigation"], ["serviceStatus", "Service status"],
     ["topServices", "Top services"]
   ] },
   { title: "Quick access", widgets: [
@@ -70,7 +70,7 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
   const [businessPreferencesLoading, setBusinessPreferencesLoading] = useState(!isAdmin);
   const [businessPreferencesSaving, setBusinessPreferencesSaving] = useState(false);
   const [businessPreferencesError, setBusinessPreferencesError] = useState("");
-  const [expandedBusinessGroups, setExpandedBusinessGroups] = useState({ "Key metrics": true });
+  const [expandedBusinessGroups, setExpandedBusinessGroups] = useState({ "Key metrics": true, Analytics: true });
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -153,7 +153,7 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
 
   function openBusinessCustomize() {
     setDraftBusinessWidgets({ ...visibleBusinessWidgets });
-    setExpandedBusinessGroups({ "Key metrics": true });
+    setExpandedBusinessGroups({ "Key metrics": true, Analytics: true });
     setBusinessPreferencesError("");
     setBusinessCustomizeOpen(true);
   }
