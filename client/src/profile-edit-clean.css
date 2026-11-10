@@ -505,3 +505,57 @@ html body #root .profile-edit-admin .profile-edit-save-button {
     padding-bottom: 62px !important;
   }
 }
+
+
+/* Regular Edit Profile refinement: balanced type (15px maximum) and consistent 10px corners. */
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-edit-topbar h1,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-edit-section-heading h2,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-position-title h2 {
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+}
+
+/* Preserve the existing smaller sizes for helper text and fields; cap controls at 15px. */
+html body #root .profile-edit-shell:not(.profile-edit-admin) :is(
+  .ui-button,
+  .ui-label,
+  .ui-input,
+  .ui-textarea,
+  .profile-edit-char-count,
+  .profile-edit-save-footer,
+  .profile-media-menu,
+  .profile-edit-feedback,
+  .linkedin-cover-placeholder
+) {
+  font-size: min(15px, 1em) !important;
+}
+
+/* The outer form card, inputs, buttons, menus and nested editor cards share 10px corners. */
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-edit-clean,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-edit-topbar .ui-button,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-edit-fields :is(.ui-input, .ui-textarea),
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-edit-save-button,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-edit-feedback p,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-media-menu,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-media-menu > .ui-button,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .cover-edit-button,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .linked-media-reposition,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .linked-media-reposition .ui-button {
+  border-radius: 10px !important;
+}
+
+/* Keep the cover aligned with the card's 10px upper corners. */
+html body #root .profile-edit-shell:not(.profile-edit-admin) .linkedin-cover,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .linkedin-cover > .ui-profile-cover-image,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .media-hit-area.cover-hit-area {
+  border-radius: 10px 10px 0 0 !important;
+}
+
+/* Preserve circular profile-image elements and their camera badge. */
+html body #root .profile-edit-shell:not(.profile-edit-admin) .linkedin-avatar-wrap,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .linkedin-avatar-button,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .linkedin-avatar-button > .profile-avatar,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .avatar-camera-badge,
+html body #root .profile-edit-shell:not(.profile-edit-admin) .profile-photo-drag-frame {
+  border-radius: 50% !important;
+}
