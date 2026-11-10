@@ -256,3 +256,29 @@ html body #root .sales-earnings-overview .sales-earnings-table-content > .sales-
   min-width: 0;
   max-width: 100%;
 }
+
+
+/* The product-cost column headings are the collapse/expand control. */
+html body #root .sales-earnings-table .sales-earnings-table-trigger {
+  cursor: pointer;
+  outline: none;
+}
+html body #root .sales-earnings-table .sales-earnings-table-trigger:hover th {
+  background: color-mix(in srgb, var(--primary) 6%, var(--muted));
+}
+html body #root .sales-earnings-table .sales-earnings-table-trigger:focus-visible th {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+html body #root .sales-earnings-table .sales-earnings-table-trigger th:last-child::after {
+  content: "⌄";
+  display: inline-block;
+  margin-left: 7px;
+  transition: transform 160ms ease;
+}
+html body #root .sales-earnings-table .sales-earnings-table-trigger[aria-expanded="true"] th:last-child::after {
+  transform: rotate(180deg);
+}
+html body #root .sales-earnings-table #sales-product-cost-content[hidden] {
+  display: none !important;
+}
