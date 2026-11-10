@@ -23,15 +23,15 @@ html body:has(#root) > :not(#root) :not(svg):not(svg *) {
 }
 
 /* Every semantic heading is kept prominent, but never exceeds 15px. */
-html body:has(#root) #root :is(h1, h2, h3, h4, h5, h6),
-html body:has(#root) #root :is(.dashboard-v2-stat-number, .business-admin-platform-metric > strong, .business-admin-breakdown-metric > strong, .stat-card > strong, .profile-overview-heading h2, .profile-hub-card h3, .metric-value, .stat-value),
-html body:has(#root) > :not(#root) :is(h1, h2, h3, h4, h5, h6) {
+html body:has(#root) #root :not(svg):not(svg *) :is(h1, h2, h3, h4, h5, h6),
+html body:has(#root) #root :not(svg):not(svg *) :is(.dashboard-v2-stat-number, .business-admin-platform-metric > strong, .business-admin-breakdown-metric > strong, .stat-card > strong, .profile-overview-heading h2, .profile-hub-card h3, .metric-value, .stat-value),
+html body:has(#root) > :not(#root) :not(svg):not(svg *) :is(h1, h2, h3, h4, h5, h6) {
   font-size: 15px !important;
 }
 
 /* The smallest readable tier is 13px. Keep it for genuinely secondary
    information, rather than shrinking whole paragraphs or form controls. */
-html body:has(#root) #root :is(
+html body:has(#root) #root :not(svg):not(svg *) :is(
   small,
   .eyebrow,
   .caption,
@@ -54,15 +54,15 @@ html body:has(#root) #root :is(
   .notification-item small,
   .message-bubble small
 ),
-html body:has(#root) #root .sales-table td::before,
-html body:has(#root) #root .receipt-details dt,
+html body:has(#root) #root :not(svg):not(svg *) .sales-table td::before,
+html body:has(#root) #root :not(svg):not(svg *) .receipt-details dt,
 html body:has(#root) > :not(#root) :is(small, .eyebrow, .caption, .helper-text, .field-hint, .timestamp) {
   font-size: 13px !important;
 }
 
 /* Keep all-caps overrides off. Major labels are written in normal Title Case
    in the components, and table labels stay in their authored casing. */
-html body:has(#root) #root :is(
+html body:has(#root) #root :not(svg):not(svg *) :is(
   .eyebrow,
   th,
   .business-table-head,
@@ -77,7 +77,7 @@ html body:has(#root) > :not(#root) .ui-dialog-title {
 }
 
 /* Slightly tighter tracking for the smaller Title Case section overlines. */
-html body:has(#root) #root .eyebrow {
+html body:has(#root) #root :not(svg):not(svg *) .eyebrow {
   letter-spacing: 0.04em;
 }
 
@@ -88,11 +88,11 @@ html body:has(#root) [role="menu"],
 html body:has(#root) [role="listbox"] {
   font-size: 14px !important;
 }
-html body:has(#root) dialog :is(h1, h2, h3, h4, h5, h6),
-html body:has(#root) [role="dialog"] :is(h1, h2, h3, h4, h5, h6) {
+html body:has(#root) dialog :not(svg):not(svg *) :is(h1, h2, h3, h4, h5, h6),
+html body:has(#root) [role="dialog"] :not(svg):not(svg *) :is(h1, h2, h3, h4, h5, h6) {
   font-size: 15px !important;
 }
-html body:has(#root) dialog :is(small, .eyebrow, .caption, .helper-text),
-html body:has(#root) [role="dialog"] :is(small, .eyebrow, .caption, .helper-text) {
+html body:has(#root) dialog :not(svg):not(svg *) :is(small, .eyebrow, .caption, .helper-text),
+html body:has(#root) [role="dialog"] :not(svg):not(svg *) :is(small, .eyebrow, .caption, .helper-text) {
   font-size: 13px !important;
 }
