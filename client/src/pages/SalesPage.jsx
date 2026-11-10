@@ -470,6 +470,26 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
             <small>{earnings.costComplete ? "Gross earnings less product costs" : "Add missing product costs to calculate accurately"}</small>
           </Card>
         </div>
+        {(data?.byChannel || []).length > 0 && <div className="sales-earnings-channels" aria-label="Revenue by sales channel">
+          <div className="sales-earnings-channels-heading"><h3>Revenue by channel</h3></div>
+          <div className="sales-earnings-channel-grid">
+            {(data?.byChannel || []).map(item => {
+              const channelName = String(item.channel || "");
+              const normalizedChannel = channelName.toLowerCase();
+              const Icon = normalizedChannel.includes("service") ? FiCalendar : normalizedChannel.includes("online") ? FiPackage : FiShoppingBag;
+              return <div className="sales-earnings-channel-card" key={"earnings-channel-" + channelName}>
+                <div className="sales-earnings-channel-label">
+                  <span className="sales-earnings-channel-icon"><Icon aria-hidden="true"/></span>
+                  <strong>{channelName}</strong>
+                </div>
+                <div className="sales-earnings-channel-details">
+                  <span className="sales-earnings-channel-amount">{money(item.revenue, primaryCurrency)}</span>
+                  <small className="sales-earnings-channel-count"><FiFileText aria-hidden="true"/>{item.sales} transaction{item.sales===1?"":"s"}</small>
+                </div>
+              </div>;
+            })}
+          </div>
+        </div>}
         <p className="sales-earnings-note">Net earnings here deducts product costs only. Service operating expenses, platform fees, taxes, and other expenses are not included.</p>
         {earnings.productBreakdown.length > 0 && <div className="sales-earnings-table-wrap">
           <div className="sales-table-wrap">
@@ -575,19 +595,9 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         </section>
       </div>
 
-      {(data?.byChannel?.length > 0 || data?.byPaymentMethod?.length > 0) && <section className="panel currency-summary sales-channel-breakdown">
-        <div className="panel-title sales-channel-breakdown-heading"><div><p className="eyebrow">Breakdown</p><h2>Sales channels & POS payments</h2><p className="muted sales-channel-breakdown-description">Revenue and transaction breakdown by source.</p></div></div>
+      {(data?.byPaymentMethod || []).some(item => String(item.method || "").trim().toLowerCase() !== "cash") && <section className="panel currency-summary sales-channel-breakdown">
+        <div className="panel-title sales-channel-breakdown-heading"><div><p className="eyebrow">Breakdown</p><h2>POS payment methods</h2><p className="muted sales-channel-breakdown-description">Revenue and transaction breakdown by POS payment method.</p></div></div>
         <div className="currency-total-list sales-channel-breakdown-grid">
-          {(data?.byChannel || []).map(item => {
-            const Icon = item.channel?.toLowerCase().includes("service") ? FiCalendar : FiShoppingBag;
-            return <div className="sales-channel-breakdown-card" key={"channel-"+item.channel}>
-              <div className="sales-channel-breakdown-label"><span className="sales-channel-breakdown-icon"><Icon aria-hidden="true"/></span><strong>{item.channel}</strong></div>
-              <div className="sales-channel-breakdown-details">
-                <span className="sales-channel-breakdown-amount">{money(item.revenue, primaryCurrency)}</span>
-                <small className="sales-channel-breakdown-count"><FiFileText aria-hidden="true"/>{item.sales} transaction{item.sales===1?"":"s"}</small>
-              </div>
-            </div>;
-          })}
           {(data?.byPaymentMethod || []).filter(item => String(item.method || "").trim().toLowerCase() !== "cash").map(item => <div className="sales-channel-breakdown-card" key={"payment-"+item.method}>
             <div className="sales-channel-breakdown-label"><span className="sales-channel-breakdown-icon"><FiCreditCard aria-hidden="true"/></span><strong>POS · {item.method.toUpperCase()}</strong></div>
             <div className="sales-channel-breakdown-details">
