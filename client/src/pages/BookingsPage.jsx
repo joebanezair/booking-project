@@ -5,7 +5,7 @@ export default function BookingsPage({ user, onLogout }) {
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar booking-page-header">
       <div className="booking-page-heading">
-        <p className="eyebrow booking-page-eyebrow">BOOKINGS</p>
+        <p className="eyebrow booking-page-eyebrow">Bookings</p>
         <h1>Business bookings</h1>
         <p className="muted booking-page-subtitle">Manage appointments, check availability, and track completed services in one place.</p>
       </div>
