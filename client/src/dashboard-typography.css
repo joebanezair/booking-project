@@ -1,20 +1,45 @@
 /*
- * Dashboard typography.
- * Apply a 15px ceiling across authenticated workspace pages while keeping
- * smaller labels readable. Major interface labels are authored in Title Case;
- * this file deliberately avoids forced uppercase or automatic capitalization.
+ * Dashboard typography scale.
+ * 15px = major headings and key figures
+ * 14px = regular interface text, navigation, controls and body copy
+ * 13px = secondary labels, helper text, metadata and table headings
+ * Public storefront pages are intentionally not affected.
  */
 
+/* Set a consistent regular text size across authenticated workspace pages. */
 html body #root .page-shell,
-html body #root .page-shell :not(svg) {
-  font-size: min(15px, 1em) !important;
+html body #root .page-shell :not(svg):not(svg *) {
+  font-size: 14px !important;
 }
 
-/* Major navigation and page headings use normal Title Case in their JSX. */
-html body #root .page-shell > aside.sidebar .sidebar-section-label,
-html body #root .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle) > span,
-html body #root .page-shell > .mobile-app-header .sidebar-brand strong,
+/* Keep primary headings and important metric values visibly prominent,
+   while respecting the 15px maximum. */
+html body #root .page-shell .content-shell :is(h1, h2, h3, h4, h5, h6),
+html body #root .page-shell .dashboard-v2-stat-number,
+html body #root .page-shell .business-admin-platform-metric > strong,
+html body #root .page-shell .business-admin-breakdown-metric > strong,
+html body #root .page-shell .stat-card > strong,
+html body #root .page-shell .profile-overview-heading h2,
+html body #root .page-shell .profile-hub-card h3,
 html body #root .page-shell .workspace-account-menu-label,
+html body #root .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle) > span {
+  font-size: 15px !important;
+}
+
+/* Smallest text stays at 13px: helper copy, overlines, captions,
+   timestamps, secondary labels and table headings. */
+html body #root .page-shell :is(small, .muted, .eyebrow, .dashboard-v2-stat-label, .business-admin-platform-label, .business-admin-breakdown-metric > span, .stat-card small, .sidebar-section-label, .sidebar-user small, .business-table-head, .sales-table th, .receipt-details dt, .booking-calendar-weekdays strong, .profile-photo-drag-wrap > .muted, .position-controls .muted, .booking-history-entry small, .customer-history-card small, .notification-item small, .message-bubble small),
+html body #root .page-shell .content-shell .sales-table td::before,
+html body #root .page-shell .content-shell .receipt-details dt {
+  font-size: 13px !important;
+}
+
+/* Keep generated responsive table labels legible as well. */
+html body #root .page-shell .content-shell .sales-table td::before {
+  font-size: 13px !important;
+}
+
+/* Major labels use normal Title Case, never forced uppercase or all caps. */
 html body #root .page-shell .content-shell .eyebrow,
 html body #root .page-shell .content-shell > header.topbar h1,
 html body #root .page-shell .content-shell .panel-title :is(h2, h3),
@@ -22,32 +47,32 @@ html body #root .page-shell .content-shell .settings-v2-section-title h2,
 html body #root .page-shell .content-shell .business-admin-activity-heading h2,
 html body #root .page-shell .content-shell .dashboard-route-section .dashboard-section-heading h2,
 html body #root .page-shell .content-shell .dashboard-v2-analysis-grid > .ui-card > h3,
-html body #root .page-shell .content-shell .dashboard-v2-stat-label,
 html body #root .page-shell .content-shell .business-table-head,
-html body #root .page-shell .content-shell .sales-table th {
+html body #root .page-shell .content-shell .sales-table th,
+html body #root .page-shell .content-shell th,
+html body #root .page-shell .content-shell .sales-table td::before,
+html body #root .page-shell .content-shell .booking-calendar-weekdays strong,
+html body #root .page-shell .content-shell .friend-requests > strong,
+html body #root .page-shell .content-shell .people-results > strong {
   text-transform: none !important;
 }
 
-/* Reduce the widely spaced eyebrow treatment so labels feel like headings,
-   not all-caps overlines. */
+/* Slightly tighter eyebrow tracking keeps Title Case headings balanced. */
 html body #root .page-shell .content-shell .eyebrow {
   letter-spacing: 0.04em;
 }
 
-/* Native dialogs are portaled to <body>, so apply the same text-size ceiling. */
+/* Native dialogs are portaled to body; use the same 13–15px scale there. */
 html body:has(#root .page-shell) dialog.ui-dialog,
-html body:has(#root .page-shell) dialog.ui-dialog :not(svg) {
-  font-size: min(15px, 1em) !important;
+html body:has(#root .page-shell) dialog.ui-dialog :not(svg):not(svg *) {
+  font-size: 14px !important;
+}
+html body:has(#root .page-shell) dialog.ui-dialog :is(h1, h2, h3, h4, h5, h6, .ui-dialog-title) {
+  font-size: 15px !important;
+}
+html body:has(#root .page-shell) dialog.ui-dialog :is(small, .muted, .eyebrow) {
+  font-size: 13px !important;
 }
 html body:has(#root .page-shell) dialog.ui-dialog .ui-dialog-title {
-  text-transform: none !important;
-}
-/* Keep dashboard table and detail labels in normal case as well. */
-html body #root .page-shell .content-shell th,
-html body #root .page-shell .content-shell .sales-table td::before,
-html body #root .page-shell .content-shell .receipt-details dt,
-html body #root .page-shell .content-shell .booking-calendar-weekdays strong,
-html body #root .page-shell .content-shell .friend-requests > strong,
-html body #root .page-shell .content-shell .people-results > strong {
   text-transform: none !important;
 }
