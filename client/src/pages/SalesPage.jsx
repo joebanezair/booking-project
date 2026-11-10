@@ -509,10 +509,6 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
                   <DialogTitle>Product cost breakdown</DialogTitle>
                   <DialogDescription>Units sold, saved acquisition costs, and sales revenue for completed product sales.</DialogDescription>
                 </div>
-                <Button type="button" variant="outline" size="icon" aria-label="Close product cost breakdown"
-                  onClick={()=>setProductCostDialogOpen(false)}>
-                  <FiX aria-hidden="true"/>
-                </Button>
               </DialogHeader>
               <div className="sales-table-wrap sales-earnings-dialog-table-wrap">
                 <table className="sales-table sales-earnings-table">
