@@ -173,3 +173,16 @@ html body:has(#root) > :not(#root) :not(svg):not(svg *) :is(
 ) {
   font-weight: 400 !important;
 }
+
+
+/* Business and admin dashboard canvas: pure white in light mode only. */
+html:not([data-theme="dark"]) body:has(.dashboard-content-rail),
+html:not([data-theme="dark"]) body:has(.dashboard-content-rail) #root,
+html:not([data-theme="dark"]) body #root .page-shell:has(.dashboard-content-rail),
+html:not([data-theme="dark"]) body #root .page-shell:has(.dashboard-content-rail) > .content-shell,
+html:not([data-theme="dark"]) body #root .page-shell:has(.dashboard-content-rail) .dashboard-content-rail {
+  background-color: #ffffff !important;
+}
+html:not([data-theme="dark"]) body #root .page-shell:has(.dashboard-content-rail) {
+  --background: #ffffff;
+}
