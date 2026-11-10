@@ -72,7 +72,7 @@ const businessWidgetGroups = [
     ["statAverage", "Average sale"], ["statServices", "Services sold"]
   ] },
   { title: "Analytics", widgets: [
-    ["salesOverview", "Sales overview"], ["salesChartNavigation", "Sales chart navigation"], ["serviceStatus", "Service status"],
+    ["salesOverview", "Sales overview"], ["salesChartNavigation", "Sales / Completed / Services navigation"], ["serviceStatus", "Service status"],
     ["topServices", "Top services"]
   ] },
   { title: "Quick access", widgets: [
