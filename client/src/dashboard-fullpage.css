@@ -1340,3 +1340,16 @@ html body #root .dashboard-v2-analytics [data-slot="button-group"].dashboard-v2-
   overflow: hidden !important;
   clip-path: inset(0 round 9999px);
 }
+
+/* Workspace topbar hidden by the business dashboard customization preference. */
+@media (min-width: 801px) {
+  html body #root .page-shell.page-shell--topbar-hidden {
+    grid-template-rows: minmax(0, 1fr) !important;
+  }
+  html body #root .page-shell.page-shell--topbar-hidden > aside.sidebar {
+    grid-row: 1 !important;
+  }
+  html body #root .page-shell.page-shell--topbar-hidden > .content-shell {
+    grid-row: 1 !important;
+  }
+}
