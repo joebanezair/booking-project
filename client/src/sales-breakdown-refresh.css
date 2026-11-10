@@ -346,15 +346,3 @@ html body #root .sales-earnings-overview .sales-table-wrap {
 html body #root .sales-earnings-overview .sales-earnings-table {
   border-radius: 10px !important;
 }
-
-
-/* Align Earnings Breakdown with the shared Sales content rail and neighboring panels. */
-html body #root .page-shell > .content-shell > .sales-earnings-overview.panel {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 1200px;
-  min-width: 0;
-  margin: 0 auto 10px !important;
-  align-self: stretch;
-  border-radius: 10px !important;
-}
