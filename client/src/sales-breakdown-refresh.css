@@ -282,3 +282,52 @@ html body #root .sales-earnings-table .sales-earnings-table-trigger[aria-expande
 html body #root .sales-earnings-table #sales-product-cost-content[hidden] {
   display: none !important;
 }
+
+
+/* Consistent 10px component spacing throughout Sales & Analytics. */
+html body #root .sales-page-header,
+html body #root .online-orders-page-header {
+  margin-bottom: 10px !important;
+}
+html body #root .sales-analytics-controls,
+html body #root .sales-kpis,
+html body #root .sales-earnings-overview,
+html body #root .analytics-grid,
+html body #root .sales-channel-breakdown,
+html body #root .sales-records-panel,
+html body #root .sales-orders-panel {
+  margin-top: 0 !important;
+  margin-bottom: 10px !important;
+}
+html body #root .sales-analytics-controls,
+html body #root .sales-earnings-overview,
+html body #root .sales-channel-breakdown,
+html body #root .sales-records-panel,
+html body #root .sales-orders-panel,
+html body #root .analytics-chart-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+html body #root .sales-period-row,
+html body #root .sales-period-buttons,
+html body #root .sales-earnings-grid,
+html body #root .analytics-grid,
+html body #root .currency-total-list,
+html body #root .sales-channel-breakdown-grid,
+html body #root .sales-orders-toolbar,
+html body #root .sales-orders-filters,
+html body #root .sales-records-heading,
+html body #root .sales-records-toggle {
+  gap: 10px !important;
+}
+html body #root .sales-earnings-card,
+html body #root .sales-earnings-table-wrap {
+  gap: 10px !important;
+}
+html body #root .sales-earnings-grid {
+  gap: 10px !important;
+}
+html body #root .sales-table-wrap {
+  margin-top: 0;
+}
