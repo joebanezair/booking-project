@@ -963,3 +963,39 @@ html body #root .profile-overview-clean .profile-customer-activity-count {
   border-radius: 12px !important;
   box-shadow: none !important;
 }
+
+
+/* Profile overview refinement: compact, regular-weight typography and 10px corners. */
+html body #root .profile-overview-clean,
+html body #root .profile-overview-clean * {
+  font-weight: 400 !important;
+}
+
+/* Keep all headings within the requested 15px maximum; smaller supporting text stays smaller. */
+html body #root .profile-overview-clean h1,
+html body #root .profile-overview-clean h2,
+html body #root .profile-overview-clean h3,
+html body #root .profile-overview-clean h4,
+html body #root .profile-overview-clean h5,
+html body #root .profile-overview-clean h6 {
+  font-size: 15px !important;
+  font-weight: 400 !important;
+}
+
+/* Use one corner radius throughout the page, including menus, buttons, fields, cards and QR surfaces. */
+html body #root .profile-overview-clean * {
+  border-radius: 10px !important;
+}
+
+/* The profile image remains circular; its surrounding frame follows the same shape. */
+html body #root .profile-overview-clean .linkedin-avatar-wrap,
+html body #root .profile-overview-clean .linkedin-avatar-button,
+html body #root .profile-overview-clean .linkedin-avatar-button > .profile-avatar {
+  border-radius: 50% !important;
+}
+
+/* Retain the cover image's rectangular presentation while matching the 10px page radius. */
+html body #root .profile-overview-clean .linkedin-cover,
+html body #root .profile-overview-clean .linkedin-cover > .ui-profile-cover-image {
+  border-radius: 10px 10px 0 0 !important;
+}
