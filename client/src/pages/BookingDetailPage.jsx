@@ -89,7 +89,7 @@ export default function BookingDetailPage({ user, onLogout }) {
 
   return <AppLayout user={user} onLogout={onLogout}>
     <header className="topbar">
-      <div><p className="eyebrow">BOOKING DETAILS</p><h1>{booking?.guestName || "Booking"}</h1></div>
+      <div><p className="eyebrow">Booking Details</p><h1>{booking?.guestName || "Booking"}</h1></div>
       <Button asChild variant="outline"><Link  className="secondary button-link icon-link" to="/dashboard/bookings"><FiArrowLeft />Back to bookings</Link></Button>
     </header>
 
@@ -111,7 +111,7 @@ export default function BookingDetailPage({ user, onLogout }) {
         </div>
 
         <div className="booking-detail-service">
-          <p className="eyebrow">SERVICE</p>
+          <p className="eyebrow">Service</p>
           <h2>{booking.content?.title || booking.service}</h2>
           {booking.content?.description && <p>{booking.content.description}</p>}
           <PriceDisplay price={booking.servicePrice ?? booking.content?.price ?? 0} currency={booking.currency || booking.content?.currency || "PHP"} />
@@ -119,7 +119,7 @@ export default function BookingDetailPage({ user, onLogout }) {
         </div>
 
         {booking.saleRecord && <div className={`booking-sale-record ${booking.saleRecord.status}`}>
-          <p className="eyebrow">SALE RECORD</p>
+          <p className="eyebrow">Sale Record</p>
           <div className="sale-record-summary">
             <div><span>Status</span><strong>{booking.saleRecord.status === "recorded" ? "Recorded sale" : "Voided sale"}</strong></div>
             <div><span>Amount</span><strong>{money(booking.saleRecord.saleAmount, booking.saleRecord.currency)}</strong></div>
@@ -130,16 +130,16 @@ export default function BookingDetailPage({ user, onLogout }) {
         </div>}
 
         {booking.status === "completed" && <div className="booking-review-invite">
-          <p className="eyebrow">VERIFIED REVIEW</p>
+          <p className="eyebrow">Verified Review</p>
           {booking.reviewInvite?.verified ? <p className="success"><FiStar /> The guest has submitted a verified review for this booking.</p> :
             reviewUrl ? <><p>Share this one-time review link with the guest. It only works while this booking remains completed.</p><div className="review-link-row"><Input value={reviewUrl} readOnly /><Button variant="plain" className="secondary" onClick={copyReviewLink}><FiCopy />{copied ? "Copied" : "Copy link"}</Button></div></> :
             <p className="muted">The review link is being prepared.</p>}
         </div>}
 
-        {booking.customAnswers?.length > 0 && <div className="booking-detail-notes"><p className="eyebrow">BOOKING ANSWERS</p>{booking.customAnswers.map(answer => <p key={answer.questionId}><strong>{answer.label}:</strong> {answer.value}</p>)}</div>}
-        {booking.notes && <div className="booking-detail-notes"><p className="eyebrow">GUEST NOTES</p><p>{booking.notes}</p></div>}
-        {booking.internalNotes && <div className="booking-detail-notes"><p className="eyebrow">INTERNAL BUSINESS NOTES</p><p>{booking.internalNotes}</p></div>}
-        {booking.history?.length > 0 && <div className="booking-detail-notes booking-history"><p className="eyebrow">BOOKING HISTORY</p><div className="booking-history-list">{[...booking.history].reverse().map((entry,index)=><div className="booking-history-entry" key={index}><strong>{String(entry.action||"updated").replaceAll("_"," ")}</strong><span>{new Date(entry.at).toLocaleString()}</span>{entry.note&&<p>{entry.note}</p>}{entry.fromDate&&entry.toDate&&<small>{new Date(entry.fromDate).toLocaleString()} → {new Date(entry.toDate).toLocaleString()}</small>}</div>)}</div></div>}
+        {booking.customAnswers?.length > 0 && <div className="booking-detail-notes"><p className="eyebrow">Booking Answers</p>{booking.customAnswers.map(answer => <p key={answer.questionId}><strong>{answer.label}:</strong> {answer.value}</p>)}</div>}
+        {booking.notes && <div className="booking-detail-notes"><p className="eyebrow">Guest Notes</p><p>{booking.notes}</p></div>}
+        {booking.internalNotes && <div className="booking-detail-notes"><p className="eyebrow">Internal Business Notes</p><p>{booking.internalNotes}</p></div>}
+        {booking.history?.length > 0 && <div className="booking-detail-notes booking-history"><p className="eyebrow">Booking History</p><div className="booking-history-list">{[...booking.history].reverse().map((entry,index)=><div className="booking-history-entry" key={index}><strong>{String(entry.action||"updated").replaceAll("_"," ")}</strong><span>{new Date(entry.at).toLocaleString()}</span>{entry.note&&<p>{entry.note}</p>}{entry.fromDate&&entry.toDate&&<small>{new Date(entry.fromDate).toLocaleString()} → {new Date(entry.toDate).toLocaleString()}</small>}</div>)}</div></div>}
       </section>}
   </AppLayout>;
 }
