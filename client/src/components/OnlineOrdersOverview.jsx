@@ -71,7 +71,7 @@ export default function OnlineOrdersOverview({ orders = [], loading = false, act
   return <section className="online-order-overview" aria-label="Online order overview">
     <div className="order-overview-heading">
       <div>
-        <p className="order-overview-eyebrow">ANALYTICS</p>
+        <p className="order-overview-eyebrow">Analytics</p>
         <h2>Order overview</h2>
       </div>
       <span className="order-overview-period">{total >= 200 ? "Recent 200 orders" : "All time"}</span>
