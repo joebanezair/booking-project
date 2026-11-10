@@ -644,3 +644,28 @@ html body #root .sales-earnings-product-dialog-footer {
     overflow-x: auto;
   }
 }
+
+
+/* Unified 10px radius across every Earnings Breakdown surface and icon holder. */
+:root {
+  --sales-earnings-component-radius: 10px;
+}
+html body #root .sales-earnings-overview .sales-earnings-card,
+html body #root .sales-earnings-overview .sales-earnings-card-icon,
+html body #root .sales-earnings-overview .sales-earnings-channel-card,
+html body #root .sales-earnings-overview .sales-earnings-channel-icon,
+html body #root .sales-earnings-overview .sales-earnings-note,
+html body #root .sales-earnings-overview .sales-earnings-table-wrap,
+html body #root .sales-earnings-overview .sales-earnings-table-trigger-button,
+html body #root .sales-earnings-overview .sales-earnings-table,
+html body #root .sales-earnings-overview .sales-table-wrap {
+  border-radius: var(--sales-earnings-component-radius) !important;
+}
+dialog.ui-dialog.sales-earnings-product-dialog,
+dialog.ui-dialog.sales-earnings-product-dialog > .sales-earnings-product-dialog-content,
+html body #root .sales-earnings-product-dialog-header .ui-button,
+html body #root .sales-earnings-product-dialog-footer .ui-button,
+html body #root .sales-earnings-dialog-table-wrap,
+html body #root .sales-earnings-dialog-table-wrap .sales-earnings-table {
+  border-radius: var(--sales-earnings-component-radius) !important;
+}
