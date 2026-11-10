@@ -2,7 +2,7 @@
 export const DASHBOARD_PREFERENCE_KEYS = Object.freeze({
   businessWidgets: Object.freeze([
     "setupChecklist", "statSales", "statCompleted", "statAverage", "statServices",
-    "salesOverview", "serviceStatus", "topServices", "quickServices", "quickBookings",
+    "salesOverview", "salesChartNavigation", "serviceStatus", "topServices", "quickServices", "quickBookings",
     "quickProducts", "quickSales", "quickMessages", "quickProfile", "quickSearch"
   ]),
   adminMetrics: Object.freeze([
