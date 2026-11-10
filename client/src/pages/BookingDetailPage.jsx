@@ -88,7 +88,7 @@ export default function BookingDetailPage({ user, onLogout }) {
   }
 
   return <AppLayout user={user} onLogout={onLogout}>
-    <header className="topbar">
+    <header className="topbar booking-detail-page-header">
       <div><p className="eyebrow">Booking Details</p><h1>{booking?.guestName || "Booking"}</h1></div>
       <Button asChild variant="outline"><Link  className="secondary button-link icon-link" to="/dashboard/bookings"><FiArrowLeft />Back to bookings</Link></Button>
     </header>
