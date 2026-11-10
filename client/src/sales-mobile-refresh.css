@@ -1073,3 +1073,55 @@ html body #root .sales-channel-breakdown .sales-channel-breakdown-count {
     max-width: 48% !important;
   }
 }
+
+
+/* Transaction History: restore a complete rounded card with balanced inner padding. */
+html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-records-panel.panel {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 1720px !important;
+  min-width: 0 !important;
+  margin: 0 auto 10px !important;
+  padding: 14px 16px !important;
+  border: 1px solid var(--border) !important;
+  border-top: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+html body #root .sales-records-panel .sales-records-heading.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 10px !important;
+}
+html body #root .sales-records-panel:has(.sales-records-content[hidden]) .sales-records-heading.panel-title {
+  margin-bottom: 0 !important;
+}
+html body #root .sales-records-panel .sales-records-content {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+html body #root .sales-records-panel .sales-table-wrap {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  border-radius: 10px !important;
+  overflow-x: auto;
+}
+@media (max-width: 560px) {
+  html body #root .page-shell > .content-shell:has(> .analytics-topbar) > .sales-records-panel.panel {
+    padding: 12px !important;
+    border-radius: 10px !important;
+  }
+  html body #root .sales-records-panel .sales-records-heading.panel-title {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}
