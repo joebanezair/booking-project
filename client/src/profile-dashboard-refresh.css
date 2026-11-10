@@ -1022,3 +1022,16 @@ html body #root .profile-overview-clean .linkedin-avatar-button,
 html body #root .profile-overview-clean .linkedin-avatar-button > .profile-avatar {
   border-radius: 50% !important;
 }
+
+
+/* Remove borders from internal Profile overview components; retain only the two outer panels. */
+html body #root .profile-overview-clean .profile-home-panel *,
+html body #root .profile-overview-clean .profile-customer-activity-panel * {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Preserve the circular profile-photo frame against the internal border reset. */
+html body #root .profile-overview-clean .linkedin-avatar-button {
+  border: 4px solid var(--card) !important;
+}
