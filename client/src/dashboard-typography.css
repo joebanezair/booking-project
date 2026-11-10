@@ -1,0 +1,28 @@
+/*
+ * Dashboard typography and title casing.
+ * Scope is limited to authenticated workspace routes so public storefronts
+ * and user-submitted content keep their existing presentation.
+ */
+
+/* Clamp text at 15px without enlarging any smaller labels or helper copy.
+   SVG icons are excluded so their explicit dimensions remain unchanged. */
+html body #root .page-shell,
+html body #root .page-shell :not(svg) {
+  font-size: min(15px, 1em) !important;
+}
+
+/* Capitalize interface navigation and primary page/section headings only.
+   User names, product names, descriptions and other entered content retain
+   the casing supplied by their owners. */
+html body #root .page-shell > aside.sidebar .sidebar-section-label,
+html body #root .page-shell > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle) > span,
+html body #root .page-shell > .mobile-app-header .sidebar-brand strong,
+html body #root .page-shell .workspace-account-menu-label,
+html body #root .page-shell .content-shell > header.topbar:not(:has(+ .dashboard-content-rail)) h1,
+html body #root .page-shell .dashboard-content-rail .business-admin-activity-heading h2,
+html body #root .page-shell .dashboard-content-rail .dashboard-section-heading h2,
+html body #root .page-shell .dashboard-content-rail .dashboard-v2-analysis-grid > .ui-card > h3,
+html body #root .page-shell .dashboard-content-rail .dashboard-route-section .dashboard-section-heading h2,
+html body #root .page-shell .dashboard-content-rail .dashboard-v2-stat-label {
+  text-transform: capitalize;
+}
