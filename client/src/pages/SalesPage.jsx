@@ -80,7 +80,7 @@ function CompletedOnlineSales({orders,expanded,onToggle,onOpen}) {
     aria-labelledby="completed-online-sales-heading">
     <div className="panel-title sales-orders-head completed-sales-head">
       <div>
-        <p className="eyebrow">SALES HISTORY</p>
+        <p className="eyebrow">Sales History</p>
         <h2 id="completed-online-sales-heading"><FiCheckCircle aria-hidden="true"/> Completed sales</h2>
         <p className="muted completed-sales-description">Finished online orders are kept here, separate from active orders.</p>
       </div>
@@ -347,14 +347,14 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
 
   return <AppLayout user={user} onLogout={onLogout}>
     {ordersOnly ? <header className="topbar online-orders-page-header">
-      <div><p className="eyebrow">PRODUCTS / ONLINE ORDERS</p>
+      <div><p className="eyebrow">Products / Online Orders</p>
         <h1>Online orders</h1>
         <p className="muted">Manage orders from your public storefront, update fulfillment, and share buyer tracking links.</p>
       </div>
     </header> : <>
     <header className="topbar analytics-topbar">
       <div>
-        <p className="eyebrow">SALES & ANALYTICS</p>
+        <p className="eyebrow">Sales & Analytics</p>
         <h1>Sales & analytics</h1>
         <p className="muted">Track revenue, transactions, and sales performance.</p>
       </div>
@@ -411,7 +411,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     {ordersOnly && ordersLoading && <section className="panel sales-orders-loading" role="status">Loading online orders…</section>}
     {ordersOnly && <section className={"panel pos-history-panel sales-orders-panel"+(!activeOrders.length?" is-empty":"")}>
       <div className="panel-title sales-orders-head">
-        <div><p className="eyebrow">ONLINE ORDERS</p><h2>Public product orders</h2></div>
+        <div><p className="eyebrow">Online Orders</p><h2>Public product orders</h2></div>
         <Button type="button" variant="outline" className="sales-orders-collapse" aria-expanded={ordersExpanded}
           aria-controls="sales-online-orders-content" onClick={()=>setOrdersExpanded(value=>!value)}>
           {activeOrders.length} active order{activeOrders.length===1?"":"s"} <FiChevronDown aria-hidden="true"/>
@@ -463,17 +463,17 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
 
       <div className="analytics-grid">
         <section className="panel analytics-chart-panel">
-          <div className="panel-title"><div><p className="eyebrow">TREND</p><h2>Sales over time</h2></div></div>
+          <div className="panel-title"><div><p className="eyebrow">Trend</p><h2>Sales over time</h2></div></div>
           <SalesTrendChart data={data?.trend || []} currency={primaryCurrency} />
         </section>
         <section className="panel analytics-chart-panel">
-          <div className="panel-title"><div><p className="eyebrow">MIX</p><h2>Sales by service / product channel</h2></div></div>
+          <div className="panel-title"><div><p className="eyebrow">Mix</p><h2>Sales by service / product channel</h2></div></div>
           <ServiceSalesChart data={data?.byService || []} currency={primaryCurrency} />
         </section>
       </div>
 
       {(data?.byChannel?.length > 0 || data?.byPaymentMethod?.length > 0) && <section className="panel currency-summary sales-channel-breakdown">
-        <div className="panel-title sales-channel-breakdown-heading"><div><p className="eyebrow">BREAKDOWN</p><h2>Sales channels & POS payments</h2><p className="muted sales-channel-breakdown-description">Revenue and transaction breakdown by source.</p></div></div>
+        <div className="panel-title sales-channel-breakdown-heading"><div><p className="eyebrow">Breakdown</p><h2>Sales channels & POS payments</h2><p className="muted sales-channel-breakdown-description">Revenue and transaction breakdown by source.</p></div></div>
         <div className="currency-total-list sales-channel-breakdown-grid">
           {(data?.byChannel || []).map(item => {
             const Icon = item.channel?.toLowerCase().includes("service") ? FiCalendar : FiShoppingBag;
@@ -497,7 +497,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
 
       <section className="panel sales-records-panel">
         <div className="panel-title sales-records-heading">
-          <div><p className="eyebrow">TRANSACTION HISTORY</p><h2>All sales</h2></div>
+          <div><p className="eyebrow">Transaction History</p><h2>All sales</h2></div>
           <Button type="button" variant="outline" className="sales-records-toggle"
             onClick={()=>setHistoryExpanded(value=>!value)}
             aria-expanded={historyExpanded}
@@ -527,7 +527,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
         <section className="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receipt-title">
           <div className="receipt-modal-actions no-print"><Button variant="plain" className="secondary icon-link" onClick={()=>window.print()}><FiPrinter/>Print</Button><Button variant="plain" className="secondary icon-action" aria-label="Close receipt" onClick={()=>setReceipt(null)}><FiX/></Button></div>
           <div className="receipt-paper">
-            <p className="eyebrow">BOOKFLOW RECEIPT</p><h2 id="receipt-title">Sales receipt</h2>
+            <p className="eyebrow">BookFlow Receipt</p><h2 id="receipt-title">Sales receipt</h2>
             <div className="receipt-rule"/>
             <dl className="receipt-details">
               <div><dt>Reference</dt><dd>{receipt.reference||"—"}</dd></div>
@@ -554,7 +554,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
       }}}>
       <DialogContent className="vendor-order-dialog-content">
         <DialogHeader>
-          <p className="eyebrow">ORDER DETAILS</p>
+          <p className="eyebrow">Order Details</p>
           <DialogTitle>{selectedOrder?.orderNumber}</DialogTitle>
           <DialogDescription>View order details, share tracking and manage fulfillment.</DialogDescription>
         </DialogHeader>
@@ -679,7 +679,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
           return <>
             <div className="vendor-order-product-modal-heading">
               <div>
-                <p className="eyebrow">PRODUCT DETAILS</p>
+                <p className="eyebrow">Product Details</p>
                 <DialogTitle>{item.name}</DialogTitle>
                 <DialogDescription>
                   Purchased item from order {selectedOrder.orderNumber}
