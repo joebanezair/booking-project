@@ -25,9 +25,10 @@ const businessWidgetGroups = [
     ["statAverage", "Average sale"], ["statServices", "Services sold"]
   ] },
   { title: "Analytics", widgets: [
-    ["salesOverview", "Sales overview"], ["salesChartNavigation", "Sales / Completed / Services navigation"], ["serviceStatus", "Service status"],
+    ["salesOverview", "Sales overview"], ["serviceStatus", "Service status"],
     ["topServices", "Top services"]
   ] },
+  { title: "Navigation", widgets: [["workspaceTopbar", "Top navigation bar (search and profile)"]] },
   { title: "Quick access", widgets: [
     ["quickServices", "Services"], ["quickBookings", "Bookings"], ["quickProducts", "Products"],
     ["quickSales", "Sales & analytics"], ["quickMessages", "Messages"],
@@ -70,7 +71,7 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
   const [businessPreferencesLoading, setBusinessPreferencesLoading] = useState(!isAdmin);
   const [businessPreferencesSaving, setBusinessPreferencesSaving] = useState(false);
   const [businessPreferencesError, setBusinessPreferencesError] = useState("");
-  const [expandedBusinessGroups, setExpandedBusinessGroups] = useState({ "Key metrics": true, Analytics: true });
+  const [expandedBusinessGroups, setExpandedBusinessGroups] = useState({ "Key metrics": true, Navigation: true });
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -153,7 +154,7 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
 
   function openBusinessCustomize() {
     setDraftBusinessWidgets({ ...visibleBusinessWidgets });
-    setExpandedBusinessGroups({ "Key metrics": true, Analytics: true });
+    setExpandedBusinessGroups({ "Key metrics": true, Navigation: true });
     setBusinessPreferencesError("");
     setBusinessCustomizeOpen(true);
   }
@@ -168,6 +169,7 @@ export default function SettingsPage({ user, onLogout, theme, onThemeChange }) {
       setDraftBusinessWidgets({ ...preferences });
       try { window.localStorage.setItem(businessWidgetKey, JSON.stringify(preferences)); }
       catch { /* Saved to the account even if browser storage is unavailable. */ }
+      window.dispatchEvent(new CustomEvent("bookflow:business-dashboard-preferences-updated", { detail: preferences }));
       setBusinessCustomizeOpen(false);
     } catch (error) {
       setBusinessPreferencesError(error.message || "Unable to save dashboard preferences.");
