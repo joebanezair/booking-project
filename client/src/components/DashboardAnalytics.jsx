@@ -168,12 +168,12 @@ export default function DashboardAnalytics({ data, statusSummary, range = "month
         <div className="dashboard-v2-panel-head">
           <div><h3 id="dashboard-sales-heading">Sales Overview</h3>
             <p className="dashboard-v2-muted">Recorded sales activity · {title.toLowerCase()}</p></div>
-          {visibility.salesChartNavigation !== false && <ButtonGroup className="dashboard-v2-sales-controls" aria-label="Sales chart view">
+          <ButtonGroup className="dashboard-v2-sales-controls" aria-label="Sales chart view">
             {[["sales","Sales"],["completed","Completed"],["services","Services"]].map(([key, label]) =>
               <Button key={key} type="button" variant="ghost" size="sm"
                 className={chartTab === key ? "dashboard-chart-tab selected" : "dashboard-chart-tab"}
                 aria-pressed={chartTab === key} onClick={() => setChartTab(key)}>{label}</Button>)}
-          </ButtonGroup>}
+          </ButtonGroup>
         </div>
         <div className="dashboard-v2-chart-area">
           {loading && !data ? <div className="dashboard-v2-empty">Loading analytics…</div>
