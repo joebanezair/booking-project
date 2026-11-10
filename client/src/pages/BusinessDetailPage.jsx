@@ -196,7 +196,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
           <section className="admin-detail-section admin-detail-sales-section" aria-labelledby="admin-earnings-title">
             <div className="admin-detail-section-heading">
               <div>
-                <p className="eyebrow">FINANCIAL ACTIVITY</p>
+                <p className="eyebrow">Financial Activity</p>
                 <h2 id="admin-earnings-title">Recorded gross sales</h2>
                 <p className="muted">Service sales, recorded POS transactions, and completed online product orders.</p>
               </div>
@@ -258,7 +258,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
           <section className="admin-detail-section admin-detail-feature-plan" aria-labelledby="feature-plan-title">
             <div className="admin-detail-section-heading">
               <div>
-                <p className="eyebrow">ACCESS MANAGEMENT</p>
+                <p className="eyebrow">Access Management</p>
                 <h2 id="feature-plan-title">Feature plan</h2>
                 <p className="muted">Control access independently for each feature. Changes take effect immediately.</p>
               </div>
@@ -316,7 +316,7 @@ export default function BusinessDetailPage({ user, onLogout }) {
           <section className="admin-detail-section admin-detail-recent" aria-labelledby="admin-recent-title">
             <div className="admin-detail-section-heading">
               <div>
-                <p className="eyebrow">RECENT ACTIVITY</p>
+                <p className="eyebrow">Recent Activity</p>
                 <h2 id="admin-recent-title">Services & bookings</h2>
                 <p className="muted">Review the business's latest services and booking activity.</p>
               </div>
