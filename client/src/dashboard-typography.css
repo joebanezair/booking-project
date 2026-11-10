@@ -191,6 +191,8 @@ html:not([data-theme="dark"]) body #root .page-shell:has(.dashboard-content-rail
 /* POS, Online Orders and Services workspace pages: pure white canvas in light mode only. */
 html:not([data-theme="dark"]) body:has(:is(
   .products-pos-header,
+  .sales-page-header,
+  .notifications-page-header,
   .online-orders-page-header,
   .services-management-header,
   .services-editor-page-header,
@@ -199,6 +201,8 @@ html:not([data-theme="dark"]) body:has(:is(
 )),
 html:not([data-theme="dark"]) body:has(:is(
   .products-pos-header,
+  .sales-page-header,
+  .notifications-page-header,
   .online-orders-page-header,
   .services-management-header,
   .services-editor-page-header,
@@ -207,6 +211,8 @@ html:not([data-theme="dark"]) body:has(:is(
 )) #root,
 html:not([data-theme="dark"]) body:has(:is(
   .products-pos-header,
+  .sales-page-header,
+  .notifications-page-header,
   .online-orders-page-header,
   .services-management-header,
   .services-editor-page-header,
@@ -215,6 +221,8 @@ html:not([data-theme="dark"]) body:has(:is(
 )) #root .page-shell,
 html:not([data-theme="dark"]) body:has(:is(
   .products-pos-header,
+  .sales-page-header,
+  .notifications-page-header,
   .online-orders-page-header,
   .services-management-header,
   .services-editor-page-header,
@@ -225,6 +233,8 @@ html:not([data-theme="dark"]) body:has(:is(
 }
 html:not([data-theme="dark"]) body:has(:is(
   .products-pos-header,
+  .sales-page-header,
+  .notifications-page-header,
   .online-orders-page-header,
   .services-management-header,
   .services-editor-page-header,
