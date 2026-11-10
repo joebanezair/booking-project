@@ -331,3 +331,18 @@ html body #root .sales-earnings-grid {
 html body #root .sales-table-wrap {
   margin-top: 0;
 }
+
+
+/* Match the earnings note and product-cost table container corners to the app's standard component radius. */
+html body #root .sales-earnings-overview .sales-earnings-note {
+  box-sizing: border-box;
+  border-radius: 10px !important;
+}
+html body #root .sales-earnings-overview .sales-earnings-table-wrap,
+html body #root .sales-earnings-overview .sales-table-wrap {
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+html body #root .sales-earnings-overview .sales-earnings-table {
+  border-radius: 10px !important;
+}
