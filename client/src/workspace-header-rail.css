@@ -338,3 +338,9 @@ html body #root .page-shell.page-shell--business > aside.sidebar .sidebar-nav bu
 html body #root .page-shell.page-shell--business > aside.sidebar .sidebar-nav :is(a.sidebar-nav-link, button.sidebar-nav-toggle.ui-button):hover:not(.active):not(.current-section) {
   background: #141f31 !important;
 }
+
+
+/* Keep the optional search/profile top navigation visually transparent. */
+html body #root .page-shell > .workspace-topbar {
+  background: transparent !important;
+}
