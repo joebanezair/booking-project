@@ -1598,3 +1598,9 @@ html body #root .bookflow-storefront.public-business-profile .storefront-descrip
     padding: 10px 12px !important;
   }
 }
+
+
+/* Keep exactly 10px between the profile description row and catalog search. */
+html body #root .bookflow-storefront.public-business-profile .profile-catalog-filter-section.storefront-filter-section {
+  margin-top: 10px !important;
+}
