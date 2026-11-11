@@ -265,24 +265,32 @@ export default function PublicProfilePage({ user }) {
         <div className="public-profile-copy" id="storefront-about">
           {paused && <div className="paused-public-banner" role="status" title="This business is not accepting new bookings right now."><FiAlertCircle aria-hidden="true" /><span>Bookings temporarily unavailable</span><span className="visually-hidden"> — this business is not accepting new bookings right now.</span></div>}
           <div className="storefront-about-layout">
-            <div className="profile-reputation-panel" aria-label="Business ratings">
-              <div className="profile-reputation-row" title="Business rating — Ratings from visitors" aria-label="Business rating. Ratings from visitors">
-                <span className="storefront-reputation-icon storefront-reputation-icon--rating" aria-hidden="true"><FiStar /></span>
-                <div className="storefront-reputation-details">
-                  <RatingSummary {...profile.businessRatingSummary} />
+            <div className="storefront-rating-column">
+              <div className="profile-reputation-panel" aria-label="Business ratings">
+                <div className="profile-reputation-row" title="Business rating — Ratings from visitors" aria-label="Business rating. Ratings from visitors">
+                  <span className="storefront-reputation-icon storefront-reputation-icon--rating" aria-hidden="true"><FiStar /></span>
+                  <div className="storefront-reputation-details">
+                    <RatingSummary {...profile.businessRatingSummary} />
+                  </div>
                 </div>
-              </div>
-              <div className="profile-reputation-row profile-reputation-reviews" title="Verified booking reviews — Reviews from completed bookings" aria-label="Verified booking reviews. Reviews from completed bookings">
-                <span className="storefront-reputation-icon storefront-reputation-icon--verified" aria-hidden="true"><FiCheckCircle /></span>
-                <div className="storefront-reputation-details">
-                  <RatingSummary {...profile.ratingSummary} />
+                <div className="profile-reputation-row profile-reputation-reviews" title="Verified booking reviews — Reviews from completed bookings" aria-label="Verified booking reviews. Reviews from completed bookings">
+                  <span className="storefront-reputation-icon storefront-reputation-icon--verified" aria-hidden="true"><FiCheckCircle /></span>
+                  <div className="storefront-reputation-details">
+                    <RatingSummary {...profile.ratingSummary} />
+                  </div>
                 </div>
               </div>
               {(user && !isOwner || ratingMessage) && <div className="business-rating-card">
-                {user && !isOwner && <div className="profile-rating-control"><span className="profile-rating-label">Your rating</span><div className="profile-rating-actions"><RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />{profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}</div></div>}
+                {user && !isOwner && <div className="profile-rating-control">
+                  <span className="profile-rating-label">Your rating</span>
+                  <div className="profile-rating-actions">
+                    <RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />
+                    {profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}
+                  </div>
+                </div>}
                 {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
               </div>}
-              {!user && <small className="muted">Sign in to rate this business.</small>}
+              {!user && <small className="muted storefront-sign-in-rating">Sign in to rate this business.</small>}
             </div>
             <div className="storefront-description-column">
               {profile.bio && <p className="public-bio">{profile.bio}</p>}
