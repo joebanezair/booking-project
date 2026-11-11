@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiEdit3, FiEye, FiGlobe, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShare2, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiEdit3, FiEye, FiFileText, FiGlobe, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShare2, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
@@ -265,37 +265,33 @@ export default function PublicProfilePage({ user }) {
         <div className="public-profile-copy" id="storefront-about">
           {paused && <div className="paused-public-banner" role="status" title="This business is not accepting new bookings right now."><FiAlertCircle aria-hidden="true" /><span>Bookings temporarily unavailable</span><span className="visually-hidden"> — this business is not accepting new bookings right now.</span></div>}
           <div className="storefront-about-layout">
-            <div className="storefront-rating-column">
-              <div className="profile-reputation-panel" aria-label="Business ratings">
-                <div className="profile-reputation-row" title="Business rating — Ratings from visitors" aria-label="Business rating. Ratings from visitors">
-                  <span className="storefront-reputation-icon storefront-reputation-icon--rating" aria-hidden="true"><FiStar /></span>
-                  <div className="storefront-reputation-details">
-                    <RatingSummary {...profile.businessRatingSummary} />
-                  </div>
-                </div>
-                <div className="profile-reputation-row profile-reputation-reviews" title="Verified booking reviews — Reviews from completed bookings" aria-label="Verified booking reviews. Reviews from completed bookings">
-                  <span className="storefront-reputation-icon storefront-reputation-icon--verified" aria-hidden="true"><FiCheckCircle /></span>
-                  <div className="storefront-reputation-details">
-                    <RatingSummary {...profile.ratingSummary} />
-                  </div>
-                </div>
+            <section className="storefront-info-card storefront-rating-summary-card" title="Business rating — Ratings from visitors" aria-label="Business rating. Ratings from visitors">
+              <span className="storefront-info-card-icon storefront-info-card-icon--rating" aria-hidden="true"><FiStar /></span>
+              <div className="storefront-info-card-value">
+                <RatingSummary {...profile.businessRatingSummary} />
               </div>
-              {(user && !isOwner || ratingMessage) && <div className="business-rating-card">
-                {user && !isOwner && <div className="profile-rating-control">
-                  <span className="profile-rating-label">Your rating</span>
-                  <div className="profile-rating-actions">
-                    <RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />
-                    {profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}
-                  </div>
-                </div>}
-                {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
+            </section>
+            <section className="storefront-info-card storefront-rating-summary-card" title="Verified booking reviews — Reviews from completed bookings" aria-label="Verified booking reviews. Reviews from completed bookings">
+              <span className="storefront-info-card-icon storefront-info-card-icon--verified" aria-hidden="true"><FiCheckCircle /></span>
+              <div className="storefront-info-card-value">
+                <RatingSummary {...profile.ratingSummary} />
+              </div>
+            </section>
+            <section className="storefront-info-card storefront-description-column" aria-label="Business description">
+              {profile.bio && <div className="storefront-description-content"><FiFileText aria-hidden="true" /><p className="public-bio">{profile.bio}</p></div>}
+              {profile.website && <div className="profile-meta storefront-meta"><a href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true" />Website</a></div>}
+            </section>
+            {(user && !isOwner || ratingMessage) && <div className="business-rating-card storefront-rating-controls">
+              {user && !isOwner && <div className="profile-rating-control">
+                <span className="profile-rating-label">Your rating</span>
+                <div className="profile-rating-actions">
+                  <RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />
+                  {profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}
+                </div>
               </div>}
-              {!user && <small className="muted storefront-sign-in-rating">Sign in to rate this business.</small>}
-            </div>
-            <div className="storefront-description-column">
-              {profile.bio && <p className="public-bio">{profile.bio}</p>}
-              {profile.website && <div className="profile-meta storefront-meta"><a href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true"/>Website</a></div>}
-            </div>
+              {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true"/>{ratingMessage}</small>}
+            </div>}
+            {!user && <small className="muted storefront-sign-in-rating">Sign in to rate this business.</small>}
           </div>
         </div>
       </div>
