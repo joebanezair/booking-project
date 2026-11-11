@@ -416,7 +416,7 @@ export default function PublicProfilePage({ user }) {
         <span className="storefront-section-count"><FiStar aria-hidden="true"/> {verifiedRating.ratingCount || 0} {(verifiedRating.ratingCount || 0) === 1 ? "review" : "reviews"}</span>
       </div>
       {reviews.length === 0 ? <div className="storefront-reviews-empty" role="status"><span className="storefront-reviews-empty-icon"><FiStar aria-hidden="true" /></span><div><strong>No verified reviews yet</strong><p>Reviews from completed bookings will appear here.</p></div></div> :
-        <div className="verified-review-list">{reviews.map(review => <Card as="article" className="panel verified-review-card" key={review._id}><RatingSummary averageRating={review.rating} ratingCount={1} />{review.comment && <p>{review.comment}</p>}<small>Verified booking · {new Date(review.submittedAt).toLocaleDateString()}</small></Card>)}</div>}
+        <div className="verified-review-list">{reviews.map(review => <Card as="article" className="panel verified-review-card" key={review._id}><div className="verified-review-rating"><span className="verified-review-rating-icon" aria-hidden="true"><FiStar /></span><RatingSummary averageRating={review.rating} ratingCount={1} /></div>{review.comment && <p>{review.comment}</p>}<small><FiCheckCircle aria-hidden="true"/>Verified booking · {new Date(review.submittedAt).toLocaleDateString()}</small></Card>)}</div>}
     </section>
     <footer className="storefront-footer">
       <div className="storefront-container storefront-footer-inner">
