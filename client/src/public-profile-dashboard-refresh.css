@@ -1580,11 +1580,17 @@ html body #root .bookflow-storefront.public-business-profile .storefront-descrip
     grid-template-columns: minmax(0, 1fr) !important;
     gap: 8px !important;
   }
-  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-rating-summary-card,
-  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-your-rating-card,
-  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-description-column {
+  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-rating-summary-card {
     grid-column: 1 !important;
     grid-row: auto !important;
+  }
+  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-your-rating-card {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+  }
+  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-description-column {
+    grid-column: 1 !important;
+    grid-row: 4 !important;
   }
   html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-rating-summary-card,
   html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-your-rating-card {
