@@ -268,7 +268,7 @@ export default function PublicProfilePage({ user }) {
             <section className="storefront-info-card storefront-rating-summary-card" title="Business rating — Ratings from visitors" aria-label="Business rating. Ratings from visitors">
               <span className="storefront-info-card-icon storefront-info-card-icon--rating" aria-hidden="true"><FiStar /></span>
               <div className="storefront-info-card-value">
-                <RatingSummary {...profile.businessRatingSummary} />
+                <RatingSummary {...profile.businessRatingSummary} label="Business rating" />
               </div>
             </section>
             <section className="storefront-info-card storefront-rating-summary-card" title="Verified booking reviews — Reviews from completed bookings" aria-label="Verified booking reviews. Reviews from completed bookings">
