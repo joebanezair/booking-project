@@ -826,8 +826,8 @@ html:not([data-theme="dark"]) body #root .bookflow-storefront .public-profile-he
   background: #ffffff !important;
 }
 html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
-  height: 190px !important;
-  min-height: 190px !important;
+  height: 210px !important;
+  min-height: 210px !important;
 }
 html:not([data-theme="dark"]) body #root .bookflow-storefront .storefront-cover-empty,
 html:not([data-theme="dark"]) body #root .bookflow-storefront .storefront-cover-placeholder {
