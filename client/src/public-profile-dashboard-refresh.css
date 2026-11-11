@@ -1254,3 +1254,30 @@ html body #root .bookflow-storefront.public-business-profile .storefront-rating-
     min-height: 68px !important;
   }
 }
+
+
+/* Business score and its label share one compact horizontal row. */
+html body #root .bookflow-storefront.public-business-profile .storefront-rating-summary-card .storefront-info-card-value {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  min-width: 0 !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-rating-summary-card .rating-summary {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: nowrap !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-rating-summary-card .rating-summary-label {
+  display: inline !important;
+  color: #52617a !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+}
