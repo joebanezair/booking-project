@@ -274,12 +274,13 @@ export default function PublicProfilePage({ user }) {
             <section className="storefront-info-card storefront-rating-summary-card" title="Verified booking reviews — Reviews from completed bookings" aria-label="Verified booking reviews. Reviews from completed bookings">
               <span className="storefront-info-card-icon storefront-info-card-icon--verified" aria-hidden="true"><FiCheckCircle /></span>
               <div className="storefront-info-card-value">
-                <RatingSummary {...profile.ratingSummary} />
+                <RatingSummary {...profile.ratingSummary} label="Verified reviews" />
               </div>
             </section>
             <section className="storefront-info-card storefront-description-column" aria-label="Business description">
               <span className="storefront-info-card-icon storefront-info-card-icon--description" aria-hidden="true"><FiFileText /></span>
               <div className="storefront-description-content">
+                <strong className="storefront-description-title">Description</strong>
                 {profile.bio && <p className="public-bio">{profile.bio}</p>}
                 {profile.website && <div className="profile-meta storefront-meta"><a href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true" />Website</a></div>}
               </div>
