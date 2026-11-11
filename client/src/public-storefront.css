@@ -2438,3 +2438,93 @@ html body #root .bookflow-storefront .storefront-description-column .storefront-
     width: auto;
   }
 }
+
+
+/* Compact verified review cards: trim vertical whitespace and make the rating score easier to scan. */
+html body #root .bookflow-storefront .storefront-reviews .storefront-section-heading {
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .storefront-section-heading h2 {
+  margin: 0 0 2px !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .storefront-section-description {
+  line-height: 1.35 !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .storefront-section-count {
+  padding: 5px 9px !important;
+  gap: 5px !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-list {
+  gap: 8px !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  min-height: 0 !important;
+  height: auto !important;
+  gap: 6px !important;
+  padding: 11px 12px !important;
+  border-radius: 10px !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-rating {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  min-width: 0;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-rating-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: color-mix(in srgb, #e9a52b 12%, var(--card));
+  color: #d99418;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-rating-icon svg {
+  width: 14px;
+  height: 14px;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-rating .rating-summary {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-rating .rating-summary .stars {
+  font-size: 12px !important;
+  letter-spacing: 0 !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-rating .rating-summary strong {
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-rating .rating-summary > span:not(.stars) {
+  color: var(--muted-foreground);
+  font-size: 11px !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card p {
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card > small {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 !important;
+  color: var(--muted-foreground);
+  font-size: 10px !important;
+  line-height: 1.3 !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card > small svg {
+  width: 12px;
+  height: 12px;
+  color: var(--primary);
+}
