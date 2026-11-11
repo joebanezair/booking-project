@@ -826,8 +826,8 @@ html:not([data-theme="dark"]) body #root .bookflow-storefront .public-profile-he
   background: #ffffff !important;
 }
 html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
-  height: 170px !important;
-  min-height: 170px !important;
+  height: 190px !important;
+  min-height: 190px !important;
 }
 html:not([data-theme="dark"]) body #root .bookflow-storefront .storefront-cover-empty,
 html:not([data-theme="dark"]) body #root .bookflow-storefront .storefront-cover-placeholder {
@@ -994,8 +994,8 @@ html body #root .bookflow-storefront .storefront-meta a svg {
 }
 @media (max-width: 960px) {
   html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
-    height: 145px !important;
-    min-height: 145px !important;
+    height: 165px !important;
+    min-height: 165px !important;
   }
 }
 @media (max-width: 680px) {
@@ -1012,8 +1012,8 @@ html body #root .bookflow-storefront .storefront-meta a svg {
 }
 @media (max-width: 560px) {
   html body #root .bookflow-storefront .storefront-hero > .public-cover.storefront-cover {
-    height: 110px !important;
-    min-height: 110px !important;
+    height: 130px !important;
+    min-height: 130px !important;
   }
   html body #root .bookflow-storefront .storefront-hero .storefront-profile-info > .profile-avatar,
   html body #root .bookflow-storefront .storefront-hero.has-cover .storefront-profile-info > .profile-avatar {
