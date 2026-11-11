@@ -1281,3 +1281,16 @@ html body #root .bookflow-storefront.public-business-profile .storefront-rating-
   font-weight: 500 !important;
   line-height: 1.2 !important;
 }
+
+
+/* Match every public profile rating and description control to the 10px card radius. */
+html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-info-card,
+html body #root .bookflow-storefront.public-business-profile .storefront-info-card-icon,
+html body #root .bookflow-storefront.public-business-profile .storefront-your-rating-card .rating-input > button.ui-button,
+html body #root .bookflow-storefront.public-business-profile .storefront-your-rating-card .remove-business-rating,
+html body #root .bookflow-storefront.public-business-profile .storefront-your-rating-card .business-rating-feedback,
+html body #root .bookflow-storefront.public-business-profile .storefront-your-rating-card .storefront-sign-in-link,
+html body #root .bookflow-storefront.public-business-profile .storefront-your-rating-card .storefront-sign-in-rating,
+html body #root .bookflow-storefront.public-business-profile .storefront-description-column .storefront-meta a {
+  border-radius: 10px !important;
+}
