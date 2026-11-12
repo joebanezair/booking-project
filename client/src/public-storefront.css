@@ -3077,14 +3077,14 @@ html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-pr
 }
 
 
-/* Business profile search and My Services cards: 15px corners with matching slate-blue light surfaces. */
+/* Business profile search 15px radius; My Services cards border with transparent surface. */
 /* Search field: 15px corners in both themes; existing dark theme colors stay in control. */
 html body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field,
 html body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input {
   border-radius: 15px !important;
 }
 
-/* My Services: match the light slate-blue search surface without changing dark mode. */
+/* My Services: transparent surface with a subtle border in light mode; dark mode is unchanged. */
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card {
   border: 1px solid var(--border) !important;
   border-radius: 15px !important;
@@ -3094,11 +3094,11 @@ html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-pr
 }
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card-body {
   background: transparent !important;
-  color: #344256 !important;
+  color: var(--foreground) !important;
 }
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card-body h3,
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card-body > strong {
-  color: #344256 !important;
+  color: var(--foreground) !important;
 }
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card-body p,
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card-body .rating-summary {
