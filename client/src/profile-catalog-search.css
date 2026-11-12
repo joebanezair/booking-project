@@ -12,7 +12,8 @@
 .public-page .profile-catalog-search {
   display: grid;
   grid-template-columns: minmax(240px, 1fr) minmax(150px, 190px) minmax(150px, 190px);
-  align-items: end;
+  align-items: center;
+  justify-items: stretch;
   gap: 10px 12px;
   margin: 0 0 8px;
   min-width: 0;
@@ -273,4 +274,22 @@ html body .public-page .profile-catalog-search-field .ui-search-field input.ui-s
   .public-page .profile-catalog-search-filter .profile-catalog-select-trigger > svg {
     transition: none !important;
   }
+}
+
+/* Keep Search, Classification and Service rating on the same centered axis. */
+.public-page .profile-catalog-search-field,
+.public-page .profile-catalog-search-filter {
+  align-self: center;
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.public-page .profile-catalog-search-field .ui-search-field,
+.public-page .profile-catalog-search-filter .profile-catalog-select-trigger {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 44px;
+  min-height: 44px;
 }
