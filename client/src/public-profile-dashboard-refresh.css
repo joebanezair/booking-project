@@ -2144,3 +2144,65 @@ html body #root .bookflow-storefront.public-business-profile .storefront-owner-a
     flex-basis: 13px !important;
   }
 }
+
+
+/* Lock star rating controls to a fixed footprint; selected stars must not resize the chip. */
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: nowrap !important;
+  gap: 1px !important;
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: max-content !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input > button.ui-button {
+  display: inline-grid !important;
+  flex: 0 0 18px !important;
+  place-items: center !important;
+  box-sizing: border-box !important;
+  width: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 4px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  line-height: 1 !important;
+  transform: none !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input > button.ui-button:hover,
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input > button.ui-button.active {
+  padding: 0 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input > button.ui-button .rating-star-glyph {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .remove-business-rating {
+  flex: 0 0 22px !important;
+  width: 22px !important;
+  min-width: 22px !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  padding: 0 !important;
+}
