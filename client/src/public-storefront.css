@@ -3086,10 +3086,10 @@ html body #root .bookflow-storefront.public-business-profile .storefront-filter-
 
 /* My Services: match the light slate-blue search surface without changing dark mode. */
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card {
-  border: 0 !important;
+  border: 1px solid var(--border) !important;
   border-radius: 15px !important;
-  background: rgba(233, 239, 249, .88) !important;
-  color: #344256 !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
   box-shadow: none !important;
 }
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card-body {
@@ -3102,5 +3102,5 @@ html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-pr
 }
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card-body p,
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card-body .rating-summary {
-  color: #64748b !important;
+  color: var(--muted-foreground) !important;
 }
