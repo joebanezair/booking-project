@@ -2250,3 +2250,150 @@ html body #root main.public-page.bookflow-storefront.public-business-profile > .
   margin-top: 10px !important;
   padding-block-start: 0 !important;
 }
+
+
+/* Custom capitalized visitor actions and logo-matched booking button. */
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: wrap !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+  min-height: 34px !important;
+  height: 34px !important;
+  margin: 0 !important;
+  padding: 6px 11px !important;
+  border: 1px solid #d9e1ed !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  text-transform: capitalize !important;
+  white-space: nowrap !important;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button:not(:disabled):hover {
+  border-color: #c2d0f7 !important;
+  background: #f4f6ff !important;
+  color: #344fc1 !important;
+  box-shadow: none !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button:disabled {
+  opacity: .55 !important;
+  cursor: not-allowed !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button > svg {
+  display: block !important;
+  flex: 0 0 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  margin: 0 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button:focus-visible {
+  outline: 2px solid rgba(89, 116, 246, .45) !important;
+  outline-offset: 2px !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .storefront-book-button {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+  min-height: 34px !important;
+  height: 34px !important;
+  margin: 0 !important;
+  padding: 6px 12px !important;
+  border: 1px solid #5974f6 !important;
+  border-radius: 8px !important;
+  background: #5974f6 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  text-transform: capitalize !important;
+  white-space: nowrap !important;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button:hover,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .storefront-book-button:hover {
+  border-color: #4863e7 !important;
+  background: #4863e7 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button > svg,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .storefront-book-button > svg {
+  display: block !important;
+  flex: 0 0 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  margin: 0 !important;
+  color: currentColor !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button:focus-visible,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .storefront-book-button:focus-visible {
+  outline: 2px solid rgba(89, 116, 246, .45) !important;
+  outline-offset: 2px !important;
+}
+
+@media (max-width: 760px) {
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-actions {
+    justify-content: flex-start !important;
+    width: 100% !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button,
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button,
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .storefront-book-button {
+    min-height: 34px !important;
+    height: 34px !important;
+    padding: 6px 10px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-actions {
+    gap: 5px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button,
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button,
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .storefront-book-button {
+    gap: 5px !important;
+    padding: 6px 8px !important;
+    font-size: 11px !important;
+  }
+}
