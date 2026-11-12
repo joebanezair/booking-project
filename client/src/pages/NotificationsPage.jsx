@@ -92,7 +92,7 @@ export default function NotificationsPage({ user, onLogout }) {
   }
 
   const visibleCategories = CATEGORIES.filter(category => {
-    if (category.id === "all" || category.id === "other") return true;
+    if (category.id === "all") return true;
     return data.items.some(item => categoryFor(item).id === category.id);
   });
   const visibleItems = activeCategory === "all"
