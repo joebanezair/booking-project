@@ -2503,3 +2503,14 @@ html body #root .bookflow-storefront.public-business-profile .storefront-filter-
   background: transparent !important;
   box-shadow: none !important;
 }
+
+/* Dark theme: give the public business profile hero a dark surface while preserving its cover image. */
+html[data-theme="dark"] body #root .bookflow-storefront.public-business-profile .public-profile-hero.storefront-hero.has-cover {
+  background: #0d1422 !important;
+  color: #e8edf6 !important;
+}
+
+html[data-theme="dark"] body #root .bookflow-storefront.public-business-profile .public-profile-hero.storefront-hero.has-cover > .public-profile-info.storefront-profile-info {
+  background: #151f30 !important;
+  color: #e8edf6 !important;
+}
