@@ -284,17 +284,17 @@ export default function PublicProfilePage({ user }) {
                 <Button asChild variant="default" size="sm" className="owner-profile-action owner-profile-action-primary"><Link to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit Profile</Link></Button>
               </div> : <div className="public-profile-actions">
                 {canInteract ? (
-                  friendship.incomingRequest ? <Button variant="plain" className="primary-button icon-link" disabled={friendBusy} onClick={() => friendAction("accept")}><FiUserPlus aria-hidden="true" />Accept Friend</Button> :
-                  friendship.isFriend ? <Button variant="plain" className="secondary icon-link" disabled={friendBusy} onClick={() => friendAction("unfriend")}><FiUserCheck aria-hidden="true" />Friends</Button> :
-                  <Button variant="plain" className="primary-button icon-link" disabled={friendBusy || friendship.requestSent || friendship.blocked} onClick={() => friendAction("add")}><FiUserPlus aria-hidden="true" />{friendship.requestSent ? "Request Sent" : "Add Friend"}</Button>
-                ) : <Button asChild variant="outline"><Link className="button-link icon-link" to="/login"><FiUserPlus aria-hidden="true" />Add Friend</Link></Button>}
-                {canMessage ? <Button asChild variant="outline"><Link className="secondary button-link icon-link" to={conversationPath}><FiMessageSquare aria-hidden="true" />Message</Link></Button> :
-                  canInteract ? <Button variant="outline" className="icon-link" disabled title={friendship.blocked ? "Messaging is blocked" : "Become friends to send messages"}><FiMessageSquare aria-hidden="true" />Message</Button> :
-                  <Button asChild variant="outline"><Link className="button-link icon-link" to="/login"><FiMessageSquare aria-hidden="true" />Message</Link></Button>}
+                  friendship.incomingRequest ? <button type="button" className="profile-action-button profile-action-friend" disabled={friendBusy} onClick={() => friendAction("accept")}><FiUserPlus aria-hidden="true" /><span>Accept Friend</span></button> :
+                  friendship.isFriend ? <button type="button" className="profile-action-button profile-action-friend" disabled={friendBusy} onClick={() => friendAction("unfriend")}><FiUserCheck aria-hidden="true" /><span>Friends</span></button> :
+                  <button type="button" className="profile-action-button profile-action-friend" disabled={friendBusy || friendship.requestSent || friendship.blocked} onClick={() => friendAction("add")}><FiUserPlus aria-hidden="true" /><span>{friendship.requestSent ? "Request Sent" : "Add Friend"}</span></button>
+                ) : <Link className="profile-action-button profile-action-friend" to="/login"><FiUserPlus aria-hidden="true" /><span>Add Friend</span></Link>}
+                {canMessage ? <Link className="profile-action-button profile-action-message" to={conversationPath}><FiMessageSquare aria-hidden="true" /><span>Message</span></Link> :
+                  canInteract ? <button type="button" className="profile-action-button profile-action-message" disabled title={friendship.blocked ? "Messaging is blocked" : "Become friends to send messages"}><FiMessageSquare aria-hidden="true" /><span>Message</span></button> :
+                  <Link className="profile-action-button profile-action-message" to="/login"><FiMessageSquare aria-hidden="true" /><span>Message</span></Link>}
               </div>}
               {/* Booking is independent of social actions: it requires a posted,
                   published, bookable service and admin-enabled booking access. */}
-              {profile.bookingAvailable && <Button asChild variant="default"><Link className="public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>BOOK A SESSION</span></Link></Button>}
+              {profile.bookingAvailable && <Link className="profile-action-button public-book-session-button storefront-book-button" to={`/b/${profile.id}`}><FiCalendar aria-hidden="true" /><span>Book A Session</span></Link>}
             </div>
           </div>
         </div>
