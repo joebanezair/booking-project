@@ -2422,3 +2422,38 @@ html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-pr
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip .storefront-rating-chip-count {
   color: #64748b !important;
 }
+
+
+/* Business description container: borderless slate surface with theme-aware contrast. */
+html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-description-column {
+  border: 0 !important;
+  outline: 0 !important;
+  background: #e9eff9 !important;
+  box-shadow: none !important;
+}
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-description-column {
+  color: #344256 !important;
+  background: #e9eff9 !important;
+}
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-description-column .storefront-description-title {
+  color: #344256 !important;
+}
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-description-column .public-bio {
+  color: #52617a !important;
+}
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-description-column .storefront-meta a {
+  color: #355b94 !important;
+}
+html[data-theme="dark"] body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-description-column {
+  color: #e2e8f0 !important;
+  background: #263449 !important;
+}
+html[data-theme="dark"] body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-description-column .storefront-description-title {
+  color: #f1f5f9 !important;
+}
+html[data-theme="dark"] body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-description-column .public-bio {
+  color: #cbd5e1 !important;
+}
+html[data-theme="dark"] body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-description-column .storefront-meta a {
+  color: #bfdbfe !important;
+}
