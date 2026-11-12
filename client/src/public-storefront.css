@@ -3015,7 +3015,7 @@ html body .public-product-checkout-dialog .public-product-checkout-actions .ui-b
 html body #root .bookflow-storefront .storefront-reviews .verified-review-card {
   border: 0 !important;
   outline: 0 !important;
-  background: #e9eff9 !important;
+  background: color-mix(in srgb, #e9eff9 84%, transparent) !important;
   color: #344256 !important;
   box-shadow: none !important;
 }
@@ -3024,10 +3024,17 @@ html body #root .bookflow-storefront .storefront-reviews .verified-review-card >
   color: #52617a !important;
 }
 html[data-theme="dark"] body #root .bookflow-storefront .storefront-reviews .verified-review-card {
-  background: #263449 !important;
+  background: color-mix(in srgb, #263449 84%, transparent) !important;
   color: #e2e8f0 !important;
 }
 html[data-theme="dark"] body #root .bookflow-storefront .storefront-reviews .verified-review-card p,
 html[data-theme="dark"] body #root .bookflow-storefront .storefront-reviews .verified-review-card > small {
   color: #cbd5e1 !important;
+}
+
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card {
+  min-height: 0 !important;
+  gap: 5px !important;
+  padding: 9px 10px !important;
+  border-radius: 10px !important;
 }
