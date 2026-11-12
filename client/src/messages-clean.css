@@ -1275,3 +1275,46 @@ html body #root .messages-page-refine .attachment-chip {
     transition: none;
   }
 }
+
+
+/* Center the shared image fallback icon inside Messages avatars. */
+html body #root .messages-page-refine .user-row .avatar,
+html body #root .messages-page-refine .conversation-peer-avatar {
+  display: grid !important;
+  place-items: center !important;
+  align-items: center !important;
+  justify-items: center !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+}
+
+html body #root .messages-page-refine .user-row .avatar > .ui-image-fallback,
+html body #root .messages-page-refine .conversation-peer-avatar > .ui-image-fallback {
+  display: grid !important;
+  place-items: center !important;
+  align-items: center !important;
+  justify-items: center !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  text-align: center !important;
+  overflow: hidden !important;
+}
+
+html body #root .messages-page-refine .user-row .avatar > .ui-image-fallback > svg,
+html body #root .messages-page-refine .conversation-peer-avatar > .ui-image-fallback > svg {
+  display: block !important;
+  flex: 0 0 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
