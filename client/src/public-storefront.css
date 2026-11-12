@@ -2528,3 +2528,108 @@ html body #root .bookflow-storefront .storefront-reviews .verified-review-card >
   height: 12px;
   color: var(--primary);
 }
+
+
+/* Business rating save/remove confirmation popup. */
+html body #root .bookflow-storefront .business-rating-toast {
+  position: fixed !important;
+  z-index: 2500 !important;
+  right: max(20px, env(safe-area-inset-right)) !important;
+  bottom: max(20px, env(safe-area-inset-bottom)) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+  box-sizing: border-box !important;
+  width: min(360px, calc(100vw - 32px)) !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 12px 12px 12px 14px !important;
+  border: 1px solid var(--border, #e2e8f0) !important;
+  border-radius: 12px !important;
+  background: var(--card, #ffffff) !important;
+  color: var(--foreground, #172033) !important;
+  box-shadow: 0 12px 34px rgba(15, 23, 42, .16) !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  animation: business-rating-toast-enter .2s ease-out both;
+}
+
+html body #root .bookflow-storefront .business-rating-toast-icon {
+  display: grid !important;
+  flex: 0 0 30px !important;
+  place-items: center !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 9px !important;
+  background: #eaf8ef !important;
+  color: #16834b !important;
+}
+
+html body #root .bookflow-storefront .business-rating-toast-icon svg {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+html body #root .bookflow-storefront .business-rating-toast-message {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  color: var(--foreground, #172033) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  overflow-wrap: anywhere;
+}
+
+html body #root .bookflow-storefront .business-rating-toast-close {
+  display: grid !important;
+  flex: 0 0 28px !important;
+  place-items: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: var(--muted-foreground, #64748b) !important;
+  cursor: pointer;
+}
+
+html body #root .bookflow-storefront .business-rating-toast-close:hover {
+  background: var(--muted, #f1f5f9) !important;
+  color: var(--foreground, #172033) !important;
+}
+
+html body #root .bookflow-storefront .business-rating-toast-close svg {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+html body #root .bookflow-storefront .business-rating-toast-close:focus-visible {
+  outline: 2px solid var(--ring, #64748b) !important;
+  outline-offset: 2px !important;
+}
+
+@keyframes business-rating-toast-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  html body #root .bookflow-storefront .business-rating-toast {
+    right: 12px !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+    left: 12px !important;
+    width: auto !important;
+    max-width: calc(100vw - 24px) !important;
+    margin: 0 auto !important;
+    padding: 11px 10px 11px 12px !important;
+    border-radius: 11px !important;
+    gap: 9px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root .bookflow-storefront .business-rating-toast {
+    animation: none !important;
+  }
+}
