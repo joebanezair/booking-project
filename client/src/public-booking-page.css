@@ -212,3 +212,27 @@ html body #root .public-booking-page a { color: var(--primary); }
   html body #root .public-booking-page .public-booking-location-actions { align-items: stretch; }
   html body #root .public-booking-page .public-booking-location-actions .ui-button { max-width: 100%; }
 }
+
+
+/* Calendar icon replaces the letter mark on the public booking header. */
+html body #root .public-booking-page .brand-row .brand-mark {
+  display: grid !important;
+  flex: 0 0 48px !important;
+  place-items: center !important;
+  box-sizing: border-box !important;
+  width: 48px !important;
+  height: 48px !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+html body #root .public-booking-page .brand-row .brand-mark > svg {
+  display: block !important;
+  flex: 0 0 23px !important;
+  width: 23px !important;
+  height: 23px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: currentColor !important;
+  stroke-width: 2 !important;
+}
