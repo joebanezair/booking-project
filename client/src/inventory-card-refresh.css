@@ -1196,3 +1196,13 @@ html body #root .page-shell .product-details-modal .product-details-cart-button 
   }
 }
 
+/* Cart panel: 13px radius for Customer name and 5px extra vertical padding for Check out. */
+html body #root .page-shell .products-cart-panel .cart-checkout-details .cart-customer-name-input {
+  border-radius: 13px !important;
+}
+
+html body #root .page-shell .products-cart-panel > .checkout-button {
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
