@@ -336,15 +336,15 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
 
   const primaryCurrency = data?.primaryCurrency || "PHP";
   const summary = data?.summary || {};
-  // Analytics includes completed orders in the selected range; count online units only.
-  const onlineProductsSold = (data?.productRecords || []).reduce((total, record) =>
-    record.source === "online"
-      ? total + (record.items || []).reduce((units, item) => units + (Number(item.quantity) || 0), 0)
-      : total, 0);
-  const posProductsSold = (data?.productRecords || []).reduce((total, record) =>
-    record.source === "pos"
-      ? total + (record.items || []).reduce((units, item) => units + (Number(item.quantity) || 0), 0)
-      : total, 0);
+  // Keep the product volume summary compact while retaining its channel split.
+  const productUnitsSold = (data?.productRecords || []).reduce((totals, record) => {
+    const units = (record.items || []).reduce(
+      (sum, item) => sum + (Number(item.quantity) || 0), 0
+    );
+    if (record.source === "online") totals.online += units;
+    if (record.source === "pos") totals.pos += units;
+    return totals;
+  }, { online: 0, pos: 0 });
   // Use immutable checkout/completion cost snapshots. Missing legacy costs remain unknown.
   const earnings = useMemo(() => {
     const productBreakdown = new Map();
@@ -438,11 +438,10 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     {error && <p className="error">{error}</p>}
     {loading && !data ? <section className="panel"><p>Loading sales analytics…</p></section> : <>
       <section className="stats-grid sales-stats-grid sales-kpis" aria-label="Sales performance overview">
-        <Card as="article" className="stat-card analytics-stat"><span><FiCreditCard aria-hidden="true"/>Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>Services {money(data?.serviceSalesTotal || 0, primaryCurrency)} · Products {money(data?.productSalesTotal || 0, primaryCurrency)}</small></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiCreditCard aria-hidden="true"/>Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>All completed service and product sales</small></Card>
         <Card as="article" className="stat-card analytics-stat"><span><FiCalendar aria-hidden="true"/>Completed services</span><strong>{summary.completedServices || 0}</strong><small>Bookings recorded as sales</small></Card>
-        <Card as="article" className="stat-card analytics-stat"><span><FiTrendingUp aria-hidden="true"/>Average sale</span><strong>{money(summary.averageSale, primaryCurrency)}</strong><small>Average in primary currency</small></Card>
-        <Card as="article" className="stat-card analytics-stat"><span><FiPackage aria-hidden="true"/>Products sold online</span><strong>{onlineProductsSold}</strong><small>Units from completed online orders</small></Card>
-        <Card as="article" className="stat-card analytics-stat"><span><FiShoppingBag aria-hidden="true"/>Products sold in POS</span><strong>{posProductsSold}</strong><small>Units from recorded POS sales</small></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiTrendingUp aria-hidden="true"/>Average sale</span><strong>{money(summary.averageSale, primaryCurrency)}</strong></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiPackage aria-hidden="true"/>Products sold</span><strong>{productUnitsSold.online + productUnitsSold.pos}</strong><small>POS: {productUnitsSold.pos} · Online: {productUnitsSold.online}</small></Card>
       </section>
 
       <section className="panel sales-earnings-overview" aria-labelledby="sales-earnings-heading">
@@ -484,7 +483,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
                 </div>
                 <div className="sales-earnings-channel-details">
                   <span className="sales-earnings-channel-amount">{money(item.revenue, primaryCurrency)}</span>
-                  <small className="sales-earnings-channel-count"><FiFileText aria-hidden="true"/>{item.sales} transaction{item.sales===1?"":"s"}</small>
+
                 </div>
               </div>;
             })}
