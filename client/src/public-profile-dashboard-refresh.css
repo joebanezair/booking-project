@@ -2240,13 +2240,13 @@ html body #root .bookflow-storefront.public-business-profile #storefront-about #
 }
 
 
-/* Remove the outer gap between the profile description and offering search. */
+/* Keep a compact 10px gap between the profile description and offering search. */
 html body #root main.public-page.bookflow-storefront.public-business-profile > .public-profile-hero.storefront-hero > .public-profile-info.storefront-profile-info {
   padding-bottom: 0 !important;
 }
 
 html body #root main.public-page.bookflow-storefront.public-business-profile > .profile-catalog-filter-section.storefront-filter-section {
-  margin-block-start: 0 !important;
-  margin-top: 0 !important;
+  margin-block-start: 10px !important;
+  margin-top: 10px !important;
   padding-block-start: 0 !important;
 }
