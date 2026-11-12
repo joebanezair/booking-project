@@ -10,7 +10,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiCalendar, FiCheckCircle, FiChevronDown, FiChevronLeft, FiChevronRight, FiCopy, FiCreditCard, FiDownload, FiEdit2, FiExternalLink, FiFileText, FiInbox, FiPackage, FiPrinter, FiSearch, FiShare2, FiShoppingBag, FiTruck, FiTrendingUp, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
-import { SalesTrendChart, ServiceSalesChart, SalesStepAreaChart } from "../components/SalesCharts.jsx";
+import { SalesTrendChart, ServiceSalesChart } from "../components/SalesCharts.jsx";
 import OnlineOrdersOverview from "../components/OnlineOrdersOverview.jsx";
 import { exportSalesSpreadsheet } from "../lib/salesExport.js";
 import { api } from "../api.js";
@@ -614,17 +614,6 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
           <ServiceSalesChart data={data?.byService || []} currency={primaryCurrency} />
         </section>
       </div>
-
-      <section className="panel analytics-chart-panel sales-step-area-panel">
-        <div className="panel-title">
-          <div>
-            <p className="eyebrow">Revenue activity</p>
-            <h2>Sales revenue by period</h2>
-            <p className="muted">Step view of recorded revenue using the selected date range and grouping.</p>
-          </div>
-        </div>
-        <SalesStepAreaChart data={data?.trend || []} currency={primaryCurrency} periodLabel={rangeLabel.replaceAll("_to_", " – ")} />
-      </section>
 
       {(data?.byPaymentMethod || []).some(item => String(item.method || "").trim().toLowerCase() !== "cash") && <section className="panel currency-summary sales-channel-breakdown">
         <div className="panel-title sales-channel-breakdown-heading"><div><p className="eyebrow">Breakdown</p><h2>POS payment methods</h2><p className="muted sales-channel-breakdown-description">Revenue and transaction breakdown by POS payment method.</p></div></div>
