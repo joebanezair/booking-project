@@ -29,7 +29,7 @@ export default function ProfileCatalogSearch({
       <Label className="profile-catalog-search-filter">
         <span>Classification</span>
         <Select
-          className="ui-input"
+          className="ui-input profile-catalog-shadcn-select"
           value={classification}
           onChange={event => onClassificationChange(event.target.value)}
         >
@@ -41,7 +41,7 @@ export default function ProfileCatalogSearch({
       {hasServices && <Label className="profile-catalog-search-filter">
         <span>Service rating</span>
         <Select
-          className="ui-input"
+          className="ui-input profile-catalog-shadcn-select"
           value={minRating}
           onChange={event => onRatingChange(event.target.value)}
           disabled={classification === "products"}
