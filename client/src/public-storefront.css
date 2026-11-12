@@ -3052,3 +3052,26 @@ html body #root main.public-service-detail-page .content-booking-callout .servic
   color: #ffffff !important;
 }
 
+
+
+/* Business profile catalog search: slate-blue light theme only. */
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field {
+  background: rgba(233, 239, 249, .88) !important;
+  color: #344256 !important;
+  border-color: transparent !important;
+}
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input {
+  background: transparent !important;
+  color: #344256 !important;
+  -webkit-text-fill-color: #344256 !important;
+  caret-color: #344256 !important;
+}
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  opacity: 1 !important;
+}
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field > .ui-search-icon,
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field .ui-search-clear {
+  color: #64748b !important;
+}
