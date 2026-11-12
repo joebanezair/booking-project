@@ -1049,8 +1049,10 @@ html body #root .dashboard-v2-analytics .dashboard-v2-sales-footer {
 }
 
 
-/* Primary full-pill treatment for the business dashboard Post A Service action. */
-html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar > .dashboard-post-service.ui-button {
+/* Primary full-pill treatment for the business dashboard Post A Service action.
+   The link is nested inside .business-dashboard-header-actions, not a direct
+   child of .topbar; keep this selector stronger than later shared button styles. */
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar .business-dashboard-header-actions > .dashboard-post-service.ui-button {
   min-height: 38px !important;
   padding: 9px 13px !important;
   border: 0 !important;
@@ -1060,14 +1062,14 @@ html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topba
   box-shadow: none !important;
   font-weight: 500 !important;
 }
-html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar > .dashboard-post-service.ui-button > svg {
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar .business-dashboard-header-actions > .dashboard-post-service.ui-button > svg {
   color: inherit !important;
 }
-html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar > .dashboard-post-service.ui-button:hover {
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar .business-dashboard-header-actions > .dashboard-post-service.ui-button:hover {
   background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
   border-color: transparent !important;
 }
-html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar > .dashboard-post-service.ui-button:focus-visible {
+html body #root .page-shell:has(.dashboard-content-rail) .content-shell > .topbar .business-dashboard-header-actions > .dashboard-post-service.ui-button:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
