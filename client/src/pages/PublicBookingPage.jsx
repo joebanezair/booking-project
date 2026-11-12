@@ -91,7 +91,7 @@ export default function PublicBookingPage({user}){
     <Card as="section" className="public-card public-booking-card">
       <CardContent className="public-booking-content">
         <Link className="brand-row" to="/" aria-label="BookFlow home">
-          <span className="brand-mark">B</span>
+          <span className="brand-mark"><FiCalendar aria-hidden="true" /></span>
           <strong>BookFlow</strong>
         </Link>
 
