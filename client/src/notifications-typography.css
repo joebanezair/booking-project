@@ -6,3 +6,315 @@ html body #root .content-shell > .notification-list,
 html body #root .content-shell > .notification-list * {
   font-weight: 400 !important;
 }
+
+
+/* Shadcn notification center: category filters, badges, and card-based items. */
+html body #root .content-shell .notifications-center {
+  display: grid !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 900px !important;
+  min-width: 0 !important;
+  margin: 0 auto !important;
+}
+
+html body #root .content-shell .notification-category-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 7px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+html body #root .content-shell .notification-category-button {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  min-height: 34px !important;
+  height: 34px !important;
+  padding: 5px 10px !important;
+  border-radius: var(--radius, 8px) !important;
+  font-size: 11px !important;
+  font-weight: 550 !important;
+  white-space: nowrap !important;
+}
+
+html body #root .content-shell .notification-category-button > svg {
+  flex: 0 0 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+html body #root .content-shell .notification-category-button .ui-badge {
+  min-height: 18px !important;
+  padding: 1px 6px !important;
+  font-size: 9px !important;
+  font-weight: 650 !important;
+}
+
+html body #root .content-shell .notification-category-button.active {
+  box-shadow: none !important;
+}
+
+html body #root .content-shell .notification-results-heading {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+  padding: 2px 0 !important;
+}
+
+html body #root .content-shell .notification-results-heading > div {
+  display: grid !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+}
+
+html body #root .content-shell .notification-results-heading h2 {
+  margin: 0 !important;
+  color: var(--foreground) !important;
+  font-size: 14px !important;
+  font-weight: 650 !important;
+  line-height: 1.35 !important;
+}
+
+html body #root .content-shell .notification-results-heading p {
+  margin: 0 !important;
+  color: var(--muted-foreground) !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+}
+
+html body #root .content-shell .notification-results-heading > .ui-badge {
+  flex: 0 0 auto !important;
+}
+
+html body #root .content-shell .notification-card-list {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+html body #root .content-shell .notification-card {
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) 16px !important;
+  align-items: center !important;
+  gap: 12px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 13px 14px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius, 8px) !important;
+  background: var(--card) !important;
+  color: var(--card-foreground, var(--foreground)) !important;
+  box-shadow: var(--shadow-sm) !important;
+  text-decoration: none !important;
+  transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease !important;
+}
+
+html body #root .content-shell .notification-card:hover {
+  border-color: var(--ring) !important;
+  background: var(--accent) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+html body #root .content-shell .notification-card.unread {
+  background: color-mix(in srgb, var(--primary) 4%, var(--card)) !important;
+}
+
+html body #root .content-shell .notification-card-icon {
+  display: grid !important;
+  place-items: center !important;
+  box-sizing: border-box !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 10px !important;
+  background: color-mix(in srgb, var(--primary) 9%, var(--card)) !important;
+  color: var(--primary) !important;
+}
+
+html body #root .content-shell .notification-card-icon > svg {
+  display: block !important;
+  width: 17px !important;
+  height: 17px !important;
+}
+
+html body #root .content-shell .notification-card-content {
+  display: grid !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+}
+
+html body #root .content-shell .notification-card-heading {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+}
+
+html body #root .content-shell .notification-card-heading > strong {
+  min-width: 0 !important;
+  color: var(--foreground) !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  line-height: 1.35 !important;
+  overflow-wrap: anywhere !important;
+}
+
+html body #root .content-shell .notification-card-heading > .ui-badge {
+  min-height: 18px !important;
+  padding: 1px 6px !important;
+  font-size: 9px !important;
+  font-weight: 650 !important;
+}
+
+html body #root .content-shell .notification-card-body {
+  display: block !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  color: var(--muted-foreground) !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  overflow-wrap: anywhere !important;
+}
+
+html body #root .content-shell .notification-card-meta {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+}
+
+html body #root .content-shell .notification-card-meta > .ui-badge {
+  min-height: 18px !important;
+  padding: 1px 6px !important;
+  font-size: 9px !important;
+  font-weight: 500 !important;
+}
+
+html body #root .content-shell .notification-card-meta > time {
+  color: var(--muted-foreground) !important;
+  font-size: 10px !important;
+  font-weight: 400 !important;
+  line-height: 1.35 !important;
+}
+
+html body #root .content-shell .notification-card-chevron {
+  display: block !important;
+  width: 15px !important;
+  height: 15px !important;
+  color: var(--muted-foreground) !important;
+}
+
+html body #root .content-shell .notification-empty-state {
+  display: grid !important;
+  justify-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-height: 190px !important;
+  padding: 28px 18px !important;
+  text-align: center !important;
+  background: var(--card) !important;
+}
+
+html body #root .content-shell .notification-empty-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 42px !important;
+  height: 42px !important;
+  margin-bottom: 3px !important;
+  border-radius: 12px !important;
+  background: var(--muted) !important;
+  color: var(--muted-foreground) !important;
+}
+
+html body #root .content-shell .notification-empty-icon > svg {
+  width: 19px !important;
+  height: 19px !important;
+}
+
+html body #root .content-shell .notification-empty-state > strong {
+  color: var(--foreground) !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+}
+
+html body #root .content-shell .notification-empty-state > p {
+  max-width: 36ch !important;
+  margin: 0 !important;
+  color: var(--muted-foreground) !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+}
+
+html body #root .content-shell .notifications-page-header .ui-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  min-height: 34px !important;
+  padding: 5px 10px !important;
+  font-size: 11px !important;
+}
+
+html body #root .content-shell .notifications-page-header h1 svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+@media (max-width: 640px) {
+  html body #root .content-shell .notifications-center {
+    gap: 12px !important;
+  }
+
+  html body #root .content-shell .notification-category-toolbar {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding: 0 0 3px !important;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html body #root .content-shell .notification-category-button {
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 4px 8px !important;
+  }
+
+  html body #root .content-shell .notification-card {
+    grid-template-columns: 34px minmax(0, 1fr) 13px !important;
+    gap: 9px !important;
+    padding: 11px !important;
+  }
+
+  html body #root .content-shell .notification-card-icon {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 9px !important;
+  }
+
+  html body #root .content-shell .notification-card-icon > svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  html body #root .content-shell .notifications-page-header {
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  html body #root .content-shell .notifications-page-header > .ui-button {
+    flex: 0 0 auto !important;
+  }
+}
