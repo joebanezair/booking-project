@@ -474,3 +474,148 @@ html body #root .sales-records-panel .sales-table-wrap {
     transition: none;
   }
 }
+
+
+/* Shadcn-inspired step-area revenue chart; uses the same live analytics data and filters. */
+html body #root .page-shell > .content-shell .sales-step-area-panel {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin-top: 12px !important;
+  padding: 16px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+html body #root .sales-step-area-panel .panel-title {
+  margin: 0 0 12px !important;
+}
+html body #root .sales-step-area-panel .panel-title h2 {
+  margin: 0 0 4px !important;
+  font-size: 16px;
+  font-weight: 650;
+}
+html body #root .sales-step-area-panel .panel-title .muted {
+  margin: 0 !important;
+  font-size: 12px;
+  line-height: 1.45;
+}
+html body #root .sales-step-area {
+  width: 100%;
+  min-width: 0;
+}
+html body #root .sales-step-area-chart-wrap {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+html body #root .sales-step-area-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 210px;
+  overflow: visible;
+}
+html body #root .sales-step-area-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+html body #root .sales-step-area-axis {
+  fill: var(--muted-foreground);
+  font-size: 10px;
+  font-weight: 450;
+}
+html body #root .sales-step-area-line {
+  stroke: var(--chart-1, var(--primary));
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+html body #root .sales-step-area-point {
+  fill: var(--card);
+  stroke: var(--chart-1, var(--primary));
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+html body #root .sales-step-area-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+}
+html body #root .sales-step-area-trend {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  min-width: 0;
+}
+html body #root .sales-step-area-trend-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--chart-1, var(--primary)) 11%, var(--card));
+  color: var(--chart-1, var(--primary));
+  font-size: 18px;
+  font-weight: 650;
+}
+html body #root .sales-step-area-trend-icon.is-down {
+  background: color-mix(in srgb, var(--destructive) 10%, var(--card));
+  color: var(--destructive);
+}
+html body #root .sales-step-area-trend > div,
+html body #root .sales-step-area-total {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+html body #root .sales-step-area-trend strong {
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+html body #root .sales-step-area-trend small,
+html body #root .sales-step-area-total small {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.35;
+}
+html body #root .sales-step-area-total {
+  flex: 0 0 auto;
+  text-align: right;
+}
+html body #root .sales-step-area-total strong {
+  color: var(--foreground);
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 560px) {
+  html body #root .page-shell > .content-shell .sales-step-area-panel {
+    padding: 12px !important;
+  }
+  html body #root .sales-step-area-svg {
+    min-height: 180px;
+  }
+  html body #root .sales-step-area-axis {
+    font-size: 9px;
+  }
+  html body #root .sales-step-area-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  html body #root .sales-step-area-total {
+    text-align: left;
+    padding-left: 37px;
+  }
+}
