@@ -1,4 +1,4 @@
-import { Card } from "../components/ui/card.jsx";
+import { Card, CardContent } from "../components/ui/card.jsx";
 import { Input } from "../components/ui/input.jsx";
 import { Textarea } from "../components/ui/textarea.jsx";
 import { Label } from "../components/ui/label.jsx";
@@ -14,6 +14,7 @@ import ContentCard from "../components/ContentCard.jsx";
 import ProfileCatalogSearch from "../components/ProfileCatalogSearch.jsx";
 import { RatingInput, RatingSummary } from "../components/StarRating.jsx";
 import { Button } from "../components/ui/button.jsx";
+import { Separator } from "../components/ui/separator.jsx";
 
 export default function PublicProfilePage({ user }) {
   const { username } = useParams();
@@ -443,7 +444,170 @@ export default function PublicProfilePage({ user }) {
           )}
         </DialogContent>
       </Dialog>
-      {orderProduct && <div className="booking-modal-backdrop" onClick={()=>setOrderProduct(null)}><section className="panel booking-editor-panel booking-modal" onClick={e=>e.stopPropagation()}><div className="panel-title"><div><p className="eyebrow">PRODUCT ORDER</p><h2>{orderProduct.name}</h2></div><Button type="button" variant="outline" size="icon" className="icon-action" aria-label="Close order" data-tooltip="Close" onClick={()=>setOrderProduct(null)}><FiX/></Button></div><form onSubmit={submitProductOrder}>{user?.role === "business" ? <p className="customer-history-checkout-note">This order will be saved to your Purchase History.</p> : <p className="customer-history-checkout-note">Sign in with your BookFlow business account to save this order to your Purchase History. <Link to="/login">Sign in</Link></p>}<Label>Quantity<Input type="number" min="1" max={orderProduct.stock} required value={orderForm.quantity} onChange={e=>setOrderForm({...orderForm,quantity:e.target.value})}/></Label><Label>Name<Input required value={orderForm.customerName} onChange={e=>setOrderForm({...orderForm,customerName:e.target.value})}/></Label><Label>Phone<Input required value={orderForm.customerPhone} onChange={e=>setOrderForm({...orderForm,customerPhone:e.target.value})}/></Label><Label>Email<Input type="email" value={orderForm.customerEmail} onChange={e=>setOrderForm({...orderForm,customerEmail:e.target.value})}/></Label><Label>Delivery location <span className="required-mark">*</span><div className="location-input-wrap"><FiMapPin aria-hidden="true"/><Input required maxLength="250" autoComplete="street-address" placeholder="Street, barangay, city / delivery address" value={orderForm.deliveryLocation} onChange={e=>setOrderForm({...orderForm,deliveryLocation:e.target.value})}/></div></Label><Label>Notes<Textarea value={orderForm.notes} onChange={e=>setOrderForm({...orderForm,notes:e.target.value})}/></Label><strong>Total: {orderProduct.currency} {(Number(orderProduct.price||0)*Number(orderForm.quantity||1)).toLocaleString()}</strong>{error && <p className="error" role="alert">{error}</p>}<Button type="submit" className="public-place-order" disabled={orderBusy}><FiShoppingBag/>{orderBusy?"Placing order…":"Place order"}</Button></form></section></div>}
+      <Dialog
+        open={Boolean(orderProduct)}
+        onOpenChange={open => { if (!open && !orderBusy) setOrderProduct(null); }}
+        title={orderProduct ? "Order " + orderProduct.name : "Product order"}
+        dismissible={!orderBusy}
+        className="public-product-checkout-dialog"
+      >
+        {orderProduct && (
+          <DialogContent className="public-product-checkout-content">
+            <DialogHeader className="public-product-checkout-header">
+              <div className="public-product-checkout-heading">
+                <p className="eyebrow">PRODUCT ORDER</p>
+                <DialogTitle>{orderProduct.name}</DialogTitle>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label="Close product order"
+                onClick={() => setOrderProduct(null)}
+                disabled={orderBusy}
+              >
+                <FiX aria-hidden="true" />
+              </Button>
+              <DialogDescription>
+                Review the product and enter your contact and delivery details.
+              </DialogDescription>
+            </DialogHeader>
+
+            <Card className="public-product-checkout-product-card">
+              <div className="public-product-checkout-image">
+                <Image
+                  src={orderProduct.images?.[0] || orderProduct.image}
+                  alt={orderProduct.name}
+                  className="public-product-checkout-image-element"
+                />
+              </div>
+              <CardContent className="public-product-checkout-product-content">
+                <div className="public-product-checkout-product-copy">
+                  <strong>{orderProduct.name}</strong>
+                  <span>Sold by {profile.name}</span>
+                </div>
+                <div className="public-product-checkout-product-meta">
+                  <strong>{orderProduct.currency || "PHP"} {Number(orderProduct.price || 0).toLocaleString()}</strong>
+                  <small>{Number(orderProduct.stock || 0).toLocaleString()} in stock</small>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="public-product-checkout-history-note">
+              <CardContent className="public-product-checkout-history-content">
+                <FiCheckCircle aria-hidden="true" />
+                <div>
+                  <strong>Purchase History</strong>
+                  <p>
+                    {user?.role === "business" ? (
+                      "This order will be saved to your Purchase History."
+                    ) : (
+                      <>Sign in with your BookFlow business account to save this order to your Purchase History. <Link to="/login">Sign in</Link></>
+                    )}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <form className="public-product-checkout-form" onSubmit={submitProductOrder}>
+              <div className="public-product-checkout-fields">
+                <div className="public-product-checkout-field public-product-checkout-quantity">
+                  <Label htmlFor="public-order-quantity">Quantity</Label>
+                  <Input
+                    id="public-order-quantity"
+                    type="number"
+                    min="1"
+                    max={orderProduct.stock}
+                    required
+                    value={orderForm.quantity}
+                    onChange={e => setOrderForm({ ...orderForm, quantity: e.target.value })}
+                  />
+                </div>
+                <div className="public-product-checkout-field">
+                  <Label htmlFor="public-order-name">Name <span className="required-mark">*</span></Label>
+                  <Input
+                    id="public-order-name"
+                    required
+                    autoComplete="name"
+                    placeholder="Your full name"
+                    value={orderForm.customerName}
+                    onChange={e => setOrderForm({ ...orderForm, customerName: e.target.value })}
+                  />
+                </div>
+                <div className="public-product-checkout-field">
+                  <Label htmlFor="public-order-phone">Phone <span className="required-mark">*</span></Label>
+                  <Input
+                    id="public-order-phone"
+                    type="tel"
+                    required
+                    autoComplete="tel"
+                    placeholder="Mobile number"
+                    value={orderForm.customerPhone}
+                    onChange={e => setOrderForm({ ...orderForm, customerPhone: e.target.value })}
+                  />
+                </div>
+                <div className="public-product-checkout-field">
+                  <Label htmlFor="public-order-email">Email</Label>
+                  <Input
+                    id="public-order-email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    value={orderForm.customerEmail}
+                    onChange={e => setOrderForm({ ...orderForm, customerEmail: e.target.value })}
+                  />
+                </div>
+                <div className="public-product-checkout-field public-product-checkout-field-wide">
+                  <Label htmlFor="public-order-location">Delivery location <span className="required-mark">*</span></Label>
+                  <div className="public-product-checkout-location-input">
+                    <FiMapPin aria-hidden="true" />
+                    <Input
+                      id="public-order-location"
+                      required
+                      maxLength="250"
+                      autoComplete="street-address"
+                      placeholder="Street, barangay, city / delivery address"
+                      value={orderForm.deliveryLocation}
+                      onChange={e => setOrderForm({ ...orderForm, deliveryLocation: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="public-product-checkout-field public-product-checkout-field-wide">
+                  <Label htmlFor="public-order-notes">Notes <span className="public-product-checkout-optional">(optional)</span></Label>
+                  <Textarea
+                    id="public-order-notes"
+                    rows={3}
+                    placeholder="Add delivery instructions or other details"
+                    value={orderForm.notes}
+                    onChange={e => setOrderForm({ ...orderForm, notes: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <Separator className="public-product-checkout-separator" />
+              <div className="public-product-checkout-total">
+                <div>
+                  <span>Order total</span>
+                  <small>{Number(orderForm.quantity || 1).toLocaleString()} × {orderProduct.currency || "PHP"} {Number(orderProduct.price || 0).toLocaleString()}</small>
+                </div>
+                <strong>{orderProduct.currency || "PHP"} {(Number(orderProduct.price || 0) * Number(orderForm.quantity || 1)).toLocaleString()}</strong>
+              </div>
+
+              {error && <p className="error" role="alert">{error}</p>}
+
+              <DialogFooter className="public-product-checkout-actions">
+                <Button type="button" variant="outline" onClick={() => setOrderProduct(null)} disabled={orderBusy}>
+                  Cancel
+                </Button>
+                <Button type="submit" className="public-place-order" disabled={orderBusy}>
+                  <FiShoppingBag aria-hidden="true" />
+                  {orderBusy ? "Placing order…" : "Place order"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        )}
+      </Dialog>
 
     {detailProduct&&<div className="booking-modal-backdrop product-gallery-backdrop" onClick={()=>setDetailProduct(null)}><section className="ui-card public-product-gallery search-product-details" role="dialog" aria-modal="true" aria-label={detailProduct.name+" details"} onClick={e=>e.stopPropagation()}><div className="public-gallery-head"><div><p className="eyebrow">PRODUCT DETAILS</p><h2>{detailProduct.name}</h2></div><Button variant="outline" size="icon" aria-label="Close product details" onClick={()=>setDetailProduct(null)}><FiX/></Button></div><div className="public-gallery-stage">{(detailProduct.images?.[0]||detailProduct.image)?<Image src={detailProduct.images?.[0]||detailProduct.image} alt={detailProduct.name}/>:<span className="product-image-placeholder"><FiShoppingBag/></span>}</div><div className="public-product-body"><p>{detailProduct.description||"No description available."}</p><strong>{detailProduct.currency||"PHP"} {Number(detailProduct.price||0).toLocaleString()}</strong><small>{detailProduct.stock>0?detailProduct.stock+" in stock":"Out of stock"}</small><p>Sold by {profile.name}</p></div><div className="public-gallery-footer"><Button variant="outline" onClick={()=>{const images=detailProduct.images?.length?detailProduct.images:(detailProduct.image?[detailProduct.image]:[]);if(images.length){setProductGallery({...detailProduct,images});setGalleryIndex(0);setDetailProduct(null);}}} disabled={!(detailProduct.images?.length||detailProduct.image)}>View images</Button><Button disabled={detailProduct.stock<1||paused} onClick={()=>{setOrderProduct(detailProduct);setOrderForm({...orderForm,quantity:1});setDetailProduct(null);}}><FiShoppingBag/>Order product</Button></div></section></div>}
     {productGallery&&<div className="booking-modal-backdrop product-gallery-backdrop" onClick={()=>setProductGallery(null)}><section className="ui-card public-product-gallery product-gallery-refined" role="dialog" aria-modal="true" aria-label={productGallery.name+" images"} onClick={e=>e.stopPropagation()}><div className="public-gallery-head"><div><p className="eyebrow">PRODUCT GALLERY</p><h2>{productGallery.name}</h2></div><Button variant="outline" size="icon" className="icon-action" aria-label="Close gallery" data-tooltip="Close" onClick={()=>setProductGallery(null)}><FiX/></Button></div><div className="public-gallery-stage"><Image src={productGallery.images[galleryIndex]} alt={productGallery.name+" image "+(galleryIndex+1)}/>{productGallery.images.length>1&&<><Button variant="outline" size="icon" className="gallery-arrow gallery-prev" aria-label="Previous image" onClick={()=>setGalleryIndex(i=>(i-1+productGallery.images.length)%productGallery.images.length)}><FiChevronLeft/></Button><Button variant="outline" size="icon" className="gallery-arrow gallery-next" aria-label="Next image" onClick={()=>setGalleryIndex(i=>(i+1)%productGallery.images.length)}><FiChevronRight/></Button></>}</div>{productGallery.images.length>1&&<div className="public-gallery-thumbs">{productGallery.images.map((src,index)=><Button variant="plain" type="button" key={index} className={index===galleryIndex?"active":""} aria-label={"View image "+(index+1)} onClick={()=>setGalleryIndex(index)}><Image src={src} alt=""/></Button>)}</div>}<div className="public-product-body" aria-label="Product information"><p>{productGallery.description || "No description available."}</p><strong>{productGallery.currency || "PHP"} {Number(productGallery.price || 0).toLocaleString()}</strong><small>{productGallery.stock > 0 ? productGallery.stock + " in stock" : "Out of stock"}</small>{productGallery.sku && <small>SKU: {productGallery.sku}</small>}<p>Sold by {profile.name}</p></div><div className="public-gallery-footer"><span>{galleryIndex+1} of {productGallery.images.length}</span><Button disabled={productGallery.stock<1 || paused} onClick={()=>{setOrderProduct(productGallery);setOrderForm({...orderForm,quantity:1});setProductGallery(null);}}><FiShoppingBag/>Order product</Button></div></section></div>}
