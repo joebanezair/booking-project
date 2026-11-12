@@ -106,47 +106,165 @@
   }
 }
 
-/* Shadcn-style Select triggers for public storefront classification and rating filters. */
-.public-page .profile-catalog-search-filter .profile-catalog-shadcn-select {
-  appearance: none !important;
-  -webkit-appearance: none !important;
+/* Match the search field height to the catalog Select triggers. */
+.public-page .profile-catalog-search-field .ui-search-field {
   box-sizing: border-box !important;
+  width: 100% !important;
+  height: 44px !important;
   min-height: 44px !important;
-  padding: 9px 38px 9px 12px !important;
+  padding: 0 10px 0 12px !important;
   border: 1px solid var(--input) !important;
   border-radius: 10px !important;
-  background-color: var(--card) !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23758096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: right 12px center !important;
-  background-size: 16px 16px !important;
-  color: var(--foreground) !important;
-  font: inherit;
-  font-size: 13px !important;
-  line-height: 1.4 !important;
+  background: var(--card) !important;
   box-shadow: none !important;
+}
+
+.public-page .profile-catalog-search-field .ui-search-field:focus-within {
+  border-color: var(--ring) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 18%, transparent) !important;
+}
+
+html body .public-page .profile-catalog-search-field .ui-search-field input.ui-search-input {
+  box-sizing: border-box !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  font-size: 13px !important;
+}
+
+.public-page .profile-catalog-search-field .ui-search-field > .ui-search-icon {
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px !important;
+}
+
+/* Rounded shadcn-style dropdown triggers and option menus. */
+.public-page .profile-catalog-search-filter .profile-catalog-select-root {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.public-page .profile-catalog-search-filter .profile-catalog-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid var(--input);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: left;
+  box-shadow: none;
   cursor: pointer;
   transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
 }
 
-.public-page .profile-catalog-search-filter .profile-catalog-shadcn-select:hover:not(:disabled) {
-  border-color: var(--ring) !important;
+.public-page .profile-catalog-search-filter .profile-catalog-select-trigger:hover:not(:disabled) {
+  border-color: var(--ring);
 }
 
-.public-page .profile-catalog-search-filter .profile-catalog-shadcn-select:focus-visible {
-  outline: none !important;
-  border-color: var(--ring) !important;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 18%, transparent) !important;
+.public-page .profile-catalog-search-filter .profile-catalog-select-trigger:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 18%, transparent);
 }
 
-.public-page .profile-catalog-search-filter .profile-catalog-shadcn-select:disabled {
-  cursor: not-allowed !important;
+.public-page .profile-catalog-search-filter .profile-catalog-select-trigger:disabled {
+  cursor: not-allowed;
   opacity: .55;
 }
 
+.public-page .profile-catalog-select-value {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.public-page .profile-catalog-select-trigger > svg {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--muted-foreground);
+  transition: transform 140ms ease;
+}
+
+.public-page .profile-catalog-select-trigger > svg.is-open {
+  transform: rotate(180deg);
+}
+
+.public-page .profile-catalog-search-filter .profile-catalog-select-menu {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 6px);
+  left: 0;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 100%;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: var(--shadow-md, 0 8px 24px rgba(31, 45, 73, .14));
+}
+
+.public-page .profile-catalog-search-filter .profile-catalog-select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: left;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.public-page .profile-catalog-search-filter .profile-catalog-select-option:hover,
+.public-page .profile-catalog-search-filter .profile-catalog-select-option:focus-visible {
+  outline: none;
+  background: var(--accent, var(--secondary));
+  color: var(--accent-foreground, var(--foreground));
+}
+
+.public-page .profile-catalog-search-filter .profile-catalog-select-option[aria-selected="true"] {
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.public-page .profile-catalog-search-filter .profile-catalog-select-option[aria-selected="true"] > svg {
+  flex: 0 0 15px;
+  width: 15px;
+  height: 15px;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .public-page .profile-catalog-search-filter .profile-catalog-shadcn-select {
+  .public-page .profile-catalog-search-field .ui-search-field,
+  .public-page .profile-catalog-search-filter .profile-catalog-select-trigger,
+  .public-page .profile-catalog-search-filter .profile-catalog-select-option,
+  .public-page .profile-catalog-search-filter .profile-catalog-select-trigger > svg {
     transition: none !important;
   }
 }
-
