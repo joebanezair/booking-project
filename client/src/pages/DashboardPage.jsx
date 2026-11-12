@@ -248,7 +248,7 @@ export default function DashboardPage({ user, onLogout }) {
         <div className="business-dashboard-header-actions">
           <Button asChild variant="secondary">
             <Link className="secondary button-link icon-link dashboard-post-service" to="/dashboard/services/new">
-              <FiPlus aria-hidden="true" /> Post a service
+              <FiPlus aria-hidden="true" /> Post A Service
             </Link>
           </Button>
         </div>}
