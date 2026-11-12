@@ -2232,3 +2232,9 @@ html body #root .bookflow-storefront.public-business-profile #storefront-about #
     transition: none !important;
   }
 }
+
+
+/* Keep selected rating stars green after hover ends. */
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input > button.ui-button.active .rating-star-glyph {
+  color: #16a34a !important;
+}
