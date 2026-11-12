@@ -1886,11 +1886,11 @@ html body #root .bookflow-storefront.public-business-profile #storefront-about .
 }
 
 html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip:first-child > svg {
-  color: #d98a12 !important;
+  color: #5d7cff !important;
 }
 
 html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip:nth-child(2) > svg {
-  color: #3266cf !important;
+  color: #5d7cff !important;
 }
 
 html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip-label {
@@ -1932,7 +1932,7 @@ html body #root .bookflow-storefront.public-business-profile #storefront-about .
 }
 
 html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-your-rating-chip > svg {
-  color: #c9851c !important;
+  color: #5d7cff !important;
 }
 
 html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-your-rating-chip .profile-rating-actions {
