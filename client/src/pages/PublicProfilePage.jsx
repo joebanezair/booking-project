@@ -69,6 +69,12 @@ export default function PublicProfilePage({ user }) {
     setDetailProduct(selected || null);
   }, [data, searchParams]);
 
+  useEffect(() => {
+    if (!ratingMessage) return undefined;
+    const timeout = window.setTimeout(() => setRatingMessage(""), 4500);
+    return () => window.clearTimeout(timeout);
+  }, [ratingMessage]);
+
   async function rateBusiness(value) {
     try {
       await api.ratings.setBusiness(data.profile.businessId, value);
@@ -222,6 +228,13 @@ export default function PublicProfilePage({ user }) {
   const publicProfilePath = `/profile/${encodeURIComponent(profile.username || resolvedUsername)}`;
 
   return <main className="public-page bookflow-storefront public-business-profile" id="storefront-top">
+    {ratingMessage && <div className="business-rating-toast" role="status" aria-live="polite" aria-atomic="true">
+      <span className="business-rating-toast-icon" aria-hidden="true"><FiCheckCircle /></span>
+      <span className="business-rating-toast-message">{ratingMessage}</span>
+      <button type="button" className="business-rating-toast-close" aria-label="Dismiss notification" onClick={() => setRatingMessage("")}>
+        <FiX aria-hidden="true" />
+      </button>
+    </div>}
     {error && <p className="error" role="alert">{error}</p>}
 
     <section className={`public-profile-hero storefront-hero ${profile.coverImage ? "has-cover" : ""}`} aria-label={profile.name+" business profile"}>
@@ -301,7 +314,7 @@ export default function PublicProfilePage({ user }) {
                   <span className="profile-rating-label">Your rating</span>
                   <Link className="storefront-sign-in-link" to="/login">Sign in to rate</Link>
                 </>}
-                {ratingMessage && <small className="success business-rating-feedback"><FiCheckCircle aria-hidden="true" />{ratingMessage}</small>}
+
               </div>
             </section>
           </div>
