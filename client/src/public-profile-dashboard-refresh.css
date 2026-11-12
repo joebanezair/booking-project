@@ -2514,3 +2514,16 @@ html[data-theme="dark"] body #root .bookflow-storefront.public-business-profile 
   background: #151f30 !important;
   color: #e8edf6 !important;
 }
+
+/* Enforce dark background on the public profile hero section in dark mode. */
+html[data-theme="dark"] body #root main.public-page.bookflow-storefront.public-business-profile > section.public-profile-hero.storefront-hero.has-cover {
+  background-color: #0d1422 !important;
+  background-image: none !important;
+  color: #e8edf6 !important;
+}
+
+html[data-theme="dark"] body #root main.public-page.bookflow-storefront.public-business-profile > section.public-profile-hero.storefront-hero.has-cover > .public-profile-info.storefront-profile-info {
+  background-color: #151f30 !important;
+  color: #e8edf6 !important;
+}
+
