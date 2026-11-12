@@ -2206,3 +2206,29 @@ html body #root .bookflow-storefront.public-business-profile #storefront-about #
   min-height: 22px !important;
   padding: 0 !important;
 }
+
+
+/* Green hover preview for interactive business rating stars. */
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input > button.ui-button .rating-star-glyph {
+  color: inherit !important;
+  transition: color .12s ease, transform .12s ease !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input:has(> button:nth-child(1):is(:hover, :focus-visible)) > button:nth-child(-n+1) .rating-star-glyph,
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input:has(> button:nth-child(2):is(:hover, :focus-visible)) > button:nth-child(-n+2) .rating-star-glyph,
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input:has(> button:nth-child(3):is(:hover, :focus-visible)) > button:nth-child(-n+3) .rating-star-glyph,
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input:has(> button:nth-child(4):is(:hover, :focus-visible)) > button:nth-child(-n+4) .rating-star-glyph,
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input:has(> button:nth-child(5):is(:hover, :focus-visible)) > button:nth-child(-n+5) .rating-star-glyph {
+  color: #16a34a !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input > button.ui-button:focus-visible {
+  outline: 2px solid rgba(22, 163, 74, .5) !important;
+  outline-offset: 2px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input > button.ui-button .rating-star-glyph {
+    transition: none !important;
+  }
+}
