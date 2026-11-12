@@ -760,3 +760,50 @@ html body #root .products-pos-success.success span {
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+
+/* POS quantity validation popup. */
+html body .ui-dialog.checkout-validation-popup {
+  width: min(420px, calc(100vw - 32px));
+  max-width: min(420px, calc(100vw - 32px));
+  border-radius: 15px !important;
+  overflow: hidden;
+}
+html body .checkout-validation-content.ui-dialog-content {
+  display: grid;
+  gap: 15px;
+  padding: 20px;
+}
+html body .checkout-validation-content .panel-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+}
+html body .checkout-validation-content .panel-title h2 {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 17px;
+  line-height: 1.3;
+}
+html body .checkout-validation-message {
+  margin: 0;
+  padding: 12px 13px;
+  border: 1px solid color-mix(in srgb, var(--destructive) 18%, var(--border));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--destructive) 7%, var(--card));
+  color: var(--destructive);
+  font-size: 13px;
+  line-height: 1.5;
+}
+html body .checkout-validation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+html body .checkout-validation-actions .ui-button {
+  min-width: 94px;
+  min-height: 38px;
+  border-radius: 10px !important;
+}
