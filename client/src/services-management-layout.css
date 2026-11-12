@@ -291,3 +291,30 @@ html body #root .page-shell .services-controls-card .services-view-list.content-
     transition: none !important;
   }
 }
+
+/* My Services page: dark blue Post a Service action with 15px corners. */
+html body #root .page-shell > .content-shell > .services-management-header > a.ui-button.service-create-link.service-create-outline {
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root .page-shell > .content-shell > .services-management-header > a.ui-button.service-create-link.service-create-outline:hover,
+html body #root .page-shell > .content-shell > .services-management-header > a.ui-button.service-create-link.service-create-outline:active {
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+}
+
+html body #root .page-shell > .content-shell > .services-management-header > a.ui-button.service-create-link.service-create-outline:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
+html body #root .page-shell > .content-shell > .services-management-header > a.ui-button.service-create-link.service-create-outline .service-create-icon {
+  color: inherit !important;
+}
+
