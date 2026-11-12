@@ -108,13 +108,13 @@
   white-space: nowrap;
 }
 
-.public-page .public-profile-products .public-product-body > .public-order-button {
+.public-page .public-profile-products .public-product-card > .public-order-button {
   position: relative;
   align-self: center;
   width: calc(80% - 16px) !important;
   height: 36px !important;
   min-height: 36px !important;
-  margin: 2px auto 2px !important;
+  margin: 0 auto 10px !important;
   padding: 6px 5px;
   gap: 5px;
   border: 0 !important;
@@ -123,7 +123,7 @@
 }
 
 /* Expand the interactive hit area beyond the compact visual button. */
-.public-page .public-profile-products .public-product-body > .public-order-button::before {
+.public-page .public-profile-products .public-product-card > .public-order-button::before {
   content: "";
   position: absolute;
   inset: -4px;
