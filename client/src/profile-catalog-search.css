@@ -152,11 +152,13 @@ html body .public-page .profile-catalog-search-field .ui-search-field input.ui-s
   gap: 10px;
   box-sizing: border-box;
   width: 100%;
+  height: 44px !important;
   min-width: 0;
-  min-height: 44px;
-  padding: 9px 12px;
-  border: 1px solid var(--input);
-  border-radius: 10px;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  padding: 0 10px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
   background: var(--card);
   color: var(--foreground);
   font: inherit;
@@ -165,16 +167,15 @@ html body .public-page .profile-catalog-search-field .ui-search-field input.ui-s
   text-align: left;
   box-shadow: none;
   cursor: pointer;
-  transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+  transition: box-shadow 140ms ease, background-color 140ms ease;
 }
 
 .public-page .profile-catalog-search-filter .profile-catalog-select-trigger:hover:not(:disabled) {
-  border-color: var(--ring);
+  background: var(--muted-bg, var(--secondary));
 }
 
 .public-page .profile-catalog-search-filter .profile-catalog-select-trigger:focus-visible {
   outline: none;
-  border-color: var(--ring);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 18%, transparent);
 }
 
@@ -209,10 +210,13 @@ html body .public-page .profile-catalog-search-field .ui-search-field input.ui-s
   top: calc(100% + 6px);
   left: 0;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   width: 100%;
   min-width: 100%;
-  padding: 5px;
-  border: 1px solid var(--border);
+  padding: 6px;
+  border: 0;
   border-radius: 12px;
   background: var(--card);
   color: var(--foreground);
@@ -227,9 +231,9 @@ html body .public-page .profile-catalog-search-field .ui-search-field input.ui-s
   box-sizing: border-box;
   width: 100%;
   min-height: 36px;
-  padding: 7px 9px;
-  border: 0;
-  border-radius: 8px;
+  padding: 7px 10px;
+  border: 0 !important;
+  border-radius: 10px;
   background: transparent;
   color: var(--foreground);
   font: inherit;
