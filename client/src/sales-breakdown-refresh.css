@@ -390,9 +390,9 @@ html body #root .sales-earnings-channel-card {
   min-height: 63px;
   margin: 0;
   padding: 9px 12px;
-  border: 0;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: color-mix(in srgb, var(--foreground) 4%, var(--card));
+  background: transparent !important;
   box-shadow: none;
 }
 html body #root .sales-earnings-channel-label {
