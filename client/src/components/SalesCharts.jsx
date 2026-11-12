@@ -82,7 +82,7 @@ export function SalesStepAreaChart({ data = [], currency = "PHP", periodLabel = 
   const areaPath = `${stepPath} L ${points[points.length - 1].x} ${baseline} L ${points[0].x} ${baseline} Z`;
   const firstValue = Number(points[0].revenue || 0);
   const lastValue = Number(points[points.length - 1].revenue || 0);
-  const change = firstValue > 0 ? ((lastValue - firstValue) / firstValue) * 100 : null;
+  const change = points.length > 1 && firstValue > 0 ? ((lastValue - firstValue) / firstValue) * 100 : null;
   const trendLabel = change == null
     ? "Not enough previous data to calculate a trend"
     : `${change >= 0 ? "Trending up" : "Trending down"} by ${Math.abs(change).toFixed(1)}% across the selected period`;
