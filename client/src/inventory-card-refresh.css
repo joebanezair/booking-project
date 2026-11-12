@@ -1118,9 +1118,11 @@ html body dialog.ui-dialog .ui-product-confirm .checkout-confirm-actions > .prim
 
 /* Product Details purchase row: quantity input left, Add to cart right. */
 html body #root .page-shell .product-details-modal .product-details-purchase-row {
-  display: grid;
-  grid-template-columns: minmax(92px, 112px) minmax(0, 1fr);
-  align-items: end;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-end !important;
+  justify-content: stretch !important;
   gap: 10px;
   width: 100%;
   min-width: 0;
@@ -1128,9 +1130,11 @@ html body #root .page-shell .product-details-modal .product-details-purchase-row
 }
 
 html body #root .page-shell .product-details-modal .product-details-purchase-row .product-details-quantity {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  display: flex !important;
+  flex: 0 0 112px !important;
+  flex-direction: column !important;
   gap: 5px;
+  width: 112px !important;
   min-width: 0;
   margin: 0 !important;
 }
@@ -1156,11 +1160,14 @@ html body #root .page-shell .product-details-modal .product-details-quantity-inp
   border-color: var(--ring) !important;
 }
 
-html body #root .page-shell .product-details-modal .product-details-cart-button {
+html body #root .page-shell .product-details-modal .product-details-purchase-row > .product-details-cart-button {
   display: inline-flex !important;
+  flex: 1 1 0 !important;
+  align-self: flex-end !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 100% !important;
+  width: auto !important;
+  min-width: 0 !important;
   height: 40px !important;
   min-height: 40px !important;
   margin: 0 !important;
@@ -1187,8 +1194,11 @@ html body #root .page-shell .product-details-modal .product-details-cart-button 
 
 @media (max-width: 380px) {
   html body #root .page-shell .product-details-modal .product-details-purchase-row {
-    grid-template-columns: minmax(78px, 96px) minmax(0, 1fr);
     gap: 8px;
+  }
+  html body #root .page-shell .product-details-modal .product-details-purchase-row .product-details-quantity {
+    flex-basis: 92px !important;
+    width: 92px !important;
   }
   html body #root .page-shell .product-details-modal .product-details-cart-button {
     padding-inline: 8px !important;
