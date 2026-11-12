@@ -557,6 +557,11 @@ html body #root .bookflow-storefront .storefront-products .public-product-card >
   border-radius: 9999px !important;
   font-size: 12px;
 }
+
+/* Darken only the public Product Catalog order button by 60%. */
+html body #root .bookflow-storefront .storefront-products .public-product-card > .public-order-button {
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+}
 html body #root .bookflow-storefront .storefront-reviews .verified-review-list {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
