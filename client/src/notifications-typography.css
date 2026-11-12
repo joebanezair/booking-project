@@ -318,3 +318,22 @@ html body #root .content-shell .notifications-page-header h1 svg {
     flex: 0 0 auto !important;
   }
 }
+
+/* Notifications: unified 10px corners and borderless Shadcn-style surfaces. */
+html body #root .content-shell .notifications-center,
+html body #root .content-shell .notifications-center * {
+  border: 0 !important;
+  border-radius: 10px !important;
+}
+
+html body #root .content-shell .notification-card,
+html body #root .content-shell .notification-empty-state,
+html body #root .content-shell .notification-category-button,
+html body #root .content-shell .notification-category-button .ui-badge,
+html body #root .content-shell .notification-results-heading > .ui-badge,
+html body #root .content-shell .notification-card-heading > .ui-badge,
+html body #root .content-shell .notification-card-meta > .ui-badge,
+html body #root .content-shell .notifications-page-header .ui-button {
+  border: 0 !important;
+  border-radius: 10px !important;
+}
