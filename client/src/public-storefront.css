@@ -2633,3 +2633,39 @@ html body #root .bookflow-storefront .business-rating-toast-close:focus-visible 
     animation: none !important;
   }
 }
+
+
+/* Show the selected rating and updated business totals in the save toast. */
+html body #root .bookflow-storefront .business-rating-toast-content {
+  display: grid !important;
+  flex: 1 1 auto !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+}
+
+html body #root .bookflow-storefront .business-rating-toast-content .business-rating-toast-message {
+  display: block !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+  line-height: 1.3 !important;
+}
+
+html body #root .bookflow-storefront .business-rating-toast-details {
+  display: block !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  color: var(--muted-foreground, #64748b) !important;
+  font-size: 11px !important;
+  font-weight: 450 !important;
+  line-height: 1.45 !important;
+  overflow-wrap: anywhere !important;
+}
+
+@media (max-width: 600px) {
+  html body #root .bookflow-storefront .business-rating-toast-details {
+    font-size: 10px !important;
+  }
+}
