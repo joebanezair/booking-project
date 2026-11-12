@@ -1604,3 +1604,106 @@ html body #root .bookflow-storefront.public-business-profile .storefront-descrip
 html body #root .bookflow-storefront.public-business-profile .profile-catalog-filter-section.storefront-filter-section {
   margin-top: 10px !important;
 }
+
+
+/* Small-screen business profile: keep each information card readable and in a natural order. */
+@media (max-width: 600px) {
+  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-auto-flow: row !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-info-card {
+    box-sizing: border-box !important;
+    grid-column: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    overflow: hidden;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-rating-summary-card {
+    grid-row: auto !important;
+    min-height: 72px !important;
+    height: auto !important;
+    padding: 10px 12px !important;
+    gap: 9px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-rating-summary-card .storefront-info-card-value,
+  html body #root .bookflow-storefront.public-business-profile .storefront-your-rating-content,
+  html body #root .bookflow-storefront.public-business-profile .storefront-description-content {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-rating-summary-card .rating-summary {
+    grid-template-columns: max-content max-content minmax(0, 1fr) !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+    column-gap: 6px !important;
+    row-gap: 4px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-rating-summary-card .rating-summary > span:not(.stars):not(.rating-summary-label) {
+    min-width: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-description-column {
+    grid-row: 3 !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 12px !important;
+    gap: 10px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-description-column .storefront-description-content {
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    gap: 7px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-description-column .public-bio {
+    max-width: 100% !important;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    line-height: 1.5 !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-description-column .storefront-meta,
+  html body #root .bookflow-storefront.public-business-profile .storefront-description-column .storefront-meta a {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-wrap: anywhere;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-your-rating-card {
+    grid-row: 4 !important;
+    min-height: 68px !important;
+    height: auto !important;
+    padding: 10px 12px !important;
+    gap: 9px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-your-rating-content .profile-rating-label,
+  html body #root .bookflow-storefront.public-business-profile .storefront-your-rating-content .storefront-rating-note {
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-your-rating-content .profile-rating-actions {
+    flex-wrap: wrap !important;
+  }
+}
