@@ -1041,3 +1041,41 @@ html body #root .pos-earnings-panel .pos-earnings-table td .pos-earnings-estimat
 html body #root .pos-earnings-panel .pos-earnings-table td.pos-earnings-loss {
   color: #c2410c !important;
 }
+
+/* Products page Add Product action: dark blue, white label/icon, 15px corners. */
+html body #root main .product-toolbar > .product-add-icon.ui-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  min-height: 36px !important;
+  height: 36px !important;
+  padding: 6px 11px !important;
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+html body #root main .product-toolbar > .product-add-icon.ui-button:hover,
+html body #root main .product-toolbar > .product-add-icon.ui-button:active {
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+}
+
+html body #root main .product-toolbar > .product-add-icon.ui-button > svg,
+html body #root main .product-toolbar > .product-add-icon.ui-button .product-add-label {
+  color: inherit !important;
+}
+
+html body #root main .product-toolbar > .product-add-icon.ui-button:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
