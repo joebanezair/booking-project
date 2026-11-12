@@ -344,7 +344,7 @@ export default function ProductsPage({user,onLogout}){
           <FiShoppingCart aria-hidden="true"/>
           <Button variant="ghost" size="icon-sm" className="pos-cart-dismiss" type="button" aria-label="Close POS checkout" onClick={closePosPopup}><FiX aria-hidden="true"/></Button>
         </div>
-        <div className="cart-checkout-details"><Label>Customer name <span className="muted">(optional)</span><Input value={customerName} onChange={e=>setCustomerName(e.target.value)}/></Label>
+        <div className="cart-checkout-details"><Label>Customer name <span className="muted">(optional)</span><Input className="cart-customer-name-input" value={customerName} onChange={e=>setCustomerName(e.target.value)}/></Label>
         <Label>Payment method<Select value={paymentMethod} onChange={e=>setPaymentMethod(e.target.value)}><option value="cash">Cash</option><option value="gcash">GCash</option><option value="maya">Maya</option><option value="card">Card</option><option value="other">Other</option></Select></Label></div>
         <Button variant="plain" type="button" className="cart-items-toggle" onClick={()=>setCartOpen(v=>!v)} aria-expanded={cartOpen}><span>Cart items <strong>({cartLines.reduce((s,x)=>s+x.quantity,0)})</strong></span>{cartOpen?<FiChevronDown/>:<FiChevronRight/>}</Button>
         {cartOpen&&<div className="cart-items-section">{cartLines.length>0&&<SearchField className="cart-ui-search" value={cartSearch} onValueChange={setCartSearch} placeholder="Search cart items..." aria-label="Search cart items" />}
