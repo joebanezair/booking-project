@@ -438,7 +438,7 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
     {error && <p className="error">{error}</p>}
     {loading && !data ? <section className="panel"><p>Loading sales analytics…</p></section> : <>
       <section className="stats-grid sales-stats-grid sales-kpis" aria-label="Sales performance overview">
-        <Card as="article" className="stat-card analytics-stat"><span><FiCreditCard aria-hidden="true"/>Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong><small>All completed service and product sales</small></Card>
+        <Card as="article" className="stat-card analytics-stat"><span><FiCreditCard aria-hidden="true"/>Recorded sales</span><strong>{money(summary.totalSales, primaryCurrency)}</strong></Card>
         <Card as="article" className="stat-card analytics-stat"><span><FiCalendar aria-hidden="true"/>Completed services</span><strong>{summary.completedServices || 0}</strong><small>Bookings recorded as sales</small></Card>
         <Card as="article" className="stat-card analytics-stat"><span><FiTrendingUp aria-hidden="true"/>Average sale</span><strong>{money(summary.averageSale, primaryCurrency)}</strong></Card>
         <Card as="article" className="stat-card analytics-stat"><span><FiPackage aria-hidden="true"/>Products sold</span><strong>{productUnitsSold.online + productUnitsSold.pos}</strong><small>POS: {productUnitsSold.pos} · Online: {productUnitsSold.online}</small></Card>
@@ -483,7 +483,6 @@ export default function SalesPage({ user, onLogout, ordersOnly = false }) {
                 </div>
                 <div className="sales-earnings-channel-details">
                   <span className="sales-earnings-channel-amount">{money(item.revenue, primaryCurrency)}</span>
-
                 </div>
               </div>;
             })}
