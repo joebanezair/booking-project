@@ -1054,7 +1054,7 @@ html body #root main .product-toolbar > .product-add-icon.ui-button {
   height: 36px !important;
   padding: 6px 11px !important;
   border: 0 !important;
-  border-radius: 9999px !important;
+  border-radius: 15px !important;
   background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
   color: #ffffff !important;
   box-shadow: none !important;
@@ -1173,7 +1173,7 @@ html body #root .page-shell .product-details-modal .product-details-purchase-row
   margin: 0 !important;
   padding: 8px 12px !important;
   border: 0 !important;
-  border-radius: 15px !important;
+  border-radius: 9999px !important;
   background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
   color: #ffffff !important;
   box-shadow: none !important;
@@ -1182,7 +1182,7 @@ html body #root .page-shell .product-details-modal .product-details-purchase-row
 html body #root .page-shell .product-details-modal .product-details-cart-button:hover,
 html body #root .page-shell .product-details-modal .product-details-cart-button:active {
   border: 0 !important;
-  border-radius: 15px !important;
+  border-radius: 9999px !important;
   background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
   color: #ffffff !important;
   box-shadow: none !important;
