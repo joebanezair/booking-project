@@ -23,6 +23,7 @@ export default function PublicProfilePage({ user }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [ratingMessage, setRatingMessage] = useState("");
+  const [ratingToastSummary, setRatingToastSummary] = useState(null);
   const [shareFeedback, setShareFeedback] = useState("");
   const [friendBusy, setFriendBusy] = useState(false);
   const [orderProduct,setOrderProduct]=useState(null);
@@ -79,14 +80,26 @@ export default function PublicProfilePage({ user }) {
     try {
       await api.ratings.setBusiness(data.profile.businessId, value);
       const refreshed = await api.publicProfile(resolvedUsername);
-      setData(refreshed); setRatingMessage("Business rating saved."); setError("");
+      const summary = refreshed?.profile?.businessRatingSummary || {};
+      const average = Number(summary.averageRating ?? 0);
+      setData(refreshed);
+      setRatingToastSummary({
+        userRating: value,
+        averageRating: Number.isFinite(average) ? average.toFixed(1) : "0.0",
+        totalRatings: Number(summary.ratingCount ?? 0) || 0
+      });
+      setRatingMessage("Business rating saved.");
+      setError("");
     } catch (e) { setError(e.message); }
   }
   async function removeBusinessRating() {
     try {
       await api.ratings.removeBusiness(data.profile.businessId);
       const refreshed = await api.publicProfile(resolvedUsername);
-      setData(refreshed); setRatingMessage("Business rating removed."); setError("");
+      setData(refreshed);
+      setRatingToastSummary(null);
+      setRatingMessage("Business rating removed.");
+      setError("");
     } catch (e) { setError(e.message); }
   }
 
@@ -230,8 +243,17 @@ export default function PublicProfilePage({ user }) {
   return <main className="public-page bookflow-storefront public-business-profile" id="storefront-top">
     {ratingMessage && <div className="business-rating-toast" role="status" aria-live="polite" aria-atomic="true">
       <span className="business-rating-toast-icon" aria-hidden="true"><FiCheckCircle /></span>
-      <span className="business-rating-toast-message">{ratingMessage}</span>
-      <button type="button" className="business-rating-toast-close" aria-label="Dismiss notification" onClick={() => setRatingMessage("")}>
+      <div className="business-rating-toast-content">
+        <span className="business-rating-toast-message">{ratingMessage}</span>
+        {ratingToastSummary && <small className="business-rating-toast-details">
+          Your rating: {ratingToastSummary.userRating}/5
+          <span aria-hidden="true"> · </span>
+          Business average: {ratingToastSummary.averageRating}/5
+          <span aria-hidden="true"> · </span>
+          {ratingToastSummary.totalRatings} total {ratingToastSummary.totalRatings === 1 ? "rating" : "ratings"}
+        </small>}
+      </div>
+      <button type="button" className="business-rating-toast-close" aria-label="Dismiss notification" onClick={() => { setRatingMessage(""); setRatingToastSummary(null); }}>
         <FiX aria-hidden="true" />
       </button>
     </div>}
