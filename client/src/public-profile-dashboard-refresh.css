@@ -2492,3 +2492,14 @@ html body #root .bookflow-storefront.public-business-profile #storefront-about .
 html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-your-rating-chip {
   border-radius: 9999px !important;
 }
+
+
+/* Remove the outer frame and padding around the public profile search/filter group. */
+html body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
