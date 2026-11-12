@@ -246,8 +246,8 @@ export default function DashboardPage({ user, onLogout }) {
       </div>
       {!isAdmin && user.accountStatus === "active" && hasBusinessFeature(user, "booking") &&
         <div className="business-dashboard-header-actions">
-          <Button asChild variant="secondary">
-            <Link className="secondary button-link icon-link dashboard-post-service" to="/dashboard/services/new">
+          <Button asChild variant="default">
+            <Link className="button-link icon-link dashboard-post-service" to="/dashboard/services/new">
               <FiPlus aria-hidden="true" /> Post A Service
             </Link>
           </Button>
