@@ -2397,3 +2397,28 @@ html body #root .bookflow-storefront.public-business-profile .storefront-owner-a
     font-size: 11px !important;
   }
 }
+
+
+/* Light-mode-only slate-blue rating chips; dark mode remains untouched. */
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip {
+  border: 0 !important;
+  background: #e9eff9 !important;
+  color: #344256 !important;
+  box-shadow: none !important;
+}
+
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip:hover {
+  border: 0 !important;
+  background: #dfe8f5 !important;
+  color: #26364c !important;
+  box-shadow: none !important;
+}
+
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip .storefront-rating-chip-label,
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip > strong {
+  color: #344256 !important;
+}
+
+html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip .storefront-rating-chip-count {
+  color: #64748b !important;
+}
