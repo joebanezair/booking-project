@@ -3009,3 +3009,25 @@ html body .public-product-checkout-dialog .public-product-checkout-actions .ui-b
     scroll-behavior: auto;
   }
 }
+
+
+/* Verified customer review cards: borderless slate-blue surface. */
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card {
+  border: 0 !important;
+  outline: 0 !important;
+  background: #e9eff9 !important;
+  color: #344256 !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card p,
+html body #root .bookflow-storefront .storefront-reviews .verified-review-card > small {
+  color: #52617a !important;
+}
+html[data-theme="dark"] body #root .bookflow-storefront .storefront-reviews .verified-review-card {
+  background: #263449 !important;
+  color: #e2e8f0 !important;
+}
+html[data-theme="dark"] body #root .bookflow-storefront .storefront-reviews .verified-review-card p,
+html[data-theme="dark"] body #root .bookflow-storefront .storefront-reviews .verified-review-card > small {
+  color: #cbd5e1 !important;
+}
