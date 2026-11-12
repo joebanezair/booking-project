@@ -1366,3 +1366,31 @@ html:not([data-theme="dark"]) body #root .page-shell:has(.admin-dashboard-platfo
   --background: #ffffff;
 }
 
+/* Final targeted style for the dashboard header's Post A Service anchor. */
+html body #root a.ui-button.dashboard-post-service {
+  min-height: 38px !important;
+  height: 38px !important;
+  padding: 9px 13px !important;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+html body #root a.ui-button.dashboard-post-service:hover,
+html body #root a.ui-button.dashboard-post-service:active {
+  border: 0 !important;
+  border-radius: 9999px !important;
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+}
+html body #root a.ui-button.dashboard-post-service > svg {
+  color: inherit !important;
+}
+html body #root a.ui-button.dashboard-post-service:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
