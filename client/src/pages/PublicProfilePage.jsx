@@ -280,7 +280,7 @@ export default function PublicProfilePage({ user }) {
             <div className="storefront-owner-actions">
               {isOwner ? <div className="public-profile-owner-actions">
                 <Button type="button" variant="outline" size="sm" className="owner-profile-action" onClick={sharePublicProfile}><FiShare2 aria-hidden="true" />Share</Button>
-                <Button asChild variant="outline" size="sm" className="owner-profile-action"><Link to={publicProfilePath} target="_blank" rel="noopener noreferrer"><FiEye aria-hidden="true" />View Profile</Link></Button>
+                
                 <Button asChild variant="default" size="sm" className="owner-profile-action owner-profile-action-primary"><Link to="/dashboard/profile/edit"><FiEdit3 aria-hidden="true" />Edit Profile</Link></Button>
               </div> : <div className="public-profile-actions">
                 {canInteract ? (
