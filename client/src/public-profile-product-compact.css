@@ -83,8 +83,8 @@
   gap: 8px;
   width: 100%;
   min-width: 0;
-  margin-top: auto;
-  padding-top: 4px;
+  margin: 0 0 2px;
+  padding: 0;
 }
 
 .public-page .public-profile-products .public-product-price-stock strong {
