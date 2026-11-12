@@ -99,6 +99,8 @@
   margin: 0 auto 10px !important;
   padding: 6px 5px;
   gap: 5px;
+  border: 0 !important;
+  border-radius: 9999px !important;
   font-size: 12px;
 }
 
