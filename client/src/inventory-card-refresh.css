@@ -1054,7 +1054,7 @@ html body #root main .product-toolbar > .product-add-icon.ui-button {
   height: 36px !important;
   padding: 6px 11px !important;
   border: 0 !important;
-  border-radius: 15px !important;
+  border-radius: 9999px !important;
   background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
   color: #ffffff !important;
   box-shadow: none !important;
@@ -1146,7 +1146,7 @@ html body #root .page-shell .product-details-modal .product-details-quantity-inp
   min-height: 40px !important;
   padding: 8px 10px !important;
   border: 1px solid var(--input) !important;
-  border-radius: 15px !important;
+  border-radius: 9999px !important;
   background: var(--card) !important;
   color: var(--foreground) !important;
   font: inherit;
