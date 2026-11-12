@@ -8,7 +8,7 @@ import { Textarea } from "../components/ui/textarea.jsx";
 import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FiArrowRight, FiBarChart2, FiCheckCircle, FiChevronDown, FiChevronRight, FiDownload, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiArrowRight, FiBarChart2, FiCheckCircle, FiCreditCard, FiChevronDown, FiChevronRight, FiDownload, FiEdit2, FiGrid, FiList, FiMinus, FiMoreHorizontal, FiPackage, FiPlus, FiSearch, FiShoppingBag, FiShoppingCart, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
 import AppLayout from "../components/AppLayout.jsx";
 import { api } from "../api.js";
 import { exportPosEarningsXlsx } from "../utils/exportPosEarningsXlsx.js";
@@ -350,7 +350,7 @@ export default function ProductsPage({user,onLogout}){
         {cartOpen&&<div className="cart-items-section">{cartLines.length>0&&<SearchField className="cart-ui-search" value={cartSearch} onValueChange={setCartSearch} placeholder="Search cart items..." aria-label="Search cart items" />}
         {!cartLines.length?<p className="muted cart-empty">Click a product to choose a quantity and add it to the cart.</p>:filteredCartLines.length===0?<p className="muted cart-empty">No cart items match “{cartSearch}”.</p>:<div className="cart-lines cart-lines-scroll">{filteredCartLines.map(item=><div className="cart-line" key={item._id}><div><strong>{item.name}</strong><small>{money(item.price,item.currency)} each</small></div><div className="cart-quantity"><Button variant="plain" type="button" aria-label={`Decrease quantity of ${item.name}`} onClick={()=>changeCart(item._id,item.quantity-1,item.stock)}><FiMinus/></Button><span>{item.quantity}</span><Button variant="plain" type="button" aria-label={`Increase quantity of ${item.name}`} disabled={item.quantity>=item.stock} onClick={()=>changeCart(item._id,item.quantity+1,item.stock)}><FiPlus/></Button></div><strong>{money(item.price*item.quantity,item.currency)}</strong><Button variant="plain" type="button" className="icon-button icon-action" aria-label={"Remove "+item.name} data-tooltip={"Remove "+item.name} onClick={()=>changeCart(item._id,0,item.stock)}><FiX/></Button></div>)}</div>}</div>}
         <div className="pos-total"><span>Total</span><strong>{money(cartTotal,currency)}</strong></div>
-        <Button variant="plain" className="primary-button checkout-button" type="button" disabled={!cartLines.length} onClick={()=>setConfirmCheckout(true)}>Check out</Button>
+        <Button variant="plain" className="primary-button checkout-button" type="button" disabled={!cartLines.length} onClick={()=>setConfirmCheckout(true)}><FiCreditCard aria-hidden="true"/>Check out</Button>
       </aside>
     </div>}
 
