@@ -278,43 +278,46 @@ export default function PublicProfilePage({ user }) {
         <div className="public-profile-copy" id="storefront-about">
           {paused && <div className="paused-public-banner" role="status" title="This business is not accepting new bookings right now."><FiAlertCircle aria-hidden="true" /><span>Bookings temporarily unavailable</span><span className="visually-hidden"> — this business is not accepting new bookings right now.</span></div>}
           <div className="storefront-about-layout">
-            <section className="storefront-info-card storefront-rating-summary-card" title="Business rating — Ratings from visitors" aria-label="Business rating. Ratings from visitors">
-              <span className="storefront-info-card-icon storefront-info-card-icon--rating" aria-hidden="true"><FiStar /></span>
-              <div className="storefront-info-card-value">
-                <RatingSummary {...profile.businessRatingSummary} label="Business rating" />
+            <div className="storefront-rating-chip-row" aria-label="Business ratings">
+              <Button asChild variant="outline" size="sm" className="storefront-rating-chip" title="Ratings from visitors">
+                <a href="#storefront-your-rating" aria-label={`Business rating ${profile.businessRatingSummary?.averageRating || "0.0"}, ${profile.businessRatingSummary?.ratingCount || 0} ratings. Go to your rating.`}>
+                  <FiStar aria-hidden="true" />
+                  <span className="storefront-rating-chip-label">Business rating</span>
+                  <strong>{profile.businessRatingSummary?.averageRating || "0.0"}</strong>
+                  <small className="storefront-rating-chip-count">({profile.businessRatingSummary?.ratingCount || 0} {(profile.businessRatingSummary?.ratingCount || 0) === 1 ? "rating" : "ratings"})</small>
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="storefront-rating-chip" title="Reviews from completed bookings">
+                <a href="#storefront-reviews" aria-label={`Verified reviews, ${profile.ratingSummary?.ratingCount || 0} ratings. View customer reviews.`}>
+                  <FiCheckCircle aria-hidden="true" />
+                  <span className="storefront-rating-chip-label">Verified reviews</span>
+                  <strong>{profile.ratingSummary?.averageRating || "0.0"}</strong>
+                  <small className="storefront-rating-chip-count">({profile.ratingSummary?.ratingCount || 0} {(profile.ratingSummary?.ratingCount || 0) === 1 ? "rating" : "ratings"})</small>
+                </a>
+              </Button>
+              <div id="storefront-your-rating" className="ui-button ui-button-outline ui-button-sm storefront-rating-chip storefront-your-rating-chip" aria-label="Your rating">
+                <FiEdit3 aria-hidden="true" />
+                {user && !isOwner ? <>
+                  <span className="storefront-rating-chip-label">Your rating</span>
+                  <div className="profile-rating-actions" id="storefront-your-rating-actions">
+                    <RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />
+                    {profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating" title="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}
+                  </div>
+                </> : user ? <>
+                  <span className="storefront-rating-chip-label">Visitor ratings</span>
+                  <small className="storefront-rating-chip-count">Visitors can rate your business</small>
+                </> : <>
+                  <span className="storefront-rating-chip-label">Your rating</span>
+                  <Link className="storefront-sign-in-link" to="/login">Sign in</Link>
+                </>}
               </div>
-            </section>
-            <section className="storefront-info-card storefront-rating-summary-card" title="Verified booking reviews — Reviews from completed bookings" aria-label="Verified booking reviews. Reviews from completed bookings">
-              <span className="storefront-info-card-icon storefront-info-card-icon--verified" aria-hidden="true"><FiCheckCircle /></span>
-              <div className="storefront-info-card-value">
-                <RatingSummary {...profile.ratingSummary} label="Verified reviews" />
-              </div>
-            </section>
+            </div>
             <section className="storefront-info-card storefront-description-column" aria-label="Business description">
               <span className="storefront-info-card-icon storefront-info-card-icon--description" aria-hidden="true"><FiFileText /></span>
               <div className="storefront-description-content">
                 <strong className="storefront-description-title">Description</strong>
                 {profile.bio && <p className="public-bio">{profile.bio}</p>}
                 {profile.website && <div className="profile-meta storefront-meta"><a href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true" />Website</a></div>}
-              </div>
-            </section>
-            <section className="storefront-info-card storefront-your-rating-card" aria-label="Your rating">
-              <span className="storefront-info-card-icon storefront-info-card-icon--your-rating" aria-hidden="true"><FiEdit3 /></span>
-              <div className="storefront-your-rating-content">
-                {user && !isOwner ? <>
-                  <span className="profile-rating-label">Your rating</span>
-                  <div className="profile-rating-actions">
-                    <RatingInput value={profile.currentUserBusinessRating || 0} onChange={rateBusiness} />
-                    {profile.currentUserBusinessRating && <Button variant="plain" type="button" className="link-button remove-business-rating" onClick={removeBusinessRating} aria-label="Remove rating"><FiX aria-hidden="true"/><span>Remove rating</span></Button>}
-                  </div>
-                </> : user ? <>
-                  <span className="profile-rating-label">Visitor ratings</span>
-                  <small className="storefront-rating-note">Visitors can rate your business</small>
-                </> : <>
-                  <span className="profile-rating-label">Your rating</span>
-                  <Link className="storefront-sign-in-link" to="/login">Sign in to rate</Link>
-                </>}
-
               </div>
             </section>
           </div>
