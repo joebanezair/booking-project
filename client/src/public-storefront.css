@@ -3043,3 +3043,12 @@ html body #root .bookflow-storefront .storefront-reviews .verified-review-card {
   padding: 9px 10px !important;
   border-radius: 10px !important;
 }
+
+/* Match the service-detail booking CTA to the Product Catalog Order Product button background. */
+html body #root main.public-service-detail-page .content-booking-callout .service-booking-cta,
+html body #root main.public-service-detail-page .content-booking-callout .service-booking-cta:hover {
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  border-color: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+}
+
