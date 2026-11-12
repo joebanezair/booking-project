@@ -2035,3 +2035,112 @@ html body #root .bookflow-storefront.public-business-profile #storefront-about .
     white-space: normal !important;
   }
 }
+
+
+/* Compact Shadcn-style public profile owner actions. */
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  width: auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 32px !important;
+  height: 32px !important;
+  margin: 0 !important;
+  padding: 5px 10px !important;
+  border: 1px solid var(--border, #dfe5ed) !important;
+  border-radius: 8px !important;
+  background: var(--card, #fff) !important;
+  color: var(--foreground, #263246) !important;
+  box-shadow: none !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action:hover {
+  border-color: var(--ring, #b9c9e3) !important;
+  background: var(--muted, #f6f8fb) !important;
+  color: var(--foreground, #172033) !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action-primary {
+  border-color: var(--primary, #2864e8) !important;
+  background: var(--primary, #2864e8) !important;
+  color: var(--primary-foreground, #fff) !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action-primary:hover {
+  border-color: var(--primary, #1f55cb) !important;
+  background: var(--primary, #1f55cb) !important;
+  color: var(--primary-foreground, #fff) !important;
+  filter: brightness(.96);
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action > svg,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action > a > svg {
+  display: block !important;
+  flex: 0 0 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  margin: 0 !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action:focus-visible,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action > a:focus-visible {
+  outline: 2px solid var(--ring, #8aa9df) !important;
+  outline-offset: 2px !important;
+}
+
+@media (max-width: 760px) {
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions {
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: flex-start !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions {
+    justify-content: flex-start !important;
+    width: 100% !important;
+    gap: 6px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action {
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 5px 9px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action {
+    gap: 5px !important;
+    padding: 5px 8px !important;
+    font-size: 10px !important;
+  }
+
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action > svg,
+  html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action > a > svg {
+    width: 13px !important;
+    height: 13px !important;
+    flex-basis: 13px !important;
+  }
+}
