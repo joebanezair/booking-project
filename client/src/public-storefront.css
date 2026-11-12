@@ -2481,7 +2481,7 @@ html body #root .bookflow-storefront .storefront-reviews .verified-review-rating
   flex: 0 0 26px;
   width: 26px;
   height: 26px;
-  border-radius: 8px;
+  border-radius: 10px !important;
   background: color-mix(in srgb, #e9a52b 12%, var(--card));
   color: #d99418;
 }
