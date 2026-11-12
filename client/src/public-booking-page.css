@@ -55,10 +55,10 @@ html body #root .public-booking-page .public-booking-card {
 }
 
 
-/* Public booking buttons use full pill corners; keep other surfaces at 10px. */
+/* Keep every rounded edge on the public booking page at 10px. */
 html body #root .public-booking-page button,
 html body #root .public-booking-page .ui-button {
-  border-radius: 9999px !important;
+  border-radius: 10px !important;
 }
 
 html body #root .public-booking-page .ui-button svg {
@@ -92,4 +92,123 @@ html body #root .public-booking-page .public-booking-card form > .primary-button
 html body #root .public-booking-page .public-booking-card form > .primary-button svg {
   width: 19.5px !important;
   height: 19.5px !important;
+}
+
+/* shadcn-style public booking layout. All corners on this page are 10px. */
+html body #root .public-booking-page,
+html body #root .public-booking-page * { box-sizing: border-box; }
+html body #root .public-booking-page * { border-radius: 10px !important; }
+html body #root .public-booking-page .public-booking-card {
+  width: min(100%, 680px); margin-inline: auto; padding: 0; overflow: hidden;
+  border: 1px solid var(--border); border-radius: 10px !important;
+  background: var(--card); box-shadow: var(--shadow-md);
+}
+html body #root .public-booking-page .public-booking-content { display: grid; gap: 18px; padding: 24px; }
+html body #root .public-booking-page .brand-row { margin: 0; width: fit-content; }
+html body #root .public-booking-page .public-booking-header { display: grid; gap: 10px; }
+html body #root .public-booking-page .public-booking-header .eyebrow {
+  margin: 0; color: var(--primary); font-size: 11px; font-weight: 700 !important; letter-spacing: .07em;
+}
+html body #root .public-booking-page .public-booking-header h1 {
+  margin: 0; font-size: clamp(22px, 4vw, 30px); line-height: 1.2; letter-spacing: -.025em;
+}
+html body #root .public-booking-page :is(.public-booking-service-card,.public-booking-schedule-card,.public-booking-location-note,.public-booking-history-card,.public-booking-success-card) {
+  border: 1px solid var(--border); border-radius: 10px !important; background: var(--card); box-shadow: none;
+}
+html body #root .public-booking-page .public-booking-service-content {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px;
+}
+html body #root .public-booking-page :is(.public-booking-service-copy,.public-booking-service-meta) {
+  display: grid; gap: 4px; min-width: 0;
+}
+html body #root .public-booking-page .public-booking-service-label {
+  color: var(--muted-foreground); font-size: 10px; font-weight: 650; letter-spacing: .06em;
+}
+html body #root .public-booking-page .public-booking-service-copy > strong { font-size: 14px; line-height: 1.35; overflow-wrap: anywhere; }
+html body #root .public-booking-page :is(.public-booking-service-copy small,.public-booking-service-meta span) {
+  color: var(--muted-foreground); font-size: 11px; line-height: 1.4;
+}
+html body #root .public-booking-page .public-booking-service-meta { flex: 0 0 auto; text-align: right; }
+html body #root .public-booking-page .public-booking-service-meta strong { font-size: 14px; font-weight: 700 !important; white-space: nowrap; }
+html body #root .public-booking-page .public-booking-timezone-note { margin: 0; font-size: 12px; line-height: 1.5; }
+html body #root .public-booking-page .public-booking-timezone-note strong { color: var(--foreground); font-weight: 650 !important; }
+html body #root .public-booking-page .public-booking-form { display: grid; gap: 16px; }
+html body #root .public-booking-page .public-booking-section { display: grid; gap: 12px; min-width: 0; }
+html body #root .public-booking-page .public-booking-section-heading { display: grid; gap: 4px; }
+html body #root .public-booking-page .public-booking-section-heading h2 { margin: 0; font-size: 14px; font-weight: 700 !important; line-height: 1.35; }
+html body #root .public-booking-page .public-booking-section-heading p { margin: 0; color: var(--muted-foreground); font-size: 11px; line-height: 1.45; }
+html body #root .public-booking-page .public-booking-fields {
+  display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; min-width: 0;
+}
+html body #root .public-booking-page .public-booking-field { display: grid; align-content: start; gap: 5px; min-width: 0; }
+html body #root .public-booking-page .public-booking-field-wide { grid-column: 1 / -1; }
+html body #root .public-booking-page .public-booking-field :is(.ui-label,.ui-label label,.public-booking-field > label) {
+  display: block; margin: 0; color: var(--foreground); font-size: 11px; font-weight: 600 !important; line-height: 1.4;
+}
+html body #root .public-booking-page .public-booking-field :is(.ui-input,.ui-select,.ui-textarea) {
+  width: 100%; min-width: 0; min-height: 38px; border: 1px solid var(--input);
+  border-radius: 10px !important; padding: 8px 10px; background: var(--background); color: var(--foreground); font-size: 12px; box-shadow: none;
+}
+html body #root .public-booking-page .public-booking-field .ui-textarea,
+html body #root .public-booking-page #public-booking-notes { min-height: 84px; resize: vertical; }
+html body #root .public-booking-page .public-booking-field :is(.ui-input,.ui-select,.ui-textarea):focus-visible,
+html body #root .public-booking-page #public-booking-notes:focus-visible {
+  outline: none; border-color: var(--ring); box-shadow: 0 0 0 2px color-mix(in srgb,var(--ring) 16%,transparent);
+}
+html body #root .public-booking-page .required-mark { color: var(--destructive); }
+html body #root .public-booking-page .public-booking-location-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+html body #root .public-booking-page .public-booking-location-actions .ui-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px; width: auto;
+  min-height: 36px; padding: 8px 11px; border-radius: 10px !important; font-size: 11px;
+}
+html body #root .public-booking-page .public-booking-location-actions .ui-button svg { width: 14px; height: 14px; }
+html body #root .public-booking-page .public-booking-note-content {
+  display: flex; align-items: flex-start; gap: 10px; min-width: 0; padding: 11px 12px;
+}
+html body #root .public-booking-page .public-booking-note-content > svg {
+  flex: 0 0 16px; width: 16px; height: 16px; margin-top: 1px; color: var(--primary);
+}
+html body #root .public-booking-page .public-booking-note-content > div { display: grid; gap: 3px; min-width: 0; }
+html body #root .public-booking-page .public-booking-note-content strong { font-size: 12px; line-height: 1.35; }
+html body #root .public-booking-page .public-booking-note-content p {
+  margin: 0; color: var(--muted-foreground); font-size: 11px; line-height: 1.5; overflow-wrap: anywhere;
+}
+html body #root .public-booking-page .public-booking-location-note { background: color-mix(in srgb,var(--primary) 4%,var(--card)); }
+html body #root .public-booking-page .public-booking-status { margin: 0; color: var(--muted-foreground); font-size: 11px; line-height: 1.45; }
+html body #root .public-booking-page .public-booking-separator { margin: 0; background: var(--border); }
+html body #root .public-booking-page .public-booking-schedule-content { display: grid; gap: 14px; padding: 14px; }
+html body #root .public-booking-page .public-booking-slots { display: grid; gap: 9px; min-width: 0; }
+html body #root .public-booking-page .public-booking-slots-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+html body #root .public-booking-page .public-booking-slots-heading strong { font-size: 12px; }
+html body #root .public-booking-page .public-booking-slots-heading span { color: var(--muted-foreground); font-size: 10px; }
+html body #root .public-booking-page .available-slot-grid {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(104px,1fr)); gap: 8px !important; margin: 0 !important;
+}
+html body #root .public-booking-page .available-slot-grid .slot-button {
+  width: 100%; min-width: 0; min-height: 38px; padding: 7px 9px; border: 1px solid var(--border);
+  border-radius: 10px !important; font-size: 11px; white-space: nowrap;
+}
+html body #root .public-booking-page .public-booking-checkbox-row { display: inline-flex; align-items: center; gap: 8px; width: fit-content; font-size: 12px; }
+html body #root .public-booking-page .public-booking-checkbox-row .ui-input-control { width: 16px; height: 16px; margin: 0; }
+html body #root .public-booking-page .public-booking-questions {
+  display: grid; gap: 12px; min-width: 0; margin: 0; padding: 12px; border: 1px solid var(--border); border-radius: 10px !important;
+}
+html body #root .public-booking-page .public-booking-questions legend { padding: 0 5px; font-size: 12px; font-weight: 650 !important; }
+html body #root .public-booking-page .public-booking-submit {
+  width: 100%; min-height: 44px; border: 1px solid #1639B3; border-radius: 10px !important;
+  background: #1639B3; color: #fff; font-size: 13px;
+}
+html body #root .public-booking-page .public-booking-submit:hover:not(:disabled) { border-color: #102F96; background: #102F96; }
+html body #root .public-booking-page .public-booking-submit:disabled { opacity: .55; cursor: not-allowed; }
+html body #root .public-booking-page :is(.error,.warning-note,.success) { margin: 0; font-size: 12px; line-height: 1.5; }
+html body #root .public-booking-page a { color: var(--primary); }
+@media (max-width: 600px) {
+  html body #root .public-booking-page { padding: 10px !important; }
+  html body #root .public-booking-page .public-booking-content { gap: 15px; padding: 17px 14px; }
+  html body #root .public-booking-page .public-booking-fields { grid-template-columns: minmax(0,1fr); gap: 10px; }
+  html body #root .public-booking-page .public-booking-field-wide { grid-column: 1 / -1; }
+  html body #root .public-booking-page .public-booking-service-content { align-items: flex-start; padding: 12px; }
+  html body #root .public-booking-page .public-booking-service-meta strong { font-size: 12px; }
+  html body #root .public-booking-page .public-booking-location-actions { align-items: stretch; }
+  html body #root .public-booking-page .public-booking-location-actions .ui-button { max-width: 100%; }
 }
