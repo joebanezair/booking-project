@@ -2238,3 +2238,15 @@ html body #root .bookflow-storefront.public-business-profile #storefront-about #
 html body #root .bookflow-storefront.public-business-profile #storefront-about #storefront-your-rating-actions .rating-input > button.ui-button.active .rating-star-glyph {
   color: #16a34a !important;
 }
+
+
+/* Remove the outer gap between the profile description and offering search. */
+html body #root main.public-page.bookflow-storefront.public-business-profile > .public-profile-hero.storefront-hero > .public-profile-info.storefront-profile-info {
+  padding-bottom: 0 !important;
+}
+
+html body #root main.public-page.bookflow-storefront.public-business-profile > .profile-catalog-filter-section.storefront-filter-section {
+  margin-block-start: 0 !important;
+  margin-top: 0 !important;
+  padding-block-start: 0 !important;
+}
