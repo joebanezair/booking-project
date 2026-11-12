@@ -2457,3 +2457,31 @@ html[data-theme="dark"] body #root .bookflow-storefront.public-business-profile 
 html[data-theme="dark"] body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-description-column .storefront-meta a {
   color: #bfdbfe !important;
 }
+
+
+/* Owner actions: full-pill shadcn buttons; Edit Profile matches Book A Session. */
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .storefront-book-button {
+  border-radius: 9999px !important;
+}
+
+/* Give Edit Profile the same primary treatment and dimensions as Book A Session. */
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action-primary {
+  min-height: 34px !important;
+  height: 34px !important;
+  padding: 6px 12px !important;
+  border: 1px solid #5974f6 !important;
+  border-radius: 9999px !important;
+  background: #5974f6 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-profile-owner-actions > .owner-profile-action-primary:hover {
+  border-color: #4863e7 !important;
+  background: #4863e7 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
