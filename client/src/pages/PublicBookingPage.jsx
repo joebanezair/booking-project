@@ -1,4 +1,6 @@
 import { Button } from "../components/ui/button.jsx";
+import { Card, CardContent } from "../components/ui/card.jsx";
+import { Separator } from "../components/ui/separator.jsx";
 import { Input } from "../components/ui/input.jsx";
 import { Select } from "../components/ui/select.jsx";
 import { Textarea } from "../components/ui/textarea.jsx";
@@ -85,45 +87,228 @@ export default function PublicBookingPage({user}){
   const selectedIndex=page?.services?.findIndex(service=>(form.contentId&&String(service.id)===String(form.contentId))||(!form.contentId&&service.title===form.service));
   const today=new Date().toISOString().slice(0,10);
 
-  return <main className="public-shell public-booking-page"><section className="public-card public-booking-card">
-    <Link className="brand-row" to="/"><span className="brand-mark">B</span><strong>BookFlow</strong></Link>
-    {error&&!page?<p className="error">{error}</p>:!page?<p>Loading...</p>:<>
-      <p className="eyebrow">PUBLIC BOOKING</p>
-      <h1>Book time with {page.owner.name}</h1>
-      {selectedService&&<div className="selected-content"><strong>{selectedService.title}</strong><span>{money(selectedService.price,selectedService.currency)} · {durationLabel(selectedService.durationMinutes)}</span>{selectedService.bufferMinutes>0&&<small>Includes {selectedService.bufferMinutes} min scheduling buffer</small>}</div>}
-      <p className="muted">Times are shown for {page.scheduling?.timezone||"the business timezone"}. BookFlow only shows slots allowed by the business schedule.</p>
+  return <main className="public-shell public-booking-page">
+    <Card as="section" className="public-card public-booking-card">
+      <CardContent className="public-booking-content">
+        <Link className="brand-row" to="/" aria-label="BookFlow home">
+          <span className="brand-mark">B</span>
+          <strong>BookFlow</strong>
+        </Link>
 
-      <form onSubmit={submit}>
-        <div className="two-col">
-          <Label>Your name<Input value={form.guestName} onChange={e=>setForm({...form,guestName:e.target.value})} required autoComplete="name"/></Label>
-          <Label>Email<Input type="email" value={form.guestEmail} onChange={e=>setForm({...form,guestEmail:e.target.value})} required autoComplete="email"/></Label>
-        </div>
-        <Label>Phone number<Input type="tel" value={form.guestPhone} onChange={e=>setForm({...form,guestPhone:e.target.value})} placeholder="+63 912 345 6789" required autoComplete="tel"/></Label>
-        <Label>Location / service address<Input value={form.locationLabel} onChange={e=>setForm({...form,locationLabel:e.target.value})} placeholder="Address, barangay, city, or area" autoComplete="street-address" maxLength="200"/></Label>
-        <div className="row-actions"><Button variant="plain" className="secondary" type="button" onClick={detectLocation} disabled={locating}><FiMapPin aria-hidden="true" />{locating?"Detecting location...":"Use my current location"}</Button>{form.locationLatitude!==null&&form.locationLongitude!==null&&<Button variant="plain" className="secondary" type="button" onClick={()=>{setForm(current=>({...current,locationLatitude:null,locationLongitude:null,locationAccuracy:null}));setLocationStatus("Saved coordinates removed. Your typed location is still kept.");}}><FiX aria-hidden="true" />Remove detected location</Button>}</div>
-        <p className="muted">Location sharing is optional and only happens after you press the button and approve your browser's permission request.</p>
-        {locationStatus&&<p className="muted">{locationStatus}</p>}
+        {error && !page ? (
+          <p className="error" role="alert">{error}</p>
+        ) : !page ? (
+          <p className="muted">Loading booking details…</p>
+        ) : (
+          <>
+            <header className="public-booking-header">
+              <p className="eyebrow">PUBLIC BOOKING</p>
+              <h1>Book time with {page.owner.name}</h1>
+              {selectedService && (
+                <Card className="public-booking-service-card">
+                  <CardContent className="public-booking-service-content">
+                    <div className="public-booking-service-copy">
+                      <span className="public-booking-service-label">SELECTED SERVICE</span>
+                      <strong>{selectedService.title}</strong>
+                      {selectedService.bufferMinutes > 0 && (
+                        <small>Includes {selectedService.bufferMinutes} min scheduling buffer</small>
+                      )}
+                    </div>
+                    <div className="public-booking-service-meta">
+                      <strong>{money(selectedService.price, selectedService.currency)}</strong>
+                      <span>{durationLabel(selectedService.durationMinutes)}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              <p className="muted public-booking-timezone-note">
+                Times are shown for <strong>{page.scheduling?.timezone || "the business timezone"}</strong>.
+                BookFlow only shows slots allowed by the business schedule.
+              </p>
+            </header>
 
-        {!requestedContentId&&<Label>Service<Select value={selectedIndex>=0?String(selectedIndex):"0"} onChange={e=>chooseService(e.target.value)}>{page.services.map((service,index)=><option value={index} key={service.id||service.title+"-"+index}>{service.title} — {money(service.price,service.currency)} · {durationLabel(service.durationMinutes)}</option>)}</Select></Label>}
+            <form className="public-booking-form" onSubmit={submit}>
+              <section className="public-booking-section" aria-labelledby="public-booking-contact-heading">
+                <div className="public-booking-section-heading">
+                  <h2 id="public-booking-contact-heading">Your details</h2>
+                  <p>Enter your contact information for this booking.</p>
+                </div>
+                <div className="public-booking-fields">
+                  <div className="public-booking-field">
+                    <Label htmlFor="public-booking-name">Your name <span className="required-mark">*</span></Label>
+                    <Input id="public-booking-name" value={form.guestName} onChange={e=>setForm({...form,guestName:e.target.value})} required autoComplete="name" placeholder="Your full name"/>
+                  </div>
+                  <div className="public-booking-field">
+                    <Label htmlFor="public-booking-email">Email <span className="required-mark">*</span></Label>
+                    <Input id="public-booking-email" type="email" value={form.guestEmail} onChange={e=>setForm({...form,guestEmail:e.target.value})} required autoComplete="email" placeholder="you@example.com"/>
+                  </div>
+                  <div className="public-booking-field">
+                    <Label htmlFor="public-booking-phone">Phone number <span className="required-mark">*</span></Label>
+                    <Input id="public-booking-phone" type="tel" value={form.guestPhone} onChange={e=>setForm({...form,guestPhone:e.target.value})} placeholder="+63 912 345 6789" required autoComplete="tel"/>
+                  </div>
+                  <div className="public-booking-field public-booking-field-wide">
+                    <Label htmlFor="public-booking-location">Location / service address</Label>
+                    <Input id="public-booking-location" value={form.locationLabel} onChange={e=>setForm({...form,locationLabel:e.target.value})} placeholder="Address, barangay, city, or area" autoComplete="street-address" maxLength="200"/>
+                  </div>
+                </div>
 
-        <div className="booking-slot-picker">
-          <Label>Choose date<Input type="date" min={today} value={slotDate} onChange={e=>setSlotDate(e.target.value)} required/></Label>
-          {slotDate&&<div><strong>Available times</strong>{slotsLoading?<p className="muted">Checking availability…</p>:slots.length===0?<p className="warning-note">No available slots on this date. Choose another day.</p>:<div className="available-slot-grid">{slots.map(slot=><Button variant="plain" type="button" key={slot.value} className={form.bookingDate===slot.value?"slot-button active":"slot-button"} onClick={()=>setForm({...form,bookingDate:slot.value})}>{form.bookingDate===slot.value?<FiCheck aria-hidden="true" />:<FiClock aria-hidden="true" />}{slot.label}</Button>)}</div>}</div>}
-        </div>
+                <div className="public-booking-location-actions">
+                  <Button variant="outline" className="public-booking-location-button" type="button" onClick={detectLocation} disabled={locating}>
+                    <FiMapPin aria-hidden="true"/>{locating?"Detecting location…":"Use my current location"}
+                  </Button>
+                  {form.locationLatitude!==null&&form.locationLongitude!==null&&(
+                    <Button variant="ghost" type="button" className="public-booking-remove-location" onClick={()=>{
+                      setForm(current=>({...current,locationLatitude:null,locationLongitude:null,locationAccuracy:null}));
+                      setLocationStatus("Saved coordinates removed. Your typed location is still kept.");
+                    }}>
+                      <FiX aria-hidden="true"/>Remove detected location
+                    </Button>
+                  )}
+                </div>
 
-        {(selectedService?.bookingQuestions||[]).length>0&&<fieldset className="public-booking-questions"><legend>Booking details</legend>{selectedService.bookingQuestions.map(question=><Label key={question.id}>{question.label}{question.required&&" *"}
-          {question.type==="textarea"?<Textarea rows="3" value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}/>:
-           question.type==="select"?<Select value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}><option value="">Choose…</option>{(question.options||[]).map(option=><option key={option}>{option}</option>)}</Select>:
-           question.type==="checkbox"?<span className="toggle-row"><Input type="checkbox" checked={Boolean(form.customAnswers[question.id])} onChange={e=>answer(question,e.target.checked)}/><span>Yes</span></span>:
-           <Input value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}/>}
-        </Label>)}</fieldset>}
+                <Card className="public-booking-location-note">
+                  <CardContent className="public-booking-note-content">
+                    <FiMapPin aria-hidden="true"/>
+                    <div>
+                      <strong>Location sharing is optional</strong>
+                      <p>Location sharing only happens after you press the button and approve your browser’s permission request. You can also enter your address manually.</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                {locationStatus&&<p className="public-booking-status" role="status">{locationStatus}</p>}
+              </section>
 
-        <Label>Notes<Textarea rows="4" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></Label>
-        {error&&<p className="error">{error}</p>}
-        {message&&<div className="success"><strong>{message}</strong>{reference&&<span className="booking-reference-success">Reference: {reference}</span>}</div>}
-        {user?.role === "business" ? <p className="customer-history-checkout-note">This booking will be saved to your Booking History.</p> : <p className="customer-history-checkout-note">Sign in with your BookFlow business account to save this booking to your Booking History. <Link to="/login">Sign in</Link></p>}
-        <Button variant="plain" className="primary-button" disabled={!form.bookingDate}><FiCalendar aria-hidden="true" />Request booking</Button>
-      </form>
-    </>}
-  </section></main>;
+              <Separator className="public-booking-separator"/>
+
+              {!requestedContentId&&(
+                <section className="public-booking-section" aria-labelledby="public-booking-service-heading">
+                  <div className="public-booking-section-heading">
+                    <h2 id="public-booking-service-heading">Service</h2>
+                    <p>Choose the service you would like to book.</p>
+                  </div>
+                  <div className="public-booking-field">
+                    <Label htmlFor="public-booking-service">Select a service</Label>
+                    <Select id="public-booking-service" value={selectedIndex>=0?String(selectedIndex):"0"} onChange={e=>chooseService(e.target.value)}>
+                      {page.services.map((service,index)=>(
+                        <option value={index} key={service.id||service.title+"-"+index}>
+                          {service.title} — {money(service.price,service.currency)} · {durationLabel(service.durationMinutes)}
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+                </section>
+              )}
+
+              <section className="public-booking-section" aria-labelledby="public-booking-schedule-heading">
+                <div className="public-booking-section-heading">
+                  <h2 id="public-booking-schedule-heading">Choose a date and time</h2>
+                  <p>Available times are based on the business schedule.</p>
+                </div>
+                <Card className="public-booking-schedule-card">
+                  <CardContent className="public-booking-schedule-content">
+                    <div className="public-booking-field">
+                      <Label htmlFor="public-booking-date">Choose date <span className="required-mark">*</span></Label>
+                      <Input id="public-booking-date" type="date" min={today} value={slotDate} onChange={e=>setSlotDate(e.target.value)} required/>
+                    </div>
+                    {slotDate&&(
+                      <div className="public-booking-slots">
+                        <div className="public-booking-slots-heading">
+                          <strong>Available times</strong>
+                          {slotsLoading&&<span>Checking availability…</span>}
+                        </div>
+                        {slotsLoading ? (
+                          <p className="muted">Checking the business schedule…</p>
+                        ) : slots.length===0 ? (
+                          <p className="warning-note">No available slots on this date. Choose another day.</p>
+                        ) : (
+                          <div className="available-slot-grid">
+                            {slots.map(slot=>(
+                              <Button variant={form.bookingDate===slot.value?"default":"outline"} type="button" key={slot.value} className="slot-button" aria-pressed={form.bookingDate===slot.value} onClick={()=>setForm({...form,bookingDate:slot.value})}>
+                                {form.bookingDate===slot.value?<FiCheck aria-hidden="true"/>:<FiClock aria-hidden="true"/>}{slot.label}
+                              </Button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </section>
+
+              {(selectedService?.bookingQuestions||[]).length>0&&(
+                <>
+                  <Separator className="public-booking-separator"/>
+                  <section className="public-booking-section" aria-labelledby="public-booking-questions-heading">
+                    <div className="public-booking-section-heading">
+                      <h2 id="public-booking-questions-heading">Booking details</h2>
+                      <p>Please answer the questions for this service.</p>
+                    </div>
+                    <div className="public-booking-fields">
+                      {selectedService.bookingQuestions.map(question=>(
+                        <div className="public-booking-field public-booking-field-wide" key={question.id}>
+                          <Label>{question.label}{question.required&&" *"}</Label>
+                          {question.type==="textarea" ? (
+                            <Textarea rows="3" value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}/>
+                          ) : question.type==="select" ? (
+                            <Select value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}>
+                              <option value="">Choose…</option>
+                              {(question.options||[]).map(option=><option key={option}>{option}</option>)}
+                            </Select>
+                          ) : question.type==="checkbox" ? (
+                            <label className="public-booking-checkbox-row">
+                              <Input type="checkbox" checked={Boolean(form.customAnswers[question.id])} onChange={e=>answer(question,e.target.checked)}/>
+                              <span>Yes</span>
+                            </label>
+                          ) : (
+                            <Input value={form.customAnswers[question.id]||""} onChange={e=>answer(question,e.target.value)} required={question.required}/>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </>
+              )}
+
+              <Separator className="public-booking-separator"/>
+
+              <section className="public-booking-section" aria-labelledby="public-booking-notes-heading">
+                <div className="public-booking-section-heading">
+                  <h2 id="public-booking-notes-heading">Notes</h2>
+                  <p>Add any extra information for the business (optional).</p>
+                </div>
+                <Textarea id="public-booking-notes" rows="3" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} placeholder="Share access instructions or any details the business should know."/>
+              </section>
+
+              <Card className="public-booking-history-card">
+                <CardContent className="public-booking-note-content">
+                  <FiCalendar aria-hidden="true"/>
+                  <div>
+                    <strong>Booking History</strong>
+                    <p>{user?.role==="business" ? "This booking will be saved to your Booking History." : <>Sign in with your BookFlow business account to save this booking to your Booking History. <Link to="/login">Sign in</Link></>}</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {error&&<p className="error" role="alert">{error}</p>}
+              {message&&(
+                <Card className="public-booking-success-card" role="status">
+                  <CardContent className="public-booking-note-content">
+                    <FiCheck aria-hidden="true"/>
+                    <div>
+                      <strong>{message}</strong>
+                      {reference&&<p className="booking-reference-success">Reference: {reference}</p>}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              <Button type="submit" variant="default" className="public-booking-submit" disabled={!form.bookingDate}>
+                <FiCalendar aria-hidden="true"/>Request booking
+              </Button>
+            </form>
+          </>
+        )}
+      </CardContent>
+    </Card>
+  </main>;
 }
