@@ -1116,3 +1116,83 @@ html body dialog.ui-dialog .ui-product-confirm .checkout-confirm-actions > .prim
   color: inherit !important;
 }
 
+/* Product Details purchase row: quantity input left, Add to cart right. */
+html body #root .page-shell .product-details-modal .product-details-purchase-row {
+  display: grid;
+  grid-template-columns: minmax(92px, 112px) minmax(0, 1fr);
+  align-items: end;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  margin-top: 4px;
+}
+
+html body #root .page-shell .product-details-modal .product-details-purchase-row .product-details-quantity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  min-width: 0;
+  margin: 0 !important;
+}
+
+html body #root .page-shell .product-details-modal .product-details-quantity-input {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 8px 10px !important;
+  border: 1px solid var(--input) !important;
+  border-radius: 15px !important;
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  font: inherit;
+  font-size: 13px !important;
+  box-shadow: none !important;
+}
+
+html body #root .page-shell .product-details-modal .product-details-quantity-input:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ring) 42%, transparent) !important;
+  outline-offset: 1px !important;
+  border-color: var(--ring) !important;
+}
+
+html body #root .page-shell .product-details-modal .product-details-cart-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  margin: 0 !important;
+  padding: 8px 12px !important;
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root .page-shell .product-details-modal .product-details-cart-button:hover,
+html body #root .page-shell .product-details-modal .product-details-cart-button:active {
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root .page-shell .product-details-modal .product-details-cart-button > svg {
+  color: inherit !important;
+}
+
+@media (max-width: 380px) {
+  html body #root .page-shell .product-details-modal .product-details-purchase-row {
+    grid-template-columns: minmax(78px, 96px) minmax(0, 1fr);
+    gap: 8px;
+  }
+  html body #root .page-shell .product-details-modal .product-details-cart-button {
+    padding-inline: 8px !important;
+    gap: 6px !important;
+  }
+}
+
