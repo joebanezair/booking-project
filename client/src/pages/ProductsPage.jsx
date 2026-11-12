@@ -164,6 +164,7 @@ export default function ProductsPage({user,onLogout}){
   const [cartOpen,setCartOpen]=useState(true);
   const [confirmCheckout,setConfirmCheckout]=useState(false);
   const [checkoutBusy,setCheckoutBusy]=useState(false);
+  const [checkoutValidationError,setCheckoutValidationError]=useState("");
   const checkoutLock=useRef(false);
   const [productView,setProductView]=useState("grid");
   const [deleteTarget,setDeleteTarget]=useState(null);
@@ -298,7 +299,13 @@ export default function ProductsPage({user,onLogout}){
       // Show the success dialog immediately; refresh inventory without delaying it.
       void refresh().catch(()=>setError("Checkout succeeded, but inventory could not be refreshed. Please reload the page."));
     }catch(e){
-      setError(e.message);
+      const checkoutMessage=e?.message||"Unable to complete checkout.";
+      if(checkoutMessage==="Quantity must be a whole number between 1 and 999."){
+        setError("");
+        setCheckoutValidationError(checkoutMessage);
+      }else{
+        setError(checkoutMessage);
+      }
     }finally{
       checkoutLock.current=false;
       setCheckoutBusy(false);
@@ -356,6 +363,31 @@ export default function ProductsPage({user,onLogout}){
 
     {deleteTarget&&<Dialog open={Boolean(deleteTarget)} title="Delete product" onOpenChange={open=>{if(!open)setDeleteTarget(null);}}><DialogContent className="ui-product-confirm"><div className="panel-title"><div><p className="eyebrow">Delete Product</p><h2 id="delete-product-title">Delete {deleteTarget.name}?</h2></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close delete confirmation" data-tooltip="Close" onClick={()=>setDeleteTarget(null)}><FiX/></Button></div><p className="muted">This product will be permanently removed from your inventory. This action cannot be undone.</p><div className="delete-product-actions"><Button variant="plain" type="button" className="secondary" onClick={()=>setDeleteTarget(null)}>Cancel</Button><Button variant="plain" type="button" className="danger" onClick={()=>removeProduct(deleteTarget)}><FiTrash2/>Delete product</Button></div></DialogContent></Dialog>}
       {confirmCheckout&&<Dialog open={confirmCheckout} title="Confirm checkout" dismissible={!checkoutBusy} onOpenChange={open=>{if(!open&&!checkoutBusy)setConfirmCheckout(false);}}><DialogContent className="ui-product-confirm"><div className="panel-title"><div><p className="eyebrow">Final Check</p><h2>Confirm checkout</h2></div><Button variant="plain" type="button" className="icon-button icon-action" aria-label="Close checkout confirmation" onClick={()=>setConfirmCheckout(false)}><FiX/></Button></div><p className="muted">Review this sale before completing the transaction.</p><div className="checkout-confirm-summary"><div><span>Customer</span><strong>{customerName.trim()||"Walk-in"}</strong></div><div><span>Payment</span><strong>{paymentMethod.charAt(0).toUpperCase()+paymentMethod.slice(1)}</strong></div><div><span>Items</span><strong>{cartLines.reduce((s,x)=>s+x.quantity,0)}</strong></div></div><div className="checkout-confirm-items">{cartLines.map(item=><div key={item._id}><span>{item.name} × {item.quantity}</span><strong>{money(item.price*item.quantity,item.currency)}</strong></div>)}</div><div className="pos-total"><span>Total</span><strong>{money(cartTotal,currency)}</strong></div><div className="checkout-confirm-actions"><Button variant="plain" type="button" className="secondary" onClick={()=>setConfirmCheckout(false)}>Cancel</Button>{error&&<p className="error" role="alert">{error}</p>}<Button variant="plain" type="button" className="primary-button" disabled={checkoutBusy} onClick={checkout}>{checkoutBusy?"Processing checkout…":"Confirm checkout"}</Button></div></DialogContent></Dialog>}
+
+    {checkoutValidationError&&<Dialog
+      open={Boolean(checkoutValidationError)}
+      title="Unable to process checkout"
+      className="checkout-validation-popup"
+      onOpenChange={open=>{if(!open)setCheckoutValidationError("");}}
+    >
+      <DialogContent className="checkout-validation-content">
+        <div className="panel-title">
+          <div>
+            <p className="eyebrow">Checkout validation</p>
+            <h2>Unable to process checkout</h2>
+          </div>
+          <Button variant="plain" type="button" className="icon-button icon-action"
+            aria-label="Close checkout error" onClick={()=>setCheckoutValidationError("")}>
+            <FiX aria-hidden="true"/>
+          </Button>
+        </div>
+        <p className="checkout-validation-message" role="alert">{checkoutValidationError}</p>
+        <div className="checkout-validation-actions">
+          <Button variant="plain" type="button" className="primary-button"
+            onClick={()=>setCheckoutValidationError("")}>Okay</Button>
+        </div>
+      </DialogContent>
+    </Dialog>}
 
     {checkoutSuccess&&<Dialog open={Boolean(checkoutSuccess)} title="Checkout complete" className="checkout-success-dialog" onOpenChange={open=>{if(!open)setCheckoutSuccess(null);}}>
       <DialogContent className="checkout-success-content">
