@@ -2485,3 +2485,10 @@ html body #root .bookflow-storefront.public-business-profile .storefront-owner-a
   color: #ffffff !important;
   box-shadow: none !important;
 }
+
+
+/* Business rating, Verified reviews and Visitor ratings use full-pill corners. */
+html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip,
+html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-your-rating-chip {
+  border-radius: 9999px !important;
+}
