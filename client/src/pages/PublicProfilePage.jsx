@@ -71,7 +71,7 @@ export default function PublicProfilePage({ user }) {
 
   useEffect(() => {
     if (!ratingMessage) return undefined;
-    const timeout = window.setTimeout(() => setRatingMessage(""), 4500);
+    const timeout = window.setTimeout(() => setRatingMessage(""), 5000);
     return () => window.clearTimeout(timeout);
   }, [ratingMessage]);
 
