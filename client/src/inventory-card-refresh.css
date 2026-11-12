@@ -1079,3 +1079,40 @@ html body #root main .product-toolbar > .product-add-icon.ui-button:focus-visibl
   outline-offset: 2px !important;
 }
 
+/* Products POS purchase actions: dark blue, borderless, 15px radius. */
+html body #root .page-shell .product-details-modal .product-details-cart-button,
+html body #root .page-shell .products-cart-panel .checkout-button,
+html body #root .page-shell .checkout-confirm-actions > .primary-button {
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root .page-shell .product-details-modal .product-details-cart-button:hover,
+html body #root .page-shell .products-cart-panel .checkout-button:hover,
+html body #root .page-shell .checkout-confirm-actions > .primary-button:hover,
+html body #root .page-shell .product-details-modal .product-details-cart-button:active,
+html body #root .page-shell .products-cart-panel .checkout-button:active,
+html body #root .page-shell .checkout-confirm-actions > .primary-button:active {
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: color-mix(in srgb, var(--primary) 40%, #000 60%) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body #root .page-shell .product-details-modal .product-details-cart-button:focus-visible,
+html body #root .page-shell .products-cart-panel .checkout-button:focus-visible,
+html body #root .page-shell .checkout-confirm-actions > .primary-button:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
+html body #root .page-shell .product-details-modal .product-details-cart-button > svg,
+html body #root .page-shell .products-cart-panel .checkout-button > svg,
+html body #root .page-shell .checkout-confirm-actions > .primary-button > svg {
+  color: inherit !important;
+}
+
