@@ -198,8 +198,11 @@ html body #root main.public-page.bookflow-storefront.public-business-profile .st
 }
 
 
-/* Public profile search bar: add 5px vertical breathing room. */
+/* Public profile search bar: increase text by 1px and vertical padding by 2px. */
 html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field {
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
+}
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input {
+  font-size: calc(1em + 1px) !important;
 }
