@@ -57,13 +57,36 @@ export default function PublicBookingPage({user}){
 
   function detectLocation(){
     setLocationStatus("");
-    if(!navigator.geolocation){setLocationStatus("Location detection is not supported by this browser. You can enter your location manually.");return;}
+    if(window.isSecureContext === false){
+      setLocationStatus("Your browser blocks location sharing on this HTTP address. Open BookFlow using HTTPS, or use localhost on this same computer, then try again. You can enter your address or area manually.");
+      return;
+    }
+    if(!navigator.geolocation){
+      setLocationStatus("This browser does not provide location access. Try a current browser over HTTPS, or enter your address or area manually.");
+      return;
+    }
     setLocating(true);
-    navigator.geolocation.getCurrentPosition(position=>{
-      const {latitude,longitude,accuracy}=position.coords;
-      setForm(current=>({...current,locationLabel:current.locationLabel||"Current location",locationLatitude:latitude,locationLongitude:longitude,locationAccuracy:accuracy}));
-      setLocationStatus(`Location captured (accuracy about ${Math.round(accuracy)} m). You can still edit the location name below.`);setLocating(false);
-    },err=>{setLocationStatus(err.code===err.PERMISSION_DENIED?"Location permission was not granted. You can enter your address or area manually.":"We could not detect your location. You can enter your address or area manually.");setLocating(false);},{enableHighAccuracy:true,timeout:10000,maximumAge:60000});
+    try {
+      navigator.geolocation.getCurrentPosition(position=>{
+        const {latitude,longitude,accuracy}=position.coords;
+        setForm(current=>({...current,locationLabel:current.locationLabel||"Current location",locationLatitude:latitude,locationLongitude:longitude,locationAccuracy:accuracy}));
+        setLocationStatus(`Location captured (accuracy about ${Math.round(accuracy)} m). You can still edit the location name below.`);
+        setLocating(false);
+      },err=>{
+        const status = err.code === 1
+          ? "Location permission was denied or blocked by your browser/site settings. Allow location access for BookFlow, then try again. You can also enter your address manually."
+          : err.code === 2
+            ? "Your device could not determine its location. Check that device location services are enabled, then try again or enter your address manually."
+            : err.code === 3
+              ? "Location detection timed out. Check your connection or device location settings, then try again or enter your address manually."
+              : "We could not detect your location. You can enter your address or area manually.";
+        setLocationStatus(status);
+        setLocating(false);
+      },{enableHighAccuracy:true,timeout:15000,maximumAge:60000});
+    } catch {
+      setLocationStatus("Your browser could not start location detection. Open BookFlow over HTTPS and check the browser's location permission, or enter your address manually.");
+      setLocating(false);
+    }
   }
 
   function chooseService(index){
@@ -171,7 +194,7 @@ export default function PublicBookingPage({user}){
                     <FiMapPin aria-hidden="true"/>
                     <div>
                       <strong>Location sharing is optional</strong>
-                      <p>Location sharing only happens after you press the button and approve your browser’s permission request. You can also enter your address manually.</p>
+                      <p>Press the button and allow your browser’s location request to share your current location. Browser location access requires HTTPS (or localhost on this same computer). You can always enter your address manually instead.</p>
                     </div>
                   </CardContent>
                 </Card>
