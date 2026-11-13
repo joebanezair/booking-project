@@ -187,3 +187,12 @@ html:not([data-theme="dark"]) body #root main.public-page.bookflow-storefront.pu
   background: #ffffff !important;
   background-color: #ffffff !important;
 }
+
+
+/* Public business profile search field: restore a subtle theme-aware outline. */
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field {
+  border: 1px solid var(--border) !important;
+}
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field:focus-within {
+  border-color: var(--ring) !important;
+}
