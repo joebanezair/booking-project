@@ -2527,3 +2527,138 @@ html[data-theme="dark"] body #root main.public-page.bookflow-storefront.public-b
   color: #e8edf6 !important;
 }
 
+
+
+/* Public business profile: final theme-token pass.
+   Keep the Description surface intentionally slate; remove legacy pale-gray fills elsewhere. */
+html body #root main.public-page.bookflow-storefront.public-business-profile {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+html body #root main.public-page.bookflow-storefront.public-business-profile > .public-profile-hero.storefront-hero {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+html body #root main.public-page.bookflow-storefront.public-business-profile .public-profile-info.storefront-profile-info {
+  background: var(--card) !important;
+  color: var(--card-foreground, var(--foreground)) !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-name-block h1,
+html body #root .bookflow-storefront.public-business-profile .profile-reputation-row .rating-summary,
+html body #root .bookflow-storefront.public-business-profile .profile-reputation-row .rating-summary strong,
+html body #root .bookflow-storefront.public-business-profile .profile-reputation-title,
+html body #root .bookflow-storefront.public-business-profile .profile-rating-label,
+html body #root .bookflow-storefront.public-business-profile .storefront-rating-summary-card .rating-summary-label {
+  color: var(--foreground) !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-name-block .profile-headline,
+html body #root .bookflow-storefront.public-business-profile .storefront-name-block .storefront-location,
+html body #root .bookflow-storefront.public-business-profile .storefront-handle,
+html body #root .bookflow-storefront.public-business-profile .profile-reputation-subtitle,
+html body #root .bookflow-storefront.public-business-profile .storefront-rating-note {
+  color: var(--muted-foreground) !important;
+}
+
+/* Secondary profile actions stay transparent instead of carrying the old gray fill. */
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .owner-profile-action:not(.owner-profile-action-primary),
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .ui-button:not(.owner-profile-action-primary),
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .button-link:not(.owner-profile-action-primary),
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button {
+  border-color: var(--border) !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .owner-profile-action:not(.owner-profile-action-primary):hover,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .ui-button:not(.owner-profile-action-primary):hover,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .button-link:not(.owner-profile-action-primary):hover,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button:hover:not(:disabled) {
+  border-color: var(--border) !important;
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .owner-profile-action-primary,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .storefront-book-button {
+  border-color: var(--primary) !important;
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .owner-profile-action-primary:hover,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .public-book-session-button:hover,
+html body #root .bookflow-storefront.public-business-profile .storefront-owner-actions .storefront-book-button:hover {
+  border-color: var(--primary) !important;
+  background: color-mix(in srgb, var(--primary) 88%, var(--foreground)) !important;
+  color: var(--primary-foreground) !important;
+}
+
+/* Remove the fixed pale search-field fill in both themes. */
+html body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field {
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input {
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
+  -webkit-text-fill-color: var(--foreground) !important;
+  caret-color: var(--foreground) !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input::placeholder,
+html body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field > .ui-search-icon,
+html body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field .ui-search-clear {
+  color: var(--muted-foreground) !important;
+  -webkit-text-fill-color: var(--muted-foreground) !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-filter .profile-catalog-select-trigger {
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-filter .profile-catalog-select-trigger:hover:not(:disabled) {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+}
+html body #root .bookflow-storefront.public-business-profile .profile-catalog-select-menu {
+  border: 1px solid var(--border) !important;
+  background: var(--popover, var(--card)) !important;
+  color: var(--popover-foreground, var(--foreground)) !important;
+}
+
+/* Rating chips and rating controls use theme surfaces rather than hard-coded gray/white. */
+html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip,
+html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-your-rating-chip {
+  border-color: var(--border) !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip .storefront-rating-chip-label,
+html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip > strong,
+html body #root .bookflow-storefront.public-business-profile #storefront-about .storefront-rating-chip .storefront-rating-chip-count {
+  color: var(--foreground) !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-your-rating-content .rating-input > button.ui-button,
+html body #root .bookflow-storefront.public-business-profile .storefront-rating-controls .rating-input > button.ui-button,
+html body #root .bookflow-storefront.public-business-profile .storefront-profile-info .remove-business-rating {
+  border-color: var(--border) !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+
+/* Non-description overview cards have no stale gray/white panel fill.
+   The Description container is deliberately excluded and retains its slate surface. */
+html body #root .bookflow-storefront.public-business-profile .storefront-about-layout > .storefront-info-card:not(.storefront-description-column) {
+  border-color: var(--border) !important;
+  background: transparent !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+html body #root .bookflow-storefront.public-business-profile .storefront-about-layout .storefront-info-card-icon:not(.storefront-info-card-icon--description) {
+  background: color-mix(in srgb, var(--primary) 10%, var(--card)) !important;
+  color: var(--primary) !important;
+}
