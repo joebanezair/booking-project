@@ -276,3 +276,10 @@ html body #root main.public-page.bookflow-storefront.public-business-profile .st
 html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input {
   border-radius: 9999px !important;
 }
+
+
+/* Public Business Profile social actions: full pill radius for Friends and Message only. */
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button.profile-action-friend,
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-owner-actions .profile-action-button.profile-action-message {
+  border-radius: 9999px !important;
+}
