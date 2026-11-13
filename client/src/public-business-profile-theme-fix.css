@@ -141,3 +141,13 @@ html body #root main.public-page.bookflow-storefront.public-business-profile > s
   background-color: transparent !important;
   box-shadow: none !important;
 }
+
+
+/* Match the legacy dark-mode selector's specificity exactly.
+   The old #151f30 !important rule used html[data-theme="dark"] and .has-cover,
+   so a less-specific transparent rule could never win. */
+html[data-theme="dark"] body #root main.public-page.bookflow-storefront.public-business-profile > section.public-profile-hero.storefront-hero.has-cover > .public-profile-info.storefront-profile-info {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
