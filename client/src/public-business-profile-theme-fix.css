@@ -151,3 +151,27 @@ html[data-theme="dark"] body #root main.public-page.bookflow-storefront.public-b
   background-color: transparent !important;
   box-shadow: none !important;
 }
+
+
+/* Exact rendered node from the public profile DOM:
+   <div class="public-profile-info storefront-profile-info storefront-container">.
+   Override the complete class list so neither the generic card nor dark hero rules
+   can paint a separate rectangle behind the identity, ratings and action buttons. */
+html body #root main.public-page.bookflow-storefront.public-business-profile section.public-profile-hero.storefront-hero div.public-profile-info.storefront-profile-info.storefront-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+html[data-theme="dark"] body #root main.public-page.bookflow-storefront.public-business-profile section.public-profile-hero.storefront-hero.has-cover div.public-profile-info.storefront-profile-info.storefront-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+html body #root main.public-page.bookflow-storefront.public-business-profile section.public-profile-hero.storefront-hero div.public-profile-info.storefront-profile-info.storefront-container::before,
+html body #root main.public-page.bookflow-storefront.public-business-profile section.public-profile-hero.storefront-hero div.public-profile-info.storefront-profile-info.storefront-container::after {
+  background: transparent !important;
+  box-shadow: none !important;
+}
