@@ -196,3 +196,10 @@ html body #root main.public-page.bookflow-storefront.public-business-profile .st
 html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field:focus-within {
   border-color: var(--ring) !important;
 }
+
+
+/* Public profile search bar: add 5px vertical breathing room. */
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
