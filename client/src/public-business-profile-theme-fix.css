@@ -242,3 +242,30 @@ html body #root main.public-page.bookflow-storefront.public-business-profile .st
 html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input {
   border-radius: 13px !important;
 }
+
+
+/* Keep the Business Profile search bar visually identical on blur, focus and typing.
+   Use a fixed text size and an inset focus highlight so the field does not appear to grow. */
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field {
+  box-sizing: border-box !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding-block: 7px !important;
+  border-radius: 13px !important;
+  transition: border-color 140ms ease, background-color 140ms ease !important;
+}
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field:focus-within {
+  border-color: var(--ring) !important;
+  outline: none !important;
+  box-shadow: inset 0 0 0 1px var(--ring) !important;
+}
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input,
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input:focus {
+  box-sizing: border-box !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding-block: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  transform: none !important;
+}
