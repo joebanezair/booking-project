@@ -206,3 +206,23 @@ html body #root main.public-page.bookflow-storefront.public-business-profile .st
 html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input {
   font-size: calc(1em + 1px) !important;
 }
+
+
+/* Let the public profile search field size itself to the enlarged text and padding.
+   The older 44px wrapper / 42px input heights prevented the content from fitting. */
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field {
+  box-sizing: border-box !important;
+  height: auto !important;
+  min-height: 0 !important;
+  align-items: center !important;
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
+}
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input {
+  box-sizing: border-box !important;
+  height: auto !important;
+  min-height: 0 !important;
+  line-height: 1.4 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
