@@ -175,3 +175,15 @@ html body #root main.public-page.bookflow-storefront.public-business-profile sec
   background: transparent !important;
   box-shadow: none !important;
 }
+
+
+/* Public business profile canvas: pure white in light mode only.
+   Dark mode continues to use the existing --background theme token. */
+html:not([data-theme="dark"]) body #root main.public-page.bookflow-storefront.public-business-profile {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+html:not([data-theme="dark"]) body #root main.public-page.bookflow-storefront.public-business-profile > section.public-profile-hero.storefront-hero {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
