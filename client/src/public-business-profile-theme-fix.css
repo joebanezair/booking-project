@@ -131,3 +131,13 @@ html body #root main.public-page.bookflow-storefront.public-business-profile .st
 html body #root main.public-page.bookflow-storefront.public-business-profile .profile-reputation-subtitle {
   color: var(--muted-foreground) !important;
 }
+
+
+/* Remove the distinct panel shade behind the profile identity/actions.
+   Let the profile information sit directly on the page background.
+   The Description card is a separate component and remains slate. */
+html body #root main.public-page.bookflow-storefront.public-business-profile > section.public-profile-hero.storefront-hero > .public-profile-info.storefront-profile-info {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
