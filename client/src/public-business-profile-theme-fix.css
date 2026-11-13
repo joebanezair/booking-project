@@ -269,3 +269,10 @@ html body #root main.public-page.bookflow-storefront.public-business-profile .st
   line-height: 1.4 !important;
   transform: none !important;
 }
+
+
+/* Business Profile search bar: full pill radius on the field and its input. */
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field,
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field input.ui-search-input {
+  border-radius: 9999px !important;
+}
