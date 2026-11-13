@@ -226,3 +226,12 @@ html body #root main.public-page.bookflow-storefront.public-business-profile .st
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
+
+
+/* Re-assert the requested 7px vertical padding on the Business Profile search field.
+   Keep the field content-sized; do not affect any other search inputs. */
+html body #root main.public-page.bookflow-storefront.public-business-profile .storefront-filter-section .profile-catalog-search .profile-catalog-search-field .ui-search-field {
+  height: auto !important;
+  min-height: 0 !important;
+  padding-block: 7px !important;
+}
