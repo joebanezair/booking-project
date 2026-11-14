@@ -274,8 +274,10 @@ export default function PublicProfilePage({ user }) {
             <div className="storefront-name-block">
               <h1>{profile.name}</h1>
               <span className="storefront-handle">@{profile.username||resolvedUsername}</span>
-              {profile.headline && <p className="profile-headline"><LuBuilding2 aria-hidden="true" /><span>{profile.headline}</span></p>}
-              {profile.location && <span className="storefront-location"><FiMapPin aria-hidden="true" />{profile.location}</span>}
+              {(profile.headline || profile.location) && <div className="storefront-category-location-row">
+                {profile.headline && <p className="profile-headline"><LuBuilding2 aria-hidden="true" /><span>{profile.headline}</span></p>}
+                {profile.location && <span className="storefront-location"><FiMapPin aria-hidden="true" />{profile.location}</span>}
+              </div>}
             </div>
             <div className="storefront-owner-actions">
               {isOwner ? <div className="public-profile-owner-actions">
