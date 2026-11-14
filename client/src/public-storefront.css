@@ -3107,11 +3107,15 @@ html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-pr
 
 /* Keep the business category and address on one aligned row in the public
    storefront header. The address stays at the right edge on wider layouts. */
+html body #root .bookflow-storefront .storefront-title-row .storefront-name-block {
+  flex: 1 1 0;
+  width: 100%;
+}
 html body #root .bookflow-storefront .storefront-name-block .storefront-category-location-row {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 6px 18px;
   width: 100%;
   min-width: 0;
@@ -3124,18 +3128,18 @@ html body #root .bookflow-storefront .storefront-name-block .storefront-category
 }
 html body #root .bookflow-storefront .storefront-name-block .storefront-category-location-row .storefront-location {
   display: inline-flex;
-  flex: 0 1 auto;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
-  min-width: 0;
-  max-width: 60%;
+  min-width: max-content;
+  max-width: none;
   margin-left: auto;
   color: var(--muted-foreground);
   font-size: 12px;
   line-height: 1.5;
   text-align: right;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 html body #root .bookflow-storefront .storefront-name-block .storefront-category-location-row .storefront-location svg {
   flex: 0 0 14px;
@@ -3144,9 +3148,14 @@ html body #root .bookflow-storefront .storefront-name-block .storefront-category
 }
 @media (max-width: 560px) {
   html body #root .bookflow-storefront .storefront-name-block .storefront-category-location-row {
+    flex-wrap: wrap;
     column-gap: 10px;
   }
   html body #root .bookflow-storefront .storefront-name-block .storefront-category-location-row .storefront-location {
-    max-width: 65%;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 }
