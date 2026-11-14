@@ -3113,3 +3113,30 @@ html body #root .bookflow-storefront .storefront-description-column .storefront-
 html body #root .bookflow-storefront .storefront-description-column .storefront-meta-location svg {
   flex: 0 0 15px;
 }
+
+/* Keep Website and business location on the same horizontal metadata row. */
+html body #root .bookflow-storefront .storefront-description-column .profile-meta.storefront-meta {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px 18px !important;
+  width: 100%;
+  min-width: 0;
+}
+html body #root .bookflow-storefront .storefront-description-column .profile-meta.storefront-meta > a {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  white-space: nowrap;
+}
+html body #root .bookflow-storefront .storefront-description-column .profile-meta.storefront-meta > .storefront-meta-location {
+  display: inline-flex !important;
+  flex: 0 1 auto !important;
+  align-items: center !important;
+  min-width: 0;
+  max-width: calc(100% - 100px);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
