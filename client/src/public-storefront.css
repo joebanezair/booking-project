@@ -3140,3 +3140,47 @@ html body #root .bookflow-storefront .storefront-description-column .profile-met
   white-space: normal;
   overflow-wrap: anywhere;
 }
+
+/* Accessible expand/collapse control for the public business description. */
+html body #root .bookflow-storefront .storefront-description-column .storefront-description-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+html body #root .bookflow-storefront .storefront-description-column .storefront-description-toggle .storefront-description-title {
+  margin: 0;
+}
+html body #root .bookflow-storefront .storefront-description-column .storefront-description-toggle > svg {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--muted-foreground);
+  transition: transform 160ms ease;
+}
+html body #root .bookflow-storefront .storefront-description-column .storefront-description-toggle > svg.is-expanded {
+  transform: rotate(180deg);
+}
+html body #root .bookflow-storefront .storefront-description-column .storefront-description-toggle:focus-visible {
+  outline: 2px solid var(--ring, #2563eb);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+html body #root .bookflow-storefront .storefront-description-column .storefront-description-details {
+  min-width: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #root .bookflow-storefront .storefront-description-column .storefront-description-toggle > svg {
+    transition: none;
+  }
+}
