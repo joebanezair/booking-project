@@ -358,3 +358,13 @@ html body #root main.public-page.bookflow-storefront.public-business-profile #st
     overflow-wrap: anywhere !important;
   }
 }
+
+/* Description accordion trigger: remove the visible button border and shadow. */
+html body #root main.public-page.bookflow-storefront.public-business-profile #storefront-about .storefront-description-column button.storefront-description-toggle,
+html body #root main.public-page.bookflow-storefront.public-business-profile #storefront-about .storefront-description-column button.storefront-description-toggle:hover,
+html body #root main.public-page.bookflow-storefront.public-business-profile #storefront-about .storefront-description-column button.storefront-description-toggle:active {
+  border: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
