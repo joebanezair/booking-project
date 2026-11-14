@@ -5,7 +5,7 @@ import { Label } from "../components/ui/label.jsx";
 import { Image } from "../components/ui/image.jsx";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronLeft, FiChevronRight, FiCopy, FiEdit3, FiEye, FiFileText, FiGlobe, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShare2, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowRight, FiBriefcase, FiCalendar, FiCheck, FiCheckCircle, FiChevronDown, FiChevronLeft, FiChevronRight, FiCopy, FiEdit3, FiEye, FiFileText, FiGlobe, FiLock, FiMapPin, FiMessageSquare, FiPackage, FiShare2, FiShoppingBag, FiStar, FiUserPlus, FiUserCheck, FiX } from "react-icons/fi";
 import { LuBuilding2 } from "react-icons/lu";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/dialog.jsx";
 import { api } from "../api.js";
@@ -41,6 +41,7 @@ export default function PublicProfilePage({ user }) {
   const [catalogSearch, setCatalogSearch] = useState("");
   const [catalogType, setCatalogType] = useState("all");
   const [minServiceRating, setMinServiceRating] = useState("0");
+  const [descriptionExpanded, setDescriptionExpanded] = useState(true);
 
   useEffect(() => {
     let active = true;
@@ -338,11 +339,22 @@ export default function PublicProfilePage({ user }) {
             <section className="storefront-info-card storefront-description-column" aria-label="Business description">
               <span className="storefront-info-card-icon storefront-info-card-icon--description" aria-hidden="true"><FiFileText /></span>
               <div className="storefront-description-content">
-                <strong className="storefront-description-title">Description</strong>
-                {profile.bio && <p className="public-bio">{profile.bio}</p>}
-                {(profile.website || profile.location) && <div className="profile-meta storefront-meta">
-                  {profile.website && <a href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true" />Website</a>}
-                  {profile.location && <span className="storefront-meta-location"><FiMapPin aria-hidden="true" />{profile.location}</span>}
+                <button
+                  type="button"
+                  className="storefront-description-toggle"
+                  aria-expanded={descriptionExpanded}
+                  aria-controls="storefront-description-details"
+                  onClick={() => setDescriptionExpanded(value => !value)}
+                >
+                  <strong className="storefront-description-title">Description</strong>
+                  <FiChevronDown className={descriptionExpanded ? "is-expanded" : ""} aria-hidden="true" />
+                </button>
+                {descriptionExpanded && <div id="storefront-description-details" className="storefront-description-details">
+                  {profile.bio && <p className="public-bio">{profile.bio}</p>}
+                  {(profile.website || profile.location) && <div className="profile-meta storefront-meta">
+                    {profile.website && <a href={profile.website} target="_blank" rel="noopener noreferrer"><FiGlobe aria-hidden="true" />Website</a>}
+                    {profile.location && <span className="storefront-meta-location"><FiMapPin aria-hidden="true" />{profile.location}</span>}
+                  </div>}
                 </div>}
               </div>
             </section>
