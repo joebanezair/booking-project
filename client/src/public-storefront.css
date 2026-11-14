@@ -3104,3 +3104,12 @@ html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-pr
 html:not([data-theme="dark"]) body #root .bookflow-storefront.public-business-profile .storefront-services .public-services-grid .public-content-card-body .rating-summary {
   color: var(--muted-foreground) !important;
 }
+
+/* Business location appears alongside the Website link in Description. */
+html body #root .bookflow-storefront .storefront-description-column .storefront-meta-location {
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}
+html body #root .bookflow-storefront .storefront-description-column .storefront-meta-location svg {
+  flex: 0 0 15px;
+}
